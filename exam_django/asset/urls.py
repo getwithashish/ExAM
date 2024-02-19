@@ -1,5 +1,5 @@
 from django.urls import include, path
-from asset.views import BusinessUnitView
+from asset.views import BusinessUnitView,EmployeeView
 from .views import *
 
 
