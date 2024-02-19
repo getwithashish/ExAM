@@ -16,4 +16,9 @@ class BusinessUnitView(ListCreateAPIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
      
+    
+     def get(self,request):
+         businessUnit=BusinessUnit.objects.all()
+         serializer=BusinessUnitSerializer(businessUnit , many = True)
+         return Response(serializer.data)
      
