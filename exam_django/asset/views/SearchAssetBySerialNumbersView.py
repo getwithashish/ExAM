@@ -9,8 +9,8 @@ class SearchAssetBySerialNumberAPIView(ListAPIView):
     def get_queryset(self):
         serial_number = self.request.query_params.get('serial_number', None)
         if serial_number:
-            # Filtering assets based on serial number similarity
-            queryset = Asset.objects.filter(serial_number__icontains=serial_number)
+            # Filtering assets based on serial number starting with the provided value
+            queryset = Asset.objects.filter(serial_number__startswith=serial_number)
             return queryset
         else:
             return Asset.objects.none()  # Return an empty queryset if no serial number provided
