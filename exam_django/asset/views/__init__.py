@@ -1,5 +1,16 @@
 from .SearchAssetNamesView import SearchAssetByNameView
+from .AssetTypeView import AssetTypeView
+from .BusinessUnitView import BusinessUnitView
+from .LocationView import LocationView
+from .AssetCountView import AssetCountView
+from .ConcederView import ConcederView
 
 
 __all__ = [
-  'SearchAssetByNameView']
+    'AssetTypeView',
+    'BusinessUnitView',
+    'LocationView',
+    'AssetCountView',
+    'ConcederView',
+    'SearchAssetByNameView'
+    ]
