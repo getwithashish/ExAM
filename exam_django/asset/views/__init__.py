@@ -1,5 +1,5 @@
-from .MemoryViews import MemoryList
+from .MemoryView import MemoryView
 
 
 __all__ = [
-  'MemoryList']
+  'MemoryView']
