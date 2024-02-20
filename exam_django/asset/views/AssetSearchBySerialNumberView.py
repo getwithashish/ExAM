@@ -1,10 +1,10 @@
 from rest_framework.generics import ListAPIView
 from asset.models import Asset
-from asset.serializers import SearchAssetBySerialNumbersSerializer
+from asset.serializers import AssetSerializer
 
 
-class SearchAssetBySerialNumberAPIView(ListAPIView):
-    serializer_class = SearchAssetBySerialNumbersSerializer
+class AssetSearchBySerialNumberAPIView(ListAPIView):
+    serializer_class = AssetSerializer
 
     def get_queryset(self):
         serial_number = self.request.query_params.get('serial_number', None)
