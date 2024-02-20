@@ -11,7 +11,7 @@ __all__ = [
     'UserSerializer',
     'AssetTypeSerializer',
     'BusinessUnitSerializer',
-    'SearchAssetnamesSerializer'
+    
 ]
 
 
