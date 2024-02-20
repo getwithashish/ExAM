@@ -40,16 +40,16 @@ class Asset(models.Model):
     asset_category = models.CharField(
         max_length=50, choices=asset_category_choices
     )
-    asset_type = models.ForeignKey("AssetType", on_delete=models.CASCADE)
+    # asset_type = models.ForeignKey("AssetType", on_delete=models.CASCADE, default="employee")
     product_name = models.CharField(max_length=255, null=False)
     model_number = models.CharField(
         max_length=255, null=True, blank=False, default=None
     )
     serial_number = models.IntegerField(null=True, blank=False, default=None)
     owner = models.CharField(max_length=50, choices=owner_choices)
-    custodian = models.ForeignKey(
-        "Employee", related_name="assets_custodian", on_delete=models.CASCADE
-    )
+    # custodian = models.ForeignKey(
+    #     "Employee", related_name="assets_custodian", on_delete=models.CASCADE, default="employee"
+    # )
     date_of_purchase = models.DateField(null=False)
     status = models.CharField(
         max_length=50, default="IN STORE", choices=status_choices
@@ -62,9 +62,9 @@ class Asset(models.Model):
         "Location", related_name="assets_invoice_location",
         on_delete=models.CASCADE
     )
-    business_unit = models.ForeignKey(
-        "BusinessUnit", on_delete=models.CASCADE, null=False
-    )
+    # business_unit = models.ForeignKey(
+    #     "BusinessUnit", on_delete=models.CASCADE, null=False,
+    # )
     os = models.CharField(
         max_length=50, null=True, blank=True, choices=os_choices
         )
