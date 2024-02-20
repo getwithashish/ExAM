@@ -2,6 +2,7 @@ from rest_framework.generics import ListAPIView
 from asset.models import Asset
 from asset.serializers import SearchAssetBySerialNumbersSerializer
 
+
 class SearchAssetBySerialNumberAPIView(ListAPIView):
     serializer_class = SearchAssetBySerialNumbersSerializer
 
