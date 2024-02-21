@@ -1,4 +1,9 @@
-from .AssetSearchView import AssetSearchByNameView, AssetSearchBySerialNumberAPIView, AssetSearchByModelNumberView, AssetSearchByAssetIDView
+from .AssetSearchView import (
+    AssetSearchByNameView,
+    AssetSearchBySerialNumberAPIView,
+    AssetSearchByModelNumberView,
+    AssetSearchByAssetIDView,
+)
 from .AssetTypeView import AssetTypeView
 from .BusinessUnitView import BusinessUnitView
 from .LocationView import LocationView
@@ -10,16 +15,16 @@ from .UserView import UserView
 
 
 __all__ = [
-    'AssetTypeView',
-    'BusinessUnitView',
-    'LocationView',
-    'AssetCountView',
-    'ConcederView',
-    'MemoryView',
-    'EmployeeView',
-    'UserView'
-    'AssetSearchByNameView'
-    'AssetSearchBySerialNumberAPIView',
-    'AssetSearchByModelNumberView',
-    'AssetSearchByAssetIDView',
-    ]
+    "AssetTypeView",
+    "BusinessUnitView",
+    "LocationView",
+    "AssetCountView",
+    "ConcederView",
+    "MemoryView",
+    "EmployeeView",
+    "UserView",
+    "AssetSearchByNameView",
+    "AssetSearchBySerialNumberAPIView",
+    "AssetSearchByModelNumberView",
+    "AssetSearchByAssetIDView",
+]
