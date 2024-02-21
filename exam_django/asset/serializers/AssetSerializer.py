@@ -1,5 +1,4 @@
 #exam_django/asset/serializers/AssetSerializer
-
 from rest_framework import serializers
 from asset.models import Asset
  

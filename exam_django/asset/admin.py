@@ -9,3 +9,4 @@ admin.site.register(Employee)
 admin.site.register(Location)
 admin.site.register(Asset)
 admin.site.register(User)
+
