@@ -3,16 +3,15 @@ from .AssetSerializer import AssetSerializer
 from .UserSerializer import UserSerializer
 from .AssetTypeSerializer import AssetTypeSerializer
 from .BusinessUnitSerializer import BusinessUnitSerializer
-from .AssignAssetSerializer import AssignAssetSerializer
+from .MemorySerializer import MemorySerializer
+from .EmployeeSerializer import EmployeeSerializer
 
 __all__ = [
-    'LocationSerializer',
-    'AssetSerializer',
-    'UserSerializer',
-    'AssetTypeSerializer',
-    'BusinessUnitSerializer',
-    'AssignAssetSerializer'
+    "LocationSerializer",
+    "AssetSerializer",
+    "UserSerializer",
+    "AssetTypeSerializer",
+    "BusinessUnitSerializer",
+    "MemorySerializer",
+    "EmployeeSerializer",
 ]
-
-
-

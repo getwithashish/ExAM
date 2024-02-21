@@ -7,11 +7,11 @@ from .Memory import Memory
 from .User import User
 
 __all__ = [
-    'Asset',
-    'AssetType',
-    'BusinessUnit',
-    'Employee',
-    'Location',
-    'Memory',
-    'User'
+    "Asset",
+    "AssetType",
+    "BusinessUnit",
+    "Employee",
+    "Location",
+    "Memory",
+    "User",
 ]
