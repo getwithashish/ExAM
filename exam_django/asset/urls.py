@@ -9,7 +9,8 @@ urlpatterns = [
     path('asset_count',AssetCountView.as_view(),name= "asset_count"),
     path('conceder', ConcederView.as_view(), name='conceder-list'),
     path('businessunit/', BusinessUnitView.as_view(), name='businessunit'),
-    path('employee/', EmployeeView.as_view(),name='employeeview')
+    path('employee/', EmployeeView.as_view(),name='employeeview'),
+    path('asset_type', AssetTypeView.as_view(), name = 'asset-type')
 
 
 ]
