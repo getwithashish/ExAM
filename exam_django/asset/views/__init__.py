@@ -31,5 +31,5 @@ __all__ = [
     "AssetSearchByModelNumberView",
     "AssetSearchByAssetIDView",
     "AssignAssetView",
-    "AssetView"
+    "AssetView",
 ]
