@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.views import View
 from asset.models import Asset
 
+# Search assets by name
 class AssetSearchByNameView(View):
     def get(self, request):
         query_param = request.GET.get('q')
