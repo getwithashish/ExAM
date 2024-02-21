@@ -1,9 +1,9 @@
-from rest_framework import generics
 from asset.models import Memory
 from asset.serializers import MemorySerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+
 
 class MemoryView(APIView):
     def get(self, request, format=None):
@@ -17,4 +17,3 @@ class MemoryView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
