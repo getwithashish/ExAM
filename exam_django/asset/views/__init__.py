@@ -4,7 +4,7 @@ from .BusinessUnitView import BusinessUnitView
 from .LocationView import LocationView
 from .AssetCountView import AssetCountView
 from .ConcederView import ConcederView
-from .AssetSearchByModelNumberView import AssetSearchByModelNumberView
+from .AssetSearchView import AssetSearchByModelNumberView
 
 
 __all__ = [
