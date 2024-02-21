@@ -4,6 +4,7 @@ from .AssetSearchView import (
     AssetSearchByModelNumberView,
     AssetSearchByAssetIDView,
 )
+from .AssetView import AssetView
 from .AssetTypeView import AssetTypeView
 from .BusinessUnitView import BusinessUnitView
 from .LocationView import LocationView
@@ -16,6 +17,7 @@ from .AssignAssetView import AssignAssetView
 from .AssetView import AssetView
 
 __all__ = [
+    "AssetView",
     "AssetTypeView",
     "BusinessUnitView",
     "LocationView",
