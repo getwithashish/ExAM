@@ -10,11 +10,12 @@ urlpatterns = [
     path('conceder', ConcederView.as_view(), name='conceder-list'),
     path('asset_type', AssetTypeView.as_view(), name = 'asset-type'),
     path('businessunit/', BusinessUnitView.as_view(), name='businessunit'),
-    path('assets/', AssignAssetView.as_view()),
-    path('search-employee/',AssignAssetView.as_view(),name='search'),
-    path('assign-asset/', AssignAssetView.as_view(),name='assignasset'),
+    # path('assets/', AssignAssetView.as_view()),
+    # path('search-employee/',AssignAssetView.as_view(),name='search'),
+    # path('assign-asset/', AssignAssetView.as_view(),name='assignasset'),
+    path('assign-asset-to-employee/<int:asset_id>/<int:employee_id>/',AssignAssetView.as_view(), name='assign_asset_to_employee'),
+
 ]
-    # path('assign-asset-to-employee/<int:asset_id>/<int:employee_id>/',AssignAssetView.as_view(), name='assign_asset_to_employee'),
 
 
 

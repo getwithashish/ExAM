@@ -7,20 +7,6 @@
 #     asset_uuid = serializers.CharField()
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # serializers.py
 from rest_framework import serializers
 from asset.models import Asset, AssetType
