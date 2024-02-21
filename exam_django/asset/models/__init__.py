@@ -12,6 +12,6 @@ __all__ = [
     'BusinessUnit',
     'Employee',
     'Location',
-    'Memory'
+    'Memory',
     'User'
 ]
