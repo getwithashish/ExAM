@@ -6,6 +6,7 @@ from .Location import Location
 from .Memory import Memory
 from .User import User
 
+
 __all__ = [
     "Asset",
     "AssetType",
@@ -13,5 +14,5 @@ __all__ = [
     "Employee",
     "Location",
     "Memory",
-    "User",
+    "User"
 ]
