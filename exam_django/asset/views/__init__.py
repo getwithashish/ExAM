@@ -13,7 +13,8 @@ from .ConcederView import ConcederView
 from .MemoryView import MemoryView
 from .EmployeeView import EmployeeView
 from .UserView import UserView
-
+from .AssignAssetView import AssignAssetView
+from .AssetView import AssetView
 
 __all__ = [
     "AssetView",
@@ -29,4 +30,6 @@ __all__ = [
     "AssetSearchBySerialNumberAPIView",
     "AssetSearchByModelNumberView",
     "AssetSearchByAssetIDView",
+    "AssignAssetView",
+    "AssetView",
 ]

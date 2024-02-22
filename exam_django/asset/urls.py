@@ -12,6 +12,7 @@ from asset.views import (
     AssetSearchByAssetIDView,
     MemoryView,
     EmployeeView,
+    AssignAssetView,
 )
 
 urlpatterns = [
@@ -41,4 +42,5 @@ urlpatterns = [
     ),
     path("memory_list/", MemoryView.as_view(), name="memory_list"),
     path("employee/", EmployeeView.as_view(), name="employeeview"),
+    path("assign_asset/", AssignAssetView.as_view(), name="assignasset"),
 ]
