@@ -13,10 +13,12 @@ from asset.views import (
     MemoryView,
     EmployeeView,
     AssignAssetView,
+    AssetDetailsView,
 )
 
 urlpatterns = [
     path("", AssetView.as_view(), name="asset"),
+    path("id/<str:pk>", AssetDetailsView.as_view(), name="asset_details"),
     path("location", LocationView.as_view(), name="location"),
     path("asset_count", AssetCountView.as_view(), name="asset_count"),
     path("conceder", ConcederView.as_view(), name="conceder-list"),
