@@ -23,7 +23,9 @@ class AssetSerializer(serializers.ModelSerializer):
                 return serializer.asset_type_name
             return Response(status=status.HTTP_200_OK)
         except Exception:
-            return Response("Asset Type not found", status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                "Asset Type not found", status=status.HTTP_404_NOT_FOUND
+                )
 
     def get_custodian(self, obj):
         try:
@@ -34,7 +36,9 @@ class AssetSerializer(serializers.ModelSerializer):
                 return serializer.employee_name
             return Response(status=status.HTTP_200_OK)
         except Exception:
-            return Response("Custodian not found", status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                "Custodian not found", status=status.HTTP_404_NOT_FOUND
+                )
 
     def get_location(self, obj):
         try:
@@ -45,7 +49,9 @@ class AssetSerializer(serializers.ModelSerializer):
                 return serializer.location_name
             return Response(status=status.HTTP_200_OK)
         except Exception:
-            return Response("Location not found", status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                "Location not found", status=status.HTTP_404_NOT_FOUND
+                )
 
     def get_invoice_location(self, obj):
         try:
@@ -69,7 +75,9 @@ class AssetSerializer(serializers.ModelSerializer):
                 return serializer.business_unit_name
             return Response(status=status.HTTP_200_OK)
         except Exception:
-            return Response("Business Unit not found", status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                "Business Unit not found", status=status.HTTP_404_NOT_FOUND
+                )
 
     def get_conceder(self, obj):
         try:
@@ -79,4 +87,6 @@ class AssetSerializer(serializers.ModelSerializer):
                 return full_name
             return Response(status=status.HTTP_200_OK)
         except Exception:
-            return Response("Conceder not found", status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                "Conceder not found", status=status.HTTP_404_NOT_FOUND
+                )
