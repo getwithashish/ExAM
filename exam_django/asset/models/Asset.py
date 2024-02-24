@@ -36,8 +36,10 @@ class Asset(models.Model):
     )
     asset_id = models.CharField(max_length=255, null=True, blank=False)
     version = models.IntegerField(default=0)
-    asset_category = models.CharField(max_length=50, choices=asset_category_choices)
-    asset_type = models.ForeignKey("AssetType", on_delete=models.CASCADE, default="employee")
+    asset_category = models.CharField(
+        max_length=50, choices=asset_category_choices)
+    asset_type = models.ForeignKey(
+        "AssetType", on_delete=models.CASCADE, default="employee")
     product_name = models.CharField(max_length=255, null=False)
     model_number = models.CharField(
         max_length=255, null=True, blank=False, default=None
@@ -45,21 +47,25 @@ class Asset(models.Model):
     serial_number = models.IntegerField(null=True, blank=False, default=None)
     owner = models.CharField(max_length=50, choices=owner_choices)
     custodian = models.ForeignKey(
-        "Employee", related_name="assets_custodian", on_delete=models.CASCADE, default="employee"
+        "Employee", related_name="assets_custodian",
+        on_delete=models.CASCADE, default="employee"
      )
     date_of_purchase = models.DateField(null=False)
-    status = models.CharField(max_length=50, default="IN STORE", choices=status_choices)
+    status = models.CharField(
+        max_length=50, default="IN STORE", choices=status_choices)
     warranty_period = models.IntegerField(null=False)
     location = models.ForeignKey(
         "Location", related_name="assets_location", on_delete=models.CASCADE
     )
     invoice_location = models.ForeignKey(
-        "Location", related_name="assets_invoice_location", on_delete=models.CASCADE
+        "Location", related_name="assets_invoice_location",
+        on_delete=models.CASCADE
     )
     business_unit = models.ForeignKey(
         "BusinessUnit", on_delete=models.CASCADE, null=False,
      )
-    os = models.CharField(max_length=50, null=True, blank=True, choices=os_choices)
+    os = models.CharField(
+        max_length=50, null=True, blank=True, choices=os_choices)
     os_version = models.CharField(max_length=50)
     mobile_os = models.CharField(max_length=100, null=True, blank=True)
     processor = models.CharField(max_length=100, null=True, blank=True)
@@ -75,4 +81,3 @@ class Asset(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
