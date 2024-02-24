@@ -1,6 +1,6 @@
 # exam_django/asset/serializers/AssetSerializer
 from rest_framework import serializers
-from asset.models import Asset, AssetType, Employee, Location
+from asset.models import Asset, AssetType, Employee, Location, BusinessUnit
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -24,7 +24,8 @@ class AssetSerializer(serializers.ModelSerializer):
             return Response(status=status.HTTP_200_OK)
         except Exception:
             return Response(
-                "Asset Type not found", status=status.HTTP_404_NOT_FOUND)
+                "Asset Type not found", status=status.HTTP_404_NOT_FOUND
+                )
 
     def get_custodian(self, obj):
         try:
@@ -36,8 +37,9 @@ class AssetSerializer(serializers.ModelSerializer):
             return Response(status=status.HTTP_200_OK)
         except Exception:
             return Response(
-                "Custodian not found", status=status.HTTP_404_NOT_FOUND)
-    
+                "Custodian not found", status=status.HTTP_404_NOT_FOUND
+                )
+
     def get_location(self, obj):
         try:
             if obj.location:
@@ -48,8 +50,9 @@ class AssetSerializer(serializers.ModelSerializer):
             return Response(status=status.HTTP_200_OK)
         except Exception:
             return Response(
-                "Location not found", status=status.HTTP_404_NOT_FOUND)
-            
+                "Location not found", status=status.HTTP_404_NOT_FOUND
+                )
+
     def get_invoice_location(self, obj):
         try:
             if obj.invoice_location:
@@ -60,4 +63,18 @@ class AssetSerializer(serializers.ModelSerializer):
             return Response(status=status.HTTP_200_OK)
         except Exception:
             return Response(
-                "Invoice Location not found", status=status.HTTP_404_NOT_FOUND)
+                "Invoice Location not found", status=status.HTTP_404_NOT_FOUND
+            )
+
+    def get_business_unit(self, obj):
+        try:
+            if obj.business_unit:
+                serializer = BusinessUnit.objects.get(
+                    business_unit_uuid=obj.business_unit.business_unit_uuid
+                )
+                return serializer.business_unit_name
+            return Response(status=status.HTTP_200_OK)
+        except Exception:
+            return Response(
+                "Business Unit not found", status=status.HTTP_404_NOT_FOUND
+                )
