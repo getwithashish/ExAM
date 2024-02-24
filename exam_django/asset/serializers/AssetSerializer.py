@@ -1,6 +1,6 @@
 # exam_django/asset/serializers/AssetSerializer
 from rest_framework import serializers
-from asset.models import Asset, AssetType, Employee, Location, BusinessUnit
+from asset.models import Asset, AssetType, Employee, Location, BusinessUnit, User
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -23,9 +23,7 @@ class AssetSerializer(serializers.ModelSerializer):
                 return serializer.asset_type_name
             return Response(status=status.HTTP_200_OK)
         except Exception:
-            return Response(
-                "Asset Type not found", status=status.HTTP_404_NOT_FOUND
-                )
+            return Response("Asset Type not found", status=status.HTTP_404_NOT_FOUND)
 
     def get_custodian(self, obj):
         try:
@@ -36,9 +34,7 @@ class AssetSerializer(serializers.ModelSerializer):
                 return serializer.employee_name
             return Response(status=status.HTTP_200_OK)
         except Exception:
-            return Response(
-                "Custodian not found", status=status.HTTP_404_NOT_FOUND
-                )
+            return Response("Custodian not found", status=status.HTTP_404_NOT_FOUND)
 
     def get_location(self, obj):
         try:
@@ -49,9 +45,7 @@ class AssetSerializer(serializers.ModelSerializer):
                 return serializer.location_name
             return Response(status=status.HTTP_200_OK)
         except Exception:
-            return Response(
-                "Location not found", status=status.HTTP_404_NOT_FOUND
-                )
+            return Response("Location not found", status=status.HTTP_404_NOT_FOUND)
 
     def get_invoice_location(self, obj):
         try:
@@ -75,6 +69,14 @@ class AssetSerializer(serializers.ModelSerializer):
                 return serializer.business_unit_name
             return Response(status=status.HTTP_200_OK)
         except Exception:
-            return Response(
-                "Business Unit not found", status=status.HTTP_404_NOT_FOUND
-                )
+            return Response("Business Unit not found", status=status.HTTP_404_NOT_FOUND)
+
+    def get_conceder(self, obj):
+        try:
+            if obj.conceder:
+                serializer = User.objects.get(user_uuid=obj.conceder.user_uuid)
+                full_name = f"{serializer.first_name} {serializer.last_name}"
+                return full_name
+            return Response(status=status.HTTP_200_OK)
+        except Exception:
+            return Response("Conceder not found", status=status.HTTP_404_NOT_FOUND)
