@@ -1,6 +1,6 @@
 # exam_django/asset/serializers/AssetSerializer
 from rest_framework import serializers
-from asset.models import Asset, AssetType, Employee
+from asset.models import Asset, AssetType, Employee, Location
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -37,3 +37,15 @@ class AssetSerializer(serializers.ModelSerializer):
         except Exception:
             return Response(
                 "Custodian not found", status=status.HTTP_404_NOT_FOUND)
+    
+    def get_location(self, obj):
+        try:
+            if obj.location:
+                serializer = Location.objects.get(
+                    location_uuid=obj.location.location_uuid
+                )
+                return serializer.location_name
+            return Response(status=status.HTTP_200_OK)
+        except Exception:
+            return Response(
+                "Location not found", status=status.HTTP_404_NOT_FOUND)
