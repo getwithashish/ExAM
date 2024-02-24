@@ -1,6 +1,8 @@
 # exam_django/asset/serializers/AssetSerializer
 from rest_framework import serializers
-from asset.models import Asset, AssetType
+from asset.models import Asset, AssetType, Employee
+from rest_framework.response import Response
+from rest_framework import status
 
 
 class AssetSerializer(serializers.ModelSerializer):
@@ -19,8 +21,19 @@ class AssetSerializer(serializers.ModelSerializer):
                     asset_type_uuid=obj.asset_type.asset_type_uuid
                 )
                 return serializer.asset_type_name
-            return None
+            return Response(status=status.HTTP_200_OK)
         except Exception:
-            return None
-    
-    
+            return Response(
+                "Asset Type not found", status=status.HTTP_404_NOT_FOUND)
+
+    def get_custodian(self, obj):
+        try:
+            if obj.custodian:
+                serializer = Employee.objects.get(
+                    employee_uuid=obj.custodian.employee_uuid
+                )
+                return serializer.employee_name
+            return Response(status=status.HTTP_200_OK)
+        except Exception:
+            return Response(
+                "Custodian not found", status=status.HTTP_404_NOT_FOUND)
