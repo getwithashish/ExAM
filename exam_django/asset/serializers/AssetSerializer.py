@@ -49,3 +49,15 @@ class AssetSerializer(serializers.ModelSerializer):
         except Exception:
             return Response(
                 "Location not found", status=status.HTTP_404_NOT_FOUND)
+            
+    def get_invoice_location(self, obj):
+        try:
+            if obj.invoice_location:
+                serializer = Location.objects.get(
+                    location_uuid=obj.invoice_location.location_uuid
+                )
+                return serializer.location_name
+            return Response(status=status.HTTP_200_OK)
+        except Exception:
+            return Response(
+                "Invoice Location not found", status=status.HTTP_404_NOT_FOUND)
