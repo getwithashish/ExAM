@@ -13,13 +13,9 @@ class AssignAssetView(APIView):
         try:
 
             employee = Employee.objects.get(employee_name=employee_name)
-
             asset = Asset.objects.get(asset_uuid=asset_id)
-
             asset.custodian = employee
-
             asset.save()
-
             return Response(
                 {"message": "Asset assigned successfully"}, status=status.HTTP_200_OK
             )
