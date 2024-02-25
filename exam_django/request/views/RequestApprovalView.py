@@ -1,17 +1,23 @@
-from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
 from rest_framework import status
 from request.models import Request
 from request.serializers import RequestApprovalSerializer
 from django.http import Http404
 
-class RequestApprovalView(ListCreateAPIView,RetrieveUpdateDestroyAPIView): 
 
-    def get(self, request):
-        requestsList = Request.objects.all()
-        serializer = RequestApprovalSerializer( requestsList , many=True)
+class RequestApprovalView(ListCreateAPIView, RetrieveUpdateDestroyAPIView):
+
+    def get(self, request, *args, **kwargs):
+        request_status = request.GET.get("request_status")
+
+        if request_status:
+            requestsList = Request.objects.filter(request_status=request_status.upper())
+        else:
+            requestsList = Request.objects.all()
+
+        serializer = RequestApprovalSerializer(requestsList, many=True)
         return Response(serializer.data)
-
 
     def post(self, request):
         serializer = RequestApprovalSerializer(data=request.data)

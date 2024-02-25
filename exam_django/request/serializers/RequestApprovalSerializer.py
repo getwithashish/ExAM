@@ -10,11 +10,11 @@ class RequestApprovalSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def update(self, instance, validated_data):
-        instance.request_status = "Pending"  
+        instance.request_status = "Pending"
         instance.save()
         return instance
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        data["message"] = "Request has been rejected."  
+        data["message"] = "Request has been rejected."
         return data
