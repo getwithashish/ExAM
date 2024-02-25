@@ -14,7 +14,7 @@ class RequestApprovalSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data["message"] = "Request has been rejected."
-        return data
+    # def to_representation(self, instance):
+    #     data = super().to_representation(instance)
+    #     data["message"] = "Request has been rejected."
+    #     return data

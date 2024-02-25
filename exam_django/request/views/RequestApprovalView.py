@@ -10,7 +10,6 @@ class RequestApprovalView(ListCreateAPIView, RetrieveUpdateDestroyAPIView):
 
     def get(self, request, *args, **kwargs):
         request_status = request.GET.get("request_status")
-
         if request_status:
             requestsList = Request.objects.filter(request_status=request_status.upper())
         else:
@@ -34,7 +33,7 @@ class RequestApprovalView(ListCreateAPIView, RetrieveUpdateDestroyAPIView):
         request_object.request_status = "REJECTED"
         request_object.save()
         return Response(
-            {"request_status": "DELETE", "message": "Request has been rejected."},
+            { "message": "Request has been rejected."},
             status=status.HTTP_200_OK,
         )
 
