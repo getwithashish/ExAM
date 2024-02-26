@@ -56,19 +56,10 @@ class Asset(models.Model):
     location = models.ForeignKey(
         "Location", related_name="assets_location", on_delete=models.CASCADE
     )
-        "Location", related_name="assets_location", on_delete=models.CASCADE
-    )
     invoice_location = models.ForeignKey(
         "Location", related_name="assets_invoice_location", on_delete=models.CASCADE
     )
-        "Location", related_name="assets_invoice_location", on_delete=models.CASCADE
-    )
     business_unit = models.ForeignKey(
-        "BusinessUnit",
-        on_delete=models.CASCADE,
-        null=False,
-    )
-    os = models.CharField(max_length=50, null=True, blank=True, choices=os_choices)
         "BusinessUnit",
         on_delete=models.CASCADE,
         null=False,
