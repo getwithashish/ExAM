@@ -23,7 +23,8 @@ class AssetSerializer(serializers.ModelSerializer):
     #     try:
     #         if obj.asset_type:
     #             serializer = AssetType.objects.get(id=obj.asset_type.id)
-    #             return {"id": serializer.id, "asset_type": serializer.asset_type_name}
+    #             # return {"id": serializer.id, "asset_type": serializer.asset_type_name}
+    #             return serializer.id
     #         else:
     #             # Handle the case when obj.asset_type is None
     #             return None  # Or any other appropriate value depending on your use case
