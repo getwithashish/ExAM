@@ -11,10 +11,20 @@ class EmployeeView(ListCreateAPIView):
         serializer = EmployeeSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            data = {
+                'data': serializer.data,
+                'message': "Employee created successfully"
+            }
+            return Response(data, status=status.HTTP_201_CREATED)
+        errors = serializer.errors
+        return Response({'error': errors}, status=status.HTTP_400_BAD_REQUEST)
+
 
     def get(self, request):
         businessUnit = Employee.objects.all()
         serializer = EmployeeSerializer(businessUnit, many=True)
-        return Response(serializer.data)
+        data = {
+            'data': serializer.data,
+            'message': " Employee details retrieved successfully"
+        }
+        return Response(data)

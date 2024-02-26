@@ -7,14 +7,22 @@ from asset.models import BusinessUnit
 
 class BusinessUnitView(ListCreateAPIView):
     def post(self, request, format=None):
-        queryset = BusinessUnit.objects.all()
         serializer = BusinessUnitSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            data = {
+                'data': serializer.data,
+                'message': "Business unit created successfully"
+            }
+            return Response(data, status=status.HTTP_201_CREATED)
+        errors = serializer.errors
+        return Response({'error': errors}, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
-        businessUnit = BusinessUnit.objects.all()
-        serializer = BusinessUnitSerializer(businessUnit, many=True)
-        return Response(serializer.data)
+        business_units = BusinessUnit.objects.all()
+        serializer = BusinessUnitSerializer(business_units, many=True)
+        data = {
+            'data': serializer.data,
+            'message': "Business units retrieved successfully"
+        }
+        return Response(data)
