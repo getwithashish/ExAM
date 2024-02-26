@@ -1,13 +1,9 @@
 # exam_django/asset/serializers/AssetSerializer
 from rest_framework import serializers
-from asset.models import Asset, AssetType
-
-
-# from rest_framework import serializers
-from asset.models import Asset, AssetType, Employee, Location, BusinessUnit
-from asset.models import User
 from rest_framework.response import Response
 from rest_framework import status
+
+from asset.models import Asset, AssetType, Employee, Location, BusinessUnit, User
 
 
 class AssetSerializer(serializers.ModelSerializer):
