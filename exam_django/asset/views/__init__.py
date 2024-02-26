@@ -3,6 +3,7 @@ from .AssetSearchView import (
     AssetSearchBySerialNumberAPIView,
     AssetSearchByModelNumberView,
     AssetSearchByAssetIDView,
+    
 )
 from .AssetView import AssetView
 from .AssetTypeView import AssetTypeView
@@ -14,7 +15,7 @@ from .MemoryView import MemoryView
 from .EmployeeView import EmployeeView
 from .UserView import UserView
 from .AssignAssetView import AssignAssetView
-from .AssetView import AssetView
+from .TriggerView import TriggerView
 
 __all__ = [
     "AssetView",
@@ -32,4 +33,5 @@ __all__ = [
     "AssetSearchByAssetIDView",
     "AssignAssetView",
     "AssetView",
+    "TriggerView"
 ]

@@ -28,38 +28,39 @@ class AssetSearchBySerialNumberAPIView(ListAPIView):
     def get_queryset(self):
         serial_number = self.request.query_params.get("serial_number", None)
         if serial_number:
-            # Filtering assets based on serial number starting with the provided value
-            queryset = Asset.objects.filter(serial_number__startswith=serial_number)
+            queryset = Asset.objects.filter(
+                serial_number__startswith=serial_number)
             return queryset
         else:
             return (
                 Asset.objects.none()
-            )  # Return an empty queryset if no serial number provided
-
+            )
 
 # Search based on model number
 class AssetSearchByModelNumberView(generics.ListAPIView):
     serializer_class = AssetSerializer
 
     def get_queryset(self):
-        query = self.request.query_params.get("query", None)
-        if query:
+        model_number = self.request.query_params.get("model_number", None)
+        if model_number:
             queryset = Asset.objects.filter(
-                Q(model_number__startswith=query) | Q(model_number__icontains=query)
-            )
+                model_number__startswith=model_number)
+            return queryset
         else:
-            queryset = Asset.objects.all()
-        return queryset
-
+            return (
+                Asset.objects.none()
+            )
 
 # Search assest by asset ID
-class AssetSearchByAssetIDView(generics.RetrieveAPIView):
+class AssetSearchByAssetIDView(generics.ListAPIView):
     serializer_class = AssetSerializer
-    lookup_field = "asset_id"
 
-    def get_object(self):
-        asset_id = self.request.query_params.get("asset_id")
-        queryset = Asset.objects.all()
-        obj = get_object_or_404(queryset, **{self.lookup_field: asset_id})
-        self.check_object_permissions(self.request, obj)
-        return obj
+    def get_queryset(self):
+        asset_id = self.request.query_params.get("asset_id", None)
+        if asset_id:
+            queryset = Asset.objects.filter(asset_id__startswith=asset_id)
+            return queryset
+        else:
+            return (
+                Asset.objects.none()
+            )
