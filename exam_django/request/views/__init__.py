@@ -1,5 +1,7 @@
-from .RequestApprovalView import RequestApprovalView
+from .RequestApprovalView import RequestView
+from .RequestApprovalView import RequestApprovalUpdateView
 
 __all__=[
-    "RequestApprovalView"
+    "RequestView",
+    "RequestApprovalUpdateView"
 ]

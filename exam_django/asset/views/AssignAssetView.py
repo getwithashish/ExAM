@@ -11,7 +11,7 @@ class AssignAssetView(APIView):
         asset_id = request.data.get("asset_uuid")
         employee_name = request.data.get("employee_name")
         try:
-
+            
             employee = Employee.objects.get(employee_name=employee_name)
             asset = Asset.objects.get(asset_uuid=asset_id)
             asset.custodian = employee

@@ -1,7 +1,7 @@
 from django.urls import path
-from request.views import RequestApprovalView
+from request.views import RequestView,RequestApprovalUpdateView
 
 urlpatterns = [
-    path("requests/", RequestApprovalView.as_view(), name="requestapprove"),
-    path("requests/<str:pk>/", RequestApprovalView.as_view(), name="request_detail"),
+    path("requests/", RequestView.as_view(), name="requestapprove"),
+    path("requests/<str:pk>/", RequestApprovalUpdateView.as_view(), name="request_detail")
 ]

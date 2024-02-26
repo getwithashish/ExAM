@@ -5,7 +5,7 @@ from asset.models import Asset, User
 request_choices = (
     ("ASSET CREATION", "Asset Creation"),
     ("ASSET ASSIGNMENT", "Asset Assignment"),
-    ("ASSET STATUS UPDATE", "Asset Status Update"),
+    ("ASSET UPDATE", "Asset Status Update"),
 )
 
 request_status_choices = (
