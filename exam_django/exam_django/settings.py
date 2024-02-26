@@ -19,6 +19,13 @@ from supertokens_python import init, InputAppInfo, SupertokensConfig
 from supertokens_python.recipe import emailpassword, session
 from supertokens_python import get_all_cors_headers
 
+from typing import List
+from corsheaders.defaults import default_headers
+
+from supertokens_python import init, InputAppInfo, SupertokensConfig
+from supertokens_python.recipe import emailpassword, session
+from supertokens_python import get_all_cors_headers
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,11 +36,42 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-373%1sgr9u57wh6shc@e%7)@9vgy5&ckst9cj2f9p5(ur!1jfl"
+SECRET_KEY = "django-insecure-373%1sgr9u57wh6shc@e%7)@9vgy5&ckst9cj2f9p5(ur!1jfl"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+
+# Supertokens Initialization
+init(
+    app_info=InputAppInfo(
+        app_name="exam",
+        api_domain="http://localhost:8000",
+        website_domain="http://localhost:3000",
+        api_base_path="/auth",
+        website_base_path="/auth",
+    ),
+    supertokens_config=SupertokensConfig(
+        connection_uri=config("SUPERTOKENS_URL"),
+        # api_key=<API_KEY(if configured)>
+    ),
+    framework="django",
+    recipe_list=[session.init(), emailpassword.init()],  # initializes session features
+    mode="asgi",  # use wsgi if you are running django server in sync mode
+)
+
+
+CORS_ORIGIN_WHITELIST = ["http://localhost:3000"]
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
+
+CORS_ALLOW_HEADERS: List[str] = (
+    list(default_headers) + ["Content-Type"] + get_all_cors_headers()
+)
 
 
 # Supertokens Initialization
@@ -95,6 +133,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "exam_django.urls"
+ROOT_URLCONF = "exam_django.urls"
 
 TEMPLATES = [
     {
@@ -112,6 +151,18 @@ TEMPLATES = [
     },
 ]
 
+
+REST_FRAMEWORK = {
+    # "DEFAULT_AUTHENTICATION_CLASSES": [],
+    # "DEFAULT_AUTHENTICATION_CLASSES": [
+    #     "sampleapp.authentication.SupertokensAuthentication",
+    # ],
+    "DEFAULT_PERMISSION_CLASSES": [],
+    "UNAUTHENTICATED_USER": None,
+}
+
+
+WSGI_APPLICATION = "exam_django.wsgi.application"
 
 REST_FRAMEWORK = {
     # "DEFAULT_AUTHENTICATION_CLASSES": [],

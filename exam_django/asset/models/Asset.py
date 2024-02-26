@@ -51,14 +51,24 @@ class Asset(models.Model):
     )
     date_of_purchase = models.DateField(null=False)
     status = models.CharField(max_length=50, default="IN STORE", choices=status_choices)
+    status = models.CharField(max_length=50, default="IN STORE", choices=status_choices)
     warranty_period = models.IntegerField(null=False)
     location = models.ForeignKey(
+        "Location", related_name="assets_location", on_delete=models.CASCADE
+    )
         "Location", related_name="assets_location", on_delete=models.CASCADE
     )
     invoice_location = models.ForeignKey(
         "Location", related_name="assets_invoice_location", on_delete=models.CASCADE
     )
+        "Location", related_name="assets_invoice_location", on_delete=models.CASCADE
+    )
     business_unit = models.ForeignKey(
+        "BusinessUnit",
+        on_delete=models.CASCADE,
+        null=False,
+    )
+    os = models.CharField(max_length=50, null=True, blank=True, choices=os_choices)
         "BusinessUnit",
         on_delete=models.CASCADE,
         null=False,

@@ -15,6 +15,14 @@ class AssetSerializer(serializers.ModelSerializer):
     business_unit = serializers.SerializerMethodField()
     conceder = serializers.SerializerMethodField()
 
+
+    asset_type = serializers.SerializerMethodField()
+    custodian = serializers.SerializerMethodField()
+    location = serializers.SerializerMethodField()
+    invoice_location = serializers.SerializerMethodField()
+    business_unit = serializers.SerializerMethodField()
+    conceder = serializers.SerializerMethodField()
+
     class Meta:
         model = Asset
         fields = "__all__"
