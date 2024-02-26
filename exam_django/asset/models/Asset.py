@@ -36,8 +36,7 @@ class Asset(models.Model):
     asset_category = models.CharField(max_length=50, choices=asset_category_choices)
     asset_type = models.ForeignKey(
         "AssetType",
-        on_delete=models.CASCADE,
-        default="73d2076614eb425e9717ef7a8bbf3871",
+        on_delete=models.CASCADE
     )
     product_name = models.CharField(max_length=255, null=False)
     model_number = models.CharField(
@@ -48,19 +47,28 @@ class Asset(models.Model):
     custodian = models.ForeignKey(
         "Employee",
         related_name="assets_custodian",
-        on_delete=models.CASCADE,
-        default="c46b68546eff44aea805936abc4e4303",
+        on_delete=models.CASCADE
     )
     date_of_purchase = models.DateField(null=False)
+    status = models.CharField(max_length=50, default="IN STORE", choices=status_choices)
     status = models.CharField(max_length=50, default="IN STORE", choices=status_choices)
     warranty_period = models.IntegerField(null=False)
     location = models.ForeignKey(
         "Location", related_name="assets_location", on_delete=models.CASCADE
     )
+        "Location", related_name="assets_location", on_delete=models.CASCADE
+    )
     invoice_location = models.ForeignKey(
         "Location", related_name="assets_invoice_location", on_delete=models.CASCADE
     )
+        "Location", related_name="assets_invoice_location", on_delete=models.CASCADE
+    )
     business_unit = models.ForeignKey(
+        "BusinessUnit",
+        on_delete=models.CASCADE,
+        null=False,
+    )
+    os = models.CharField(max_length=50, null=True, blank=True, choices=os_choices)
         "BusinessUnit",
         on_delete=models.CASCADE,
         null=False,
