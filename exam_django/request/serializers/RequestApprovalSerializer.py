@@ -9,9 +9,6 @@ class RequestApprovalSerializer(serializers.ModelSerializer):
         model = Request
         fields = "__all__"
 
-    # def update(self, instance, validated_data):
-    #     instance.request_status = "Pending","Rejected"
-    #     instance.save()
-    #     return instance
+  
 
 
