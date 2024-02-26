@@ -18,7 +18,6 @@ class AssetView(ListCreateAPIView):
         try:
             queryset = Asset.objects.all()
             serializer = AssetSerializer(queryset, many=True)
-            print("Data: ", serializer)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
