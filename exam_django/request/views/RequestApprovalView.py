@@ -7,41 +7,44 @@ from django.http import Http404
 
 
 class RequestView(ListCreateAPIView):
-
+    serializer_class = RequestApprovalSerializer 
+    
     def get(self, request, *args, **kwargs):
-        data = {}  # Initialize an empty data dictionary
-        request_status = request.GET.get("request_status")
+        data = {}  
+        try:
+            request_status = request.GET.get("request_status")
 
-        if request_status and request_status.upper() not in [
-            "PENDING",
-            "REJECTED",
-            "APPROVED",
-        ]:
-            data["error"] = "Invalid request_status provided"
-            return Response(data, status=status.HTTP_400_BAD_REQUEST)
+            if request_status and request_status.upper() not in ["PENDING", "REJECTED", "APPROVED"]:
+                data["error"] = "Invalid request_status provided"
+                return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
-        if request_status:
-            requestsList = Request.objects.filter(request_status=request_status.upper())
-        else:
-            requestsList = Request.objects.all()
+            if request_status:
+                requestsList = Request.objects.filter(request_status=request_status.upper())
+            else:
+                requestsList = Request.objects.all()
 
-        serializer = RequestApprovalSerializer(requestsList, many=True)
-        data["data"] = serializer.data  # Add serialized data to the response
-        data["message"] = "Requests retrieved successfully"
-        return Response(data, status=status.HTTP_200_OK)
-
+            serializer = RequestApprovalSerializer(requestsList, many=True)
+            data["data"] = serializer.data 
+            data["message"] = "Requests retrieved successfully"
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as e:
+            # Handle the exception
+            data["error"] = "An error occurred while processing the request"
+            return Response(data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class RequestApprovalUpdateView(RetrieveUpdateDestroyAPIView):
     queryset = Request.objects.all()
+    serializer_class = RequestApprovalSerializer  # Add this line
+
     def post(self, request):
-        serializer = RequestApprovalSerializer(data=request.data)
+        serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    
     def put(self, request):
-        data = {}  # Initialize an empty data dictionary
+        data = {}  
         request_id = request.data.get("request_uuid")
         if not request_id:
             return Response(
@@ -57,7 +60,7 @@ class RequestApprovalUpdateView(RetrieveUpdateDestroyAPIView):
                 request_object.request_status = request_status
                 request_object.save()
                 serializer = RequestApprovalSerializer(request_object)
-                data["data"] = serializer.data  # Add serialized data to the response
+                data["data"] = serializer.data 
                 data["message"] = "Request status updated successfully"
                 return Response(data, status=status.HTTP_200_OK)
             else:
@@ -69,7 +72,7 @@ class RequestApprovalUpdateView(RetrieveUpdateDestroyAPIView):
             )
             if serializer.is_valid():
                 serializer.save()
-                data["data"] = serializer.data  # Add serialized data to the response
+                data["data"] = serializer.data  
                 data["message"] = "Request updated successfully"
                 return Response(data, status=status.HTTP_200_OK)
             data["error"] = serializer.errors

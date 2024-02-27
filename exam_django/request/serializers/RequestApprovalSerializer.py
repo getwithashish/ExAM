@@ -9,6 +9,5 @@ class RequestApprovalSerializer(serializers.ModelSerializer):
         model = Request
         fields = "__all__"
 
-  
 
 
