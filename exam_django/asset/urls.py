@@ -18,7 +18,7 @@ from asset.views import (
 
 urlpatterns = [
     path("", AssetView.as_view(), name="asset"),
-    path("", TriggerView.as_view(), name="asset"),
+    # path("", TriggerView.as_view(), name="asset"),
     path("location", LocationView.as_view(), name="location"),
     path("asset_count", AssetCountView.as_view(), name="asset_count"),
     path("conceder", ConcederView.as_view(), name="conceder-list"),

@@ -1,4 +1,5 @@
-#exam_django/asset/views/TriggerView
+# exam_django/asset/views/TriggerView
+
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from rest_framework.views import APIView
@@ -9,14 +10,12 @@ class TriggerView(APIView):
     @receiver(pre_save, sender=Asset)
     def log_asset_changes(sender, instance, **kwargs):
         old_instance = Asset.objects.filter(pk=instance.pk).values().first()
-        if old_instance:  # Check if old_instance exists
-            # Exclude fields which should not be logged
-            excluded_fields = ["id", "created_at", "updated_at"]
+        # Check if old_instance exists  
+        if old_instance and instance.approval_status == "APPROVED":      
             changes = {
                 field: (old_instance[field], getattr(instance, field))
                 for field in old_instance
-                if old_instance[field] != getattr(instance, field)
-                and field not in excluded_fields
+                if old_instance[field] != getattr(instance, field)      
             }
             # Create AssetLog entry if there are changes
             if changes:
