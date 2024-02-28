@@ -97,7 +97,11 @@ class Asset(models.Model):
     accessories = models.CharField(max_length=50, null=True, blank=False)
     notes = models.TextField(null=True)
     conceder = models.ForeignKey(
-        "User", on_delete=models.CASCADE, null=True, blank=False
+        "User",
+        related_name="%(app_label)s_%(class)s_conceder",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=False,
     )
     approval_status = models.CharField(
         max_length=50,
@@ -110,7 +114,11 @@ class Asset(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     requester = models.ForeignKey(
-        "User", on_delete=models.CASCADE, null=True, blank=False
+        "User",
+        related_name="%(app_label)s_%(class)s_requester",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=False,
     )
     request_type = models.CharField(
         max_length=50,
