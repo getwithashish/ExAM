@@ -39,6 +39,7 @@ class AssetView(ListCreateAPIView):
                 return self.get_paginated_response(serializer.data)
 
             serializer = AssetReadSerializer(queryset, many=True)
+            print("Reached 28")
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         except Exception:
