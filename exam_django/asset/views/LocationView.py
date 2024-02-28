@@ -20,9 +20,7 @@ class LocationView(ListCreateAPIView):
 
         try:
             locations = Location.objects.all()
-            # Serialize the queryset
             serializer = LocationSerializer(locations, many=True)
-            # Return the serialized data in the response
             return Response(serializer.data)
 
         except Exception as e:
