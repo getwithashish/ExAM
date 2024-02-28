@@ -16,6 +16,7 @@ from asset.views import (
     TriggerView,
 )
 
+
 urlpatterns = [
     path("", AssetView.as_view(), name="asset"),
     path("", TriggerView.as_view(), name="asset"),
