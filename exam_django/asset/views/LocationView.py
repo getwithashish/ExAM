@@ -30,5 +30,7 @@ class LocationView(ListCreateAPIView):
             return Response(serializer.data)
 
         except Exception:
-            return Response("Sorry, we encountered an error",
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                "Sorry, we encountered an error",
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )

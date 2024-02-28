@@ -6,14 +6,10 @@ from asset.views import (
     ConcederView,
     AssetTypeView,
     BusinessUnitView,
-    # AssetSearchByNameView,
-    # AssetSearchBySerialNumberAPIView,
-    # AssetSearchByModelNumberView,
-    # AssetSearchByAssetIDView,
     MemoryView,
     EmployeeView,
     AssignAssetView,
-    AssetSearchWithFilterView
+    AssetSearchWithFilterView,
 )
 
 
@@ -28,11 +24,4 @@ urlpatterns = [
     path("employee", EmployeeView.as_view(), name="employeeview"),
     path("assign_asset", AssignAssetView.as_view(), name="assignasset"),
     path("search", AssetSearchWithFilterView.as_view(), name="search"),
-
-
-
-
-
-
-    
 ]
