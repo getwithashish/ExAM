@@ -1,8 +1,4 @@
 from .AssetSearchView import (
-    # AssetSearchByNameView,
-    # AssetSearchBySerialNumberAPIView,
-    # AssetSearchByModelNumberView,
-    # AssetSearchByAssetIDView,
     AssetSearchWithFilterView,
 )
 from .AssetView import AssetView
@@ -26,10 +22,6 @@ __all__ = [
     "MemoryView",
     "EmployeeView",
     "UserView",
-    # "AssetSearchByNameView",
-    # "AssetSearchBySerialNumberAPIView",
-    # "AssetSearchByModelNumberView",
-    # "AssetSearchByAssetIDView",
     "AssignAssetView",
     "AssetView",
     "AssetSearchWithFilterView",

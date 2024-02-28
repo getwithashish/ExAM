@@ -79,7 +79,6 @@ INSTALLED_APPS = [
     "corsheaders",
     "supertokens_python",
     "asset",
-    "request",
 ]
 
 MIDDLEWARE = [
