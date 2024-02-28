@@ -15,5 +15,5 @@ __all__ = [
     "Location",
     "Memory",
     "User",
-    "AssetLog"
+    "AssetLog",
 ]

@@ -27,7 +27,6 @@ class LocationView(ListCreateAPIView):
                 return self.get_paginated_response(serializer.data)
             # Serialize the queryset
             serializer = LocationSerializer(locations, many=True)
-            # Return the serialized data in the response
             return Response(serializer.data)
 
         except Exception:
