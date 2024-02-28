@@ -34,8 +34,15 @@ class AssetWriteSerializer(serializers.ModelSerializer):
         # # Exclude certain fields from being updated
         # validated_data.pop('field_to_exclude', None)
         # validated_data.pop('another_field_to_exclude', None)
-        
+
         model = Asset
         fields = "__all__"
         # exclude = ["conceder", "approval_status", "created_at", "updated_at", "requester", "request_type"]
-        read_only_fields = ("conceder", "approval_status", "created_at", "updated_at", "requester", "request_type")
+        read_only_fields = (
+            "conceder",
+            "approval_status",
+            "created_at",
+            "updated_at",
+            "requester",
+            "request_type",
+        )
