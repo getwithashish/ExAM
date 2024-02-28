@@ -12,6 +12,13 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 from decouple import config
+from typing import List
+from corsheaders.defaults import default_headers
+
+from supertokens_python import init, InputAppInfo, SupertokensConfig
+from supertokens_python.recipe import emailpassword, session
+from supertokens_python import get_all_cors_headers
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,6 +36,36 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+# Supertokens Initialization
+init(
+    app_info=InputAppInfo(
+        app_name="exam",
+        api_domain="http://localhost:8000",
+        website_domain="http://localhost:3000",
+        api_base_path="/auth",
+        website_base_path="/auth",
+    ),
+    supertokens_config=SupertokensConfig(
+        connection_uri=config("SUPERTOKENS_URL"),
+        # api_key=<API_KEY(if configured)>
+    ),
+    framework="django",
+    recipe_list=[session.init(), emailpassword.init()],  # initializes session features
+    mode="wsgi",  # use wsgi if you are running django server in sync mode
+)
+
+
+CORS_ORIGIN_WHITELIST = ["http://localhost:3000"]
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
+
+CORS_ALLOW_HEADERS: List[str] = (
+    list(default_headers) + ["Content-Type"] + get_all_cors_headers()
+)
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -38,12 +75,15 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
+    "corsheaders",
+    "supertokens_python",
     "asset",
     "request",
-    "rest_framework",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -51,6 +91,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "supertokens_python.framework.django.django_middleware.middleware"
 ]
 
 ROOT_URLCONF = "exam_django.urls"
@@ -70,6 +111,16 @@ TEMPLATES = [
         },
     },
 ]
+
+REST_FRAMEWORK = {
+    # "DEFAULT_AUTHENTICATION_CLASSES": [],
+    # "DEFAULT_AUTHENTICATION_CLASSES": [
+    #     "sampleapp.authentication.SupertokensAuthentication",
+    # ],
+    "DEFAULT_PERMISSION_CLASSES": [],
+    "UNAUTHENTICATED_USER": None,
+}
+
 
 WSGI_APPLICATION = "exam_django.wsgi.application"
 
@@ -92,20 +143,21 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
-]
+AUTH_PASSWORD_VALIDATORS = []
+# AUTH_PASSWORD_VALIDATORS = [
+#     {
+#         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+#     },
+#     {
+#         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+#     },
+#     {
+#         "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+#     },
+#     {
+#         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+#     },
+# ]
 
 
 # Internationalization
@@ -129,8 +181,3 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-
-REST_FRAMEWORK = {
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
-}
