@@ -1,5 +1,6 @@
+
 from django.db import models
-import uuid
+
 
 asset_category_choices = (("HARDWARE", "HARDWARE"), ("SOFTWARE", "SOFTWARE"))
 
@@ -30,40 +31,43 @@ approval_status_choices = (
 # Create your models here.
 
 
-class Asset(models.Model):
-    asset_uuid = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, editable=False, unique=True
-    )
+class AssetLog(models.Model):
+
+    asset_uuid = models.ForeignKey("Asset", on_delete=models.CASCADE)
+    asset_log_timestamp = models.DateTimeField(auto_now_add=True)
     asset_id = models.CharField(max_length=255, null=True, blank=False)
     version = models.IntegerField(default=0)
-    asset_category = models.CharField(max_length=50,
-                                      choices=asset_category_choices)
-    asset_type = models.ForeignKey("AssetType", on_delete=models.CASCADE,
-                                   default="73d2076614eb425e9717ef7a8bbf3871")
+    asset_category = models.CharField(
+        max_length=50,
+        choices=asset_category_choices)
+    asset_type = models.ForeignKey("AssetType", on_delete=models.CASCADE)
     product_name = models.CharField(max_length=255, null=False)
     model_number = models.CharField(
         max_length=255, null=True, blank=False, default=None
     )
     serial_number = models.IntegerField(null=True, blank=False, default=None)
     owner = models.CharField(max_length=50, choices=owner_choices)
-    custodian = models.ForeignKey("Employee", related_name="assets_custodian",
-                                  on_delete=models.CASCADE,
-                                  default="c46b68546eff44aea805936abc4e4303")
+    custodian = models.ForeignKey("Employee",
+                                  related_name="assets_log_custodian",
+                                  on_delete=models.CASCADE)
     date_of_purchase = models.DateField(null=False)
     status = models.CharField(max_length=50, default="IN STORE",
                               choices=status_choices)
     warranty_period = models.IntegerField(null=False)
     location = models.ForeignKey(
-        "Location", related_name="assets_location", on_delete=models.CASCADE)
+        "Location", related_name="assets_log_location",
+        on_delete=models.CASCADE)
     invoice_location = models.ForeignKey(
-        "Location",
-        related_name="assets_invoice_location",
+        "Location", related_name="assets_log_invoice_location",
         on_delete=models.CASCADE)
     business_unit = models.ForeignKey(
         "BusinessUnit", on_delete=models.CASCADE, null=False,
      )
-    os = models.CharField(max_length=50, null=True, blank=True,
-                          choices=os_choices)
+    os = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True,
+        choices=os_choices)
     os_version = models.CharField(max_length=50)
     mobile_os = models.CharField(max_length=100, null=True, blank=True)
     processor = models.CharField(max_length=100, null=True, blank=True)

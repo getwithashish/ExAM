@@ -7,7 +7,7 @@ from asset.models import Asset
 
 class AssetView(ListCreateAPIView):
     def post(self, request, format=None):
-        queryset = Asset.objects.all()
+        Asset.objects.all()
         serializer = AssetSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()

@@ -11,9 +11,12 @@ class Migration(migrations.Migration):
 
     dependencies = [
     ]
+    dependencies = [
+    ]
 
     operations = [
         migrations.CreateModel(
+            name='AssetType',
             name='AssetType',
             fields=[
                 ('asset_type_uuid', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
@@ -29,6 +32,7 @@ class Migration(migrations.Migration):
         ),
         migrations.CreateModel(
             name='Employee',
+            name='Employee',
             fields=[
                 ('employee_uuid', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('employee_name', models.CharField(max_length=255)),
@@ -38,6 +42,7 @@ class Migration(migrations.Migration):
         ),
         migrations.CreateModel(
             name='Location',
+            name='Location',
             fields=[
                 ('location_uuid', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, unique=True)),
                 ('location_name', models.CharField(max_length=50)),
@@ -45,21 +50,23 @@ class Migration(migrations.Migration):
         ),
         migrations.CreateModel(
             name='Memory',
+            name='Memory',
             fields=[
-                ('memory_uuid', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('memory_space', models.IntegerField(default=0)),
             ],
         ),
         migrations.CreateModel(
             name='User',
             fields=[
-                ('user_uuid', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('first_name', models.CharField(max_length=50)),
                 ('last_name', models.CharField(max_length=50)),
                 ('email', models.CharField(max_length=50)),
             ],
         ),
         migrations.CreateModel(
+            name='Asset',
             name='Asset',
             fields=[
                 ('asset_uuid', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, unique=True)),
