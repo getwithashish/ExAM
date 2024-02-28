@@ -15,6 +15,6 @@ class EmployeeView(ListCreateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
-        businessUnit = Employee.objects.all()
-        serializer = EmployeeSerializer(businessUnit, many=True)
+        employee = Employee.objects.all()
+        serializer = EmployeeSerializer(employee, many=True)
         return Response(serializer.data)
