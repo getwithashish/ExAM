@@ -7,6 +7,7 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.db import transaction
 from asset.models import AssetLog
+from rest_framework.pagination import LimitOffsetPagination
 import json
 
 
@@ -66,4 +67,3 @@ def log_asset_changes(sender, instance, **kwargs):
                     asset_log=asset_log_data,
                 )
                 asset_log_entry.save()
-                
