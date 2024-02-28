@@ -1,13 +1,12 @@
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework import status
-from asset.serializers import AssetReadSerializer, AssetWriteSerializer
+from asset.serializers import AssetReadSerializer, AssetSerializer
 from asset.models import Asset
 
 
 class AssetView(ListCreateAPIView):
     def post(self, request, format=None):
-       
         serializer = AssetSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()

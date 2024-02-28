@@ -1,55 +1,59 @@
-# exam_django/asset/views/TriggerView
+# from django.db.models.signals import pre_save
+# from django.dispatch import receiver
+# from rest_framework.views import APIView
+# from asset.models import AssetLog, Asset
+# import json
+
+
+# class TriggerView(APIView):
+#     @receiver(pre_save, sender=Asset)
+#     def log_asset_changes(sender, instance, **kwargs):
+#         old_instance = Asset.objects.filter(pk=instance.pk).values().first()
+#         # Check if old_instance exists
+#         if old_instance and instance.approval_status == "APPROVED":
+#             changes = {
+#                 field: (old_instance[field], getattr(instance, field))
+#                 for field in old_instance
+#                 if field != "asset_uuid"
+#             }
+#             # Convert changes dictionary to JSON
+#             asset_log_data = json.dumps(changes, indent=4, sort_keys=True, default=str)
+
+#             if changes:
+#                 # Get or create AssetLog entry
+#                 asset_instance = Asset.objects.get(pk=instance.pk)
+#                 asset_log_entry = AssetLog.objects.create(
+#                     asset_uuid=asset_instance,
+#                     asset_log=asset_log_data,
+#                 )
+#             asset_log_entry.save()
 
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
-from rest_framework.views import APIView
+from django.db import transaction
+
 from asset.models import AssetLog, Asset
+import json
+
+# Receiver function outside the view class
 
 
-class TriggerView(APIView):
-    @receiver(pre_save, sender=Asset)
-    def log_asset_changes(sender, instance, **kwargs):
-        old_instance = Asset.objects.filter(pk=instance.pk).values().first()
-        # Check if old_instance exists  
-        if old_instance and instance.approval_status == "APPROVED":      
-            changes = {
-                field: (old_instance[field], getattr(instance, field))
-                for field in old_instance
-                if old_instance[field] != getattr(instance, field)      
-            }
-            # Create AssetLog entry if there are changes
-            if changes:
+@receiver(pre_save, sender=Asset)
+def log_asset_changes(sender, instance, **kwargs):
+    old_instance = Asset.objects.filter(pk=instance.pk).values().first()
+    if old_instance and instance.approval_status == "APPROVED":
+        changes = {
+            field: (old_instance[field], getattr(instance, field))
+            for field in old_instance
+            if field != "asset_uuid"
+        }
+        asset_log_data = json.dumps(changes, indent=4, sort_keys=True, default=str)
+
+        if changes:
+            with transaction.atomic():
+                asset_instance = Asset.objects.select_for_update().get(pk=instance.pk)
                 asset_log_entry = AssetLog.objects.create(
-                    asset_uuid=instance,
-                    asset_id=instance.asset_id,
-                    asset_log_timestamp=instance.updated_at,
-                    version=instance.version,
-                    asset_category=instance.asset_category,
-                    asset_type=instance.asset_type,
-                    product_name=instance.product_name,
-                    model_number=instance.model_number,
-                    serial_number=instance.serial_number,
-                    owner=instance.owner,
-                    custodian=instance.custodian,
-                    date_of_purchase=instance.date_of_purchase,
-                    status=instance.status,
-                    warranty_period=instance.warranty_period,
-                    location=instance.location,
-                    invoice_location=instance.invoice_location,
-                    business_unit=instance.business_unit,
-                    os=instance.os,
-                    os_version=instance.os_version,
-                    mobile_os=instance.mobile_os,
-                    processor=instance.processor,
-                    processor_gen=instance.processor_gen,
-                    memory=instance.memory,
-                    storage=instance.storage,
-                    configuration=instance.configuration,
-                    accessories=instance.accessories,
-                    notes=instance.notes,
-                    conceder=instance.conceder,
-                    approval_status=instance.approval_status,
-                    created_at=instance.created_at,
-                    updated_at=instance.updated_at,
+                    asset_uuid=asset_instance,
+                    asset_log=asset_log_data,
                 )
                 asset_log_entry.save()
