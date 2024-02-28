@@ -113,6 +113,7 @@ class Asset(models.Model):
     approval_status_message = models.TextField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    # TODO requester should be null=False, right?
     requester = models.ForeignKey(
         "User",
         related_name="%(app_label)s_%(class)s_requester",
@@ -126,3 +127,7 @@ class Asset(models.Model):
         null=False,
         blank=False,
     )
+    is_deleted = models.BooleanField(default=False, null=False, blank=False)
+
+    def __str__(self):
+        return str(self.product_name)
