@@ -1,6 +1,5 @@
 from django.contrib import admin
-from asset.models import AssetType, BusinessUnit, Employee, Location
-from .models import Asset, User
+from asset.models import AssetType, BusinessUnit, Employee, Location, Asset, User
 
 # Register your models here.
 admin.site.register(AssetType)
