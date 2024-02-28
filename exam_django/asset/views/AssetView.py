@@ -51,7 +51,11 @@ class AssetView(ListCreateAPIView):
 @receiver(pre_save, sender=Asset)
 def log_asset_changes(sender, instance, **kwargs):
     old_instance = Asset.objects.filter(pk=instance.pk).values().first()
-    if old_instance and instance.approval_status == "APPROVED" or instance.approval_status == "REJECTED":
+    if (
+        old_instance
+        and instance.approval_status == "APPROVED"
+        or instance.approval_status == "REJECTED"
+    ):
         changes = {
             field: (getattr(instance, field))
             for field in old_instance
