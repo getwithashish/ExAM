@@ -8,22 +8,27 @@ from asset.serializers import LocationSerializer
 
 
 class LocationView(ListCreateAPIView):
-    def post(self, request, format=None):
-        Location.objects.all()
+    def post(self, request):
         serializer = LocationSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response("successfully inserted", status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
-
         try:
             locations = Location.objects.all()
+            # Paginate the queryset
+            page = self.paginate_queryset(locations)
+            if page is not None:
+                # Serialize the paginated queryset
+                serializer = LocationSerializer(page, many=True)
+                # Return the paginated response
+                return self.get_paginated_response(serializer.data)
             # Serialize the queryset
             serializer = LocationSerializer(locations, many=True)
-            # Return the serialized data in the response
             return Response(serializer.data)
 
-        except Exception as e:
-            return Response("sorry , we found an error", e)
+        except Exception:
+            return Response("Sorry, we encountered an error",
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
