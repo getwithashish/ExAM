@@ -126,3 +126,6 @@ class Asset(models.Model):
         null=False,
         blank=False,
     )
+    
+    def __str__(self):
+        return str(self.product_name)
