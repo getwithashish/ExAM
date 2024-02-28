@@ -10,5 +10,5 @@ class Location(models.Model):
     # Return a meaningful representation of the object
     
     class Meta:
-        ordering = ['location_uuid']  
+        ordering = ['id']  
         # Specify default ordering by location_uuid
