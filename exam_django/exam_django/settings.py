@@ -91,7 +91,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "supertokens_python.framework.django.django_middleware.middleware"
+    "supertokens_python.framework.django.django_middleware.middleware",
 ]
 
 ROOT_URLCONF = "exam_django.urls"
@@ -119,6 +119,8 @@ REST_FRAMEWORK = {
     # ],
     "DEFAULT_PERMISSION_CLASSES": [],
     "UNAUTHENTICATED_USER": None,
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
 }
 
 
