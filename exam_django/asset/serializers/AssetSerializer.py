@@ -16,6 +16,7 @@ class AssetReadSerializer(serializers.ModelSerializer):
     invoice_location = LocationSerializer()
     business_unit = BusinessUnitSerializer()
     conceder = UserSerializer()
+    requester = UserSerializer()
 
     class Meta:
         model = Asset
@@ -25,5 +26,14 @@ class AssetReadSerializer(serializers.ModelSerializer):
 class AssetWriteSerializer(serializers.ModelSerializer):
 
     class Meta:
+
+        # TODO Only specify fields that must be accepted
+        # def update(self, instance, validated_data):
+        # # Exclude certain fields from being updated
+        # validated_data.pop('field_to_exclude', None)
+        # validated_data.pop('another_field_to_exclude', None)
+        
         model = Asset
         fields = "__all__"
+        # exclude = ["conceder", "approval_status", "created_at", "updated_at", "requester", "request_type"]
+        read_only_fields = ("conceder", "approval_status", "created_at", "updated_at", "requester", "request_type")
