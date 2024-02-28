@@ -1,24 +1,27 @@
 from rest_framework.generics import ListCreateAPIView
 from rest_framework import status
 from rest_framework.response import Response
-from asset.serializers import BusinessUnitSerializer
-from asset.models import BusinessUnit
+from asset.serializers import EmployeeSerializer
+from asset.models import Employee
 
 
-class BusinessUnitView(ListCreateAPIView):
+class EmployeeView(ListCreateAPIView):
     def post(self, request, format=None):
+        data = {}
         try:
-            queryset = BusinessUnit.objects.all()
-            serializer = BusinessUnitSerializer(data=request.data)
+            queryset = Employee.objects.all()
+            serializer = EmployeeSerializer(data=request.data)
+
             if serializer.is_valid():
                 serializer.save()
                 return Response(
                     {
                         "data": serializer.data,
-                        "message": "Business unit created successfully",
+                        "message": "Employee successfully created",
                     },
                     status=status.HTTP_201_CREATED,
                 )
+            data["error"] = "Invalid request_status"
             return Response(
                 {"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
             )
@@ -29,12 +32,12 @@ class BusinessUnitView(ListCreateAPIView):
 
     def get(self, request):
         try:
-            business_units = BusinessUnit.objects.all()
-            serializer = BusinessUnitSerializer(business_units, many=True)
+            employees = Employee.objects.all()
+            serializer = EmployeeSerializer(employees, many=True)
             return Response(
                 {
                     "data": serializer.data,
-                    "message": "Business units details successfully retrieved",
+                    "message": "Employee details successfully retrieved",
                 },
                 status=status.HTTP_200_OK,
             )
