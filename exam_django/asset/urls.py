@@ -13,6 +13,7 @@ from asset.views import (
     MemoryView,
     EmployeeView,
     AssignAssetView,
+    TriggerView,
 )
 
 

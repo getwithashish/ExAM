@@ -6,6 +6,7 @@ from asset.serializers.EmployeeSerializer import EmployeeSerializer
 from asset.serializers.BusinessUnitSerializer import BusinessUnitSerializer
 from asset.serializers.LocationSerializer import LocationSerializer
 from asset.serializers.UserSerializer import UserSerializer
+from asset.serializers.MemorySerializer import MemorySerializer
 
 
 class AssetReadSerializer(serializers.ModelSerializer):
@@ -17,6 +18,7 @@ class AssetReadSerializer(serializers.ModelSerializer):
     business_unit = BusinessUnitSerializer()
     conceder = UserSerializer()
     requester = UserSerializer()
+    memory = MemorySerializer()
 
     class Meta:
         model = Asset
