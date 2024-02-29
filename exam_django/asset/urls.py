@@ -13,6 +13,7 @@ from asset.views import (
     MemoryView,
     EmployeeView,
     AssignAssetView,
+    AssetLogView,
 )
 
 
@@ -44,4 +45,5 @@ urlpatterns = [
     path("memory_list", MemoryView.as_view(), name="memory_list"),
     path("employee", EmployeeView.as_view(), name="employeeview"),
     path("assign_asset", AssignAssetView.as_view(), name="assignasset"),
+    path('asset_logs/<str:asset_uuid>/', AssetLogView.as_view(), name='asset_logs'),
 ]

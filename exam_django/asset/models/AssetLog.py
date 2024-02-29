@@ -8,3 +8,9 @@ class AssetLog(models.Model):
     )
     asset_log = models.JSONField(null=False, blank=False)
     timestamp = models.DateTimeField(auto_now_add=True)
+
+
+
+
+
+
