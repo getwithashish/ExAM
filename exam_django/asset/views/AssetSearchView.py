@@ -1,58 +1,61 @@
-from django.http import JsonResponse
-from django.views import View
+from django.core.exceptions import ValidationError
+from django.db import DatabaseError
+from rest_framework.exceptions import ParseError
 from asset.models import Asset
-from asset.serializers import AssetSerializer
-from rest_framework.generics import ListAPIView
-from rest_framework import generics
+from asset.serializers import AssetReadSerializer
+from django.db.models import Q
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 
-# Search assets by name
-class AssetSearchByNameView(View):
-    def get(self, request):
-        query_param = request.GET.get("q")
-        if query_param:
-            assets = Asset.objects.filter(product_name__icontains=query_param)
-        else:
-            assets = Asset.objects.all()
-
-        data = list(assets.values())
-        return JsonResponse(data, safe=False)
+class AssetSearchWithFilterView(APIView):
 
 
-# Search assets by serial number
-class AssetSearchBySerialNumberAPIView(ListAPIView):
-    serializer_class = AssetSerializer
 
-    def get_queryset(self):
-        serial_number = self.request.query_params.get("serial_number", None)
-        if serial_number:
-            queryset = Asset.objects.filter(serial_number__startswith=serial_number)
-            return queryset
-        else:
-            return Asset.objects.none()
+  def get(self, request, *args, **kwargs):
+        try:
+            name = request.GET.get("name")
+            serial_number = request.GET.get("serial_number")
+            model_number = request.GET.get("model_number")
+            asset_id = request.GET.get("asset_id")
+
+            filters = []
+
+            if name:
+                filters.append(
+                    Q(product_name__icontains=name) | Q(product_name__regex=r"\b{}\b".format(name))
+                )
+            if serial_number:
+                filters.append(Q(serial_number__startswith=serial_number))
+            if model_number:
+                filters.append(Q(model_number__startswith=model_number))
+            if asset_id:
+                filters.append(Q(asset_id__startswith=asset_id))
+
+            combined_filter = Q()
+            for query_filter in filters:
+                combined_filter &= query_filter
+
+            assets = Asset.objects.filter(combined_filter)
+
+            if assets.exists():
+                # Pagination
+                paginator = PageNumberPagination()
+                paginated_assets = paginator.paginate_queryset(assets, request)
+                serializer = AssetReadSerializer(paginated_assets, many=True)
+                response_data = paginator.get_paginated_response(serializer.data)
+                response_data.data['message'] = 'Assets retrieved successfully.'
+                return response_data
+            else:
+                return Response({'message': 'No assets found.'}, status=404)
+        except (ValidationError, ParseError) as e:
+            return Response({'message': str(e)}, status=400)
+        except DatabaseError as e:
+            return Response({'message': 'Database error occurred.'}, status=500)
+        except Exception as e:
+            # Log the error for debugging
+            print(f"Unexpected error: {e}")
+            return Response({'message': 'An unexpected error occurred.'}, status=500)
 
 
-# Search based on model number
-class AssetSearchByModelNumberView(generics.ListAPIView):
-    serializer_class = AssetSerializer
-
-    def get_queryset(self):
-        model_number = self.request.query_params.get("model_number", None)
-        if model_number:
-            queryset = Asset.objects.filter(model_number__startswith=model_number)
-            return queryset
-        else:
-            return Asset.objects.none()
-
-
-# Search assest by asset ID
-class AssetSearchByAssetIDView(generics.ListAPIView):
-    serializer_class = AssetSerializer
-
-    def get_queryset(self):
-        asset_id = self.request.query_params.get("asset_id", None)
-        if asset_id:
-            queryset = Asset.objects.filter(asset_id__startswith=asset_id)
-            return queryset
-        else:
-            return Asset.objects.none()
