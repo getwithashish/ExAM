@@ -10,6 +10,7 @@ from asset.views import (
     EmployeeView,
     AssignAssetView,
     AssetSearchWithFilterView,
+    AssetLogView,
 )
 
 
@@ -24,4 +25,5 @@ urlpatterns = [
     path("employee", EmployeeView.as_view(), name="employeeview"),
     path("assign_asset", AssignAssetView.as_view(), name="assignasset"),
     path("search", AssetSearchWithFilterView.as_view(), name="search"),
+    path("asset_logs/<str:asset_uuid>", AssetLogView.as_view(), name="asset_logs"),
 ]
