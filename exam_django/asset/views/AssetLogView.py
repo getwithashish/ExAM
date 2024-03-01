@@ -1,8 +1,10 @@
-
 from rest_framework.views import APIView
 from django.http import JsonResponse
 from asset.models import AssetLog, Location, BusinessUnit, AssetType, User, Memory, Employee
 import json
+
+# View to retrive the asset log details of a particular asset_uuid
+
 
 class AssetLogView(APIView):
     def get(self, request, asset_uuid):
