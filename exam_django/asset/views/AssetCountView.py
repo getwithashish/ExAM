@@ -2,7 +2,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from asset.models import Asset
 from django.db.models import Count
-from exam_django.exceptions import NotFoundError
+
 
 class AssetCountView(ListAPIView):
     def list(self, request, *args, **kwargs):

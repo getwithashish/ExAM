@@ -90,7 +90,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "supertokens_python.framework.django.django_middleware.middleware"
+    "supertokens_python.framework.django.django_middleware.middleware",
 ]
 
 ROOT_URLCONF = "exam_django.urls"
