@@ -4,6 +4,22 @@ from rest_framework import status
 from asset.serializers import UserSerializer
 from asset.models import User
 
+from django.http import JsonResponse
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+
+
+# @permission_classes((IsAuthenticated, ))
+@api_view(["GET"])
+def index(request):
+    try:
+        print("User: ", request.user)
+        print("User Scope: ", request.user.email)
+        return JsonResponse({"status": request.user.user_scope})
+    except Exception as e:
+        print(e)
+        return JsonResponse({"status": "Unauthorized"})
+
 
 class UserView(ListCreateAPIView):
     def post(self, request, format=None):
