@@ -12,9 +12,6 @@ class UserScope:
 
 
 class User(AbstractUser):
-    # user_uuid = models.UUIDField(
-    #     primary_key=True, default=uuid.uuid4, editable=False, unique=True
-    # )
     email = models.EmailField(
         max_length=100,
         null=False,
