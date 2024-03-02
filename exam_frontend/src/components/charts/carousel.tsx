@@ -1,0 +1,47 @@
+import React, { useState } from 'react';
+import styles from './carousel.module.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+
+interface CarouselProps {
+  items: JSX.Element[];
+}
+
+const Carousel: React.FC<CarouselProps> = ({ items }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isTransitioning, setTransitioning] = useState(false);
+
+  const goToNext = () => {
+    setTransitioning(true);
+    setCurrentIndex((prevIndex) => (prevIndex === items.length - 1 ? 0 : prevIndex + 1));
+    setTimeout(() => {
+      setTransitioning(false);
+    }, 500); // Adjust the delay based on your transition duration
+  };
+
+  const goToPrev = () => {
+    setTransitioning(true);
+    setCurrentIndex((prevIndex) => (prevIndex === 0 ? items.length - 1 : prevIndex - 1));
+    setTimeout(() => {
+      setTransitioning(false);
+    }, 500); // Adjust the delay based on your transition duration
+  };
+
+  return (
+    <div className={styles['carousel']}>
+      <div className={styles['carousel-inner']} style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
+        {items.map((item, index) => (
+          <div key={index} className={styles['carousel-item']}>{item}</div>
+        ))}
+      </div>
+      <div onClick={goToPrev} className={`${styles['prev']} ${isTransitioning ? styles['hidden'] : ''}`}>
+        <FontAwesomeIcon icon={faChevronLeft} />
+      </div>
+      <div onClick={goToNext} className={`${styles['next']} ${isTransitioning ? styles['hidden'] : ''}`}>
+        <FontAwesomeIcon icon={faChevronRight} />
+      </div>
+    </div>
+  );
+};
+
+export default Carousel;
