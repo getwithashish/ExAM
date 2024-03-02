@@ -11,27 +11,31 @@ const data = [
   ];
 
 
-export default function PieChartSoftware() {
+  export default function PieChartHardware() {
     return (
       <Stack direction="row">
+        
         <PieChart
           series={[
             {
                 data,
                 innerRadius: 70,
-                outerRadius: 130,
+                outerRadius: 140,
                 paddingAngle: 1,
                 cornerRadius: 5,
                 startAngle: 0,
                 endAngle: 360,
-                cx: 140,
+                cx: 100,
+                cy:150,
                 highlightScope: { faded: 'global', highlighted: 'item' },
-                faded: { innerRadius: 50, additionalRadius: -40, color: 'gray' },
+                faded: { innerRadius: 90, additionalRadius: -30, color: 'gray' },
             },
           ]}
-          width={300}
+          width={500}
           height={300}
-          legend ={{hidden: true}}
+          legend ={{direction: 'column',
+          position: { vertical: 'middle', horizontal: 'right' },
+          padding: 100,}}
         />
       </Stack>
     );

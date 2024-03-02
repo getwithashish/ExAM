@@ -6,8 +6,8 @@ import PieChart2 from "./piechart-software"
 
 export const Statistics: FC = function () {
     return (
-      <div className="flex gap-10">
-      <div className="rounded-lg bg-white p-2 shadow dark:bg-gray-800 m:p-10 xl:p-12">
+      <div className="flex">
+      <div className="rounded-lg bg-white p-8 shadow dark:bg-gray-800 m:p-10 xl:p-12 w-4/5 h-2/3" style={{ marginLeft: "50px" }}>
           <div className="mb-3 flex items-center justify-between">
               <div className="shrink-0">
                   <span className="text-2xl font-bold leading-none text-gray-900 dark:text-white sm:text-3xl">
@@ -20,7 +20,7 @@ export const Statistics: FC = function () {
           </div>
           <PieChart/>
       </div>
-      <div className="rounded-lg bg-white p-2 shadow dark:bg-gray-800 m:p-10 xl:p-12">
+      {/* <div className="rounded-lg bg-white p-2 shadow dark:bg-gray-800 m:p-10 xl:p-12">
           <div className="mb-3 flex items-center justify-between">
               <div className="shrink-0">
                   <span className="text-2xl font-bold leading-none text-gray-900 dark:text-white sm:text-3xl">
@@ -32,7 +32,7 @@ export const Statistics: FC = function () {
               </div>
           </div>
           <PieChart2/>
-      </div>
+      </div> */}
   </div>       
     );
   };
