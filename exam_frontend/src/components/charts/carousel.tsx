@@ -12,19 +12,23 @@ const Carousel: React.FC<CarouselProps> = ({ items }) => {
   const [isTransitioning, setTransitioning] = useState(false);
 
   const goToNext = () => {
-    setTransitioning(true);
-    setCurrentIndex((prevIndex) => (prevIndex === items.length - 1 ? 0 : prevIndex + 1));
-    setTimeout(() => {
-      setTransitioning(false);
-    }, 500); // Adjust the delay based on your transition duration
+    if (!isTransitioning && currentIndex < items.length - 1) {
+      setTransitioning(true);
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+      setTimeout(() => {
+        setTransitioning(false);
+      }, 500); // Adjust the delay based on your transition duration
+    }
   };
 
   const goToPrev = () => {
-    setTransitioning(true);
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? items.length - 1 : prevIndex - 1));
-    setTimeout(() => {
-      setTransitioning(false);
-    }, 500); // Adjust the delay based on your transition duration
+    if (!isTransitioning && currentIndex > 0) {
+      setTransitioning(true);
+      setCurrentIndex((prevIndex) => prevIndex - 1);
+      setTimeout(() => {
+        setTransitioning(false);
+      }, 500); // Adjust the delay based on your transition duration
+    }
   };
 
   return (
@@ -34,10 +38,16 @@ const Carousel: React.FC<CarouselProps> = ({ items }) => {
           <div key={index} className={styles['carousel-item']}>{item}</div>
         ))}
       </div>
-      <div onClick={goToPrev} className={`${styles['prev']} ${isTransitioning ? styles['hidden'] : ''}`}>
+      <div
+        onClick={goToPrev}
+        className={`${styles['prev']} ${isTransitioning || currentIndex === 0 ? styles['hidden'] : ''}`}
+      >
         <FontAwesomeIcon icon={faChevronLeft} />
       </div>
-      <div onClick={goToNext} className={`${styles['next']} ${isTransitioning ? styles['hidden'] : ''}`}>
+      <div
+        onClick={goToNext}
+        className={`${styles['next']} ${isTransitioning || currentIndex === items.length - 1 ? styles['hidden'] : ''}`}
+      >
         <FontAwesomeIcon icon={faChevronRight} />
       </div>
     </div>
