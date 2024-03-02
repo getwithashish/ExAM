@@ -54,12 +54,13 @@ const ExamSidebar = () => {
               </button>
               <Sidebar.Items>
                 <Sidebar.ItemGroup>
-                    <div> <h2 className={styles['Heading']}>Navigation</h2>
-                    </div>
+                <div>
+                 <h2 className={`${styles['Heading']} dark:text-white`}>Navigation</h2>
+                </div>
                   <Sidebar.Item icon={HiViewBoards} className={styles['scaleup']}>Dashboard</Sidebar.Item>
 
                   <div >
-                    <h2 className={styles['Heading']} >Category</h2>
+                    <h2 className={`${styles['Heading']} dark:text-white`} >Category</h2>
                   </div>
                   
                   <Sidebar.Item icon={FaDesktop} className={styles['scaleup']}>Hardware</Sidebar.Item>
