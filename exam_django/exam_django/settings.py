@@ -78,7 +78,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "supertokens_python",
-    "asset",
+    "asset", 'drf_yasg',
 ]
 
 MIDDLEWARE = [

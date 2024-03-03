@@ -1,7 +1,7 @@
 
 import type { FC, PropsWithChildren } from "react";
 import Navbar from "../components/navbar";
-import Sidebar from "../components/sidebar";
+import Sidebar from "../components/sidebar/sidebar";
 
 interface NavbarSidebarLayoutProps {
   isFooter?: boolean;
