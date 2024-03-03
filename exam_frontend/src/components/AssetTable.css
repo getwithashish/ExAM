@@ -1,0 +1,71 @@
+.mainHeading{
+    margin-top: 60px;
+    margin-left: 40px;
+    font-size: xx-large;
+    
+}
+
+.mainDrawer{
+    max-width: 100%; /* Adjust the maximum width as needed */
+    width: auto;
+
+    border-radius: 10px;
+    padding: 10px;
+    /* margin-left: 150px; 
+    margin-right: 200px; */
+    overflow-y: auto;
+    background: black;
+}
+.mainTable{
+    padding: 40px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 30px;
+    background-color: #f2f2f2;
+    font-size: xx-large;
+    line-height: 100px;
+    
+}
+.mainTable td {
+    color: black; 
+    font-size: 130%;
+  }
+  
+
+  .mainTable thead th {
+    color: blue; 
+    font-size: 130%;
+    background: #afb6ba;
+  }
+  
+
+.drawer{
+    border-radius: 20%;
+    color:black;
+    /* font-size: x-large; */
+    text-align: center;
+    line-height: 250%;
+}
+.drawerHeading{
+    font-size: 190%;
+    font-weight: 900;
+    text-align: center;
+}
+.drawerSubHeading{
+    color: gray;
+    border: 1px solid #ccc; /* Example border style */
+  border-radius: 5px; /* Example border radius */
+  padding: 10px; /* Example padding */
+  margin-bottom: 10px; /* Example margin bottom */
+  background-color: #f9f9f9; 
+}
+.drawerContainer{
+line-height: 160%;
+font-size: xx-large;
+
+}
+.customTable .ant-table-body {
+    /* Apply custom styles to the container that enables horizontal scrolling */
+    overflow-x: auto; /* Enable horizontal scrolling */
+    border: 1px solid #ddd; /* Example border style */
+  }

@@ -44,8 +44,9 @@ const ExampleSidebar: FC = function () {
                   "/" === currentPage ? "bg-gray-100 dark:bg-gray-700" : ""
                 }
               >
-                Overview
+                Dashboard
               </Sidebar.Item>
+              <br></br>
               <Sidebar.Item
                 href="/e-commerce/products"
                 icon={HiShoppingBag}
@@ -55,8 +56,9 @@ const ExampleSidebar: FC = function () {
                     : ""
                 }
               >
-                Products
+                Hardware
               </Sidebar.Item>
+              <br></br>
               <Sidebar.Item
                 href="/users/list"
                 icon={HiUsers}
@@ -66,14 +68,16 @@ const ExampleSidebar: FC = function () {
                     : ""
                 }
               >
-                Users list
+                Software
               </Sidebar.Item>
-              <Sidebar.Item href="/authentication/sign-in" icon={HiLogin}>
+              <br></br>
+              {/* <Sidebar.Item href="/authentication/sign-in" icon={HiLogin}>
                 Sign in
-              </Sidebar.Item>
+              </Sidebar.Item> */}
               <Sidebar.Item href="/authentication/sign-up" icon={HiPencil}>
-                Sign up
+                Action Hub 
               </Sidebar.Item>
+              <br></br>
             </Sidebar.ItemGroup>
             <Sidebar.ItemGroup>
               <Sidebar.Item
