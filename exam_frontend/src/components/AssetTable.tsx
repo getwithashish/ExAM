@@ -34,6 +34,9 @@ export interface DataType {
   Memory:string;
   Storage:string;
   Configuration:string;
+  Owner:string;
+  Requester:string;
+  Comments:string;
 }
 
 const AssetTable = () => {
@@ -686,6 +689,41 @@ const AssetTable = () => {
       },
     },
     {
+      title: 'Owner',
+      dataIndex: 'Owner',
+      responsive: ['md'],
+  
+    
+    },
+    {
+      title: 'Requester',
+      dataIndex: 'Requester',
+      responsive: ['md'],
+      filters: [
+        {
+          text: 'sfmManger',
+          value: 'sfmManager',
+        },
+        {
+          text: 'sfmLead',
+          value: 'sfmLead',
+        },
+        {
+          text: 'sfmSenior',
+          value: 'sfmSenior',
+        },
+      ],
+      
+      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+        if (Array.isArray(value)) {
+          return value.includes(record.Requester);
+        }
+        return record.Requester.indexOf(value.toString()) === 0;
+      },
+  
+    
+    },
+    {
       title: 'Configuration',
       dataIndex: 'Configuration',
       responsive: ['md'],
@@ -706,7 +744,6 @@ const AssetTable = () => {
         return record.Configuration === value;
       },
     },
-    
     {
       title: 'Custodian',
       dataIndex: 'Custodian',
@@ -753,6 +790,17 @@ const AssetTable = () => {
   
     },
     {
+      title: 'Comments',
+      dataIndex: 'Comments',
+      
+      // render: () => (
+      //   <span>
+      //     <FontAwesomeIcon icon={faPlus} className="plus-icon" /> {/* Plus button icon */}
+      //   </span>
+      // ),
+    
+    },
+    {
       title: 'Assign Asset',
       dataIndex: 'AssignAsset',
       fixed:'right',
@@ -794,7 +842,9 @@ const AssetTable = () => {
       Configuration:'Intel Core i7-1165G7, 16GB RAM, 512GB SSD, 13.4"',
 
       Custodian:'Asima',
-      ProductName:'Dell XPS 15 Laptop'
+      ProductName:'Dell XPS 15 Laptop',
+      Owner:'Experion',
+      Requester:'sfmManager'
     },
     {
       key: '2',
@@ -823,7 +873,9 @@ const AssetTable = () => {
       Configuration:'Intel Core i7-1165G7, 16GB RAM, 512GB SSD, 13.4" ',
 
       Custodian:'Aidrin',
-      ProductName:'Apple iPhone 12 Pro'
+      ProductName:'Apple iPhone 12 Pro',
+      Owner:'Experion',
+      Requester:'sfmLead'
     },
     {
       key: '3',
@@ -852,7 +904,9 @@ const AssetTable = () => {
       Configuration:'Intel Core i5-1165G7, 128GB RAM, 512GB SSD, 13.4"',
 
       Custodian:'Ashish',
-      ProductName:'Dell XPS 15 Laptop'
+      ProductName:'Dell XPS 15 Laptop',
+      Owner:'Experion',
+      Requester:'sfmLead'
     },
     {
       key: '4',
@@ -880,7 +934,9 @@ const AssetTable = () => {
       Storage:'17Gb',
       Configuration:'Intel Core i5-1165G7, 128GB RAM, 512GB SSD, 13.4"',
       Custodian:'Ananthan',
-      ProductName:'Apple iPhone 12 Pro'
+      ProductName:'Apple iPhone 12 Pro',
+      Owner:'Experion',
+      Requester:'sfmSenior'
     },
   ];
   
