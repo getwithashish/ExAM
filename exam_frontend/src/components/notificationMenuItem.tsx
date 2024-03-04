@@ -27,9 +27,10 @@ export default function AccountMenu() {
   return (
     <React.Fragment>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-        {/* <Typography sx={{ minWidth: 100 }}>Contact</Typography>
-        <Typography sx={{ minWidth: 100 }}>Profile</Typography> */}
+      
+        
         <Tooltip title="Notifications">
+    
           {/* <IconButton
             onClick={handleClick}
             size="small"

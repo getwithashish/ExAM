@@ -15,7 +15,7 @@ const NavbarSidebarLayout: FC<PropsWithChildren<NavbarSidebarLayoutProps>> =
       <>
         <Navbar />
         <div className="flex items-start pt-16">
-          <Sidebar />
+          {/* <Sidebar /> */}
           <MainContent isFooter={isFooter}>{children}</MainContent>
         </div>
       </>
