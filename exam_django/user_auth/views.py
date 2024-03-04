@@ -1,12 +1,13 @@
-from rest_framework import generics, status, permissions
+from rest_framework import generics, status
 from rest_framework.response import Response
 from user_auth.models import User
 from user_auth.serializers import RegisterSerializer
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 
-class UserRegistrationView(generics.GenericAPIView):
+class UserRetrivalView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):  # Add 'request' as an argument
         queryset = User.objects.all()
@@ -18,8 +19,13 @@ class UserRegistrationView(generics.GenericAPIView):
                 first_name__icontains=query_param
             ) | queryset.filter(last_name__icontains=query_param)
 
-        serializer = RegisterSerializer(queryset, many=True) 
+        serializer = RegisterSerializer(queryset, many=True)
         return Response(serializer.data)  # Return queryset as a response
+
+
+class UserRegistrationView(generics.GenericAPIView):
+    serializer_class = RegisterSerializer
+    permission_classes = [AllowAny]
 
     def post(self, request):
         try:
