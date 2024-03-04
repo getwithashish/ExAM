@@ -1,17 +1,5 @@
-import { Sidebar, TextInput } from "flowbite-react";
 import type { FC } from "react";
-import { useEffect, useState } from "react";
-import {
-  HiChartPie,
-  HiClipboard,
-  HiCollection,
-  HiInformationCircle,
-  HiLogin,
-  HiPencil,
-  HiSearch,
-  HiShoppingBag,
-  HiUsers,
-} from "react-icons/hi";
+import { useEffect, useState } from "react";;
 
 const ExampleSidebar: FC = function () {
   const [currentPage, setCurrentPage] = useState("");
