@@ -1,9 +1,6 @@
-import { Footer } from "flowbite-react";
 import type { FC, PropsWithChildren } from "react";
 import Navbar from "../components/Navbar/navbar";
 import Sidebar from "../components/sidebar";
-import { MdFacebook } from "react-icons/md";
-import { FaDribbble, FaGithub, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 
 interface NavbarSidebarLayoutProps {
   isFooter?: boolean;
@@ -41,7 +38,7 @@ const MainContent: FC<PropsWithChildren<NavbarSidebarLayoutProps>> = function ({
 const MainContentFooter: FC = function () {
   return (
     <>
-      <Footer container>
+      {/* <Footer container>
         <div className="flex w-full flex-col gap-y-6 lg:flex-row lg:justify-between lg:gap-y-0">
           <Footer.LinkGroup>
             <Footer.Link href="https://experionglobal.com/terms-of-use/" className="mr-3 mb-3 lg:mb-0">
@@ -88,10 +85,10 @@ const MainContentFooter: FC = function () {
             </div>
           </Footer.LinkGroup>
         </div>
-      </Footer>
-      <p className="my-8 text-center text-sm text-gray-500 dark:text-gray-300">
-        &copy; 2024-2025 experionassetmanagement.com All rights reserved.
-      </p>
+      </Footer> */}
+      {/* <p className="my-8 text-center text-sm text-gray-500 dark:text-gray-300">
+        &copy; 2019-2022 Flowbite.com. All rights reserved.
+      </p> */}
     </>
   );
 };
