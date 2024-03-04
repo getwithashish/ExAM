@@ -1,7 +1,8 @@
+//src/layouts/navbar-sidebar.tsx
 
 import type { FC, PropsWithChildren } from "react";
 import Navbar from "../components/navbar";
-import Sidebar from "../components/sidebar/sidebar";
+import { SidebarHandler } from "../components/sidebar/SidebarHandler";
 
 interface NavbarSidebarLayoutProps {
   isFooter?: boolean;
@@ -13,7 +14,7 @@ const NavbarSidebarLayout: FC<PropsWithChildren<NavbarSidebarLayoutProps>> =
       <>
         <Navbar />
         <div className="flex items-start pt-16">
-          <Sidebar />
+          <SidebarHandler />
           <MainContent isFooter={isFooter}>{children}</MainContent>
         </div>
       </>
