@@ -1,14 +1,47 @@
 import React, { useState } from 'react';
-import { Input, Space, Table, TableColumnsType } from 'antd';
+import { Button, Input, Space, Table, TableColumnsType } from 'antd';
 import DrawerComponent from './DrawerComponent';
 import { SearchOutlined } from '@ant-design/icons';
 import './AssetTable.css';
+import CardComponent from './CardComponent';
+
+
+export interface DataType {
+  key: React.Key;
+  AssetId: string;
+  AssetCategory: string;
+  AssetType: string;
+  Version:number;
+  Status:string;
+  Location:string;
+  InVoiceLocation:string,
+  BusinessUnit:string;
+  Os:string;
+  OsVersion:string;
+  MobileOs:string;
+  Processor:string;
+  Generation:string;
+  Accessories:string;
+  DateOfPurchase:Date;
+  WarrantyPeriod:number;
+  ApprovalStatus:string;
+  Approver:string;
+  AssignAsset:string;
+  ModelNumber:string;
+  SerialNumber:string;
+  Custodian:string;
+  ProductName:string;
+  Memory:string;
+  Storage:string;
+  Configuration:string;
+}
 
 const AssetTable = () => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
+  
 
-  const handleRowClick = (record) => {
+  const handleRowClick = (record: React.SetStateAction<null>) => {
     setSelectedRow(record);
     setDrawerVisible(true);
   };
@@ -17,33 +50,7 @@ const AssetTable = () => {
     setDrawerVisible(false);
   };
 
-  interface DataType {
-    key: React.Key;
-    AssetId: string;
-    AssetCategory: string;
-    AssetType: string;
-    Version:number;
-    Status:string;
-    Location:string;
-    InVoiceLocation:string,
-    BusinessUnit:string;
-    Os:string;
-    OsVersion:string;
-    MobileOs:string;
-    Processor:string;
-    Generation:string;
-    Accessories:string;
-    DateOfPurchase:Date;
-    WarrantyPeriod:number;
-    ApprovalStatus:string;
-    Approver:string;
-    AssignAsset:string;
-    ModelNumber:string;
-    SerialNumber:string;
-    Custodian:string;
-    ProductName:string;
-    Memory:string;
-  }
+ 
   <div><h1>Asset Overview</h1></div>
   const columns: TableColumnsType<DataType> = [
     {
@@ -57,23 +64,22 @@ const AssetTable = () => {
             placeholder="Search Product Name"
             value={selectedKeys[0]}
             onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-            onPressEnter={() => confirm()}
+            onPressEnter={() => confirm(null)}
             style={{ marginBottom: 8, display: 'block' }}
           />
           <Space>
             <button
               type="button"
               onClick={confirm}
-              size="small"
-              style={{ width: 90 }}
+              
+              style={{ width: 90,fontSize:'16px' }}
             >
               Search
             </button>
             <button
               type="button"
               onClick={clearFilters}
-              size="small"
-              style={{ width: 90 }}
+              style={{ width: 90,fontSize:'16px' }}
             >
               Reset
             </button>
@@ -437,13 +443,21 @@ const AssetTable = () => {
      
       onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
         const dateValue = new Date(value as string).getTime(); // Convert filter value to timestamp
-        const recordDate = record.DateOfPurchase.getTime(); // Get timestamp of record's date
+    
+        // Convert record's DateOfPurchase to timestamp
+        const recordDate = new Date(record.DateOfPurchase).getTime();
     
         if (Array.isArray(value)) {
-          return value.includes(record.DateOfPurchase);
+            // If value is an array, check if record's DateOfPurchase is included
+            return value.some(val => new Date(val).getTime() === recordDate);
+        } else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+            // If value is a string, number, or boolean, perform strict comparison
+            return recordDate === dateValue;
+        } else {
+            return false; // Return false for other types of value
         }
-        return recordDate === dateValue;
-      },
+    },
+    
     },
     {
       title: 'Warranty Period',
@@ -464,7 +478,29 @@ const AssetTable = () => {
         if (Array.isArray(value)) {
           return value.includes(record.WarrantyPeriod);
         }
-        return record.WarrantyPeriod.indexOf(value.toString()) === 0;
+        return record.WarrantyPeriod.toString().indexOf(value.toString()) === 0;
+      },
+    },
+    {
+      title: 'Warranty Countdown',
+      dataIndex: 'WarrantyPeriod',
+      responsive: ['md'],
+      filters: [
+        {
+          text: ' 2Years',
+          value: '2Years',
+        },
+        {
+          text: '3Years',
+          value: '3Years',
+        },
+      ],
+     
+      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+        if (Array.isArray(value)) {
+          return value.includes(record.WarrantyPeriod);
+        }
+        return record.WarrantyPeriod.toString().indexOf(value.toString()) === 0;
       },
     },
     {
@@ -528,23 +564,23 @@ const AssetTable = () => {
             placeholder="Search Model Number"
             value={selectedKeys[0]}
             onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-            onPressEnter={() => confirm()}
+            onPressEnter={() => confirm(null)}
             style={{ marginBottom: 8, display: 'block' }}
           />
           <Space>
             <button
               type="button"
               onClick={confirm}
-              size="small"
-              style={{ width: 90 }}
+              
+              style={{ width: 90 ,fontSize:'16px'}}
             >
               Search
             </button>
             <button
               type="button"
               onClick={clearFilters}
-              size="small"
-              style={{ width: 90 }}
+              
+              style={{ width: 90 ,fontSize:'16px' }}
             >
               Reset
             </button>
@@ -574,23 +610,21 @@ const AssetTable = () => {
             placeholder="Search Serial Number"
             value={selectedKeys[0]}
             onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-            onPressEnter={() => confirm()}
+            onPressEnter={() => confirm(null)}
             style={{ marginBottom: 8, display: 'block' }}
           />
           <Space>
             <button
               type="button"
               onClick={confirm}
-              size="small"
-              style={{ width: 90 }}
+              style={{ width: 90,fontSize:'16px' }}
             >
               Search
             </button>
             <button
               type="button"
               onClick={clearFilters}
-              size="small"
-              style={{ width: 90 }}
+              style={{ width: 90,fontSize:'16px' }}
             >
               Reset
             </button>
@@ -630,6 +664,50 @@ const AssetTable = () => {
       },
     },
     {
+      title: 'Storage',
+      dataIndex: 'Storage',
+      responsive: ['md'],
+      filters: [
+        {
+          text: '16Gb',
+          value: '16Gb',
+        },
+        {
+          text: '128Gb',
+          value: '128Gb',
+        },
+      ],
+      
+      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+        if (Array.isArray(value)) {
+          return value.includes(record.Storage);
+        }
+        return record.Storage.indexOf(value.toString()) === 0;
+      },
+    },
+    {
+      title: 'Configuration',
+      dataIndex: 'Configuration',
+      responsive: ['md'],
+      filters: [
+        {
+          text: 'Intel Core i7-1165G7, 16GB RAM, 512GB SSD, 13.4"',
+          value: 'Intel Core i7-1165G7, 16GB RAM, 512GB SSD, 13.4"',
+        },
+        {
+          text: 'Intel Core i5-1165G7, 128GB RAM, 512GB SSD, 13.4" ',
+          value: 'Intel Core i5-1165G7, 128GB RAM, 512GB SSD, 13.4" ',
+        },
+      ],
+      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+        if (Array.isArray(value)) {
+          return value.includes(record.Configuration);
+        }
+        return record.Configuration === value;
+      },
+    },
+    
+    {
       title: 'Custodian',
       dataIndex: 'Custodian',
       responsive: ['md'],
@@ -641,23 +719,21 @@ const AssetTable = () => {
             placeholder="Search Custodian"
             value={selectedKeys[0]}
             onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-            onPressEnter={() => confirm()}
+            onPressEnter={() => confirm(null)}
             style={{ marginBottom: 8, display: 'block' }}
           />
           <Space>
             <button
               type="button"
               onClick={confirm}
-              size="small"
-              style={{ width: 90 }}
+              style={{ width: 90 ,fontSize:'16px'}}
             >
               Search
             </button>
             <button
               type="button"
               onClick={clearFilters}
-              size="small"
-              style={{ width: 90 }}
+              style={{ width: 90 ,fontSize:'16px'}}
             >
               Reset
             </button>
@@ -714,6 +790,9 @@ const AssetTable = () => {
       ModelNumber:'MN001',
       SerialNumber:'Asset001',
       Memory:'16Gb',
+      Storage:'16Gb',
+      Configuration:'Intel Core i7-1165G7, 16GB RAM, 512GB SSD, 13.4"',
+
       Custodian:'Asima',
       ProductName:'Dell XPS 15 Laptop'
     },
@@ -740,6 +819,9 @@ const AssetTable = () => {
       ModelNumber:'MN001',
       SerialNumber:'Asset002',
       Memory:'16Gb',
+      Storage:'16Gb',
+      Configuration:'Intel Core i7-1165G7, 16GB RAM, 512GB SSD, 13.4" ',
+
       Custodian:'Aidrin',
       ProductName:'Apple iPhone 12 Pro'
     },
@@ -766,6 +848,9 @@ const AssetTable = () => {
       ModelNumber:'MN002',
       SerialNumber:'Asset003',
       Memory:'17Gb',
+      Storage:'17Gb',
+      Configuration:'Intel Core i5-1165G7, 128GB RAM, 512GB SSD, 13.4"',
+
       Custodian:'Ashish',
       ProductName:'Dell XPS 15 Laptop'
     },
@@ -792,12 +877,19 @@ const AssetTable = () => {
       ModelNumber:'MN002',
       SerialNumber:'Asset004',
       Memory:'17Gb',
+      Storage:'17Gb',
+      Configuration:'Intel Core i5-1165G7, 128GB RAM, 512GB SSD, 13.4"',
       Custodian:'Ananthan',
       ProductName:'Apple iPhone 12 Pro'
     },
   ];
   
-  const drawerTitle = "Custom Drawer Title";
+  const drawerTitle = "Asset Details";
+  const button = (
+    <Button type="primary" ghost size="large">
+            Update
+          </Button>
+  );
 
   return (
     <>
@@ -825,9 +917,30 @@ const AssetTable = () => {
         onClose={onCloseDrawer}
         selectedRow={selectedRow}
         title={drawerTitle}
-      />
+        button={button}
+      >
+      {selectedRow && (
+          <div>
+            <h2 className='drawerHeading'>{selectedRow.ProductName}</h2>
+            <p className='drawerSubHeading'>Asset Id: {selectedRow.AssetId}</p>
+          </div>
+        )}
+        
+        
+        {selectedRow && <CardComponent data={selectedRow} />}
+        {button && (
+              <div style={{ 
+                marginBottom: '20px',
+                marginLeft:'1150px',
+                marginTop:'60px',
+              }}>{button}</div>
+            )}
+            
+      </DrawerComponent>
     </>
   );
 };
 
 export default AssetTable;
+
+

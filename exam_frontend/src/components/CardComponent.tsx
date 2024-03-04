@@ -1,40 +1,69 @@
 // CardComponent.js
-import React from 'react';
-import { Card, Space } from 'antd';
+import React, { useState } from 'react';
+import { Card, Form, Space,Input } from 'antd';
 import './CardComponent.css'
 import { EditOutlined } from '@ant-design/icons';
-const CardComponent = ({ data }) => {
+import { DataType } from './AssetTable';
+const CardComponent: React.FC<{
+  data: DataType; // Specify the data prop type as DataType
+}> = ({ data }) => {
+  
+
+
+  
  
   const gridStyle: React.CSSProperties = {
     width: '25%',
     textAlign: 'center',
   };
+  const mainCardStyle = {
+    marginLeft:'10%',
+    width: '80%', 
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', 
+    borderRadius: '8px', 
+  };
+  const editIconStyle = { marginLeft: '10px',color:'gray' };
+  
+  const [assetCategory, setvalue] = useState();
+  const[orgiginalValue,setOriginalValue]=useState(data.AssetCategory);
+
+  const handleInputChange = (e) => {
+    setvalue(e.target.value);
+  };
+  const handleFormClose=(e)=>{
+    setOriginalValue(orgiginalValue);
+  }
   return (
-    <Card className='mainCard' title="">
-      <Card.Grid style={gridStyle}>Asset Type: {data.AssetType}<EditOutlined style={{ marginLeft: 7,color:'lightgray' }} rev={undefined} /></Card.Grid>
-      <Card.Grid style={gridStyle}>Asset Category: {data.AssetCategory}</Card.Grid>
-      <Card.Grid style={gridStyle}>Version: {data.Version}</Card.Grid>
-          <Card.Grid style={gridStyle}>Status: {data.Status}</Card.Grid>
-          <Card.Grid style={gridStyle}>Location: {data.Location}</Card.Grid>
-          <Card.Grid style={gridStyle}>Invoice Location: {data.InVoiceLocation}</Card.Grid>
-          <Card.Grid style={gridStyle}>Business Unit: {data.BusinessUnit}</Card.Grid>
-          <Card.Grid style={gridStyle}>OS: {data.Os}</Card.Grid>
-          <Card.Grid style={gridStyle}>OS Version: {data.OsVersion}</Card.Grid>
-          <Card.Grid style={gridStyle}>Mobile OS: {data.MobileOs}</Card.Grid>
-          <Card.Grid style={gridStyle}>Processor: {data.Processor}</Card.Grid>
-          <Card.Grid style={gridStyle}>Generation: {data.Generation}</Card.Grid>
-          <Card.Grid style={gridStyle}>Accessories: {data.Accessories}</Card.Grid>
-          <Card.Grid style={gridStyle}>Approval Status: {data.ApprovalStatus}</Card.Grid>
-          <Card.Grid style={gridStyle}>Approver: {data.Approver}</Card.Grid>
-          <Card.Grid style={gridStyle}>Assign Asset: {data.AssignAsset}</Card.Grid>
-          <Card.Grid style={gridStyle}>Serial Number: {data.SerialNumber}</Card.Grid>
-          <Card.Grid style={gridStyle}>Custodian: {data.Custodian}</Card.Grid>
+    <Card key={data.AssetId} className='mainCard' title=""  style={mainCardStyle}>
+        <Card.Grid style={gridStyle}><b>Asset Category:</b>  <Form.Item name="assetCategory"> <Input defaultValue={data.AssetCategory} onChange={handleInputChange} onBlur={handleFormClose}  style={{ border: 'none' }} /> </Form.Item></Card.Grid>
+       <Card.Grid style={gridStyle}><b>Version: </b><Form.Item name="version"> <Input defaultValue={data.Version} onChange={handleInputChange} style={{ border: 'none' }}/> </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Status:</b> {data.Status}<EditOutlined style={editIconStyle} rev={undefined} /></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Location: </b>{data.Location}<EditOutlined style={editIconStyle} rev={undefined} /></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Invoice Location:</b> {data.InVoiceLocation}<EditOutlined style={editIconStyle} rev={undefined} /></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Business Unit:</b> {data.BusinessUnit}<EditOutlined style={editIconStyle} rev={undefined} /></Card.Grid>
+          <Card.Grid style={gridStyle}><b>OS: </b>{data.Os}<EditOutlined style={editIconStyle} rev={undefined} /></Card.Grid>
+          <Card.Grid style={gridStyle}><b>OS Version:</b> {data.OsVersion}<EditOutlined style={editIconStyle} rev={undefined} /></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Mobile OS: </b>{data.MobileOs}<EditOutlined style={editIconStyle} rev={undefined} /></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Processor: </b>{data.Processor}<EditOutlined style={editIconStyle} rev={undefined} /></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Generation:</b> {data.Generation}<EditOutlined style={editIconStyle} rev={undefined} /></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Accessories:</b> {data.Accessories}<EditOutlined style={editIconStyle} rev={undefined} /></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Date of Purchase:</b> {data.DateOfPurchase.toString()}<EditOutlined style={editIconStyle} rev={undefined} /></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Warranty Period:</b> {data.WarrantyPeriod}<EditOutlined style={editIconStyle} rev={undefined} /></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Approval Status: </b>{data.ApprovalStatus}<EditOutlined style={editIconStyle} rev={undefined} /></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Approver:</b> {data.Approver}<EditOutlined style={editIconStyle} rev={undefined} /></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Assign Asset:</b> {data.AssignAsset}<EditOutlined style={editIconStyle} rev={undefined} /></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Serial Number:</b> {data.SerialNumber}<EditOutlined style={editIconStyle} rev={undefined} /></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Custodian:</b> {data.Custodian}<EditOutlined style={editIconStyle} rev={undefined} /></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Product Name:</b> {data.ProductName}<EditOutlined style={editIconStyle} rev={undefined} /></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Memory:</b> {data.Memory}<EditOutlined style={editIconStyle} rev={undefined} /></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Storage: </b>{data.Storage}<EditOutlined style={editIconStyle} rev={undefined} /></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Configuration:  </b>{data.Configuration}<EditOutlined style={editIconStyle} rev={undefined} /></Card.Grid>
           <Card.Grid style={gridStyle}>
 
       </Card.Grid>
       {/* Add more card details as needed */}
     </Card>
   );
-};
 
+};
 export default CardComponent;

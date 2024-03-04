@@ -1,8 +1,18 @@
-import React from 'react';
-import { Drawer } from 'antd';
+import React, { Children } from 'react';
+import { Button, Drawer } from 'antd';
 import CardComponent from './CardComponent';
-import './AssetTable.css'
-const DrawerComponent = ({ visible, onClose, selectedRow,title }) => {
+import './DrawerComponent.css'
+
+import { DataType } from './AssetTable';
+interface DrawerProps {
+  visible: boolean;
+  onClose: () => void;
+  selectedRow: DataType | null;
+  title: string;
+  button: React.ReactNode;
+  children:string;
+}
+const DrawerComponent:React.FC<DrawerProps> = ({ visible, onClose,title ,children}) => {
   return (
     <Drawer
       title={title}
@@ -19,14 +29,9 @@ const DrawerComponent = ({ visible, onClose, selectedRow,title }) => {
       
      }}
     >
-      {selectedRow && (
-        <div>
-          <h2 className='drawerHeading'>{selectedRow.ProductName}</h2>
-          <p>Asset Id: {selectedRow.AssetId}</p>
       
-        </div>
-      )}
-      {selectedRow && <CardComponent data={selectedRow} />} {/* Render the CardComponent */}
+      {children}
+
     </Drawer>
   );
 };
