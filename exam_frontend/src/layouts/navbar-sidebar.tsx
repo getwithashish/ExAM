@@ -1,7 +1,7 @@
 //src/layouts/navbar-sidebar.tsx
 
 import type { FC, PropsWithChildren } from "react";
-
+import { Footer } from "flowbite-react";
 import { SidebarHandler } from "../components/sidebar/SidebarHandler";
 import Navbar from "../components/Navbar/navbar";
 import Sidebar from "../components/sidebar";
