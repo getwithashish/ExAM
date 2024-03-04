@@ -2,9 +2,16 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from asset.models import Asset, Employee
+from rest_framework.permissions import IsAuthenticated
 
 
 class AssignAssetView(APIView):
+     
+    def get_permissions(self):
+        if self.request.method == "POST":
+            return [IsAuthenticated()]
+        else:
+            return super().get_permissions()
 
     def post(self, request):
         asset_id = request.data.get("asset_uuid")
