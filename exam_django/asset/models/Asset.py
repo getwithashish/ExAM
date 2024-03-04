@@ -1,6 +1,6 @@
 from django.db import models
 import uuid
-
+from user_auth.models import User
 
 asset_category_choices = (("HARDWARE", "HARDWARE"), ("SOFTWARE", "SOFTWARE"))
 
@@ -97,7 +97,7 @@ class Asset(models.Model):
     accessories = models.CharField(max_length=50, null=True, blank=False)
     notes = models.TextField(null=True)
     conceder = models.ForeignKey(
-        "User",
+        User,
         related_name="%(app_label)s_%(class)s_conceder",
         on_delete=models.CASCADE,
         null=True,
@@ -115,7 +115,7 @@ class Asset(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     # TODO requester should be null=False, right?
     requester = models.ForeignKey(
-        "User",
+        User,
         related_name="%(app_label)s_%(class)s_requester",
         on_delete=models.CASCADE,
         null=True,

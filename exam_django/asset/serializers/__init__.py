@@ -5,7 +5,7 @@ from .AssetTypeSerializer import AssetTypeSerializer
 from .BusinessUnitSerializer import BusinessUnitSerializer
 from .MemorySerializer import MemorySerializer
 from .EmployeeSerializer import EmployeeSerializer
-
+from .AssetLogSerializer import AssetLogSerializer
 
 __all__ = [
     "LocationSerializer",
@@ -16,4 +16,5 @@ __all__ = [
     "BusinessUnitSerializer",
     "MemorySerializer",
     "EmployeeSerializer",
+    "AssetLogSerializer",
 ]
