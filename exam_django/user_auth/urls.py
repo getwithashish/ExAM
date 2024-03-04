@@ -12,4 +12,5 @@ urlpatterns = [
     path("token/refresh", TokenRefreshView.as_view(), name="jwt_refresh"),
     path("register", UserRegistrationView.as_view(), name="jwt_signup"),
     path("checkPerm", index, name="index_resp")
+    
 ]
