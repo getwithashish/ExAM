@@ -82,7 +82,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "supertokens_python",
     "user_auth",
-    "asset",
+    "asset", 'drf_yasg',
 ]
 
 MIDDLEWARE = [
