@@ -97,7 +97,7 @@ class Asset(models.Model):
     accessories = models.CharField(max_length=50, null=True, blank=False)
     notes = models.TextField(null=True)
     conceder = models.ForeignKey(
-        "User",
+        User,
         related_name="%(app_label)s_%(class)s_conceder",
         on_delete=models.CASCADE,
         null=True,
