@@ -3,10 +3,12 @@
 from rest_framework.generics import ListAPIView
 from asset.models import User
 from asset.serializers import UserSerializer
+from rest_framework.permissions import IsAuthenticated
 
 
 class ConcederView(ListAPIView):
     serializer_class = UserSerializer
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         queryset = User.objects.all()
