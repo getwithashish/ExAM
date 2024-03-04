@@ -2,8 +2,8 @@ import type { FC } from "react";
 import { Button, DarkThemeToggle, Navbar } from "flowbite-react";
 import { FaBell } from 'react-icons/fa';
 import  styles from './navbar.module.css';
-import MenuListComposition from "./menuItem";
-import AccountMenu from "./notificationMenuItem";
+import MenuListComposition from "../menuItem";
+import AccountMenu from "../notificationMenuItem";
 
 
 const ExampleNavbar: FC = function () {

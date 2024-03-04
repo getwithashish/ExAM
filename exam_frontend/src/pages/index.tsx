@@ -4,7 +4,7 @@ import type { FC } from "react";
 import Chart from "react-apexcharts";
 import NavbarSidebarLayout from "../layouts/navbar-sidebar";
 // import Addasset from '../components/Addasset'
-import Addanasset from "../components/Addanasset";
+import AddAsset from "../components/AddAsset/AddAsset";
 
 
 const DashboardPage: FC = function () {
@@ -16,7 +16,7 @@ const DashboardPage: FC = function () {
         
         </div>
         {/* <Addasset/> */}
-        <Addanasset/>
+        <AddAsset/>
       
         
      

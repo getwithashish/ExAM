@@ -1,5 +1,5 @@
 
-//Addanasset.tsx
+//AddAsset.tsx
 
 import React, { useState } from 'react';
 import {
@@ -15,13 +15,13 @@ import {
   TreeSelect,
 } from 'antd';
 const { TextArea } = Input;
-import styles from './Addanasset.module.css';
+import styles from './AddAsset.module.css';
 
 const { Option } = Select;
 
 type SizeType = Parameters<typeof Form>[0]['size'];
 
-const Addanasset: React.FC = () => {
+const AddAsset: React.FC = () => {
   const [componentSize, setComponentSize] = useState<SizeType | 'default'>('default');
 
   const onFormLayoutChange = ({ size }: { size: SizeType }) => {
@@ -261,7 +261,7 @@ const Addanasset: React.FC = () => {
   );
 };
 
-export default Addanasset;
+export default AddAsset;
 
 
 
