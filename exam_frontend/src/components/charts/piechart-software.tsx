@@ -6,11 +6,11 @@ import Checkbox from '@mui/material/Checkbox';
 
 
 const data = [
-    { label: "IN STORE", value: 10, color: '#03045e' },
-    { label: "IN USE", value: 1700, color: '#00b4d8'  },
-    { label: "IN REPAIR", value: 0, color: '#90e0ef' },
-    { label: "EXPIRED", value: 40, color: '#0077b6' },
-    { label: "DISPOSED", value: 20, color: '#caf0f8' },
+    { label: "IN STORE", value: 10, color: '#455e90' },
+    { label: "IN USE", value: 1700, color: '#304069'  },
+    { label: "IN REPAIR", value: 0, color: '#4f92ef' },
+    { label: "EXPIRED", value: 40, color: '#b3d2f8' },
+    { label: "DISPOSED", value: 20, color: '#7db1fb' },
   ];
 
 
@@ -34,7 +34,7 @@ const data = [
           series={[
             {
               data,
-              innerRadius: 70,
+              innerRadius: 60,
               outerRadius: 140,
               paddingAngle: 1,
               cornerRadius: 5,
@@ -43,7 +43,7 @@ const data = [
               cx: 100,
               cy:150,
               highlightScope: { faded: 'global', highlighted: 'item' },
-              faded: { innerRadius: 90, additionalRadius: -30, color: 'gray' },
+              faded: { innerRadius: 80, additionalRadius: -50, color: 'gray' },
             },
           ]}
           width={500}

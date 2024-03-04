@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import type { FC } from "react";
 import NavbarSidebarLayout from "../layouts/navbar-sidebar";
-import { Statistics } from "../components/charts/piechartHandler";
+import { Statistics } from "../components/charts/piechartBody";
 
 
 const DashboardPage: FC = function () {
