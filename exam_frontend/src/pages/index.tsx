@@ -21,9 +21,9 @@ const DashboardPage: FC = function () {
         
         </div>
         {/* <Addasset/> */}
-        <AddAsset/>
+        {/* <AddAsset/> */}
       
-        
+        <AssetTable />
      
         <div className="my-6">
       
