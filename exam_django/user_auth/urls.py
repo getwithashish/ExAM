@@ -4,12 +4,13 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
-from user_auth.views import UserRegistrationView
+from user_auth.views import UserRegistrationView, UserRetrivalView
 from asset.views.UserView import index
 
 urlpatterns = [
     path("signin", TokenObtainPairView.as_view(), name="jwt_signin"),
     path("token/refresh", TokenRefreshView.as_view(), name="jwt_refresh"),
     path("register", UserRegistrationView.as_view(), name="jwt_signup"),
-    path("checkPerm", index, name="index_resp")
+    path("checkPerm", index, name="index_resp"),
+    path("users", UserRetrivalView.as_view(), name="getUsers"),
 ]
