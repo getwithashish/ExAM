@@ -6,7 +6,10 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from response import APIResponse
 from messages import (
     USERS_RETRIEVED_SUCCESSFULLY,
-    )
+    USER_NOT_FOUND_ERROR,
+    INVALID_USER_DETAILS_ERROR,
+    USERS_RETRIEVED_SUCCESSFULLY,
+)
 
 
 class UserRetrievalView(generics.GenericAPIView):
