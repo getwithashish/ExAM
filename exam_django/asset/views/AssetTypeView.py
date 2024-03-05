@@ -21,7 +21,7 @@ class AssetTypeView(ListCreateAPIView):
             return APIResponse(
                 data=serializer.data,
                 message=VALID_ASSET_TYPE,
-                status=status.HTTP_200_OK,
+                status=status.HTTP_201_CREATED,
                 )
         return APIResponse(
             data=serializer.errors,
