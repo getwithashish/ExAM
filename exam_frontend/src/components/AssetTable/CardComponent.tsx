@@ -42,25 +42,32 @@ const CardComponent: React.FC<{
   const handleFormClose=()=>{
     setOriginalValue(orgiginalValue);
   }
+  const inputStyle: React.CSSProperties = {
+    border: 'none',
+    width: '100px',
+    boxShadow: 'none',
+    textAlign: 'center',
+    background: '#FAFAFA'
+  };
   return (
     <Card key={data.AssetId} className='mainCard' title=""  style={mainCardStyle}>
-                <Card.Grid style={gridStyle}><b>Asset Category: </b><Form.Item name="version"> <Input defaultValue={data.AssetCategory} onChange={handleInputChange} style={{ border: 'none', width:'100px',boxShadow:'none',textAlign:'center',background:'#FAFAFA' }}/> </Form.Item></Card.Grid>
+                <Card.Grid style={gridStyle}><b>Asset Category: </b><Form.Item name="version"> <Input defaultValue={data.AssetCategory} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
 
-        <Card.Grid style={gridStyle}><b>Asset Type: </b><Form.Item name="version"> <Input defaultValue={data.AssetType} onChange={handleInputChange} style={{ border: 'none', width:'100px',boxShadow:'none',textAlign:'center',background:'#FAFAFA' }}/> </Form.Item></Card.Grid>
+        <Card.Grid style={gridStyle}><b>Asset Type: </b><Form.Item name="version"> <Input defaultValue={data.AssetType} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
 
-       <Card.Grid style={gridStyle}><b>Version: </b><Form.Item name="version"> <Input defaultValue={data.Version} onChange={handleInputChange} style={{ border: 'none', width:'100px',boxShadow:'none',textAlign:'center',background:'#FAFAFA' }}/> </Form.Item></Card.Grid>
-          <Card.Grid style={gridStyle}><b>Status:</b> <Form.Item name="status"> <Input defaultValue={data.Status} onChange={handleInputChange} style={{ border: 'none',width:'100px',boxShadow:'none',textAlign:'center',background:'#FAFAFA' }}/> </Form.Item></Card.Grid>
-          <Card.Grid style={gridStyle}><b>Location: </b><Form.Item name="location"> <Input defaultValue={data.Location} onChange={handleInputChange} style={{ border: 'none',width:'100px',boxShadow:'none',textAlign:'center',background:'#FAFAFA' }}/> </Form.Item></Card.Grid>
-          <Card.Grid style={gridStyle}><b>Invoice Location:</b> <Form.Item name="invoiceLocation"> <Input defaultValue={data.InVoiceLocation} onChange={handleInputChange} style={{ border: 'none',width:'100px',boxShadow:'none',textAlign:'center' ,background:'#FAFAFA'}}/> </Form.Item></Card.Grid>
-          <Card.Grid style={gridStyle}><b>Business Unit:</b> <Form.Item name="businessUnit"> <Input defaultValue={data.BusinessUnit} onChange={handleInputChange} style={{ border: 'none',width:'100px',boxShadow:'none',textAlign:'center',background:'#FAFAFA' }}/> </Form.Item></Card.Grid>
-          <Card.Grid style={gridStyle}><b>OS: </b><Form.Item name="os"> <Input defaultValue={data.Os} onChange={handleInputChange} style={{ border: 'none',width:'100px',boxShadow:'none',textAlign:'center' ,background:'#FAFAFA'}}/> </Form.Item></Card.Grid>
-          <Card.Grid style={gridStyle}><b>OS Version:</b><Form.Item name="os version"> <Input defaultValue={data.OsVersion} onChange={handleInputChange} style={{ border: 'none' ,width:'100px',boxShadow:'none',textAlign:'center',background:'#FAFAFA'}}/> </Form.Item></Card.Grid>
-          <Card.Grid style={gridStyle}><b>Mobile OS: </b><Form.Item name="mobile os"> <Input defaultValue={data.MobileOs} onChange={handleInputChange} style={{ border: 'none',width:'100px',boxShadow:'none',textAlign:'center' ,background:'#FAFAFA'}}/> </Form.Item></Card.Grid>
-          <Card.Grid style={gridStyle}><b>Processor: </b><Form.Item name="processor"> <Input defaultValue={data.Processor} onChange={handleInputChange} style={{ border: 'none',width:'100px',boxShadow:'none',textAlign:'center',background:'#FAFAFA' }}/> </Form.Item></Card.Grid>
-          <Card.Grid style={gridStyle}><b>Generation:</b><Form.Item name="generation"> <Input defaultValue={data.Generation} onChange={handleInputChange} style={{ border: 'none',width:'100px',boxShadow:'none',textAlign:'center' ,background:'#FAFAFA'}}/> </Form.Item></Card.Grid>
-          <Card.Grid style={gridStyle}><b>Accessories:</b> <Form.Item name="accessories"> <Input defaultValue={data.Accessories} onChange={handleInputChange} style={{ border: 'none',width:'100px',boxShadow:'none',textAlign:'center',background:'#FAFAFA' }}/> </Form.Item></Card.Grid>
-          <Card.Grid style={gridStyle}><b>Date of Purchase:</b> <Form.Item name="date of purchase"> <Input defaultValue={data.DateOfPurchase.toString()} onChange={handleInputChange} style={{ border: 'none' ,width:'100px',boxShadow:'none',textAlign:'center',background:'#FAFAFA'}}/> </Form.Item></Card.Grid>
-          <Card.Grid style={gridStyle}><b>Warranty Period:</b><Form.Item name="warranty period"> <Input defaultValue={data.WarrantyPeriod} onChange={handleInputChange} style={{ border: 'none',width:'100px',boxShadow:'none',textAlign:'center' ,background:'#FAFAFA'}}/> </Form.Item></Card.Grid>
+       <Card.Grid style={gridStyle}><b>Version: </b><Form.Item name="version"> <Input defaultValue={data.Version} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Status:</b> <Form.Item name="status"> <Input defaultValue={data.Status} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Location: </b><Form.Item name="location"> <Input defaultValue={data.Location} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Invoice Location:</b> <Form.Item name="invoiceLocation"> <Input defaultValue={data.InVoiceLocation} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Business Unit:</b> <Form.Item name="businessUnit"> <Input defaultValue={data.BusinessUnit} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle}><b>OS: </b><Form.Item name="os"> <Input defaultValue={data.Os} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle}><b>OS Version:</b><Form.Item name="os version"> <Input defaultValue={data.OsVersion} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Mobile OS: </b><Form.Item name="mobile os"> <Input defaultValue={data.MobileOs} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Processor: </b><Form.Item name="processor"> <Input defaultValue={data.Processor} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Generation:</b><Form.Item name="generation"> <Input defaultValue={data.Generation} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Accessories:</b> <Form.Item name="accessories"> <Input defaultValue={data.Accessories} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Date of Purchase:</b> <Form.Item name="date of purchase"> <Input defaultValue={data.DateOfPurchase.toString()} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Warranty Period:</b><Form.Item name="warranty period"> <Input defaultValue={data.WarrantyPeriod} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
           <Card.Grid style={gridStyle}><b>Approval Status: </b><Form.Item name="date of purchase">{data.ApprovalStatus}   </Form.Item></Card.Grid>
           <Card.Grid style={gridStyle}><b>Approver:</b>  <Form.Item name="date of purchase">{data.Approver}   </Form.Item></Card.Grid>
           <Card.Grid style={gridStyle}><b>Assign Asset:</b> {data.AssignAsset}</Card.Grid>

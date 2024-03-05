@@ -4,7 +4,7 @@ import DrawerComponent from '../DrawerComponent/DrawerComponent';
 import { SearchOutlined } from '@ant-design/icons';
 import './AssetTable.css';
 import CardComponent from './CardComponent';
-
+import { CloseOutlined } from '@ant-design/icons';
 
 export interface DataType {
   key: React.Key;
@@ -996,6 +996,7 @@ const AssetTable = () => {
         title={drawerTitle}
         button={button}
         onUpdateData={handleUpdateData}
+        closeIcon={<CloseOutlined rev={undefined} />}
       >
       {selectedRow && (
           <div>
