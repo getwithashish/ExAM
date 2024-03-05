@@ -3,7 +3,6 @@ import { Button, Drawer } from 'antd';
 import CardComponent from '../AssetTable/CardComponent';
 import './DrawerComponent.css'
 import { DrawerProps } from './types/index';
-import { CloseOutlined } from '@ant-design/icons';
 const DrawerComponent:React.FC<DrawerProps> = ({ visible, onClose,title ,children}) => {
   return (
     <Drawer
@@ -11,18 +10,15 @@ const DrawerComponent:React.FC<DrawerProps> = ({ visible, onClose,title ,childre
       title={title}
       placement="bottom"
       width={200}
-      height={500}
+      height={600}
       onClose={onClose}
       visible={visible}
       className="mainDrawer"
       closeIcon={false}
       style={{ 
-      // borderRadius: 40,
       padding:30,
       borderTopLeftRadius: "8%",
       borderTopRightRadius: "8%",
-   
-      
      }}
     >
       

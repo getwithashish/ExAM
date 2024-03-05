@@ -1,8 +1,9 @@
 // CardComponent.js
 import React, { useState } from 'react';
-import { Card, Form, Space,Input, Button } from 'antd';
+import { Card, Form, Space,Input, Button,Select } from 'antd';
 import './CardComponent.css'
 import { DataType } from './AssetTable';
+
 const CardComponent: React.FC<{
   data: DataType; 
   onUpdate: (updatedData: DataType) => void;
@@ -24,7 +25,12 @@ const CardComponent: React.FC<{
   };
   const gridStyle: React.CSSProperties = {
     width: '25%',
+    height:'30%',
     textAlign: 'center',
+    padding:'8px',
+    gap:'5px',
+    marginTop: '10px',
+    
   };
   const mainCardStyle = {
     marginLeft:'10%',
@@ -56,7 +62,18 @@ const CardComponent: React.FC<{
         <Card.Grid style={gridStyle}><b>Asset Type: </b><Form.Item name="version"> <Input defaultValue={data.AssetType} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
 
        <Card.Grid style={gridStyle}><b>Version: </b><Form.Item name="version"> <Input defaultValue={data.Version} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
-          <Card.Grid style={gridStyle}><b>Status:</b> <Form.Item name="status"> <Input defaultValue={data.Status} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
+       <Card.Grid style={gridStyle} ><b>Status:</b>
+        <Form.Item name="status" style={{background:'#FAFAFA',  boxShadow: 'none',border:'none'}} >
+          <Select defaultValue={data.Status} style={{background:'#FAFAFA',  boxShadow: 'none',border:'none'}} onChange={value => handleChange("Status", value)}>
+            <Select.Option value="instore">In Store</Select.Option>
+            <Select.Option value="inuse">In Use</Select.Option>
+            <Select.Option value="inrepair">In Repair</Select.Option>
+            <Select.Option value="expired">Expired</Select.Option>
+            <Select.Option value="disposed">Disposed</Select.Option>
+          </Select>
+        </Form.Item>
+      </Card.Grid>
+
           <Card.Grid style={gridStyle}><b>Location: </b><Form.Item name="location"> <Input defaultValue={data.Location} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
           <Card.Grid style={gridStyle}><b>Invoice Location:</b> <Form.Item name="invoiceLocation"> <Input defaultValue={data.InVoiceLocation} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
           <Card.Grid style={gridStyle}><b>Business Unit:</b> <Form.Item name="businessUnit"> <Input defaultValue={data.BusinessUnit} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
@@ -70,24 +87,21 @@ const CardComponent: React.FC<{
           <Card.Grid style={gridStyle}><b>Warranty Period:</b><Form.Item name="warranty period"> <Input defaultValue={data.WarrantyPeriod} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
           <Card.Grid style={gridStyle}><b>Approval Status: </b><Form.Item name="date of purchase">{data.ApprovalStatus}   </Form.Item></Card.Grid>
           <Card.Grid style={gridStyle}><b>Approver:</b>  <Form.Item name="date of purchase">{data.Approver}   </Form.Item></Card.Grid>
-          <Card.Grid style={gridStyle}><b>Assign Asset:</b> {data.AssignAsset}</Card.Grid>
-          <Card.Grid style={gridStyle}><b>Serial Number:</b> <Form.Item name="serial number"> <Input defaultValue={data.SerialNumber} onChange={handleInputChange} style={{ border: 'none',width:'100px',boxShadow:'none',textAlign:'center' ,background:'#FAFAFA'}}/> </Form.Item></Card.Grid>
-          <Card.Grid style={gridStyle}><b>Model Number:</b> <Form.Item name="serial number"> <Input defaultValue={data.ModelNumber} onChange={handleInputChange} style={{ border: 'none' ,width:'100px',boxShadow:'none',textAlign:'center',background:'#FAFAFA'}}/> </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Serial Number:</b> <Form.Item name="serial number"> <Input defaultValue={data.SerialNumber} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Model Number:</b> <Form.Item name="serial number"> <Input defaultValue={data.ModelNumber} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
           <Card.Grid style={gridStyle}><b>Custodian:</b><Form.Item name="date of purchase">{data.Custodian}   </Form.Item></Card.Grid>
-          <Card.Grid style={gridStyle}><b>Product Name:</b><Form.Item name="product name"> <Input defaultValue={data.ProductName} onChange={handleInputChange} style={{ border: 'none' ,boxShadow:'none',textAlign:'center',background:'#FAFAFA'}}/> </Form.Item></Card.Grid>
-          <Card.Grid style={gridStyle}><b>Memory:</b><Form.Item name="memory"> <Input defaultValue={data.Memory} onChange={handleInputChange} style={{ border: 'none' ,width:'100px',boxShadow:'none',textAlign:'center',background:'#FAFAFA'}}/> </Form.Item></Card.Grid>
-          <Card.Grid style={gridStyle}><b>Storage: </b><Form.Item name="storage"> <Input defaultValue={data.Storage} onChange={handleInputChange} style={{ border: 'none',width:'100px',boxShadow:'none',textAlign:'center',background:'#FAFAFA' }}/> </Form.Item></Card.Grid>
-          <Card.Grid style={gridStyle}><b>Configuration:  </b><Form.Item name="configuration"> <Input defaultValue={data.Configuration} onChange={handleInputChange} style={{ border: 'none' ,boxShadow:'none',textAlign:'center',background:'#FAFAFA'}}/> </Form.Item></Card.Grid>
-          <Card.Grid style={gridStyle}><b>Owner:  </b><Form.Item name="configuration"> <Input defaultValue={data.Owner} onChange={handleInputChange} style={{ border: 'none',width:'100px',boxShadow:'none',textAlign:'center',background:'#FAFAFA' }}/> </Form.Item></Card.Grid>
-          <Card.Grid style={gridStyle}><b>Requester:  </b><Form.Item name="configuration"> <Input defaultValue={data.Requester} onChange={handleInputChange} style={{ border: 'none',width:'100px',boxShadow:'none',textAlign:'center' ,background:'#FAFAFA'}}/> </Form.Item></Card.Grid>
-          <Card.Grid style={gridStyle}><b>Comments:  </b><Form.Item name="configuration"> <Input defaultValue={data.Comments} onChange={handleInputChange} style={{ border: 'none' ,width:'100px',boxShadow:'none',textAlign:'center',background:'#FAFAFA'}}/> </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Product Name:</b><Form.Item name="product name"> <Input defaultValue={data.ProductName} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Memory:</b><Form.Item name="memory"> <Input defaultValue={data.Memory} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Storage: </b><Form.Item name="storage"> <Input defaultValue={data.Storage} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Configuration:  </b><Form.Item name="configuration"> <Input defaultValue={data.Configuration} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Owner:  </b><Form.Item name="configuration"> <Input defaultValue={data.Owner} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Requester:  </b><Form.Item name="configuration"> <Input defaultValue={data.Requester} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Comments:  </b><Form.Item name="configuration"> <Input defaultValue={data.Comments} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Created At:  </b><Form.Item name="configuration"> <Input defaultValue={data.CreatedAt} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Updated At:  </b><Form.Item name="configuration"> <Input defaultValue={data.UpdatedAt} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
 
-
-          <Card.Grid style={gridStyle}>
-
-      </Card.Grid>
       {/* Add more card details as needed */}
-      <Button onClick={handleUpdate}>Update</Button>
+      <Button style={{marginLeft:'1020px',marginBottom:'40px', color:'black',border:'none',background:'lightblue'}} onClick={handleUpdate}>Update</Button>
     </Card>
     
   );
