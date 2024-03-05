@@ -894,7 +894,7 @@ const AssetTable = () => {
       dataIndex: 'AssignAsset',
       fixed:'right',
       render: (_data, record) => (
-        <Button  ghost style={{borderRadius:'10px',background:'#D3D3D3',color:'black'}} onClick={() => handleAssignAsset(record)}>
+        <Button  ghost style={{borderRadius:'10px',background:'#D3D3D3',color:'black'}} >
           +
         </Button>
       ),
@@ -1078,7 +1078,7 @@ const AssetTable = () => {
         onUpdateData={handleUpdateData}
         closeIcon={<CloseOutlined rev={undefined} />}
       >
-      {selectedRow && (
+      {selectedRow !== null && (
           <div>
             <h2 className='drawerHeading'>{selectedRow.ProductName}</h2>
             <p className='drawerSubHeading'>Asset Id: {selectedRow.AssetId}</p>
