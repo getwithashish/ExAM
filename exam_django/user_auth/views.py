@@ -5,10 +5,8 @@ from user_auth.serializers import UserSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from response import APIResponse
 from messages import (
-    USER_NOT_FOUND_ERROR,
-    INVALID_USER_DETAILS_ERROR,
-    USERS_RETRIEVED_SUCCESSFULLY   
-)
+    USERS_RETRIEVED_SUCCESSFULLY,
+    )
 
 
 class UserRetrievalView(generics.GenericAPIView):

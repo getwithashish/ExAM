@@ -3,6 +3,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from asset.serializers import AssetTypeSerializer
 from asset.models import AssetType
+from response import APIResponse
+from messages import (
+    INVALID_ASSET_TYPE,
+    VALID_ASSET_TYPE,
+    ASSET_TYPE_RETRIEVE_SUCCESS,
+    ASSET_TYPE_RETRIEVE_FAILURE    
+    )
 
 
 class AssetTypeView(ListCreateAPIView):
@@ -11,13 +18,27 @@ class AssetTypeView(ListCreateAPIView):
         serializer = AssetTypeSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return APIResponse(
+                data=serializer.data,
+                message=VALID_ASSET_TYPE,
+                status=status.HTTP_200_OK,
+                )
+        return APIResponse(
+            data=serializer.errors,
+            message=INVALID_ASSET_TYPE,
+            status=status.HTTP_404_NOT_FOUND)
 
     def get(self, request, format=None):
         try:
             queryset = AssetType.objects.all()
             serializer = AssetTypeSerializer(queryset, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return APIResponse(
+                data=serializer.data,
+                message=ASSET_TYPE_RETRIEVE_SUCCESS,
+                status=status.HTTP_200_OK)
         except Exception as e:
-            return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
+            return APIResponse(
+                str(e),
+                message=ASSET_TYPE_RETRIEVE_FAILURE,
+                status=status.HTTP_404_NOT_FOUND,
+                )
