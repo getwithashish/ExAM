@@ -7,7 +7,8 @@ INVALID_USER_DETAILS_ERROR = (
 )
 USERS_RETRIEVAL_UNSUCCESSFUL = "The list of user couldn't be retrieved. Please try again."
 
-#Global Success Messages
+# Global Success Messages
+
 USER_FOUND_SUCCESS= "User found. Success."
 USER_DETAILS_VALIDATED_SUCCESSFULLY= "The provided details match with the database."
 USERS_RETRIEVED_SUCCESSFULLY= "List of users retrieved successfully."
@@ -34,6 +35,11 @@ ASSET_SUCCESSFULLY_CREATED = "Asset successfully created."
 ASSET_SUCCESSFULLY_UPDATED = "Asset details successfully updated."
 ASSET_SUCCESSFULLY_ASSIGNED = "Asset assigned successfully."
 
+#Asset Type -Success/Invalid Messages
+VALID_ASSET_TYPE = "You have entered a valid asset type."
+INVALID_ASSET_TYPE = "The given asset type is invalid."
+ASSET_TYPE_RETRIEVE_SUCCESS="Asset type was successfully retrieved."
+ASSET_TYPE_RETRIEVE_FAILURE="The given asset type was not found."
 # URL Exception Messages
 INVALID_URL_ERROR = "The requested URL is invalid. Please verify and try again."
 URL_DOES_NOT_EXIST = "The requested URL does not exist. Please verify and try again."
