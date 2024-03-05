@@ -3,6 +3,7 @@
 .carousel {
     position: relative;
     overflow: hidden;
+    margin: none;
   }
   
   .carousel-inner {
@@ -12,6 +13,7 @@
   
   .carousel-item {
     flex: 0 0 100%; /* Each item takes up the full width */
+    margin: none;
   }
   
   .prev,
