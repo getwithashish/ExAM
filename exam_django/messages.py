@@ -20,14 +20,18 @@ INVALID_ASSET_DATA = (
 ASSET_CREATED_UNSUCCESSFUL = "Error while creating an asset. Please try again later."
 ASSET_UPDATION_UNSUCCESSFUL = "Error while updating asset details. Please try again."
 ASSET_ASSIGNMENT_FAILED = "Failed to assign asset. Please try again."
-
+BUSINESS_UNIT_CREATED_UNSUCCESSFUL="Error while creating an asset.Please try again later."
+EMPLOYEE_CREATION_UNSUCCESSFUL="Error while creating an employee.Please try again later."
 # Asset Management - Success Messages
 ASSET_LIST_SUCCESSFULLY_RETRIEVED = "Asset list is successfully retreived."
 ASSET_LIST_RETRIEVAL_UNSUCCESSFUL = "Asset list failed to be retrieved. Please try again."
 ASSET_SUCCESSFULLY_CREATED = "Asset successfully created."
+EMPLOYEE_SUCCESSFULLY_CREATED="Employee successfully created."
 ASSET_SUCCESSFULLY_UPDATED = "Asset details successfully updated."
 ASSET_SUCCESSFULLY_ASSIGNED = "Asset assigned successfully."
-
+BUSINESS_UNIT_SUCCESSFULLY_CREATED="Business unit sucessfully created."
+BUSINESS_UNIT_SUCCESSFULLY_RETRIEVED="Business Unit details sucessfully retrieved."
+EMPLOYEE_DETAILS_SUCCESSFULLY_RETRIEVED="Employee details sucessfully retrieved"
 # URL Exception Messages
 INVALID_URL_ERROR = "The requested URL is invalid. Please verify and try again."
 URL_DOES_NOT_EXIST = "The requested URL does not exist. Please verify and try again."
