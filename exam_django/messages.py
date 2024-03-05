@@ -5,6 +5,12 @@ EMPLOYEE_NOT_FOUND_ERROR = "Employee is not found in the request. Please try aga
 INVALID_USER_DETAILS_ERROR = (
     "The provided details do not match. Please check the details and try again."
 )
+USERS_RETRIEVAL_UNSUCCESSFUL = "The list of user couldn't be retrieved. Please try again."
+
+#Global Success Messages
+USER_FOUND_SUCCESS= "User found. Success."
+USER_DETAILS_VALIDATED_SUCCESSFULLY= "The provided details match with the database."
+USERS_RETRIEVED_SUCCESSFULLY= "List of users retrieved successfully."
 
 # Asset Management - Error Messages
 ASSET_NOT_FOUND = (
