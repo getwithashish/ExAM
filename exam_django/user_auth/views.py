@@ -3,13 +3,6 @@ from rest_framework.response import Response
 from user_auth.models import User
 from user_auth.serializers import UserSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from response import APIResponse
-from messages import (
-    ASSET_CREATED_UNSUCCESSFUL,
-    ASSET_LIST_RETRIEVAL_UNSUCCESSFUL,
-    ASSET_LIST_SUCCESSFULLY_RETRIEVED,
-    ASSET_SUCCESSFULLY_CREATED,
-)
 
 
 class UserRetrievalView(generics.GenericAPIView):
