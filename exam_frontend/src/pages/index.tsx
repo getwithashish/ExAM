@@ -20,12 +20,13 @@ const DashboardPage: FC = function () {
     <NavbarSidebarLayout>
       <div>
         <SidebarHandler />
-        <Statistics />        
+        <Statistics />       
+        <AssetTable />
         
         {/* <Addasset/> */}
         {/* <AddAsset/>
       
-        <AssetTable /> */}
+        // <AssetTable /> */}
      
         <div>
       
