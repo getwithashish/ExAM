@@ -1,5 +1,8 @@
 .drawer{
-    border-radius: 20%;
+    /* border-top-left-radius: 20%;
+   border-top-right-radius: 20%; 
+   border-bottom-left-radius: 0;
+   border-bottom-right-radius: 0; */
     color:black;
     /* font-size: x-large; */
     text-align: center;
@@ -12,7 +15,6 @@
 }
 .drawerSubHeading{
     color:black;
-
   padding: 10px; /* Example padding */
   margin-bottom: 10px; /* Example margin bottom */
   font-size: 120%;
