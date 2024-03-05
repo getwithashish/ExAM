@@ -1,5 +1,8 @@
-import { Footer } from "flowbite-react";
+//src/layouts/navbar-sidebar.tsx
+
 import type { FC, PropsWithChildren } from "react";
+import { Footer } from "flowbite-react";
+import { SidebarHandler } from "../components/sidebar/SidebarHandler";
 import Navbar from "../components/Navbar/navbar";
 import Sidebar from "../components/sidebar";
 import { MdFacebook } from "react-icons/md";
@@ -15,7 +18,7 @@ const NavbarSidebarLayout: FC<PropsWithChildren<NavbarSidebarLayoutProps>> =
       <>
         <Navbar />
         <div className="flex items-start pt-16">
-          {/* <Sidebar /> */}
+          <SidebarHandler />
           <MainContent isFooter={isFooter}>{children}</MainContent>
         </div>
       </>

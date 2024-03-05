@@ -5,9 +5,12 @@ from rest_framework import status
 from rest_framework.response import Response
 from asset.models import Location
 from asset.serializers import LocationSerializer
+from rest_framework.permissions import IsAuthenticated
 
 
 class LocationView(ListCreateAPIView):
+    permission_classes = (IsAuthenticated,)
+
     def post(self, request):
         serializer = LocationSerializer(data=request.data)
         if serializer.is_valid():

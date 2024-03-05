@@ -1,14 +1,24 @@
 from rest_framework.generics import ListCreateAPIView
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+
 from asset.serializers import BusinessUnitSerializer
 from asset.models import BusinessUnit
 
 
 class BusinessUnitView(ListCreateAPIView):
+
+    def get_permissions(self):
+        if self.request.method == "GET":
+            return [IsAuthenticated()]
+        elif self.request.method == "POST":
+            return [IsAuthenticated()]
+        else:
+            return super().get_permissions()
+
     def post(self, request, format=None):
         try:
-            queryset = BusinessUnit.objects.all()
             serializer = BusinessUnitSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
