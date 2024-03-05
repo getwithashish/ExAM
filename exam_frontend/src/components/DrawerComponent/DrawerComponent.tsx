@@ -1,20 +1,13 @@
 import React, { Children } from 'react';
 import { Button, Drawer } from 'antd';
-import CardComponent from './CardComponent';
+import CardComponent from '../AssetTable/CardComponent';
 import './DrawerComponent.css'
-
-import { DataType } from './AssetTable';
-interface DrawerProps {
-  visible: boolean;
-  onClose: () => void;
-  selectedRow: DataType | null;
-  title: string;
-  button: React.ReactNode;
-  children:string;
-}
+import { DrawerProps } from './types/index';
+import { CloseOutlined } from '@ant-design/icons';
 const DrawerComponent:React.FC<DrawerProps> = ({ visible, onClose,title ,children}) => {
   return (
     <Drawer
+    
       title={title}
       placement="bottom"
       width={200}
@@ -22,10 +15,13 @@ const DrawerComponent:React.FC<DrawerProps> = ({ visible, onClose,title ,childre
       onClose={onClose}
       visible={visible}
       className="mainDrawer"
-      style={{ background: "offwhite",
-      borderRadius: 40,
+      closeIcon={false}
+      style={{ 
+      // borderRadius: 40,
       padding:30,
-      
+      borderTopLeftRadius: "8%",
+      borderTopRightRadius: "8%",
+   
       
      }}
     >
