@@ -37,6 +37,8 @@ export interface DataType {
   Owner:string;
   Requester:string;
   Comments:string;
+  CreatedAt:Date;
+  UpdatedAt:Date;
   
 }
 
@@ -55,26 +57,15 @@ const AssetTable = () => {
   };
 
   const [tableData, setTableData] = useState<DataType[]>([]);
-  const handleUpdateData = (updatedData) => {
+  const handleUpdateData = (updatedData: { key: any; }) => {
     // Update the table data with the updated data
-    setData((prevData) =>
+    setTableData((prevData: any[]) =>
       prevData.map((item) =>
         item.key === updatedData.key ? { ...item, ...updatedData } : item
       )
     );
   };
-  // const handleUpdate = (updatedData: DataType) => {
-  //   if (selectedRow) {
-  //     const updatedTableData = tableData.map(row => {
-  //       if (row.key === selectedRow.key) {
-  //         return updatedData;
-  //       }
-  //       return row;
-  //     });
-  //     setTableData(updatedTableData);
-  //     setDrawerVisible(false);
-  //   }
-  // };
+ 
 
 
   <div><h1>Asset Overview</h1></div>
@@ -118,7 +109,8 @@ const AssetTable = () => {
         }
         return record.ProductName.indexOf(value.toString()) === 0;
       },
-
+      sorter: (a, b) => a.ProductName.localeCompare(b.ProductName),
+      sortDirections: ['ascend', 'descend'],
 
   
     },
@@ -221,6 +213,8 @@ const AssetTable = () => {
         }
         return record.Version === value;
       },
+      sorter: (a, b) => a.Version - b.Version,
+      sortDirections: ['ascend', 'descend'],
     },
     {
       title: 'Status',
@@ -468,20 +462,25 @@ const AssetTable = () => {
       ],
      
       onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        const dateValue = new Date(value as string).getTime(); // Convert filter value to timestamp
+        const dateValue = new Date(value as string).getTime(); 
     
-        // Convert record's DateOfPurchase to timestamp
+      
         const recordDate = new Date(record.DateOfPurchase).getTime();
     
         if (Array.isArray(value)) {
-            // If value is an array, check if record's DateOfPurchase is included
+    
             return value.some(val => new Date(val).getTime() === recordDate);
         } else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-            // If value is a string, number, or boolean, perform strict comparison
+
             return recordDate === dateValue;
         } else {
-            return false; // Return false for other types of value
+            return false; 
         }
+    },
+    sorter: (a, b) => {
+      const dateA = new Date(a.DateOfPurchase).getTime();
+      const dateB = new Date(b.DateOfPurchase).getTime();
+      return dateA - dateB;
     },
     
     },
@@ -505,6 +504,11 @@ const AssetTable = () => {
           return value.includes(record.WarrantyPeriod);
         }
         return record.WarrantyPeriod.toString().indexOf(value.toString()) === 0;
+      },
+      sorter: (a, b) => {
+        const dateA = new Date(a.WarrantyPeriod).getTime();
+        const dateB = new Date(b.WarrantyPeriod).getTime();
+        return dateA - dateB;
       },
     },
     {
@@ -767,6 +771,82 @@ const AssetTable = () => {
         return record.Configuration === value;
       },
     },
+  
+ 
+    {
+      title: 'Created At',
+      dataIndex: 'CreatedAt',
+      fixed:'left',
+      responsive: ['md'],
+      filters: [
+        {
+          text: '2024-03-05T10:00:00',
+          value: '2024-03-05T10:00:00',
+        },
+        {
+          text: '2024-03-05T10:00:00',
+          value: '2024-03-05T10:00:00',
+        },
+        
+      ],
+      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+        const dateValue = new Date(value as string).getTime(); 
+        const recordDate = new Date(record.CreatedAt).getTime();
+        if (Array.isArray(value)) {
+          return value.some(val => new Date(val as string).getTime() === recordDate);
+        } else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+          return recordDate === dateValue;
+        } else {
+          return false; 
+        }
+      },
+      sorter: (a, b) => {
+        const dateA = new Date(a.CreatedAt).getTime();
+        const dateB = new Date(b.CreatedAt).getTime();
+        return dateA - dateB;
+      },
+      sortDirections: ['ascend', 'descend'],
+    },
+    {
+      title: 'Updated At',
+      dataIndex: 'UpdatedAt',
+      fixed:'left',
+      responsive: ['md'],
+      filters: [
+        {
+          text: '2024-03-05T10:00:00',
+          value: '2024-03-05T10:00:00',
+        },
+        {
+          text: '2024-03-05T10:00:00',
+          value: '2024-03-05T10:00:00',
+        },
+        
+      ],
+      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+        const dateValue = new Date(value as string).getTime(); 
+        const recordDate = new Date(record.UpdatedAt).getTime();
+        if (Array.isArray(value)) {
+          return value.some(val => new Date(val as string).getTime() === recordDate);
+        } else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+          return recordDate === dateValue;
+        } else {
+          return false; 
+        }
+      },
+      sorter: (a, b) => {
+        const dateA = new Date(a.UpdatedAt).getTime();
+        const dateB = new Date(b.UpdatedAt).getTime();
+        return dateA - dateB;
+      },
+      sortDirections: ['ascend', 'descend'],
+    },
+    {
+      title: 'Comments',
+      dataIndex: 'Comments',
+      
+  
+    },
     {
       title: 'Custodian',
       dataIndex: 'Custodian',
@@ -807,15 +887,6 @@ const AssetTable = () => {
         return record.Custodian.indexOf(value.toString()) === 0;
       },
       
-    
-    
-
-  
-    },
-    {
-      title: 'Comments',
-      dataIndex: 'Comments',
-      
   
     },
     {
@@ -830,6 +901,7 @@ const AssetTable = () => {
  
     
     },
+  
   ];
   
   const data = [
@@ -850,7 +922,7 @@ const AssetTable = () => {
       Generation:'cjah',
       Accessories:'Bag,Charger',
       DateOfPurchase:'02/03/2024',
-      WarrantyPeriod:'2Years',
+      WarrantyPeriod:'2',
       ApprovalStatus:'Approved',
       Approver:'Sfm Lead ',
       ModelNumber:'MN001',
@@ -862,7 +934,9 @@ const AssetTable = () => {
       ProductName:'Dell XPS 15 Laptop',
       Owner:'Experion',
       Requester:'sfmManager',
-      AssignAsset:'assign'
+      AssignAsset:'assign',
+      CreatedAt:'2024-03-05T10:00:00',
+      UpdatedAt:'2024-01-05T10:00:00'
     },
     {
       key: '2',
@@ -881,7 +955,7 @@ const AssetTable = () => {
       Generation:'cjah',
       Accessories:'Bag,Charger',
       DateOfPurchase:'02/03/2024',
-      WarrantyPeriod:'2Years',
+      WarrantyPeriod:'2',
       ApprovalStatus:'Approved',
       Approver:'Sfm Lead',
       ModelNumber:'MN001',
@@ -893,7 +967,9 @@ const AssetTable = () => {
       ProductName:'Apple iPhone 12 Pro',
       Owner:'Experion',
       Requester:'sfmLead',
-      AssignAsset:'assign'
+      AssignAsset:'assign',
+      CreatedAt:'2024-03-05T10:00:00',
+      UpdatedAt:'2024-01-05T10:00:00'
     },
     {
       key: '3',
@@ -911,8 +987,8 @@ const AssetTable = () => {
       Processor:'i3',
       Generation:'cjah',
       Accessories:'Bag,Charger',
-      DateOfPurchase:'02/03/2024',
-      WarrantyPeriod:'3Years',
+      DateOfPurchase:'01/03/2024',
+      WarrantyPeriod:'3',
       ApprovalStatus:'Pending',
       Approver:'Sfm Manager',
       ModelNumber:'MN002',
@@ -920,12 +996,13 @@ const AssetTable = () => {
       Memory:'17Gb',
       Storage:'17Gb',
       Configuration:'Intel Core i5-1165G7, 128GB RAM, 512GB SSD, 13.4"',
-
       Custodian:'Ashish',
       ProductName:'Dell XPS 15 Laptop',
       Owner:'Experion',
       Requester:'sfmLead',
-      AssignAsset:'assign'
+      AssignAsset:'assign',
+      CreatedAt:'2024-01-05T10:00:00',
+      UpdatedAt:'2024-03-05T10:00:00'
     },
     {
       key: '4',
@@ -943,8 +1020,8 @@ const AssetTable = () => {
       Processor:'i5',
       Generation:'cjah',
       Accessories:'Bag,Charger',
-      DateOfPurchase:'02/03/2024',
-      WarrantyPeriod:'3Years',
+      DateOfPurchase:'01/03/2024',
+      WarrantyPeriod:'3',
       ApprovalStatus:'Rejected',
       Approver:'Sfm Manager',
       ModelNumber:'MN002',
@@ -956,14 +1033,17 @@ const AssetTable = () => {
       ProductName:'Apple iPhone 12 Pro',
       Owner:'Experion',
       Requester:'sfmSenior',
-      AssignAsset:'assign'
+      AssignAsset:'assign',
+      CreatedAt:'2024-01-05T10:00:00',
+      UpdatedAt:'2024-03-05T10:00:00'
     },
   ];
   
   const drawerTitle = "Asset Details";
+  
   const button = (
-    <Button type="primary" ghost size="large">
-            Update
+    <Button type="primary">
+  
           </Button>
   );
  
@@ -1023,7 +1103,5 @@ const AssetTable = () => {
 export default AssetTable;
 
 
-// function handleAssignAsset(record: DataType): void {
-//   throw new Error('Function not implemented.');
-// }
+
 
