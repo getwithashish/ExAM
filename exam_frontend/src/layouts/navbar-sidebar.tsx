@@ -4,9 +4,8 @@ import type { FC, PropsWithChildren } from "react";
 import { Footer } from "flowbite-react";
 import { SidebarHandler } from "../components/sidebar/SidebarHandler";
 import Navbar from "../components/Navbar/navbar";
-import Sidebar from "../components/sidebar";
 import { MdFacebook } from "react-icons/md";
-import { FaDribbble, FaGithub, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
+import { FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 
 interface NavbarSidebarLayoutProps {
   isFooter?: boolean;
@@ -18,7 +17,7 @@ const NavbarSidebarLayout: FC<PropsWithChildren<NavbarSidebarLayoutProps>> =
       <>
         <Navbar />
         <div className="flex items-start pt-16">
-          <SidebarHandler />
+          {/* <SidebarHandler /> */}
           <MainContent isFooter={isFooter}>{children}</MainContent>
         </div>
       </>
@@ -33,7 +32,7 @@ const MainContent: FC<PropsWithChildren<NavbarSidebarLayoutProps>> = function ({
     <main className="relative h-full w-full overflow-y-auto bg-gray-50 dark:bg-gray-900 lg:ml-64">
       {children}
       {isFooter && (
-        <div className="mx-4 mt-4">
+        <div className=" mt-4">
           <MainContentFooter />
         </div>
       )}
