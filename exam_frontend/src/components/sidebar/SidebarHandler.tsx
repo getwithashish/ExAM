@@ -8,7 +8,7 @@ export const SidebarHandler = () => {
   const [isClicked, setIsClicked] = useState<boolean>(false);
 
   const handleResize = () => {
-    const isMobile: boolean = window.innerWidth <= 768;
+    const isMobile: boolean = window.innerWidth <= 1024;
     setIsSidebarVisible(!isMobile);
     setIsClicked(!isMobile);
   };
@@ -27,7 +27,8 @@ export const SidebarHandler = () => {
 
   const openSidebar = () => {
     console.log("clicked");
-    setIsClicked(true);
+    // setIsClicked(true);
+    setIsSidebarVisible(true)
   };
 
   return (

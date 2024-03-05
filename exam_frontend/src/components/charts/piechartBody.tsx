@@ -5,7 +5,7 @@ import Carousel from './carousel'; // Assuming you have the Carousel component i
 
 export const Statistics = () => {
   const items = [
-    <div className="rounded-lg bg-white p-8 shadow dark:bg-gray-800 m:p-10 xl:p-12 w-5/6 h-full" style={{ marginLeft: "100px" }}>
+    <div className="rounded-lg bg-white p-8 shadow dark:bg-gray-800 m:p-10 xl:p-12 h-full mx-10 my-10 ">
       <div className="mb-3 flex items-center justify-between">
         <div className="shrink-0">
           <span className="text-2xl font-bold leading-none text-gray-900 dark:text-white sm:text-3xl">
@@ -18,7 +18,7 @@ export const Statistics = () => {
       </div>
       <PieChart/>
     </div>,
-    <div className="rounded-lg bg-white p-2 shadow dark:bg-gray-800 m:p-10 xl:p-12 w-5/6 h-full" style={{ marginLeft: "100px" }}>
+    <div className="rounded-lg bg-white p-2 shadow dark:bg-gray-800 m:p-10 xl:p-12 h-full mx-10 my-10" >
       <div className="mb-3 flex items-center justify-between">
         <div className="shrink-0">
           <span className="text-2xl font-bold leading-none text-gray-900 dark:text-white sm:text-3xl">

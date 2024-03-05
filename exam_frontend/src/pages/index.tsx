@@ -12,17 +12,18 @@ import React, { useState, useEffect } from 'react';
 import AssetTable from '../components/AssetTable';
 import { Assignment } from "../components/Assign/Assignment";
 import { Statistics } from "../components/charts/piechartBody";
+import { SidebarHandler } from "../components/sidebar/SidebarHandler";
 
 
 const DashboardPage: FC = function () {
   return (
     <NavbarSidebarLayout>
       <div>
-  
+        <SidebarHandler />
         <Statistics />        
         
         {/* <Addasset/> */}
-        <AddAsset/>
+        {/* <AddAsset/> */}
       
         <AssetTable />
      
