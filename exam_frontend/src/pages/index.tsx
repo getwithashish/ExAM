@@ -12,6 +12,8 @@ import React, { useState, useEffect } from 'react';
 import AssetTable from '../components/AssetTable';
 import { Assignment } from "../components/Assign/Assignment";
 import { Statistics } from "../components/charts/piechartBody";
+// import AddAssetSideDrawer from "../components/SideDrawerComponent/AddAssetSideDrawer";
+import SideDrawerComponent from "../components/SideDrawerComponent/SideDrawerComponent";
 
 
 const DashboardPage: FC = function () {
@@ -22,9 +24,16 @@ const DashboardPage: FC = function () {
         <Statistics />        
         
         {/* <Addasset/> */}
-        <AddAsset/>
-      
+        {/* <AddAsset/> */}
+        
+
+     
         <AssetTable />
+
+        <SideDrawerComponent buttonTextDefault="Add an asset" buttonTextLarge="Add an asset">
+
+        <AddAsset/>
+        </SideDrawerComponent>
      
         <div>
       

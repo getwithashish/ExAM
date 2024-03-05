@@ -4,18 +4,16 @@
 import React, { useState } from 'react';
 import {
   Button,
-  Cascader,
   DatePicker,
   Input,
   Form,
   InputNumber,
   Select,
-  TimePicker,
-  Switch,
-  TreeSelect,
+
 } from 'antd';
 const { TextArea } = Input;
 import styles from './AddAsset.module.css';
+
 
 const { Option } = Select;
 
@@ -29,6 +27,7 @@ const AddAsset: React.FC = () => {
   };
 
   return (
+  
     <div className={styles['container']}>
       <h1 className={styles['heading']}>Add an asset</h1>
       <Form
@@ -174,9 +173,7 @@ const AddAsset: React.FC = () => {
         <InputNumber className={styles['input']}  placeholder="Enter processor" />
         </Form.Item>
 
-        {/* <Form.Item label="Processor Generation:" className={`text-wrap ${styles['formItem']}`}>
-        <InputNumber className={styles['input']}  placeholder="Enter processor generation" />
-        </Form.Item> */}
+       
 
         
         <Form.Item label="Processor Generation" className={styles['formItem']}>
@@ -226,18 +223,6 @@ const AddAsset: React.FC = () => {
           <TextArea rows={4}  className={styles['input']}  placeholder="Enter any note/comment" />
         </Form.Item>
 
-
-
-        <Form.Item label=" Conceder:" className={styles['formItem']}>
-          <Select className={styles['input']}  placeholder="Select Conceder name">
-            <Option value="sukesh">Sukesh</Option>
-            <Option value="mehtab">Mehtab</Option>
-           
-          </Select>
-        </Form.Item>
-
-
-
         <Form.Item label="Approval Status:" className={styles['formItem']}>
           <Select className={styles['input']}  placeholder="Select Approval">
             <Option value="approved">APPROVED</Option>
@@ -254,10 +239,12 @@ const AddAsset: React.FC = () => {
 
       
          <Form.Item >
-          <Button  className={styles['button']} >Submit</Button>
+          <Button  className={styles['button']} ghost style={{background:"blue"}}>Submit</Button>
         </Form.Item>
       </Form>
     </div>
+    
+    
   );
 };
 
