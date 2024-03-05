@@ -51,7 +51,7 @@ class LocationView(ListCreateAPIView):
             serializer = LocationSerializer(locations, many=True)
             locations = serializer.data
             return APIResponse(
-                data=locations.data,
+                data=locations,
                 message=LOCATION_RETRIEVED_SUCCESSFULLY,
                 status=status.HTTP_200_OK,
             )
