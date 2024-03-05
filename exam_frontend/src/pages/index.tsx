@@ -10,7 +10,7 @@ import AddAsset from "../components/AddAsset/AddAsset";
 import { Drawer, Table } from 'antd';
 import type { TableColumnsType, TableProps } from 'antd';
 import React, { useState, useEffect } from 'react';
-import AssetTable from '../components/AssetTable';
+import AssetTable from '../components/AssetTable/AssetTable';
 
 const DashboardPage: FC = function () {
   return (

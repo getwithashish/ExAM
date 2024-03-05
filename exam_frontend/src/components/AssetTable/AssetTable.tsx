@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Input, Space, Table, TableColumnsType } from 'antd';
-import DrawerComponent from './DrawerComponent';
+import DrawerComponent from '../DrawerComponent/DrawerComponent';
 import { SearchOutlined } from '@ant-design/icons';
 import './AssetTable.css';
 import CardComponent from './CardComponent';
@@ -37,6 +37,7 @@ export interface DataType {
   Owner:string;
   Requester:string;
   Comments:string;
+  
 }
 
 const AssetTable = () => {
@@ -53,7 +54,29 @@ const AssetTable = () => {
     setDrawerVisible(false);
   };
 
- 
+  const [tableData, setTableData] = useState<DataType[]>([]);
+  const handleUpdateData = (updatedData) => {
+    // Update the table data with the updated data
+    setData((prevData) =>
+      prevData.map((item) =>
+        item.key === updatedData.key ? { ...item, ...updatedData } : item
+      )
+    );
+  };
+  // const handleUpdate = (updatedData: DataType) => {
+  //   if (selectedRow) {
+  //     const updatedTableData = tableData.map(row => {
+  //       if (row.key === selectedRow.key) {
+  //         return updatedData;
+  //       }
+  //       return row;
+  //     });
+  //     setTableData(updatedTableData);
+  //     setDrawerVisible(false);
+  //   }
+  // };
+
+
   <div><h1>Asset Overview</h1></div>
   const columns: TableColumnsType<DataType> = [
     {
@@ -67,7 +90,7 @@ const AssetTable = () => {
             placeholder="Search Product Name"
             value={selectedKeys[0]}
             onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-            onPressEnter={() => confirm(null)}
+            onPressEnter={() => confirm()}
             style={{ marginBottom: 8, display: 'block' }}
           />
           <Space>
@@ -567,7 +590,7 @@ const AssetTable = () => {
             placeholder="Search Model Number"
             value={selectedKeys[0]}
             onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-            onPressEnter={() => confirm(null)}
+            onPressEnter={() => confirm()}
             style={{ marginBottom: 8, display: 'block' }}
           />
           <Space>
@@ -613,7 +636,7 @@ const AssetTable = () => {
             placeholder="Search Serial Number"
             value={selectedKeys[0]}
             onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-            onPressEnter={() => confirm(null)}
+            onPressEnter={() => confirm()}
             style={{ marginBottom: 8, display: 'block' }}
           />
           <Space>
@@ -756,7 +779,7 @@ const AssetTable = () => {
             placeholder="Search Custodian"
             value={selectedKeys[0]}
             onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-            onPressEnter={() => confirm(null)}
+            onPressEnter={() => confirm()}
             style={{ marginBottom: 8, display: 'block' }}
           />
           <Space>
@@ -793,23 +816,18 @@ const AssetTable = () => {
       title: 'Comments',
       dataIndex: 'Comments',
       
-      // render: () => (
-      //   <span>
-      //     <FontAwesomeIcon icon={faPlus} className="plus-icon" /> {/* Plus button icon */}
-      //   </span>
-      // ),
-    
+  
     },
     {
       title: 'Assign Asset',
       dataIndex: 'AssignAsset',
       fixed:'right',
-      
-      // render: () => (
-      //   <span>
-      //     <FontAwesomeIcon icon={faPlus} className="plus-icon" /> {/* Plus button icon */}
-      //   </span>
-      // ),
+      render: (_data, record) => (
+        <Button  ghost style={{borderRadius:'10px',background:'#D3D3D3',color:'black'}} onClick={() => handleAssignAsset(record)}>
+          +
+        </Button>
+      ),
+ 
     
     },
   ];
@@ -840,11 +858,11 @@ const AssetTable = () => {
       Memory:'16Gb',
       Storage:'16Gb',
       Configuration:'Intel Core i7-1165G7, 16GB RAM, 512GB SSD, 13.4"',
-
       Custodian:'Asima',
       ProductName:'Dell XPS 15 Laptop',
       Owner:'Experion',
-      Requester:'sfmManager'
+      Requester:'sfmManager',
+      AssignAsset:'assign'
     },
     {
       key: '2',
@@ -871,11 +889,11 @@ const AssetTable = () => {
       Memory:'16Gb',
       Storage:'16Gb',
       Configuration:'Intel Core i7-1165G7, 16GB RAM, 512GB SSD, 13.4" ',
-
       Custodian:'Aidrin',
       ProductName:'Apple iPhone 12 Pro',
       Owner:'Experion',
-      Requester:'sfmLead'
+      Requester:'sfmLead',
+      AssignAsset:'assign'
     },
     {
       key: '3',
@@ -906,7 +924,8 @@ const AssetTable = () => {
       Custodian:'Ashish',
       ProductName:'Dell XPS 15 Laptop',
       Owner:'Experion',
-      Requester:'sfmLead'
+      Requester:'sfmLead',
+      AssignAsset:'assign'
     },
     {
       key: '4',
@@ -936,7 +955,8 @@ const AssetTable = () => {
       Custodian:'Ananthan',
       ProductName:'Apple iPhone 12 Pro',
       Owner:'Experion',
-      Requester:'sfmSenior'
+      Requester:'sfmSenior',
+      AssignAsset:'assign'
     },
   ];
   
@@ -946,7 +966,8 @@ const AssetTable = () => {
             Update
           </Button>
   );
-
+ 
+  
   return (
     <>
       <div className='mainHeading'>
@@ -974,6 +995,7 @@ const AssetTable = () => {
         selectedRow={selectedRow}
         title={drawerTitle}
         button={button}
+        onUpdateData={handleUpdateData}
       >
       {selectedRow && (
           <div>
@@ -999,4 +1021,8 @@ const AssetTable = () => {
 
 export default AssetTable;
 
+
+// function handleAssignAsset(record: DataType): void {
+//   throw new Error('Function not implemented.');
+// }
 
