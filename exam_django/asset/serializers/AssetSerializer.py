@@ -5,8 +5,8 @@ from asset.serializers.AssetTypeSerializer import AssetTypeSerializer
 from asset.serializers.EmployeeSerializer import EmployeeSerializer
 from asset.serializers.BusinessUnitSerializer import BusinessUnitSerializer
 from asset.serializers.LocationSerializer import LocationSerializer
-from asset.serializers.UserSerializer import UserSerializer
 from asset.serializers.MemorySerializer import MemorySerializer
+from user_auth.serializers import UserSerializer
 
 
 class AssetReadSerializer(serializers.ModelSerializer):
