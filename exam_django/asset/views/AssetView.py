@@ -1,5 +1,4 @@
 from rest_framework.generics import ListCreateAPIView
-from rest_framework.response import Response
 from rest_framework import status
 from asset.serializers import AssetReadSerializer, AssetWriteSerializer
 from asset.models import Asset
@@ -10,6 +9,14 @@ from asset.models import AssetLog
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 import json
+
+from response import APIResponse
+from messages import (
+    ASSET_CREATED_UNSUCCESSFUL,
+    ASSET_LIST_RETRIEVAL_UNSUCCESSFUL,
+    ASSET_LIST_SUCCESSFULLY_RETRIEVED,
+    ASSET_SUCCESSFULLY_CREATED,
+)
 
 
 class AssetView(ListCreateAPIView):
@@ -24,8 +31,16 @@ class AssetView(ListCreateAPIView):
             requester = request.user
             serializer.validated_data["requester"] = requester
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return APIResponse(
+                data=serializer.data,
+                message=ASSET_SUCCESSFULLY_CREATED,
+                status=status.HTTP_201_CREATED,
+            )
+        return APIResponse(
+            data=serializer.errors,
+            message=ASSET_CREATED_UNSUCCESSFUL,
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
     def list(self, request, *args, **kwargs):
         try:
@@ -45,12 +60,25 @@ class AssetView(ListCreateAPIView):
             # TODO Wrap in custom response format
             if page is not None:
                 serializer = AssetReadSerializer(page, many=True)
-                return self.get_paginated_response(serializer.data)
+                paginated_data = self.get_paginated_response(serializer.data)
+                return APIResponse(
+                    data=paginated_data.data,
+                    message=ASSET_LIST_SUCCESSFULLY_RETRIEVED,
+                    status=status.HTTP_200_OK,
+                )
 
             serializer = AssetReadSerializer(queryset, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return APIResponse(
+                data=serializer.data,
+                message=ASSET_LIST_SUCCESSFULLY_RETRIEVED,
+                status=status.HTTP_200_CREATED,
+            )
         except Exception as e:
-            return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
+            return APIResponse(
+                data=serializer.errors,
+                message=ASSET_LIST_RETRIEVAL_UNSUCCESSFUL,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
 @receiver(pre_save, sender=Asset)

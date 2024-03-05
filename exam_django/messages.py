@@ -22,6 +22,8 @@ ASSET_UPDATION_UNSUCCESSFUL = "Error while updating asset details. Please try ag
 ASSET_ASSIGNMENT_FAILED = "Failed to assign asset. Please try again."
 
 # Asset Management - Success Messages
+ASSET_LIST_SUCCESSFULLY_RETRIEVED = "Asset list is successfully retreived."
+ASSET_LIST_RETRIEVAL_UNSUCCESSFUL = "Asset list failed to be retrieved. Please try again."
 ASSET_SUCCESSFULLY_CREATED = "Asset successfully created."
 ASSET_SUCCESSFULLY_UPDATED = "Asset details successfully updated."
 ASSET_SUCCESSFULLY_ASSIGNED = "Asset assigned successfully."
