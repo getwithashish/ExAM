@@ -1,9 +1,10 @@
 import type { FC } from "react";
 import { Button, DarkThemeToggle, Navbar } from "flowbite-react";
 import { FaBell } from 'react-icons/fa';
-import  styles from './navbar.module.css'
-import MenuListComposition from "./menuItem";
-import AccountMenu from "./notificationMenuItem";
+import  styles from './navbar.module.css';
+import MenuListComposition from "../menuItem";
+import AccountMenu from "../notificationMenuItem";
+
 
 const ExampleNavbar: FC = function () {
   return (
@@ -11,12 +12,14 @@ const ExampleNavbar: FC = function () {
       <div className="w-full p-3 lg:px-5 lg:pl-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <Navbar.Brand href="/">
-              <img alt="" src="/images/logo.svg" className="mr-3 h-6 sm:h-8" />
+            {/* <Navbar.Brand href="/"> */}
+             
               <span className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white">
-                ExAM
+             
+              <img src="../../public/images/logo.png" alt="Logo" className="mr-3 h-6 sm:h-8" />
+              
               </span>
-            </Navbar.Brand>
+            {/* </Navbar.Brand> */}
           </div>
           <div className="flex items-center gap-3">
 
@@ -32,8 +35,7 @@ const ExampleNavbar: FC = function () {
 
                
                  <DarkThemeToggle />
-                
-                <MenuListComposition/>
+                 <MenuListComposition/>
             </div>
           </div>
         </div>
