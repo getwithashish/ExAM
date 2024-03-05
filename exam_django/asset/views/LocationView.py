@@ -6,6 +6,12 @@ from rest_framework.response import Response
 from asset.models import Location
 from asset.serializers import LocationSerializer
 from rest_framework.permissions import IsAuthenticated
+from response import APIResponse
+from messages import (
+    LOCATION_RETRIEVED_SUCCESSFULLY,
+    LOCATION_CREATED_SUCCESSFULLY,
+    LOCATION_RETRIEVAL_FAILED,
+)
 
 
 class LocationView(ListCreateAPIView):
@@ -15,8 +21,16 @@ class LocationView(ListCreateAPIView):
         serializer = LocationSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response("successfully inserted", status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return APIResponse(
+                data=[],
+                message=LOCATION_CREATED_SUCCESSFULLY,
+                status=status.HTTP_200_OK,
+            )
+        return APIResponse(
+            data=[],
+            message=LOCATION_RETRIEVAL_FAILED,
+            status=status.HTTP_400,
+        )
 
     def get(self, request):
         try:
@@ -27,10 +41,20 @@ class LocationView(ListCreateAPIView):
                 # Serialize the paginated queryset
                 serializer = LocationSerializer(page, many=True)
                 # Return the paginated response
-                return self.get_paginated_response(serializer.data)
+                locations = self.get_paginated_response(serializer.data)
+                return APIResponse(
+                    data=locations.data,
+                    message=LOCATION_RETRIEVED_SUCCESSFULLY,
+                    status=status.HTTP_200_OK,
+                )
             # Serialize the queryset
             serializer = LocationSerializer(locations, many=True)
-            return Response(serializer.data)
+            locations = serializer.data
+            return APIResponse(
+                data=locations.data,
+                message=LOCATION_RETRIEVED_SUCCESSFULLY,
+                status=status.HTTP_200_OK,
+            )
 
         except Exception:
             return Response(

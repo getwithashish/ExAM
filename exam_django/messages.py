@@ -23,10 +23,16 @@ ASSET_ASSIGNMENT_FAILED = "Failed to assign asset. Please try again."
 
 # Asset Management - Success Messages
 ASSET_LIST_SUCCESSFULLY_RETRIEVED = "Asset list is successfully retreived."
-ASSET_LIST_RETRIEVAL_UNSUCCESSFUL = "Asset list failed to be retrieved. Please try again."
+ASSET_LIST_RETRIEVAL_UNSUCCESSFUL = (
+    "Asset list failed to be retrieved. Please try again."
+)
 ASSET_SUCCESSFULLY_CREATED = "Asset successfully created."
 ASSET_SUCCESSFULLY_UPDATED = "Asset details successfully updated."
 ASSET_SUCCESSFULLY_ASSIGNED = "Asset assigned successfully."
+ASSET_COUNT_SUCCESSFULLY_RETRIEVED = "Asset count is successfully retreived."
+ASSET_COUNT_RETRIEVAL_UNSUCCESSFUL = (
+    "Asset count failed to be retrieved. Please try again."
+)
 
 # URL Exception Messages
 INVALID_URL_ERROR = "The requested URL is invalid. Please verify and try again."
@@ -36,3 +42,9 @@ URL_PERMISSION_DENIED = "You do not have permission to access the requested URL.
 URL_TIMEOUT_ERROR = "The request to the URL timed out. Please try again."
 URL_CONNECTION_ERROR = "Failed to establish a connection to the URL. Please try again."
 URL_SERVER_ERROR = "The server encountered an error while processing the request for the URL. Please try again later."
+
+# Location messages
+LOCATION_RETRIEVED_SUCCESSFULLY = "Successfully retrived locations "
+LOCATION_RETRIEVAL_FAILED = "Failed to retrieve locations "
+LOCATION_CREATED_SUCCESSFULLY = "Location inserted successfully"
+LOCATION_CREATION_FAILED = "Location insertion failed "
