@@ -11,8 +11,7 @@ import type { TableColumnsType, TableProps } from 'antd';
 import React, { useState, useEffect } from 'react';
 import AssetTable from '../components/AssetTable/AssetTable'
 import { Assignment } from "../components/Assign/Assignment";
-import { Statistics } from "../components/charts/piechartBody";
-
+import { Statistics } from "../components/ChartComponents/PieCharts/piechartBody";
 
 const DashboardPage: FC = function () {
   return (
@@ -22,9 +21,9 @@ const DashboardPage: FC = function () {
         <Statistics />        
         
         {/* <Addasset/> */}
-        {/* <AddAsset/> */}
+        {/* <AddAsset/>
       
-        <AssetTable />
+        <AssetTable /> */}
      
         <div>
       
