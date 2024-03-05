@@ -39,6 +39,7 @@ class AssetWriteSerializer(serializers.ModelSerializer):
         fields = "__all__"
         # exclude = ["conceder", "approval_status", "created_at", "updated_at", "requester", "request_type"]
         read_only_fields = (
+            "custodian",
             "conceder",
             "approval_status",
             "created_at",

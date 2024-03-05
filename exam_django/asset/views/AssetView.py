@@ -8,16 +8,21 @@ from django.dispatch import receiver
 from django.db import transaction
 from asset.models import AssetLog
 from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.permissions import IsAuthenticated
 import json
 
 
 class AssetView(ListCreateAPIView):
 
     pagination_class = LimitOffsetPagination
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request, format=None):
         serializer = AssetWriteSerializer(data=request.data)
         if serializer.is_valid():
+            serializer.validated_data["request_type"] = "CREATE"
+            requester = request.user
+            serializer.validated_data["requester"] = requester
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
