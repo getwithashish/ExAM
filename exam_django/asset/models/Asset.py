@@ -28,9 +28,9 @@ approval_status_choices = (
 )
 
 request_type_choices = (
-    ("ASSET CREATION", "ASSET CREATION"),
-    ("ASSET ASSIGNMENT", "ASSET ASSIGNMENT"),
-    ("ASSET UPDATE", "ASSET UPDATE"),
+    ("CREATE", "CREATE"),
+    ("ASSIGN", "ASSIGN"),
+    ("UPDATE", "UPDATE"),
 )
 
 
