@@ -13,8 +13,8 @@ from asset.models import (
 import json
 from response import APIResponse
 from messages import (
-    ASSET_SUCCESSFULLY_CREATED,
     ASSET_NOT_FOUND,
+    ASSET_LOG_FOUND,
 )
 
 
@@ -127,7 +127,7 @@ class AssetLogView(APIView):
             # return JsonResponse(response_data, status=200)
             return APIResponse(
                 data=response_data,
-                message=ASSET_SUCCESSFULLY_CREATED,
+                message=ASSET_LOG_FOUND,
                 status=status.HTTP_201_CREATED,
             )
 
