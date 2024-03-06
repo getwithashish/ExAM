@@ -1,0 +1,45 @@
+/* carousel.module.css */
+
+.carousel {
+    position: relative;
+    overflow: hidden;
+    margin: none;
+  }
+  
+  .carousel-inner {
+    display: flex;
+    transition: transform 0.5s ease; /* Smooth transition effect */
+  }
+  
+  .carousel-item {
+    flex: 0 0 100%; /* Each item takes up the full width */
+    margin: none;
+  }
+  
+  .prev,
+  .next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    font-size: 18px;
+  }
+  
+  .prev {
+    left: 10px;
+    margin-left: 50px;
+  }
+  
+  .next {
+    right: 10px;
+    margin-right: 30px;
+  }
+
+  .hidden {
+    display: none;
+  }
+  
+  
