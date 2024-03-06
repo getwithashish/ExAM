@@ -1,19 +1,42 @@
+// components/PieChartHardware.js
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import Stack from "@mui/material/Stack";
 import { PieChart } from "@mui/x-charts/PieChart";
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-
-const data = [
-    { label: "IN STORE", value: 200, color: '#455e90'},
-    { label: "IN USE", value: 1300, color:  '#304069'},
-    { label: "IN REPAIR", value: 150, color: '#4f92ef'},
-    { label: "EXPIRED", value: 30 , color: '#b3d2f8'},
-    { label: "DISPOSED", value: 50, color: '#7db1fb'},
-];
+import axiosInstance from '../../config/AxiosConfig';
+import { AssetCountData } from './types'; // Adjust the path as needed
 
 export default function PieChartHardware() {
   const [isHidden, setIsHidden] = useState(false);
+
+  // const fetchData = async () => {
+  //   await axiosInstance.get('/asset/asset_count').then((res) => res)
+  // };
+
+  // Wrap the query key 'assetCount' in an object with appropriate options
+
+  
+
+  
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['assetCount'],
+    queryFn: ():Promise<{hardware:[], software:[]}> => axiosInstance.get('/asset/asset_count').then((res) => {
+      console.log(res);
+      return res.data
+    }),
+  });
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error fetching data</div>;
+
+  const chartData = data.hardware.map((item: AssetCountData) => ({
+    label: item.status,
+    value: item.count,
+    color: '#' + Math.floor(Math.random() * 16777215).toString(16) // Generate random color
+  }));
+  console.log(chartData);
 
   return (
     <Stack direction="row">
@@ -31,7 +54,7 @@ export default function PieChartHardware() {
       <PieChart
         series={[
           {
-            data,
+            data: chartData,
             innerRadius: 60,
             outerRadius: 140,
             paddingAngle: 1,
@@ -49,7 +72,7 @@ export default function PieChartHardware() {
         legend={{
           direction: 'column',
           position: { vertical: 'middle', horizontal: 'right' },
-          hidden: isHidden // Setting hidden property based on isHidden state
+          hidden: isHidden
         }}
       />
     </Stack>
