@@ -1,18 +1,10 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { Badge, Dropdown, useTheme } from "flowbite-react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { FC } from "react";
 import NavbarSidebarLayout from "../layouts/navbar-sidebar";
-// import Addasset from '../components/Addasset'
 import AddAsset from "../components/AddAsset/AddAsset";
-
-// import { FaFilter } from "react-icons/fa";
-import { Drawer, Table } from 'antd';
-import type { TableColumnsType, TableProps } from 'antd';
-import React, { useState, useEffect } from 'react';
 import AssetTable from '../components/AssetTable/AssetTable'
-import { Assignment } from "../components/Assign/Assignment";
 import { Statistics } from "../components/charts/piechartBody";
-// import AddAssetSideDrawer from "../components/SideDrawerComponent/AddAssetSideDrawer";
 import SideDrawerComponent from "../components/SideDrawerComponent/SideDrawerComponent";
 import { SidebarHandler } from "../components/sidebar/SidebarHandler";
 import AssignmentDrawer from "../components/Assign/AssignmentDrawer";
@@ -25,33 +17,25 @@ const [displaydrawer,setDisplayDrawer] = useState(false)
     setDisplayDrawer(true)
   }
   return (
-    <NavbarSidebarLayout>
-      <div>
-        <SidebarHandler />
-        <Statistics />        
-     
-        
-       <AssignmentDrawer buttonTextDefault="Add an asset" displayDrawer={displaydrawer} >
+    <QueryClientProvider client={new QueryClient()}>
+      <NavbarSidebarLayout>
+        <div>
+          <SidebarHandler />
+            <Statistics />        
+                
+            <AssignmentDrawer buttonTextDefault="Add an asset" displayDrawer={displaydrawer} >
         <Assignment />
        </AssignmentDrawer>
-          
-        
-     
-        <AssetTable  showDrawer={showDefaultDrawer}/> 
-
-        <SideDrawerComponent buttonTextDefault="Add an asset" buttonTextLarge="Add an asset">
-
-        <AddAsset/>
-        </SideDrawerComponent>
-     
-        <div>
-      
+                    <AssetTable />
+                  <SideDrawerComponent buttonTextDefault="Add an asset" buttonTextLarge="Add an asset">
+                <AddAsset/>
+              </SideDrawerComponent>     
+            <div>      
+          </div>
         </div>
-      </div>
-    </NavbarSidebarLayout>
+      </NavbarSidebarLayout>
+    </QueryClientProvider>   
   );
 };
-
-
 
 export default DashboardPage;

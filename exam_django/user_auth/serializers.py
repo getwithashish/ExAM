@@ -4,7 +4,7 @@ from rest_framework.exceptions import ValidationError
 from user_auth.models import User
 
 
-class RegisterSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
@@ -19,9 +19,9 @@ class RegisterSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "username": {"required": True},
             "password": {"write_only": True, "required": True},
-            "email": {"required": False},
+            "email": {"required": True},
             "mobile": {"required": True},
-            "user_scope": {"required": False},
+            "user_scope": {"required": True},
         }
 
     def create(self, validated_data):
