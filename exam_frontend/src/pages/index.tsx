@@ -36,7 +36,7 @@ const [displaydrawer,setDisplayDrawer] = useState(false)
 
                     <AssetTable showDrawer={showDefaultDrawer} />
 
-                  <SideDrawerComponent  buttonTextLarge="Add an asset" displayDrawer={displaydrawer} closeDrawer={closeDrawer}>
+                  <SideDrawerComponent  displayDrawer={displaydrawer} closeDrawer={closeDrawer}>
                     <AddAsset/>
                   </SideDrawerComponent>   
 

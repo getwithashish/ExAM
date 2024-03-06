@@ -3,7 +3,7 @@ import SideDrawerProps from './types';
 import { Button, Drawer, Space } from 'antd';
 import type { DrawerProps } from 'antd';
 
-const SideDrawerComponent: React.FC<SideDrawerProps> = ({children,buttonTextLarge,displayDrawer,closeDrawer}) => {
+const SideDrawerComponent: React.FC<SideDrawerProps> = ({children,displayDrawer,closeDrawer}) => {
   const [open, setOpen] = useState(false);
   const [size, setSize] = useState<DrawerProps['size']>();
 
@@ -34,9 +34,7 @@ const SideDrawerComponent: React.FC<SideDrawerProps> = ({children,buttonTextLarg
     <>
       <Space>
        
-        <Button  ghost style={{background:"blue"}} onClick={showLargeDrawer}>
-        {buttonTextLarge}
-        </Button>
+        
       </Space>
       <Drawer
         
