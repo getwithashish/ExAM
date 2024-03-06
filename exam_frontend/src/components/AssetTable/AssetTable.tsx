@@ -42,13 +42,14 @@ export interface DataType {
   
 }
 
-const AssetTable = () => {
+const AssetTable = (showDrawer) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   
 
   const handleRowClick = (record: React.SetStateAction<null>) => {
     setSelectedRow(record);
+    
     setDrawerVisible(true);
   };
 
@@ -892,15 +893,18 @@ const AssetTable = () => {
     {
       title: 'Assign Asset',
       dataIndex: 'AssignAsset',
-      fixed:'right',
-      render: (_data, record) => (
-        <Button  ghost style={{borderRadius:'10px',background:'#D3D3D3',color:'black'}} onClick={() => handleAssignAsset(record)}>
+      fixed: 'right',
+      render: () => (
+        <Button 
+          ghost 
+          style={{ borderRadius: '10px', background: '#D3D3D3', color: 'black' }}
+          onClick={() => showDrawer()}
+        >
           +
         </Button>
       ),
- 
-    
-    },
+    }
+    ,
   
   ];
   
@@ -1057,7 +1061,12 @@ const AssetTable = () => {
         columns={columns}
         dataSource={data}
         onRow={(record) => ({
-          onClick: () => handleRowClick(record),
+          
+          onClick: () => {
+            if(columns.dataIndex !== 'AssignAsset')
+            {  handleRowClick(record)}
+          }
+          ,
         })}
         scroll={{ x: 'max-content' }}
         className="mainTable"

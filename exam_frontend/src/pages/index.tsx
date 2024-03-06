@@ -15,21 +15,29 @@ import { Statistics } from "../components/charts/piechartBody";
 // import AddAssetSideDrawer from "../components/SideDrawerComponent/AddAssetSideDrawer";
 import SideDrawerComponent from "../components/SideDrawerComponent/SideDrawerComponent";
 import { SidebarHandler } from "../components/sidebar/SidebarHandler";
+import AssignmentDrawer from "../components/Assign/AssignmentDrawer";
 
 
 const DashboardPage: FC = function () {
+const [displaydrawer,setDisplayDrawer] = useState(false)
+
+  const showDefaultDrawer =()=>{
+    setDisplayDrawer(true)
+  }
   return (
     <NavbarSidebarLayout>
       <div>
         <SidebarHandler />
         <Statistics />        
-        
-        {/* <Addasset/> */}
-        {/* {/* <AddAsset/> */}
-        
-
      
-        <AssetTable /> 
+        
+       <AssignmentDrawer buttonTextDefault="Add an asset" displayDrawer={displaydrawer} >
+        <Assignment />
+       </AssignmentDrawer>
+          
+        
+     
+        <AssetTable  showDrawer={showDefaultDrawer}/> 
 
         <SideDrawerComponent buttonTextDefault="Add an asset" buttonTextLarge="Add an asset">
 

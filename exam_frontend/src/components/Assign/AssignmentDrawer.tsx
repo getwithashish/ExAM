@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import SideDrawerProps from './types';
 import { Button, Drawer, Space } from 'antd';
 import type { DrawerProps } from 'antd';
 
-const SideDrawerComponent: React.FC<SideDrawerProps> = ({children,buttonTextLarge}) => {
+const AssignmentDrawer: React.FC<SideDrawerProps> = ({children, buttonTextDefault,displayDrawer}) => {
   const [open, setOpen] = useState(false);
   const [size, setSize] = useState<DrawerProps['size']>();
 
@@ -12,24 +12,24 @@ const SideDrawerComponent: React.FC<SideDrawerProps> = ({children,buttonTextLarg
     setOpen(true);
   };
 
-  const showLargeDrawer = () => {
-    setSize('large');
-    setOpen(true);
-  };
-
+ 
   const onClose = () => {
     setOpen(false);
   };
 
+  useEffect(() => {
+    if(displayDrawer)
+    showDefaultDrawer();
+    
+  }, []);
+
   return (
     <>
       <Space>
-        {/* <Button type="primary" onClick={showDefaultDrawer}>
+        <Button type="primary" onClick={showDefaultDrawer}>
         {buttonTextDefault}
-        </Button> */}
-        <Button  ghost style={{background:"blue"}} onClick={showLargeDrawer}>
-        {buttonTextLarge}
         </Button>
+        
       </Space>
       <Drawer
         // title={`${size} Drawer`}
@@ -39,13 +39,13 @@ const SideDrawerComponent: React.FC<SideDrawerProps> = ({children,buttonTextLarg
         open={open}
         style={{borderRadius:"10px"}}
         // extra={
-        //   <Space>
-        //     <Button onClick={onClose}>Cancel</Button>
-        //     <Button  ghost style={{background:"blue"}} onClick={onClose}>
-        //       OK
-        //     </Button>
-        //   </Space>
-        // }
+      //     <Space>
+      //       <Button onClick={onClose}>Cancel</Button>
+      //       <Button  ghost style={{background:"blue"}} onClick={onClose}>
+      //         OK
+      //       </Button>
+      //     </Space>
+      //   }
       >
           {children}
       </Drawer>
@@ -53,4 +53,4 @@ const SideDrawerComponent: React.FC<SideDrawerProps> = ({children,buttonTextLarg
   );
 };
 
-export default SideDrawerComponent;
+export default AssignmentDrawer;
