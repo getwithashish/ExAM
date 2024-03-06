@@ -11,7 +11,7 @@ import styles from './sidebar.module.css';
 import { ExamSidebarProps } from './types';
 
 
-const ExamSidebar: React.FC<ExamSidebarProps> = ({ isSidebarVisible, isClicked, openSidebar, closeSidebar }) => {
+const ExamSidebar: React.FC<ExamSidebarProps> = ({ isSidebarVisible, isClicked, openSidebar, closeSidebar ,addAsset }) => {
   const handleLogout = () => {
     // Logic for handling logout
     console.log('Logout clicked');
@@ -37,7 +37,7 @@ const ExamSidebar: React.FC<ExamSidebarProps> = ({ isSidebarVisible, isClicked, 
                     <h2 className={`${styles['Heading']} dark:text-white`}>Navigation</h2>
                   </div>
                   <Sidebar.Item icon={HiViewBoards} className={styles['scaleup']}>Dashboard</Sidebar.Item>
-                  <Sidebar.Item icon={FaDesktop} className={styles['scaleup']} >Add Asset</Sidebar.Item>
+                  <Sidebar.Item icon={FaDesktop} className={styles['scaleup']} onClick={addAsset} >Add Asset</Sidebar.Item>
                 </Sidebar.ItemGroup>
 
                 <Sidebar.ItemGroup>

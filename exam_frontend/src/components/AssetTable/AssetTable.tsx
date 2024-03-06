@@ -42,10 +42,10 @@ export interface DataType {
   
 }
 
-const AssetTable = (showDrawer) => {
+const AssetTable = ({showDrawer}:{showDrawer:()=>void}) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
-  
+  const [isClicked,setIsClicked] = useState(false)
 
   const handleRowClick = (record: React.SetStateAction<null>) => {
     setSelectedRow(record);
@@ -897,8 +897,8 @@ const AssetTable = (showDrawer) => {
       render: () => (
         <Button 
           ghost 
-          style={{ borderRadius: '10px', background: '#D3D3D3', color: 'black' }}
-          onClick={() => showDrawer()}
+          style={{ borderRadius: '10px', background: '#D3D3D3', color: 'black', zIndex:20 }}
+          onClick={() =>  setIsClicked (true)}
         >
           +
         </Button>
@@ -1060,14 +1060,17 @@ const AssetTable = (showDrawer) => {
       <Table
         columns={columns}
         dataSource={data}
-        onRow={(record) => ({
-          
+        onRow={(record) => { console.log(record);  return{
           onClick: () => {
-            if(columns.dataIndex !== 'AssignAsset')
-            {  handleRowClick(record)}
-          }
-          ,
-        })}
+            if(!isClicked){
+              handleRowClick(record)
+            }
+            else{
+              showDrawer();
+            }
+              }
+        }
+        }}
         scroll={{ x: 'max-content' }}
         className="mainTable"
         pagination={false}
@@ -1075,7 +1078,8 @@ const AssetTable = (showDrawer) => {
           borderRadius: 10,
           padding: 20,
           boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-          fontSize: "50px"
+          fontSize: "50px",
+          zIndex:-30
         }}
       />
       <DrawerComponent
