@@ -29,7 +29,7 @@ const DashboardPage: FC = function () {
         
 
      
-        <AssetTable /> */}
+        <AssetTable /> 
 
         <SideDrawerComponent buttonTextDefault="Add an asset" buttonTextLarge="Add an asset">
 
