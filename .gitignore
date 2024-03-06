@@ -447,3 +447,9 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+
+dist
+node_modules
+tsconfig.tsbuildinfo
+yarn-error.log
