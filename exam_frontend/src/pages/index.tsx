@@ -30,7 +30,6 @@ const DashboardPage: FC = function () {
         
 
      
-        // <AssetTable /> */}
 
         <SideDrawerComponent buttonTextDefault="Add an asset" buttonTextLarge="Add an asset">
 

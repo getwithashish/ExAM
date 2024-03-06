@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { Key, useState } from 'react';
 import { Button, Input, Space, Table, TableColumnsType } from 'antd';
 import DrawerComponent from '../DrawerComponent/DrawerComponent';
 import { SearchOutlined } from '@ant-design/icons';
 import './AssetTable.css';
 import CardComponent from './CardComponent';
 import { CloseOutlined } from '@ant-design/icons';
+// import axiosInstance from '../../config/AxiosConfig';
+// import { useQuery } from '@tanstack/react-query';
 
 export interface DataType {
   key: React.Key;
@@ -42,7 +44,28 @@ export interface DataType {
   
 }
 
+
 const AssetTable = () => {
+  // const fetchData = async () => {
+  //   const response = await axiosInstance.get('asset/?limit=1')
+  //   return response.data;
+  // }
+  
+  // const { data, isLoading, isError } = useQuery({
+  //   queryKey: 'assetList',
+  //   queryFn: fetchData
+  // });
+  
+  // if (isLoading) return <div>Loading...</div>;
+  // if (isError) return <div>Error fetching data</div>;
+  
+  // const assetData = data.results[0];
+  // const assetUUID = assetData.asset_uuid;
+  // const assetType = assetData.asset_type;
+  // const custodian = assetData.custodian;
+  // const location = assetData.location;
+  // const { asset_uuid, asset_type, custodian, location, ...otherProperties } = assetData;
+  
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   
@@ -66,7 +89,6 @@ const AssetTable = () => {
     );
   };
  
-
 
   <div><h1>Asset Overview</h1></div>
   const columns: TableColumnsType<DataType> = [
@@ -103,7 +125,8 @@ const AssetTable = () => {
           </Space>
         </div>
       ),
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+
         if (Array.isArray(value)) {
           return value.includes(record.ProductName);
         }
@@ -133,7 +156,8 @@ const AssetTable = () => {
       ],
       // Specify the condition of filtering result
       // Here is that finding the name started with `value`
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+
         if (Array.isArray(value)) {
           return value.includes(record.AssetId);
         }
@@ -162,7 +186,8 @@ const AssetTable = () => {
         },
   
       ],
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+
         if (Array.isArray(value)) {
           return value.includes(record.AssetCategory);
         }
@@ -185,8 +210,8 @@ const AssetTable = () => {
           value: 'Monitor',
         },
       ],
-      
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+
         if (Array.isArray(value)) {
           return value.includes(record.AssetType);
         }
@@ -231,7 +256,7 @@ const AssetTable = () => {
         },
       ],
      
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
      
         if (Array.isArray(value)) {
           return value.includes(record.Status);
@@ -254,7 +279,8 @@ const AssetTable = () => {
         },
       ],
      
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+
         if (Array.isArray(value)) {
           return value.includes(record.Location);
         }
@@ -276,8 +302,8 @@ const AssetTable = () => {
           value: 'Trivandrum',
         },
       ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+
         if (Array.isArray(value)) {
           return value.includes(record.InVoiceLocation);
         }
@@ -307,7 +333,8 @@ const AssetTable = () => {
         },
       ],
      
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+
         if (Array.isArray(value)) {
           return value.includes(record.BusinessUnit);
         }
@@ -329,7 +356,8 @@ const AssetTable = () => {
         },
       ],
      
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+
         if (Array.isArray(value)) {
           return value.includes(record.Os);
         }
@@ -350,8 +378,8 @@ const AssetTable = () => {
           value: '12',
         }
       ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+
         if (Array.isArray(value)) {
           return value.includes(record.OsVersion);
         }
@@ -373,7 +401,8 @@ const AssetTable = () => {
         },
       ],
      
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+
         if (Array.isArray(value)) {
           return value.includes(record.MobileOs);
         }
@@ -395,7 +424,8 @@ const AssetTable = () => {
         },
       ],
      
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+
         if (Array.isArray(value)) {
           return value.includes(record.Processor);
         }
@@ -417,7 +447,8 @@ const AssetTable = () => {
         },
       ],
      
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+
         if (Array.isArray(value)) {
           return value.includes(record.Generation);
         }
@@ -438,8 +469,8 @@ const AssetTable = () => {
           value: 'In Store',
         },
       ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+
         if (Array.isArray(value)) {
           return value.includes(record.Accessories);
         }
@@ -461,7 +492,8 @@ const AssetTable = () => {
         },
       ],
      
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+
         const dateValue = new Date(value as string).getTime(); 
     
       
@@ -498,8 +530,9 @@ const AssetTable = () => {
           value: '3Years',
         },
       ],
+      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+
      
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
         if (Array.isArray(value)) {
           return value.includes(record.WarrantyPeriod);
         }
@@ -525,8 +558,8 @@ const AssetTable = () => {
           value: '3Years',
         },
       ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+
         if (Array.isArray(value)) {
           return value.includes(record.WarrantyPeriod);
         }
@@ -552,7 +585,8 @@ const AssetTable = () => {
         },
       ],
      
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+
         if (Array.isArray(value)) {
           return value.includes(record.ApprovalStatus);
         }
@@ -574,7 +608,8 @@ const AssetTable = () => {
         },
       ],
      
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+
         if (Array.isArray(value)) {
           return value.includes(record.Approver);
         }
@@ -617,7 +652,8 @@ const AssetTable = () => {
           </Space>
         </div>
       ),
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+
         if (Array.isArray(value)) {
           return value.includes(record.ModelNumber);
         }
@@ -661,7 +697,8 @@ const AssetTable = () => {
           </Space>
         </div>
       ),
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+
         if (Array.isArray(value)) {
           return value.includes(record.SerialNumber);
         }
@@ -685,8 +722,8 @@ const AssetTable = () => {
           value: '128Gb',
         },
       ],
-      
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+
         if (Array.isArray(value)) {
           return value.includes(record.Memory);
         }
@@ -707,8 +744,8 @@ const AssetTable = () => {
           value: '128Gb',
         },
       ],
-      
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+
         if (Array.isArray(value)) {
           return value.includes(record.Storage);
         }
@@ -740,8 +777,8 @@ const AssetTable = () => {
           value: 'sfmSenior',
         },
       ],
-      
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+
         if (Array.isArray(value)) {
           return value.includes(record.Requester);
         }
@@ -764,7 +801,8 @@ const AssetTable = () => {
           value: 'Intel Core i5-1165G7, 128GB RAM, 512GB SSD, 13.4" ',
         },
       ],
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+
         if (Array.isArray(value)) {
           return value.includes(record.Configuration);
         }
@@ -789,7 +827,8 @@ const AssetTable = () => {
         },
         
       ],
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+
         const dateValue = new Date(value as string).getTime(); 
         const recordDate = new Date(record.CreatedAt).getTime();
         if (Array.isArray(value)) {
@@ -823,7 +862,8 @@ const AssetTable = () => {
         },
         
       ],
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+
         const dateValue = new Date(value as string).getTime(); 
         const recordDate = new Date(record.UpdatedAt).getTime();
         if (Array.isArray(value)) {
@@ -880,7 +920,8 @@ const AssetTable = () => {
           </Space>
         </div>
       ),
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+
         if (Array.isArray(value)) {
           return value.includes(record.Custodian);
         }
@@ -903,6 +944,7 @@ const AssetTable = () => {
     },
   
   ];
+  
   
   const data = [
     {
@@ -1078,7 +1120,7 @@ const AssetTable = () => {
         onUpdateData={handleUpdateData}
         closeIcon={<CloseOutlined rev={undefined} />}
       >
-      {selectedRow !== null && (
+      {selectedRow  && (
           <div>
             <h2 className='drawerHeading'>{selectedRow.ProductName}</h2>
             <p className='drawerSubHeading'>Asset Id: {selectedRow.AssetId}</p>

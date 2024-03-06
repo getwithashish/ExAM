@@ -1,4 +1,4 @@
-import { DataType } from '../../AssetTable/AssetTable'
+import { DataType } from '../../AssetTable/types/index'
 
 
 export interface DrawerProps {
