@@ -5,69 +5,67 @@ import { SearchOutlined } from '@ant-design/icons';
 import './AssetTable.css';
 import CardComponent from './CardComponent';
 import { CloseOutlined } from '@ant-design/icons';
-// import axiosInstance from '../../config/AxiosConfig';
-// import { useQuery } from '@tanstack/react-query';
+import axiosInstance from '../../config/AxiosConfig';
+import { useQuery } from '@tanstack/react-query';
 
 export interface DataType {
   key: React.Key;
-  AssetId: string;
-  AssetCategory: string;
-  AssetType: string;
-  Version:number;
-  Status:string;
-  Location:string;
-  InVoiceLocation:string,
-  BusinessUnit:string;
-  Os:string;
-  OsVersion:string;
-  MobileOs:string;
-  Processor:string;
+  asset_id: string;
+  asset_category: string;
+  asset_type: string;
+  version:number;
+  status:string;
+  location:string;
+  invoice_location:string,
+  business_unit:string;
+  os:string;
+  os_version:string;
+  mobile_os:string;
+  processor:string;
   Generation:string;
-  Accessories:string;
-  DateOfPurchase:Date;
-  WarrantyPeriod:number;
-  ApprovalStatus:string;
-  Approver:string;
+  accessories:string;
+  date_of_purchase:Date;
+  warranty_period:number;
+  approval_status:string;
+  conceder:string;
   AssignAsset:string;
-  ModelNumber:string;
-  SerialNumber:string;
-  Custodian:string;
-  ProductName:string;
-  Memory:string;
-  Storage:string;
-  Configuration:string;
-  Owner:string;
-  Requester:string;
-  Comments:string;
-  CreatedAt:Date;
-  UpdatedAt:Date;
+  model_number:string;
+  serial_number:string;
+  custodian:string;
+  product_name:string;
+  memory:string;
+  storage:string;
+  configuration:string;
+  owner:string;
+  requester:string;
+  notes:string;
+  created_at:Date;
+  updated_at:Date;
   
 }
 
 
 const AssetTable = () => {
-  // const fetchData = async () => {
-  //   const response = await axiosInstance.get('asset/?limit=1')
-  //   return response.data;
-  // }
-  
-  // const { data, isLoading, isError } = useQuery({
-  //   queryKey: 'assetList',
-  //   queryFn: fetchData
-  // });
-  
-  // if (isLoading) return <div>Loading...</div>;
-  // if (isError) return <div>Error fetching data</div>;
-  
-  // const assetData = data.results[0];
-  // const assetUUID = assetData.asset_uuid;
-  // const assetType = assetData.asset_type;
-  // const custodian = assetData.custodian;
-  // const location = assetData.location;
-  // const { asset_uuid, asset_type, custodian, location, ...otherProperties } = assetData;
-  
+
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
+  
+  const{data: assetData , isLoading, isError}=useQuery({
+    queryKey:['assetList'],
+    queryFn: () => axiosInstance.get('/asset/?limit=10').then((res) => {
+      console.log("Returned Data: ", res.data.data.results);
+      return res.data
+    }),
+  });
+  // // if (isLoading) return <div>Loading...</div>;
+  // // if (isError) return <div>Error fetching data</div>;
+  // //  const assetListData = assetData?.data.data.map.map((item:  DataType) => ({
+  // //   value: item.asset_type
+  // // }));
+  const assetDataList = assetData?.data.results;
+  console.log("Testing on 65:", assetDataList? assetDataList[0].results : [])
+
+  
   
 
   const handleRowClick = (record: React.SetStateAction<null>) => {
@@ -88,13 +86,14 @@ const AssetTable = () => {
       )
     );
   };
- 
+  
+  
 
   <div><h1>Asset Overview</h1></div>
   const columns: TableColumnsType<DataType> = [
     {
       title: 'Product Name',
-      dataIndex: 'ProductName',
+      dataIndex: 'product_name',
       fixed:'left',
       filterIcon: <SearchOutlined rev={undefined} />,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
@@ -128,11 +127,11 @@ const AssetTable = () => {
       onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
         if (Array.isArray(value)) {
-          return value.includes(record.ProductName);
+          return value.includes(record.product_name);
         }
-        return record.ProductName.indexOf(value.toString()) === 0;
+        return record.product_name.indexOf(value.toString()) === 0;
       },
-      sorter: (a, b) => a.ProductName.localeCompare(b.ProductName),
+      sorter: (a, b) => a.product_name.localeCompare(b.product_name),
       sortDirections: ['ascend', 'descend'],
 
   
@@ -140,7 +139,7 @@ const AssetTable = () => {
 
     {
       title: 'Asset Id',
-      dataIndex: 'AssetId',
+      dataIndex: 'asset_id',
       fixed:'left',
       responsive: ['md'],
       filters: [
@@ -159,12 +158,12 @@ const AssetTable = () => {
       onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
         if (Array.isArray(value)) {
-          return value.includes(record.AssetId);
+          return value.includes(record.asset_id);
         }
-        return record.AssetId.indexOf(value.toString()) === 0;
+        return record.asset_id.indexOf(value.toString()) === 0;
       },
   
-      sorter: (a, b) => a.AssetId.localeCompare(b.AssetId),
+      sorter: (a, b) => a.asset_id.localeCompare(b.asset_id),
       sortDirections: ['ascend', 'descend'],
       // sorter: (a, b) => a.AssetId.length - b.AssetId.length,
       // sortDirections: ['descend'],
@@ -172,7 +171,7 @@ const AssetTable = () => {
    
     {
       title: 'Asset Category',
-      dataIndex: 'AssetCategory',
+      dataIndex: 'asset_category',
       defaultSortOrder: 'descend',
       responsive: ['md'],
       filters:[
@@ -189,16 +188,16 @@ const AssetTable = () => {
       onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
         if (Array.isArray(value)) {
-          return value.includes(record.AssetCategory);
+          return value.includes(record.asset_category);
         }
-        return record.AssetCategory.indexOf(value.toString()) === 0;
+        return record.asset_category.indexOf(value.toString()) === 0;
       },
   
     },
   
     {
       title: 'Asset Type',
-      dataIndex: 'AssetType',
+      dataIndex: 'asset_type',
       responsive: ['md'],
       filters: [
         {
@@ -213,14 +212,14 @@ const AssetTable = () => {
       onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
         if (Array.isArray(value)) {
-          return value.includes(record.AssetType);
+          return value.includes(record.asset_type);
         }
-        return record.AssetType.indexOf(value.toString()) === 0;
+        return record.asset_type.indexOf(value.toString()) === 0;
       },
     },
     {
       title: 'Version',
-      dataIndex: 'Version',
+      dataIndex: 'version',
       responsive: ['md'],
       filters: [
         {
@@ -234,16 +233,16 @@ const AssetTable = () => {
       ],
       onFilter: (value, record: DataType) => {
         if (Array.isArray(value)) {
-          return value.includes(record.Version);
+          return value.includes(record.version);
         }
-        return record.Version === value;
+        return record.version === value;
       },
-      sorter: (a, b) => a.Version - b.Version,
+      sorter: (a, b) => a.version - b.version,
       sortDirections: ['ascend', 'descend'],
     },
     {
       title: 'Status',
-      dataIndex: 'Status',
+      dataIndex: 'status',
       responsive: ['md'],
       filters: [
         {
@@ -259,14 +258,14 @@ const AssetTable = () => {
       onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
      
         if (Array.isArray(value)) {
-          return value.includes(record.Status);
+          return value.includes(record.status);
         }
-        return record.Status.indexOf(value.toString()) === 0;
+        return record.status.indexOf(value.toString()) === 0;
       },
     },
     {
       title: 'Location',
-      dataIndex: 'Location', // Corrected dataIndex
+      dataIndex: 'location', // Corrected dataIndex
       responsive: ['md'],
       filters: [
         {
@@ -282,15 +281,15 @@ const AssetTable = () => {
       onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
         if (Array.isArray(value)) {
-          return value.includes(record.Location);
+          return value.includes(record.location);
         }
-        return record.Location.indexOf(value.toString()) === 0;
+        return record.location.indexOf(value.toString()) === 0;
       },
     },
     
     {
       title: 'Invoice Location',
-      dataIndex: 'InVoiceLocation',
+      dataIndex: 'invoice_location',
       responsive: ['md'],
       filters: [
         {
@@ -305,14 +304,14 @@ const AssetTable = () => {
       onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
         if (Array.isArray(value)) {
-          return value.includes(record.InVoiceLocation);
+          return value.includes(record.invoice_location);
         }
-        return record.InVoiceLocation.indexOf(value.toString()) === 0;
+        return record.invoice_location.indexOf(value.toString()) === 0;
       },
     },
     {
       title: 'Business Unit',
-      dataIndex: 'BusinessUnit',
+      dataIndex: 'business_unit',
       responsive: ['md'],
       filters: [
         {
@@ -336,14 +335,14 @@ const AssetTable = () => {
       onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
         if (Array.isArray(value)) {
-          return value.includes(record.BusinessUnit);
+          return value.includes(record.business_unit);
         }
-        return record.BusinessUnit.indexOf(value.toString()) === 0;
+        return record.business_unit.indexOf(value.toString()) === 0;
       },
     },
     {
       title: 'Os',
-      dataIndex: 'Os',
+      dataIndex: 'os',
       responsive: ['md'],
       filters: [
         {
@@ -359,14 +358,14 @@ const AssetTable = () => {
       onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
         if (Array.isArray(value)) {
-          return value.includes(record.Os);
+          return value.includes(record.os);
         }
-        return record.Os.indexOf(value.toString()) === 0;
+        return record.os.indexOf(value.toString()) === 0;
       },
     },
     {
       title: 'Os Version',
-      dataIndex: 'OsVersion',
+      dataIndex: 'os_version',
       responsive: ['md'],
       filters: [
         {
@@ -381,14 +380,14 @@ const AssetTable = () => {
       onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
         if (Array.isArray(value)) {
-          return value.includes(record.OsVersion);
+          return value.includes(record.os_version);
         }
-        return record.OsVersion.indexOf(value.toString()) === 0;
+        return record.os_version.indexOf(value.toString()) === 0;
       },
     },
     {
       title: 'Mobile Os',
-      dataIndex: 'MobileOs',
+      dataIndex: 'mobile_os',
       responsive: ['md'],
       filters: [
         {
@@ -404,14 +403,14 @@ const AssetTable = () => {
       onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
         if (Array.isArray(value)) {
-          return value.includes(record.MobileOs);
+          return value.includes(record.mobile_os);
         }
-        return record.MobileOs.indexOf(value.toString()) === 0;
+        return record.mobile_os.indexOf(value.toString()) === 0;
       },
     },
     {
       title: 'Processor',
-      dataIndex: 'Processor',
+      dataIndex: 'processor',
       responsive: ['md'],
       filters: [
         {
@@ -427,9 +426,9 @@ const AssetTable = () => {
       onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
         if (Array.isArray(value)) {
-          return value.includes(record.Processor);
+          return value.includes(record.processor);
         }
-        return record.Processor.indexOf(value.toString()) === 0;
+        return record.processor.indexOf(value.toString()) === 0;
       },
     },
     {
@@ -457,7 +456,7 @@ const AssetTable = () => {
     },
     {
       title: 'Accessories',
-      dataIndex: 'Accessories',
+      dataIndex: 'accessories',
       responsive: ['md'],
       filters: [
         {
@@ -472,14 +471,14 @@ const AssetTable = () => {
       onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
         if (Array.isArray(value)) {
-          return value.includes(record.Accessories);
+          return value.includes(record.accessories);
         }
-        return record.Accessories.indexOf(value.toString()) === 0;
+        return record.accessories.indexOf(value.toString()) === 0;
       },
     },
     {
       title: 'Date Of Purchase',
-      dataIndex: 'DateOfPurchase',
+      dataIndex: 'date_of_purchase',
       responsive: ['md'],
       filters: [
         {
@@ -497,7 +496,7 @@ const AssetTable = () => {
         const dateValue = new Date(value as string).getTime(); 
     
       
-        const recordDate = new Date(record.DateOfPurchase).getTime();
+        const recordDate = new Date(record.date_of_purchase).getTime();
     
         if (Array.isArray(value)) {
     
@@ -510,15 +509,15 @@ const AssetTable = () => {
         }
     },
     sorter: (a, b) => {
-      const dateA = new Date(a.DateOfPurchase).getTime();
-      const dateB = new Date(b.DateOfPurchase).getTime();
+      const dateA = new Date(a.date_of_purchase).getTime();
+      const dateB = new Date(b.date_of_purchase).getTime();
       return dateA - dateB;
     },
     
     },
     {
       title: 'Warranty Period',
-      dataIndex: 'WarrantyPeriod',
+      dataIndex: 'warranty_period',
       responsive: ['md'],
       filters: [
         {
@@ -534,13 +533,13 @@ const AssetTable = () => {
 
      
         if (Array.isArray(value)) {
-          return value.includes(record.WarrantyPeriod);
+          return value.includes(record.warranty_period);
         }
-        return record.WarrantyPeriod.toString().indexOf(value.toString()) === 0;
+        return record.warranty_period.toString().indexOf(value.toString()) === 0;
       },
       sorter: (a, b) => {
-        const dateA = new Date(a.WarrantyPeriod).getTime();
-        const dateB = new Date(b.WarrantyPeriod).getTime();
+        const dateA = new Date(a.warranty_period).getTime();
+        const dateB = new Date(b.warranty_period).getTime();
         return dateA - dateB;
       },
     },
@@ -568,7 +567,7 @@ const AssetTable = () => {
     },
     {
       title: 'Approval Status',
-      dataIndex: 'ApprovalStatus',
+      dataIndex: 'approval_status',
       responsive: ['md'],
       filters: [
         {
@@ -588,14 +587,14 @@ const AssetTable = () => {
       onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
         if (Array.isArray(value)) {
-          return value.includes(record.ApprovalStatus);
+          return value.includes(record.approval_status);
         }
-        return record.ApprovalStatus.indexOf(value.toString()) === 0;
+        return record.approval_status.indexOf(value.toString()) === 0;
       },
     },
     {
-      title: 'Approver',
-      dataIndex: 'Approver',
+      title: 'Conceder',
+      dataIndex: 'conceder',
       responsive: ['md'],
       filters: [
         {
@@ -611,16 +610,16 @@ const AssetTable = () => {
       onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
         if (Array.isArray(value)) {
-          return value.includes(record.Approver);
+          return value.includes(record.conceder);
         }
-        return record.Approver.indexOf(value.toString()) === 0;
+        return record.conceder.indexOf(value.toString()) === 0;
       },
     },
 
 
     {
       title: 'Model Number',
-      dataIndex: 'ModelNumber', // Corrected dataIndex
+      dataIndex: 'model_number', // Corrected dataIndex
       responsive: ['md'],
       filterIcon: <SearchOutlined rev={undefined} />,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
@@ -655,9 +654,9 @@ const AssetTable = () => {
       onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
         if (Array.isArray(value)) {
-          return value.includes(record.ModelNumber);
+          return value.includes(record.model_number);
         }
-        return record.ModelNumber.indexOf(value.toString()) === 0;
+        return record.model_number.indexOf(value.toString()) === 0;
       },
     },
     
@@ -666,7 +665,7 @@ const AssetTable = () => {
   
     {
       title: 'Serial Number',
-      dataIndex: 'SerialNumber',
+      dataIndex: 'serial_number',
       responsive: ['md'],
 
       filterIcon: <SearchOutlined rev={undefined} />,
@@ -700,9 +699,9 @@ const AssetTable = () => {
       onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
         if (Array.isArray(value)) {
-          return value.includes(record.SerialNumber);
+          return value.includes(record.serial_number);
         }
-        return record.SerialNumber.indexOf(value.toString()) === 0;
+        return record.serial_number.indexOf(value.toString()) === 0;
       },
       
     
@@ -710,7 +709,7 @@ const AssetTable = () => {
     },
     {
       title: 'Memory',
-      dataIndex: 'Memory',
+      dataIndex: 'memory',
       responsive: ['md'],
       filters: [
         {
@@ -725,14 +724,14 @@ const AssetTable = () => {
       onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
         if (Array.isArray(value)) {
-          return value.includes(record.Memory);
+          return value.includes(record.memory);
         }
-        return record.Memory.indexOf(value.toString()) === 0;
+        return record.memory.indexOf(value.toString()) === 0;
       },
     },
     {
       title: 'Storage',
-      dataIndex: 'Storage',
+      dataIndex: 'storage',
       responsive: ['md'],
       filters: [
         {
@@ -747,21 +746,21 @@ const AssetTable = () => {
       onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
         if (Array.isArray(value)) {
-          return value.includes(record.Storage);
+          return value.includes(record.storage);
         }
-        return record.Storage.indexOf(value.toString()) === 0;
+        return record.storage.indexOf(value.toString()) === 0;
       },
     },
     {
       title: 'Owner',
-      dataIndex: 'Owner',
+      dataIndex: 'owner',
       responsive: ['md'],
   
     
     },
     {
       title: 'Requester',
-      dataIndex: 'Requester',
+      dataIndex: 'requester',
       responsive: ['md'],
       filters: [
         {
@@ -780,16 +779,16 @@ const AssetTable = () => {
       onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
         if (Array.isArray(value)) {
-          return value.includes(record.Requester);
+          return value.includes(record.requester);
         }
-        return record.Requester.indexOf(value.toString()) === 0;
+        return record.requester.indexOf(value.toString()) === 0;
       },
   
     
     },
     {
       title: 'Configuration',
-      dataIndex: 'Configuration',
+      dataIndex: 'configuration',
       responsive: ['md'],
       filters: [
         {
@@ -804,16 +803,16 @@ const AssetTable = () => {
       onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
         if (Array.isArray(value)) {
-          return value.includes(record.Configuration);
+          return value.includes(record.configuration);
         }
-        return record.Configuration === value;
+        return record.configuration === value;
       },
     },
   
  
     {
       title: 'Created At',
-      dataIndex: 'CreatedAt',
+      dataIndex: 'created_at',
       fixed:'left',
       responsive: ['md'],
       filters: [
@@ -830,7 +829,7 @@ const AssetTable = () => {
       onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
         const dateValue = new Date(value as string).getTime(); 
-        const recordDate = new Date(record.CreatedAt).getTime();
+        const recordDate = new Date(record.created_at).getTime();
         if (Array.isArray(value)) {
           return value.some(val => new Date(val as string).getTime() === recordDate);
         } else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
@@ -840,15 +839,15 @@ const AssetTable = () => {
         }
       },
       sorter: (a, b) => {
-        const dateA = new Date(a.CreatedAt).getTime();
-        const dateB = new Date(b.CreatedAt).getTime();
+        const dateA = new Date(a.created_at).getTime();
+        const dateB = new Date(b.created_at).getTime();
         return dateA - dateB;
       },
       sortDirections: ['ascend', 'descend'],
     },
     {
       title: 'Updated At',
-      dataIndex: 'UpdatedAt',
+      dataIndex: 'updated_at',
       fixed:'left',
       responsive: ['md'],
       filters: [
@@ -865,7 +864,7 @@ const AssetTable = () => {
       onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
         const dateValue = new Date(value as string).getTime(); 
-        const recordDate = new Date(record.UpdatedAt).getTime();
+        const recordDate = new Date(record.updated_at).getTime();
         if (Array.isArray(value)) {
           return value.some(val => new Date(val as string).getTime() === recordDate);
         } else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
@@ -875,21 +874,21 @@ const AssetTable = () => {
         }
       },
       sorter: (a, b) => {
-        const dateA = new Date(a.UpdatedAt).getTime();
-        const dateB = new Date(b.UpdatedAt).getTime();
+        const dateA = new Date(a.updated_at).getTime();
+        const dateB = new Date(b.updated_at).getTime();
         return dateA - dateB;
       },
       sortDirections: ['ascend', 'descend'],
     },
     {
-      title: 'Comments',
-      dataIndex: 'Comments',
+      title: 'Notes',
+      dataIndex: 'notes',
       
   
     },
     {
       title: 'Custodian',
-      dataIndex: 'Custodian',
+      dataIndex: 'custodian',
       responsive: ['md'],
       fixed:'right',
       filterIcon: <SearchOutlined rev={undefined} />,
@@ -923,9 +922,9 @@ const AssetTable = () => {
       onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
         if (Array.isArray(value)) {
-          return value.includes(record.Custodian);
+          return value.includes(record.custodian);
         }
-        return record.Custodian.indexOf(value.toString()) === 0;
+        return record.custodian.indexOf(value.toString()) === 0;
       },
       
   
@@ -945,141 +944,174 @@ const AssetTable = () => {
   
   ];
   
+  const data = assetData?.data.results.map((result) => ({
+    key: result.asset_uuid,
+    asset_id: result.asset_id,
+    asset_category: result.asset_category,
+    asset_type: result.asset_type.asset_type_name,
+    version: result.version,
+    status: result.status,
+    location: result.location.location_name,
+    invoice_location: result.invoice_location.location_name,
+    business_unit: result.business_unit.business_unit_name,
+    os: result.os,
+    os_version: result.os_version,
+    mobile_os: result.mobile_os,
+    processor: result.processor,
+    Generation: result.processor_gen,
+    accessories: result.accessories,
+    date_of_purchase: result.date_of_purchase,
+    warranty_period: result.warranty_period,
+    approval_status: result.approval_status,
+    conceder: result.conceder.username,
+    model_number: result.model_number,
+    serial_number: result.serial_number,
+    memory: result.memory.memory_space,
+    storage: result.storage,
+    configuration: result.configuration,
+    custodian: result.custodian.employee_name,
+    product_name: result.product_name,
+    owner: result.owner,
+    requester: result.requester.username,
+    AssignAsset: 'assign',
+    created_at: result.created_at,
+    updated_at: result.updated_at,
+  }));
   
-  const data = [
-    {
-      key: '1',
-      AssetId: 'AC104',
-      AssetCategory: "Software",
-      AssetType: 'Laptop',
-      Version:1,
-      Status:'In Store',
-      Location:'Kochi',
-      InVoiceLocation:'Trivandrum',
-      BusinessUnit:'du1',
-      Os:'Linux',
-      OsVersion:'11',
-      MobileOs:'iOS',
-      Processor:'i5',
-      Generation:'cjah',
-      Accessories:'Bag,Charger',
-      DateOfPurchase:'02/03/2024',
-      WarrantyPeriod:'2',
-      ApprovalStatus:'Approved',
-      Approver:'Sfm Lead ',
-      ModelNumber:'MN001',
-      SerialNumber:'Asset001',
-      Memory:'16Gb',
-      Storage:'16Gb',
-      Configuration:'Intel Core i7-1165G7, 16GB RAM, 512GB SSD, 13.4"',
-      Custodian:'Asima',
-      ProductName:'Dell XPS 15 Laptop',
-      Owner:'Experion',
-      Requester:'sfmManager',
-      AssignAsset:'assign',
-      CreatedAt:'2024-03-05T10:00:00',
-      UpdatedAt:'2024-01-05T10:00:00'
-    },
-    {
-      key: '2',
-      AssetId: 'AC105',
-      AssetCategory: "Hardware",
-      AssetType: 'Laptop',
-      Version:2,
-      Status:'In Use',
-      Location:'Trivandrum',
-      InVoiceLocation:'Trivandrum',
-      BusinessUnit:'du1',
-      Os:'Windows',
-      OsVersion:'11',
-      MobileOs:'iOS',
-      Processor:'i3',
-      Generation:'cjah',
-      Accessories:'Bag,Charger',
-      DateOfPurchase:'02/03/2024',
-      WarrantyPeriod:'2',
-      ApprovalStatus:'Approved',
-      Approver:'Sfm Lead',
-      ModelNumber:'MN001',
-      SerialNumber:'Asset002',
-      Memory:'16Gb',
-      Storage:'16Gb',
-      Configuration:'Intel Core i7-1165G7, 16GB RAM, 512GB SSD, 13.4" ',
-      Custodian:'Aidrin',
-      ProductName:'Apple iPhone 12 Pro',
-      Owner:'Experion',
-      Requester:'sfmLead',
-      AssignAsset:'assign',
-      CreatedAt:'2024-03-05T10:00:00',
-      UpdatedAt:'2024-01-05T10:00:00'
-    },
-    {
-      key: '3',
-      AssetId: 'AC103',
-      AssetCategory: "Software",
-      AssetType: 'Monitor',
-      Version:1,
-      Status:'Expired',
-      Location:'Trivandrum',
-      InVoiceLocation:'Trivandrum',
-      BusinessUnit:'du1',
-      Os:'Linux',
-      OsVersion:'11',
-      MobileOs:'Android',
-      Processor:'i3',
-      Generation:'cjah',
-      Accessories:'Bag,Charger',
-      DateOfPurchase:'01/03/2024',
-      WarrantyPeriod:'3',
-      ApprovalStatus:'Pending',
-      Approver:'Sfm Manager',
-      ModelNumber:'MN002',
-      SerialNumber:'Asset003',
-      Memory:'17Gb',
-      Storage:'17Gb',
-      Configuration:'Intel Core i5-1165G7, 128GB RAM, 512GB SSD, 13.4"',
-      Custodian:'Ashish',
-      ProductName:'Dell XPS 15 Laptop',
-      Owner:'Experion',
-      Requester:'sfmLead',
-      AssignAsset:'assign',
-      CreatedAt:'2024-01-05T10:00:00',
-      UpdatedAt:'2024-03-05T10:00:00'
-    },
-    {
-      key: '4',
-      AssetId: 'AC101',
-      AssetCategory: "Hardware",
-      AssetType: 'Monitor',
-      Version:1,
-      Status:'In Use',
-      Location:'Kochi',
-      InVoiceLocation:'Trivandrum',
-      BusinessUnit:'du1',
-      Os:'Linux',
-      OsVersion:'11',
-      MobileOs:'Android',
-      Processor:'i5',
-      Generation:'cjah',
-      Accessories:'Bag,Charger',
-      DateOfPurchase:'01/03/2024',
-      WarrantyPeriod:'3',
-      ApprovalStatus:'Rejected',
-      Approver:'Sfm Manager',
-      ModelNumber:'MN002',
-      SerialNumber:'Asset004',
-      Memory:'17Gb',
-      Storage:'17Gb',
-      Configuration:'Intel Core i5-1165G7, 128GB RAM, 512GB SSD, 13.4"',
-      Custodian:'Ananthan',
-      ProductName:'Apple iPhone 12 Pro',
-      Owner:'Experion',
-      Requester:'sfmSenior',
-      AssignAsset:'assign',
-      CreatedAt:'2024-01-05T10:00:00',
-      UpdatedAt:'2024-03-05T10:00:00'
-    },
-  ];
+  // const data = [
+  //   {
+  //     key: '1',
+  //     asset_id: 'AC104',
+  //     asset_category: "Software",
+  //     asset_type: 'Laptop',
+  //     version:1,
+  //     status:'In Store',
+  //     location:'Kochi',
+  //     invoice_location:'Trivandrum',
+  //     business_unit:'du1',
+  //     os:'Linux',
+  //     os_version:'11',
+  //     mobile_os:'iOS',
+  //     processor:'i5',
+  //     Generation:'cjah',
+  //     accessories:'Bag,Charger',
+  //     date_of_purchase:'02/03/2024',
+  //     warranty_period:'2',
+  //     approval_status:'Approved',
+  //     conceder:'Sfm Lead ',
+  //     model_number:'MN001',
+  //     serial_number:'Asset001',
+  //     memory:'16Gb',
+  //     storage:'16Gb',
+  //     configuration:'Intel Core i7-1165G7, 16GB RAM, 512GB SSD, 13.4"',
+  //     custodian:'Asima',
+  //     product_name:'Dell XPS 15 Laptop',
+  //     owner:'Experion',
+  //     requester:'sfmManager',
+  //     AssignAsset:'assign',
+  //     created_at:'2024-03-05T10:00:00',
+  //     updated_at:'2024-01-05T10:00:00'
+  //   },
+  //   {
+  //     key: '2',
+  //     asset_id: 'AC105',
+  //     asset_category: "Hardware",
+  //     asset_type: 'Laptop',
+  //     version:2,
+  //     status:'In Use',
+  //     location:'Trivandrum',
+  //     invoice_location:'Trivandrum',
+  //     business_unit:'du1',
+  //     os:'Windows',
+  //     os_version:'11',
+  //     mobile_os:'iOS',
+  //     processor:'i3',
+  //     Generation:'cjah',
+  //     accessories:'Bag,Charger',
+  //     date_of_purchase:'02/03/2024',
+  //     warranty_period:'2',
+  //     approval_status:'Approved',
+  //     conceder:'Sfm Lead',
+  //     model_number:'MN001',
+  //     serial_number:'Asset002',
+  //     memory:'16Gb',
+  //     storage:'16Gb',
+  //     configuration:'Intel Core i7-1165G7, 16GB RAM, 512GB SSD, 13.4" ',
+  //     custodian:'Aidrin',
+  //     product_name:'Apple iPhone 12 Pro',
+  //     owner:'Experion',
+  //     requester:'sfmLead',
+  //     AssignAsset:'assign',
+  //     created_at:'2024-03-05T10:00:00',
+  //     updated_at:'2024-01-05T10:00:00'
+  //   },
+  //   {
+  //     key: '3',
+  //     asset_id: 'AC103',
+  //     asset_category: "Software",
+  //     asset_type: 'Monitor',
+  //     version:1,
+  //     status:'Expired',
+  //     location:'Trivandrum',
+  //     invoice_location:'Trivandrum',
+  //     business_unit:'du1',
+  //     os:'Linux',
+  //     os_version:'11',
+  //     mobile_os:'Android',
+  //     processor:'i3',
+  //     Generation:'cjah',
+  //     accessories:'Bag,Charger',
+  //     date_of_purchase:'01/03/2024',
+  //     warranty_period:'3',
+  //     approval_status:'Pending',
+  //     conceder:'Sfm Manager',
+  //     model_number:'MN002',
+  //     serial_number:'Asset003',
+  //     memory:'17Gb',
+  //     storage:'17Gb',
+  //     configuration:'Intel Core i5-1165G7, 128GB RAM, 512GB SSD, 13.4"',
+  //     custodian:'Ashish',
+  //     product_name:'Dell XPS 15 Laptop',
+  //     owner:'Experion',
+  //     requester:'sfmLead',
+  //     AssignAsset:'assign',
+  //     created_at:'2024-01-05T10:00:00',
+  //     updated_at:'2024-03-05T10:00:00'
+  //   },
+  //   {
+  //     key: '4',
+  //     asset_id: 'AC101',
+  //     asset_category: "Hardware",
+  //     asset_type: 'Monitor',
+  //     version:1,
+  //     status:'In Use',
+  //     location:'Kochi',
+  //     invoice_location:'Trivandrum',
+  //     business_unit:'du1',
+  //     os:'Linux',
+  //     os_version:'11',
+  //     mobile_os:'Android',
+  //     processor:'i5',
+  //     Generation:'cjah',
+  //     accessories:'Bag,Charger',
+  //     date_of_purchase:'01/03/2024',
+  //     warranty_period:'3',
+  //     approval_status:'Rejected',
+  //     conceder:'Sfm Manager',
+  //     model_number:'MN002',
+  //     serial_number:'Asset004',
+  //     memory:'17Gb',
+  //     storage:'17Gb',
+  //     configuration:'Intel Core i5-1165G7, 128GB RAM, 512GB SSD, 13.4"',
+  //     custodian:'Ananthan',
+  //     product_name:'Apple iPhone 12 Pro',
+  //     owner:'Experion',
+  //     requester:'sfmSenior',
+  //     AssignAsset:'assign',
+  //     created_at:'2024-01-05T10:00:00',
+  //     updated_at:'2024-03-05T10:00:00'
+  //   }
+  // ];
   
   const drawerTitle = "Asset Details";
   
