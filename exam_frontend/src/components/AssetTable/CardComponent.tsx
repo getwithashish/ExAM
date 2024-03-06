@@ -27,9 +27,10 @@ const CardComponent: React.FC<{
     width: '25%',
     height:'30%',
     textAlign: 'center',
-    padding:'8px',
-    gap:'5px',
-    marginTop: '10px',
+    // padding:'8px',
+    // gap:'5px',
+    // marginTop: '10px',
+    
     
   };
   const mainCardStyle = {
@@ -37,7 +38,7 @@ const CardComponent: React.FC<{
     width: '80%', 
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', 
     borderRadius: '8px', 
-    
+    background:'white'
   };
   
   const [assetCategory, setvalue] = useState();
@@ -57,6 +58,7 @@ const CardComponent: React.FC<{
     background: '#FAFAFA'
   };
   return (
+    
     <Card key={data.asset_id} className='mainCard' title=""  style={mainCardStyle}>
                 <Card.Grid style={gridStyle}><b>Asset Category: </b><Form.Item name="version"> <Input defaultValue={data. asset_category} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
 
@@ -86,11 +88,11 @@ const CardComponent: React.FC<{
           <Card.Grid style={gridStyle}><b>Accessories:</b> <Form.Item name="accessories"> <Input defaultValue={data.accessories} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
           <Card.Grid style={gridStyle}><b>Date of Purchase:</b> <Form.Item name="date of purchase"> <Input defaultValue={data.date_of_purchase.toString()} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
           <Card.Grid style={gridStyle}><b>Warranty Period:</b><Form.Item name="warranty period"> <Input defaultValue={data.warranty_period} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
-          <Card.Grid style={gridStyle}><b>Approval Status: </b><Form.Item name="date of purchase">{data.approval_status}   </Form.Item></Card.Grid>
-          <Card.Grid style={gridStyle}><b>Approver:</b>  <Form.Item name="date of purchase">{data.conceder}   </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Approval Status: </b><Form.Item name="date of purchase" style={inputStyle}>{data.approval_status}   </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Approver:</b>  <Form.Item name="date of purchase" >{data.conceder}   </Form.Item></Card.Grid>
           <Card.Grid style={gridStyle}><b>Serial Number:</b> <Form.Item name="serial number"> <Input defaultValue={data.serial_number} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
           <Card.Grid style={gridStyle}><b>Model Number:</b> <Form.Item name="serial number"> <Input defaultValue={data.model_number} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
-          <Card.Grid style={gridStyle}><b>Custodian:</b><Form.Item name="date of purchase">{data.custodian}   </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle}><b>Custodian:</b><Form.Item name="date of purchase"  style={inputStyle}>{data.custodian}   </Form.Item></Card.Grid>
           <Card.Grid style={gridStyle}><b>Product Name:</b><Form.Item name="product name"> <Input defaultValue={data.product_name} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
           <Card.Grid style={gridStyle}><b>Memory:</b><Form.Item name="memory"> <Input defaultValue={data.memory} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
           <Card.Grid style={gridStyle}><b>Storage: </b><Form.Item name="storage"> <Input defaultValue={data.storage} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>

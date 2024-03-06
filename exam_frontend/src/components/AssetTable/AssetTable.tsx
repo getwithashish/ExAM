@@ -934,7 +934,7 @@ const AssetTable = () => {
       dataIndex: 'AssignAsset',
       fixed:'right',
       render: (_data, record) => (
-        <Button  ghost style={{borderRadius:'10px',background:'#D3D3D3',color:'black'}} >
+        <Button ghost style={{borderRadius:'10px',background:'#D3D3D3',color:'black'}} >
           +
         </Button>
       ),
@@ -978,140 +978,7 @@ const AssetTable = () => {
     updated_at: result.updated_at,
   }));
   
-  // const data = [
-  //   {
-  //     key: '1',
-  //     asset_id: 'AC104',
-  //     asset_category: "Software",
-  //     asset_type: 'Laptop',
-  //     version:1,
-  //     status:'In Store',
-  //     location:'Kochi',
-  //     invoice_location:'Trivandrum',
-  //     business_unit:'du1',
-  //     os:'Linux',
-  //     os_version:'11',
-  //     mobile_os:'iOS',
-  //     processor:'i5',
-  //     Generation:'cjah',
-  //     accessories:'Bag,Charger',
-  //     date_of_purchase:'02/03/2024',
-  //     warranty_period:'2',
-  //     approval_status:'Approved',
-  //     conceder:'Sfm Lead ',
-  //     model_number:'MN001',
-  //     serial_number:'Asset001',
-  //     memory:'16Gb',
-  //     storage:'16Gb',
-  //     configuration:'Intel Core i7-1165G7, 16GB RAM, 512GB SSD, 13.4"',
-  //     custodian:'Asima',
-  //     product_name:'Dell XPS 15 Laptop',
-  //     owner:'Experion',
-  //     requester:'sfmManager',
-  //     AssignAsset:'assign',
-  //     created_at:'2024-03-05T10:00:00',
-  //     updated_at:'2024-01-05T10:00:00'
-  //   },
-  //   {
-  //     key: '2',
-  //     asset_id: 'AC105',
-  //     asset_category: "Hardware",
-  //     asset_type: 'Laptop',
-  //     version:2,
-  //     status:'In Use',
-  //     location:'Trivandrum',
-  //     invoice_location:'Trivandrum',
-  //     business_unit:'du1',
-  //     os:'Windows',
-  //     os_version:'11',
-  //     mobile_os:'iOS',
-  //     processor:'i3',
-  //     Generation:'cjah',
-  //     accessories:'Bag,Charger',
-  //     date_of_purchase:'02/03/2024',
-  //     warranty_period:'2',
-  //     approval_status:'Approved',
-  //     conceder:'Sfm Lead',
-  //     model_number:'MN001',
-  //     serial_number:'Asset002',
-  //     memory:'16Gb',
-  //     storage:'16Gb',
-  //     configuration:'Intel Core i7-1165G7, 16GB RAM, 512GB SSD, 13.4" ',
-  //     custodian:'Aidrin',
-  //     product_name:'Apple iPhone 12 Pro',
-  //     owner:'Experion',
-  //     requester:'sfmLead',
-  //     AssignAsset:'assign',
-  //     created_at:'2024-03-05T10:00:00',
-  //     updated_at:'2024-01-05T10:00:00'
-  //   },
-  //   {
-  //     key: '3',
-  //     asset_id: 'AC103',
-  //     asset_category: "Software",
-  //     asset_type: 'Monitor',
-  //     version:1,
-  //     status:'Expired',
-  //     location:'Trivandrum',
-  //     invoice_location:'Trivandrum',
-  //     business_unit:'du1',
-  //     os:'Linux',
-  //     os_version:'11',
-  //     mobile_os:'Android',
-  //     processor:'i3',
-  //     Generation:'cjah',
-  //     accessories:'Bag,Charger',
-  //     date_of_purchase:'01/03/2024',
-  //     warranty_period:'3',
-  //     approval_status:'Pending',
-  //     conceder:'Sfm Manager',
-  //     model_number:'MN002',
-  //     serial_number:'Asset003',
-  //     memory:'17Gb',
-  //     storage:'17Gb',
-  //     configuration:'Intel Core i5-1165G7, 128GB RAM, 512GB SSD, 13.4"',
-  //     custodian:'Ashish',
-  //     product_name:'Dell XPS 15 Laptop',
-  //     owner:'Experion',
-  //     requester:'sfmLead',
-  //     AssignAsset:'assign',
-  //     created_at:'2024-01-05T10:00:00',
-  //     updated_at:'2024-03-05T10:00:00'
-  //   },
-  //   {
-  //     key: '4',
-  //     asset_id: 'AC101',
-  //     asset_category: "Hardware",
-  //     asset_type: 'Monitor',
-  //     version:1,
-  //     status:'In Use',
-  //     location:'Kochi',
-  //     invoice_location:'Trivandrum',
-  //     business_unit:'du1',
-  //     os:'Linux',
-  //     os_version:'11',
-  //     mobile_os:'Android',
-  //     processor:'i5',
-  //     Generation:'cjah',
-  //     accessories:'Bag,Charger',
-  //     date_of_purchase:'01/03/2024',
-  //     warranty_period:'3',
-  //     approval_status:'Rejected',
-  //     conceder:'Sfm Manager',
-  //     model_number:'MN002',
-  //     serial_number:'Asset004',
-  //     memory:'17Gb',
-  //     storage:'17Gb',
-  //     configuration:'Intel Core i5-1165G7, 128GB RAM, 512GB SSD, 13.4"',
-  //     custodian:'Ananthan',
-  //     product_name:'Apple iPhone 12 Pro',
-  //     owner:'Experion',
-  //     requester:'sfmSenior',
-  //     AssignAsset:'assign',
-  //     created_at:'2024-01-05T10:00:00',
-  //     updated_at:'2024-03-05T10:00:00'
-  //   }
-  // ];
+  
   
   const drawerTitle = "Asset Details";
   
@@ -1136,6 +1003,8 @@ const AssetTable = () => {
         scroll={{ x: 'max-content' }}
         className="mainTable"
         pagination={false}
+        bordered={false}
+        
         style={{
           borderRadius: 10,
           padding: 20,
@@ -1151,6 +1020,7 @@ const AssetTable = () => {
         button={button}
         onUpdateData={handleUpdateData}
         closeIcon={<CloseOutlined rev={undefined} />}
+        
       >
       {selectedRow  && (
           <div>
