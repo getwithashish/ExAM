@@ -1,7 +1,7 @@
 // import React from 'react';
 import PieChart from "./piechart-hardware";
 import PieChart2 from "./piechart-software";
-import Carousel from './carousel'; // Assuming you have the Carousel component implemented
+import Carousel from './carousel'
 
 export const Statistics = () => {
   const items = [

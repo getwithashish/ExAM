@@ -1,59 +1,71 @@
-import { useState } from 'react';
-import Stack from "@mui/material/Stack";
-import { PieChart } from "@mui/x-charts/PieChart";
-import FormControlLabel from '@mui/material/FormControlLabel';
+import { useState } from 'react'; 
+import { useQuery } from '@tanstack/react-query'; 
+import Stack from "@mui/material/Stack"; 
+import { PieChart } from "@mui/x-charts/PieChart"; 
+import FormControlLabel from '@mui/material/FormControlLabel'; 
 import Checkbox from '@mui/material/Checkbox';
+import axiosInstance from '../../config/AxiosConfig'; 
+import { AssetCountData } from './types'; 
 
+export default function PieChartGraph() {
+  const [legendHidden, setLegendHidden] = useState(false); // State for controlling legend visibility
 
-const data = [
-    { label: "IN STORE", value: 10, color: '#455e90' },
-    { label: "IN USE", value: 1700, color: '#304069'  },
-    { label: "IN REPAIR", value: 0, color: '#4f92ef' },
-    { label: "EXPIRED", value: 40, color: '#b3d2f8' },
-    { label: "DISPOSED", value: 20, color: '#7db1fb' },
-  ];
-
-
-  export default function PieChartHardware() {
-    const [isHidden, setIsHidden] = useState(false);
+  const { data, isLoading, isError } = useQuery<{ hardware: AssetCountData[], software: AssetCountData[] }>({ // Fetching data using useQuery hook
+    queryKey: ['assetCount'], // Key for identifying the query
+    queryFn: (): Promise<{ hardware: AssetCountData[], software: AssetCountData[] }> => axiosInstance.get('/asset/asset_count').then((res) => { // Function to execute the query
+      console.log(res); // Logging the response from the API
+      return res.data.data; // Returning the data from the response
+    }),
+  });
   
-    return (
-      <Stack direction="row">
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={isHidden}
-              onChange={(event) => setIsHidden(event.target.checked)}
-            />
-          }
-          label="Hide Legend"
-          labelPlacement="end"
-        />
-        
-        <PieChart
-          series={[
-            {
-              data,
-              innerRadius: 60,
-              outerRadius: 140,
-              paddingAngle: 1,
-              cornerRadius: 5,
-              startAngle: 0,
-              endAngle: 360,
-              cx: 100,
-              cy:150,
-              highlightScope: { faded: 'global', highlighted: 'item' },
-              faded: { innerRadius: 80, additionalRadius: -50, color: 'gray' },
-            },
-          ]}
-          width={500}
-          height={300}
-          legend={{
-            direction: 'column',
-            position: { vertical: 'middle', horizontal: 'right' },
-            hidden: isHidden // Setting hidden property based on isHidden state
-          }}
-        />
-      </Stack>
-    );
-  }
+  if (isLoading) return <div>Loading...</div>; // Render loading indicator while data is being fetched
+  if (isError) return <div>Error fetching data</div>; // Render error message if data fetching fails
+  
+  const Shades = ['#304069', '#455e90', '#4f92ef', '#7db1fb', '#b3d2f8']; 
+  const chartData = data.software.map((item: AssetCountData, index: number) => ({ // Processing data for chart
+    label: item.status,
+    value: item.count,
+    color: Shades[index % Shades.length] // Assigning shades of blue without repetition
+  }));
+  console.log(chartData); // Logging the chart data
+
+  return (
+    <Stack direction="row"> {/* Stack for arranging components horizontally */}
+      <FormControlLabel // Checkbox for toggling legend visibility
+        control={
+          <Checkbox
+            checked={legendHidden}
+            onChange={() => setLegendHidden(!legendHidden)} // Toggle legend visibility when checkbox state changes
+          />
+        }
+        label="Hide Legend" // Label for the checkbox
+        labelPlacement="end" // Positioning of the label
+      />
+      
+      <PieChart // Rendering the PieChart component
+        series={[
+          {
+            data: chartData, // Data for the chart
+            innerRadius: 60,
+            outerRadius: 140,
+            paddingAngle: 1,
+            cornerRadius: 5,
+            startAngle: 0,
+            endAngle: 360,
+            cx: 100,
+            cy:150,
+            highlightScope: { faded: 'global', highlighted: 'item' },
+            faded: { innerRadius: 80, additionalRadius: -50, color: 'gray' },
+          },
+        ]}
+        width={500}
+        height={300}
+        legend={{
+          direction: 'column',
+          position: { vertical: 'middle', horizontal: 'right' },
+          hidden: legendHidden // Hiding legend based on state
+        }}
+      />
+    </Stack>
+  );
+}
