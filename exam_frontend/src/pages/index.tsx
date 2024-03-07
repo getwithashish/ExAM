@@ -4,7 +4,8 @@ import type { FC } from "react";
 import NavbarSidebarLayout from "../layouts/navbar-sidebar";
 import AddAsset from "../components/AddAsset/AddAsset";
 import AssetTable from '../components/AssetTable/AssetTable'
-import { Statistics } from "../components/charts/piechartBody";
+import { Statistics } from "../components/Charts/Statistics";
+
 import SideDrawerComponent from "../components/SideDrawerComponent/SideDrawerComponent";
 import { SidebarHandler } from "../components/sidebar/SidebarHandler";
 // import { Badge, Dropdown, useTheme } from "flowbite-react";
