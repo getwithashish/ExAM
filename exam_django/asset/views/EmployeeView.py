@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from asset.serializers import EmployeeSerializer
 from asset.models import Employee
 
+
 class EmployeeView(ListCreateAPIView):
     def post(self, request, format=None):
         data = {}
@@ -31,23 +32,12 @@ class EmployeeView(ListCreateAPIView):
 
     def get(self, request):
         try:
-            # Get the query parameter for the employee name
-            name = request.query_params.get('name', None)
-            if name:
-                # Search for employees by name
-                employees = Employee.objects.filter(name__startswith=name)
-                serializer = EmployeeSerializer(employees, many=True)
-                message = f"Employee details with name containing '{name}' successfully retrieved"
-            else:
-                # Get all employees if no name parameter is provided
-                employees = Employee.objects.all()
-                serializer = EmployeeSerializer(employees, many=True)
-                message = "Employee details successfully retrieved"
-
+            employees = Employee.objects.all()
+            serializer = EmployeeSerializer(employees, many=True)
             return Response(
                 {
                     "data": serializer.data,
-                    "message": message,
+                    "message": "Employee details successfully retrieved",
                 },
                 status=status.HTTP_200_OK,
             )
@@ -55,5 +45,3 @@ class EmployeeView(ListCreateAPIView):
             return Response(
                 {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-
-

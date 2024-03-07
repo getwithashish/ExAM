@@ -34,7 +34,7 @@ SECRET_KEY = "django-insecure-373%1sgr9u57wh6shc@e%7)@9vgy5&ckst9cj2f9p5(ur!1jfl
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
  
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["localhost"]
  
  
 # Supertokens Initialization
