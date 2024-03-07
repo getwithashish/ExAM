@@ -23,8 +23,8 @@ const AssetTable = () => {
       return res.data
     }),
   });
-   if (isLoading) return <div className="spin"> <Spin /></div>;
-   if (isError) return <div>Error fetching data</div>;
+  //  if (isLoading) return <div className="spin"> <Spin /></div>;
+  //  if (isError) return <div>Error fetching data</div>;
   // //  const assetListData = assetData?.data.data.map.map((item:  DataType) => ({
   // //   value: item.asset_type
   // // }));
