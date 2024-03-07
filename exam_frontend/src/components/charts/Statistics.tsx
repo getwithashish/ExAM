@@ -1,4 +1,4 @@
-import Carousel from './Carousel';
+import Carousel from './carousel';
 import PieChartGraph from './PieChartGraph';
 
 export const Statistics = () => {

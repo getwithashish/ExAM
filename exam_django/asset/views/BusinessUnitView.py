@@ -2,10 +2,15 @@ from rest_framework.generics import ListCreateAPIView
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-
 from asset.serializers import BusinessUnitSerializer
 from asset.models import BusinessUnit
-
+from response import APIResponse
+from messages import(
+BUSINESS_UNIT_SUCCESSFULLY_CREATED,
+BUSINESS_UNIT_CREATED_UNSUCCESSFUL,
+GLOBAL_500_EXCEPTION_ERROR,
+BUSINESS_UNIT_SUCCESSFULLY_RETRIEVED
+)
 
 class BusinessUnitView(ListCreateAPIView):
 
@@ -22,33 +27,34 @@ class BusinessUnitView(ListCreateAPIView):
             serializer = BusinessUnitSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response(
-                    {
-                        "data": serializer.data,
-                        "message": "Business unit created successfully",
-                    },
+                return APIResponse(
+                    data=serializer.data,
+                    message=BUSINESS_UNIT_SUCCESSFULLY_CREATED,
                     status=status.HTTP_201_CREATED,
                 )
-            return Response(
-                {"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+            return APIResponse(
+                data=serializer.errors,
+                message=BUSINESS_UNIT_CREATED_UNSUCCESSFUL,
+                status=status.HTTP_400_BAD_REQUEST,
             )
         except Exception as e:
-            return Response(
-                {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            return APIResponse(
+                message=GLOBAL_500_EXCEPTION_ERROR,
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+
 
     def get(self, request):
         try:
             business_units = BusinessUnit.objects.all()
             serializer = BusinessUnitSerializer(business_units, many=True)
-            return Response(
-                {
-                    "data": serializer.data,
-                    "message": "Business units details successfully retrieved",
-                },
+            return APIResponse(
+                data=serializer.data,
+                message=BUSINESS_UNIT_SUCCESSFULLY_RETRIEVED,
                 status=status.HTTP_200_OK,
             )
         except Exception as e:
-            return Response(
-                {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            return APIResponse(
+                message=GLOBAL_500_EXCEPTION_ERROR,
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
