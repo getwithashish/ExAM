@@ -21,14 +21,14 @@ export default function PieChartHardware() {
     queryKey: ['assetCount'],
     queryFn: ():Promise<{hardware:[], software:[]}> => axiosInstance.get('/asset/asset_count').then((res) => {
       console.log(res);
-      return res.data.data
+      return res.data
     }),
   });
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error fetching data</div>;
 
-  const chartData = data.hardware.map((item: AssetCountData) => ({
+  const chartData = data.data.hardware.map((item: AssetCountData) => ({
     label: item.status,
     value: item.count,
     color: '#' + Math.floor(Math.random() * 16777215).toString(16) // Generate random color
