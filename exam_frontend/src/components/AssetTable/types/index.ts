@@ -1,38 +1,35 @@
-
 export interface DataType {
-    key: React.Key;
-    AssetId: string;
-    AssetCategory: string;
-    AssetType: string;
-    Version:number;
-    Status:string;
-    Location:string;
-    InVoiceLocation:string,
-    BusinessUnit:string;
-    Os:string;
-    OsVersion:string;
-    MobileOs:string;
-    Processor:string;
-    Generation:string;
-    Accessories:string;
-    DateOfPurchase:Date;
-    WarrantyPeriod:number;
-    ApprovalStatus:string;
-    Approver:string;
-    AssignAsset:string;
-    ModelNumber:string;
-    SerialNumber:string;
-    Custodian:string;
-    ProductName:string;
-    Memory:string;
-    Storage:string;
-    Configuration:string;
-    Owner:string;
-    Requester:string;
-    Comments:string;
-    CreatedAt:Date;
-    UpdatedAt:Date;
-    
-  }
+  key: React.Key;
+  asset_id: string;
+  asset_category: string;
+  asset_type: string;
+  version:number;
+  status:string;
+  location:string;
+  invoice_location:string,
+  business_unit:string;
+  os:string;
+  os_version:string;
+  mobile_os:string;
+  processor:string;
+  Generation:string;
+  accessories:string;
+  date_of_purchase:Date;
+  warranty_period:number;
+  approval_status:string;
+  conceder:string;
+  AssignAsset:string;
+  model_number:string;
+  serial_number:string;
+  custodian:string;
+  product_name:string;
+  memory:string;
+  storage:string;
+  configuration:string;
+  owner:string;
+  requester:string;
+  notes:string;
+  created_at:Date;
+  updated_at:Date;
   
-  
+}
