@@ -36,6 +36,7 @@ const AssetTable = () => {
 
   const handleRowClick = (record: React.SetStateAction<null>) => {
     setSelectedRow(record);
+    
     setDrawerVisible(true);
   };
 
@@ -904,9 +905,8 @@ const AssetTable = () => {
           +
         </Button>
       ),
- 
-    
-    },
+    }
+    ,
   
   ];
   
@@ -963,9 +963,17 @@ const AssetTable = () => {
       <Table
         columns={columns}
         dataSource={data}
-        onRow={(record) => ({
-          onClick: () => handleRowClick(record),
-        })}
+        onRow={(record) => { console.log(record);  return{
+          onClick: () => {
+            if(!isClicked){
+              handleRowClick(record)
+            }
+            else{
+              showDrawer();
+            }
+              }
+        }
+        }}
         scroll={{ x: 'max-content' }}
         className="mainTable"
         pagination={false}
@@ -975,7 +983,8 @@ const AssetTable = () => {
           borderRadius: 10,
           padding: 20,
           boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-          fontSize: "50px"
+          fontSize: "50px",
+          zIndex:-30
         }}
       />
       <DrawerComponent
