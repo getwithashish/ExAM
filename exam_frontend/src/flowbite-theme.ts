@@ -2,16 +2,16 @@ import type { CustomFlowbiteTheme } from "flowbite-react";
 
 const flowbiteTheme: CustomFlowbiteTheme = {
   // badge: {
-  //   color: {
-  //    primary:
-  //       "bg-primary-100 text-primary-800 dark:bg-primary-200 dark:text-primary-800 group-hover:bg-primary-200 dark:group-hover:bg-primary-300",
-  //   },
-  //   icon: {
-  //     off: "rounded-full px-2 py-1",
-  //   },
-  //   size: {
-  //     xl: "px-3 py-2 text-base rounded-md",
-  //   },
+  //  root :{ color: {
+  //   primary:
+  //      "bg-primary-100 text-primary-800 dark:bg-primary-200 dark:text-primary-800 group-hover:bg-primary-200 dark:group-hover:bg-primary-300",
+  //  },
+  //  icon: {
+  //    off: "rounded-full px-2 py-1",
+  //  },
+  //  size: {
+  //    xl: "px-3 py-2 text-base rounded-md",
+  //  },}
   // },
   button: {
     color: {
@@ -48,11 +48,11 @@ const flowbiteTheme: CustomFlowbiteTheme = {
   },
   sidebar: {
     root: {
-      base: "flex z-20 fixed top-0 left-0  flex-col flex-shrink-0 pt-16 h-full duration-75 border-r border-gray-200 lg:flex transition-width dark:border-grey-700",
+      base: "flex z-20 fixed top-0 left-0  flex-col flex-shrink-0 pt-16 h-full duration-75 border-r border-gray-200 lg:flex transition-width  bg-white dark:border-grey-700",
     }
   },
   textarea: {
-    base: "block w-full text-sm p-4 rounded-lg border disabled:cursor-not-allowed disabled:opacity-50",
+    base: " block w-full text-sm p-4 rounded-lg border disabled:cursor-not-allowed disabled:opacity-50",
   },
   toggleSwitch: {
     toggle: {
