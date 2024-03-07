@@ -9,32 +9,32 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
- 
+
 from pathlib import Path
 from decouple import config
 from typing import List
 from datetime import timedelta
 from corsheaders.defaults import default_headers
- 
+
 from supertokens_python import init, InputAppInfo, SupertokensConfig
 from supertokens_python.recipe import emailpassword, session
 from supertokens_python import get_all_cors_headers
- 
- 
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
- 
- 
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
- 
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-373%1sgr9u57wh6shc@e%7)@9vgy5&ckst9cj2f9p5(ur!1jfl"
- 
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
  
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["localhost"]
  
  
 # Supertokens Initialization
@@ -54,21 +54,21 @@ init(
     recipe_list=[session.init(), emailpassword.init()],  # initializes session features
     mode="wsgi",  # use wsgi if you are running django server in sync mode
 )
- 
- 
+
+
 CORS_ORIGIN_WHITELIST = ["http://localhost:5173"]
- 
+
 CORS_ALLOW_CREDENTIALS = True
- 
+
 CORS_ALLOWED_ORIGINS = ["http://localhost:5173"]
- 
+
 CORS_ALLOW_HEADERS: List[str] = (
     list(default_headers) + ["Content-Type"] + get_all_cors_headers()
 )
- 
- 
+
+
 # Application definition
- 
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -82,9 +82,10 @@ INSTALLED_APPS = [
     "corsheaders",
     "supertokens_python",
     "user_auth",
-    "asset", 'drf_yasg',
+    "asset",
+    "drf_yasg",
 ]
- 
+
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
@@ -96,11 +97,11 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "supertokens_python.framework.django.django_middleware.middleware",
 ]
- 
+
 ROOT_URLCONF = "exam_django.urls"
- 
+
 AUTH_USER_MODEL = "user_auth.User"
- 
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -116,7 +117,7 @@ TEMPLATES = [
         },
     },
 ]
- 
+
 REST_FRAMEWORK = {
     # "DEFAULT_AUTHENTICATION_CLASSES": [
     #     "sampleapp.authentication.SupertokensAuthentication",
@@ -129,7 +130,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 1,
 }
- 
+
 SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=15),
     "ROTATE_REFRESH_TOKENS": True,
@@ -150,14 +151,14 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
 }
- 
- 
+
+
 WSGI_APPLICATION = "exam_django.wsgi.application"
- 
- 
+
+
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
- 
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
@@ -168,11 +169,11 @@ DATABASES = {
         "PORT": config("DB_PORT"),
     }
 }
- 
- 
+
+
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
- 
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -187,26 +188,26 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
- 
- 
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
- 
+
 LANGUAGE_CODE = "en-us"
- 
+
 TIME_ZONE = "UTC"
- 
+
 USE_I18N = True
- 
+
 USE_TZ = True
- 
- 
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
- 
+
 STATIC_URL = "static/"
- 
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
- 
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
