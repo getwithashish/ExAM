@@ -1,18 +1,14 @@
 from rest_framework.views import APIView
+from rest_framework import status
 from django.http import JsonResponse
-from asset.models import (
-    AssetLog,
-    Location,
-    BusinessUnit,
-    AssetType,
-    User,
-    Memory,
-    Employee,
-)
 import json
+from response import APIResponse
+from messages import (
+    ASSET_NOT_FOUND,
+    ASSET_LOG_FOUND,
+)
 
 
-# View to retrive the asset log details of a particular asset_uuid
 class AssetLogView(APIView):
     def get(self, request, asset_uuid):
         try:
@@ -117,14 +113,24 @@ class AssetLogView(APIView):
                 }
                 response_data["logs"].append(log_data)
 
-            response_data["message"] = "Assets found"
-            return JsonResponse(response_data, status=200)
+            # response_data["message"] = "Assets found"
+            # return JsonResponse(response_data, status=200)
+            return APIResponse(
+                data=response_data,
+                message=ASSET_LOG_FOUND,
+                status=status.HTTP_201_CREATED,
+            )
 
-        except Exception as e:
-            return JsonResponse(
-                {
-                    "message": "An error occurred while processing the request",
-                    "error": str(e),
-                },
-                status=500,
+        except Exception:
+            # return JsonResponse(
+            #     {
+            #         "message": "An error occurred while processing the request",
+            #         "error": str(e),
+            #     },
+            #     status=500,
+            # )
+            return APIResponse(
+                data=[],
+                message=ASSET_NOT_FOUND,
+                status=status.HTTP_404_NOT_FOUND,
             )

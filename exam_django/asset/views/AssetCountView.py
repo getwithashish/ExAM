@@ -1,8 +1,14 @@
 from rest_framework.generics import ListAPIView
-from rest_framework.response import Response
 from asset.models import Asset
 from django.db.models import Count
 from rest_framework.permissions import IsAuthenticated
+from response import APIResponse
+from rest_framework import status
+
+from messages import (
+    ASSET_COUNT_SUCCESSFULLY_RETRIEVED,
+    
+)
 
 
 class AssetCountView(ListAPIView):
@@ -32,4 +38,8 @@ class AssetCountView(ListAPIView):
             ],
         }
 
-        return Response(response_data)
+        return APIResponse(
+            data=response_data,
+            message=ASSET_COUNT_SUCCESSFULLY_RETRIEVED,
+            status=status.HTTP_200_OK,
+        )

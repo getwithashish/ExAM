@@ -6,14 +6,21 @@ from asset.serializers import AssetReadSerializer
 from django.db.models import Q
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
-from rest_framework.response import Response
+from rest_framework import status
+
+# from rest_framework.response import Response
+from response import APIResponse
+from messages import (
+    ASSET_LIST_SUCCESSFULLY_RETRIEVED,
+    ASSET_NOT_FOUND,
+    BAD_REQUEST_ERROR,
+    DATABASE_ERROR,
+)
 
 
 class AssetSearchWithFilterView(APIView):
 
-
-
-  def get(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         try:
             name = request.GET.get("name")
             serial_number = request.GET.get("serial_number")
@@ -24,7 +31,8 @@ class AssetSearchWithFilterView(APIView):
 
             if name:
                 filters.append(
-                    Q(product_name__icontains=name) | Q(product_name__regex=r"\b{}\b".format(name))
+                    Q(product_name__icontains=name)
+                    | Q(product_name__regex=r"\b{}\b".format(name))
                 )
             if serial_number:
                 filters.append(Q(serial_number__startswith=serial_number))
@@ -45,17 +53,32 @@ class AssetSearchWithFilterView(APIView):
                 paginated_assets = paginator.paginate_queryset(assets, request)
                 serializer = AssetReadSerializer(paginated_assets, many=True)
                 response_data = paginator.get_paginated_response(serializer.data)
-                response_data.data['message'] = 'Assets retrieved successfully.'
-                return response_data
+
+                return APIResponse(
+                    data=response_data.data,
+                    message=ASSET_LIST_SUCCESSFULLY_RETRIEVED,
+                    status=status.HTTP_201_CREATED,
+                )
+
             else:
-                return Response({'message': 'No assets found.'}, status=404)
-        except (ValidationError, ParseError) as e:
-            return Response({'message': str(e)}, status=400)
-        except DatabaseError as e:
-            return Response({'message': 'Database error occurred.'}, status=500)
-        except Exception as e:
-            # Log the error for debugging
-            print(f"Unexpected error: {e}")
-            return Response({'message': 'An unexpected error occurred.'}, status=500)
 
+                return APIResponse(
+                    data=[],
+                    message=ASSET_NOT_FOUND,
+                    status=status.HTTP_404_NOT_FOUND,
+                )
 
+        except (ValidationError, ParseError):
+
+            return APIResponse(
+                data=[],
+                message=BAD_REQUEST_ERROR,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except DatabaseError:
+
+            return APIResponse(
+                data=[],
+                message=DATABASE_ERROR,
+                status=status.ASSET_NOT_FOUND,
+            )

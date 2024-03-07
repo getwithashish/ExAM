@@ -1,0 +1,26 @@
+.drawer{
+    /* border-top-left-radius: 20%;
+   border-top-right-radius: 20%; 
+   border-bottom-left-radius: 0;
+   border-bottom-right-radius: 0; */
+    color:black;
+    /* font-size: x-large; */
+    text-align: center;
+    line-height: 250%;
+}
+.drawerHeading{
+    font-size: 190%;
+    font-weight: 900;
+    text-align: center;
+}
+.drawerSubHeading{
+    color:black;
+  padding: 10px; /* Example padding */
+  margin-bottom: 10px; /* Example margin bottom */
+  font-size: 120%;
+}
+.drawerContainer{
+line-height: 160%;
+font-size: xx-large;
+
+}

@@ -5,11 +5,11 @@ from asset.serializers import EmployeeSerializer
 from asset.models import Employee
 from rest_framework.permissions import IsAuthenticated
 from response import APIResponse
-from messages import(
-EMPLOYEE_SUCCESSFULLY_CREATED,
-EMPLOYEE_CREATION_UNSUCCESSFUL,
-GLOBAL_500_EXCEPTION_ERROR,
-EMPLOYEE_DETAILS_SUCCESSFULLY_RETRIEVED
+from messages import (
+    EMPLOYEE_SUCCESSFULLY_CREATED,
+    EMPLOYEE_CREATION_UNSUCCESSFUL,
+    GLOBAL_500_EXCEPTION_ERROR,
+    EMPLOYEE_DETAILS_SUCCESSFULLY_RETRIEVED,
 )
 
 
@@ -41,10 +41,11 @@ class EmployeeView(ListCreateAPIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         except Exception as e:
-              return APIResponse(
+            return APIResponse(
                 message=GLOBAL_500_EXCEPTION_ERROR,
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+
     def get(self, request):
         try:
             employees = Employee.objects.all()
@@ -55,8 +56,7 @@ class EmployeeView(ListCreateAPIView):
                 status=status.HTTP_200_OK,
             )
         except Exception as e:
-             return APIResponse(
+            return APIResponse(
                 message=GLOBAL_500_EXCEPTION_ERROR,
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
-
