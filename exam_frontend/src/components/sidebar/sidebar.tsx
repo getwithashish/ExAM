@@ -23,10 +23,11 @@ const ExamSidebar: React.FC<ExamSidebarProps> = ({ isSidebarVisible, isClicked, 
         <BsChevronDoubleRight className={`h-screen flex justify-center items-center fixed z-50 ${isSidebarVisible ? styles['hidden'] : styles['displayed']}`}></BsChevronDoubleRight>
       
       </button>
-      <div className={` ${isClicked ? styles['open'] : isSidebarVisible ? styles['sidebar'] : styles['hidden']}`}>
-        <Sidebar aria-label="Sidebar with multi-level dropdown example">
+    <div style={{ backgroundColor: 'white' }}>
+      <div className={` ${isClicked ? styles['open'] : isSidebarVisible ? styles['sidebar'] : styles['hidden']}`} >
+        <Sidebar aria-label="Sidebar with multi-level dropdown example ">
         
-          <div className="flex h-full flex-col justify-between py-2">
+          <div className="flex h-full flex-col justify-between py-2 bg-white">
             <div>
               <button className={styles['closeButton']} onClick={closeSidebar}>
                 <BsX />
@@ -48,6 +49,7 @@ const ExamSidebar: React.FC<ExamSidebarProps> = ({ isSidebarVisible, isClicked, 
           </div>
         </Sidebar>
       </div>
+    </div>
     </>
   );
 };

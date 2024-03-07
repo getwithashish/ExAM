@@ -32,7 +32,7 @@ export const SidebarHandler = ({ addAsset }: { addAsset: () => void }) => {
   };
 
   return (
-    <div>
+    <div style={{ backgroundColor: 'white' }} >
       <ExamSidebar
         isSidebarVisible={isSidebarVisible}
         isClicked={isClicked}
