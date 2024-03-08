@@ -9,14 +9,16 @@ const CardComponent: React.FC<{
   statusOptions: string[];
   businessUnitOptions:string[];
   locationOptions:string[];
+  memoryoptions:string[];
   onUpdate: (updatedData: DataType) => void;
   
   // Specify the data prop type as DataType
-}> = ({ data,onUpdate,statusOptions,businessUnitOptions,locationOptions }) => {
+}> = ({ data,onUpdate,statusOptions,businessUnitOptions,locationOptions,memoryoptions }) => {
   
   const uniqueStatusOptions = Array.from(new Set(statusOptions));
   const uniqueBusinessOptions=Array.from(new Set(businessUnitOptions));
   const uniqueLocationoptions=Array.from(new Set(locationOptions))
+  const uniqueMemoryOptions=Array.from(new Set(memoryoptions))
   const [editedData, setEditedData] = useState(data);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,7 +74,7 @@ const CardComponent: React.FC<{
         <Card.Grid style={gridStyle}><b>Asset Type: </b><Form.Item name="version"> <Input defaultValue={data.asset_type} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
 
        <Card.Grid style={gridStyle}><b>Version: </b><Form.Item name="version"> <Input defaultValue={data.version} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
-       <Card.Grid style={gridStyle} ><b>Status:</b>
+       <Card.Grid style={gridStyle} ><b> Asset Status:</b>
        <Form.Item name="status" style={{ background: '#FAFAFA', boxShadow: 'none', border: 'none' }}>
       <Select defaultValue={uniqueStatusOptions[0]} style={{ background: '#FAFAFA', boxShadow: 'none', border: 'none' }} onChange={(value) => handleChange("Status", value)}>
         {uniqueStatusOptions.map((status, index) => (
@@ -82,6 +84,7 @@ const CardComponent: React.FC<{
     </Form.Item>
       
       </Card.Grid>
+      
       <Card.Grid style={gridStyle} ><b>Location:</b>
        <Form.Item name="location" style={{ background: '#FAFAFA', boxShadow: 'none', border: 'none' }}>
       <Select defaultValue={uniqueLocationoptions[0]} style={{ background: '#FAFAFA', boxShadow: 'none', border: 'none' }} onChange={(value) => handleChange("location", value)}>
@@ -93,7 +96,17 @@ const CardComponent: React.FC<{
       
       </Card.Grid>
 
-          <Card.Grid style={gridStyle}><b>Invoice Location:</b> <Form.Item name="invoiceLocation"> <Input defaultValue={data.invoice_location} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
+             
+      <Card.Grid style={gridStyle} ><b>Invoice Location:</b>
+       <Form.Item name="location" style={{ background: '#FAFAFA', boxShadow: 'none', border: 'none' }}>
+      <Select defaultValue={uniqueLocationoptions[0]} style={{ background: '#FAFAFA', boxShadow: 'none', border: 'none' }} onChange={(value) => handleChange("location", value)}>
+        {uniqueLocationoptions.map((location, index) => (
+          <Select.Option key={index} value={location}>{location}</Select.Option>
+        ))}
+      </Select>
+    </Form.Item>
+      
+      </Card.Grid>
           <Card.Grid style={gridStyle} ><b>Business Unit:</b>
           <Form.Item name="business_unit" style={{ background: '#FAFAFA', boxShadow: 'none', border: 'none' }}>
       <Select defaultValue={uniqueBusinessOptions[0]} style={{ background: '#FAFAFA', boxShadow: 'none', border: 'none' }} onChange={(value) => handleChange("business_unit", value)}>
@@ -117,7 +130,16 @@ const CardComponent: React.FC<{
           <Card.Grid style={gridStyle}><b>Model Number:</b> <Form.Item name="serial number"> <Input defaultValue={data.model_number} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
           <Card.Grid style={gridStyle}><b>Custodian:</b><Form.Item name="date of purchase"  style={inputStyle}>{data.custodian}   </Form.Item></Card.Grid>
           <Card.Grid style={gridStyle}><b>Product Name:</b><Form.Item name="product name"> <Input defaultValue={data.product_name} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
-          <Card.Grid style={gridStyle}><b>Memory:</b><Form.Item name="memory"> <Input defaultValue={data.memory} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle} ><b>Memory:</b>
+          <Form.Item name="business_unit" style={{ background: '#FAFAFA', boxShadow: 'none', border: 'none' }}>
+      <Select defaultValue={uniqueMemoryOptions[0]} style={{ background: '#FAFAFA', boxShadow: 'none', border: 'none' }} onChange={(value) => handleChange("business_unit", value)}>
+        {uniqueMemoryOptions.map((memory, index) => (
+          <Select.Option key={index} value={memory}>{memory}</Select.Option>
+        ))}
+      </Select>
+    </Form.Item>
+    </Card.Grid>
+
           <Card.Grid style={gridStyle}><b>Storage: </b><Form.Item name="storage"> <Input defaultValue={data.storage} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
           <Card.Grid style={gridStyle}><b>Configuration:  </b><Form.Item name="configuration"> <Input defaultValue={data.configuration} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
           <Card.Grid style={gridStyle}><b>Owner:  </b><Form.Item name="configuration"> <Input defaultValue={data.owner} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
