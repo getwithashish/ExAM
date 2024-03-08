@@ -6,10 +6,17 @@ import { DataType } from '../AssetTable/types/index'
 
 const CardComponent: React.FC<{
   data: DataType; 
+  statusOptions: string[];
+  businessUnitOptions:string[];
+  locationOptions:string[];
   onUpdate: (updatedData: DataType) => void;
-  // Specify the data prop type as DataType
-}> = ({ data,onUpdate }) => {
   
+  // Specify the data prop type as DataType
+}> = ({ data,onUpdate,statusOptions,businessUnitOptions,locationOptions }) => {
+  
+  const uniqueStatusOptions = Array.from(new Set(statusOptions));
+  const uniqueBusinessOptions=Array.from(new Set(businessUnitOptions));
+  const uniqueLocationoptions=Array.from(new Set(locationOptions))
   const [editedData, setEditedData] = useState(data);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,20 +73,36 @@ const CardComponent: React.FC<{
 
        <Card.Grid style={gridStyle}><b>Version: </b><Form.Item name="version"> <Input defaultValue={data.version} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
        <Card.Grid style={gridStyle} ><b>Status:</b>
-        <Form.Item name="status" style={{background:'#FAFAFA',  boxShadow: 'none',border:'none'}} >
-          <Select defaultValue={data.status} style={{background:'#FAFAFA',  boxShadow: 'none',border:'none'}} onChange={value => handleChange("Status", value)}>
-            <Select.Option value="instore">In Store</Select.Option>
-            <Select.Option value="inuse">In Use</Select.Option>
-            <Select.Option value="inrepair">In Repair</Select.Option>
-            <Select.Option value="expired">Expired</Select.Option>
-            <Select.Option value="disposed">Disposed</Select.Option>
-          </Select>
-        </Form.Item>
+       <Form.Item name="status" style={{ background: '#FAFAFA', boxShadow: 'none', border: 'none' }}>
+      <Select defaultValue={uniqueStatusOptions[0]} style={{ background: '#FAFAFA', boxShadow: 'none', border: 'none' }} onChange={(value) => handleChange("Status", value)}>
+        {uniqueStatusOptions.map((status, index) => (
+          <Select.Option key={index} value={status}>{status}</Select.Option>
+        ))}
+      </Select>
+    </Form.Item>
+      
+      </Card.Grid>
+      <Card.Grid style={gridStyle} ><b>Location:</b>
+       <Form.Item name="location" style={{ background: '#FAFAFA', boxShadow: 'none', border: 'none' }}>
+      <Select defaultValue={uniqueLocationoptions[0]} style={{ background: '#FAFAFA', boxShadow: 'none', border: 'none' }} onChange={(value) => handleChange("location", value)}>
+        {uniqueLocationoptions.map((location, index) => (
+          <Select.Option key={index} value={location}>{location}</Select.Option>
+        ))}
+      </Select>
+    </Form.Item>
+      
       </Card.Grid>
 
-          <Card.Grid style={gridStyle}><b>Location: </b><Form.Item name="location"> <Input defaultValue={data.location} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
           <Card.Grid style={gridStyle}><b>Invoice Location:</b> <Form.Item name="invoiceLocation"> <Input defaultValue={data.invoice_location} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
-          <Card.Grid style={gridStyle}><b>Business Unit:</b> <Form.Item name="businessUnit"> <Input defaultValue={data.business_unit} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
+          <Card.Grid style={gridStyle} ><b>Business Unit:</b>
+          <Form.Item name="business_unit" style={{ background: '#FAFAFA', boxShadow: 'none', border: 'none' }}>
+      <Select defaultValue={uniqueBusinessOptions[0]} style={{ background: '#FAFAFA', boxShadow: 'none', border: 'none' }} onChange={(value) => handleChange("business_unit", value)}>
+        {uniqueBusinessOptions.map((business_unit, index) => (
+          <Select.Option key={index} value={business_unit}>{business_unit}</Select.Option>
+        ))}
+      </Select>
+    </Form.Item>
+    </Card.Grid>
           <Card.Grid style={gridStyle}><b>OS: </b><Form.Item name="os"> <Input defaultValue={data.os} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
           <Card.Grid style={gridStyle}><b>OS Version:</b><Form.Item name="os version"> <Input defaultValue={data.os_version} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
           <Card.Grid style={gridStyle}><b>Mobile OS: </b><Form.Item name="mobile os"> <Input defaultValue={data.mobile_os} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
