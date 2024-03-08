@@ -36,3 +36,7 @@
     padding: 10px;
 
   }
+
+  .result{
+    display: none;
+  }

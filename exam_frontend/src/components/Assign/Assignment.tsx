@@ -10,7 +10,8 @@ export const Assignment = () => {
   
   const [fetchData, setFetchData] = useState(true);
   const [query,setQuery] = useState("")
-  const { data, isLoading, isError } = useQuery<ApiResponse>({
+  const [value,setValue] = useState("")
+  const { data, isError } = useQuery<ApiResponse>({
     queryKey: ['Assign'],
     enabled: fetchData && query.trim().length > 0,
     queryFn: (): Promise<ApiResponse> => axiosInstance.get(`/asset/employee?query=${query}`).then((res) => {
@@ -26,6 +27,7 @@ export const Assignment = () => {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
     setQuery(inputValue);
+    setValue(inputValue)
     if (inputValue.trim().length > 0) {
       setFetchData(true);
     }
@@ -33,7 +35,7 @@ export const Assignment = () => {
 
     // Define loading and error states
    
-    // if (isError) return <div>Error fetching data</div>;
+    if (isError) return <div>Error fetching data</div>;
   
   return (
     <div className={styles['square-box']}>
@@ -45,14 +47,14 @@ export const Assignment = () => {
         <div className={styles['info']}>Version </div>
 
         <input type='text' name={"employee"} className={styles['search-input']} placeholder='employee id' onInput={handleInputChange}/>
-        <div className={styles['info']}>
-        {data && data.map((employee) => (
+        <div className={value ? styles['info'] : styles['result']}>
+        {data && data.map((employee:EmployeeDetails) => (
           <div key={employee.id}>{employee.employee_name}</div>
         ))}
       </div>
         <button className={styles['assign-button']} onClick={() => {
   if (data != null) {
-    console.log("employee name =", data[0].employee_name);
+  
   } else {
     console.log("No employee data available");
   }
