@@ -12,7 +12,7 @@ export const Assignment = () => {
   const [query,setQuery] = useState("")
   const { data, isLoading, isError } = useQuery<ApiResponse>({
     queryKey: ['Assign'],
-    enabled: fetchData,
+    enabled: fetchData && query.trim().length > 0,
     queryFn: (): Promise<ApiResponse> => axiosInstance.get(`/asset/employee?query=${query}`).then((res) => {
       console.log(res);
       console.log("res.data",res.data.data)
@@ -22,10 +22,18 @@ export const Assignment = () => {
     }),
   });
 
+  
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = event.target.value;
+    setQuery(inputValue);
+    if (inputValue.trim().length > 0) {
+      setFetchData(true);
+    }
+  };
 
     // Define loading and error states
-    if (isLoading) return <div>Loading...</div>;
-    if (isError) return <div>Error fetching data</div>;
+   
+    // if (isError) return <div>Error fetching data</div>;
   
   return (
     <div className={styles['square-box']}>
@@ -34,13 +42,14 @@ export const Assignment = () => {
         <div className={styles['info']}> asset id </div>
         <div className={styles['info']}>Asset Cateogry </div>
         <div className={styles['info']}>Asset Model Number </div>
-        <div className={styles['info']}>Asset Serial Number </div>
         <div className={styles['info']}>Version </div>
-        <div className={styles['info']}>Asset Location </div>
-        <div className={styles['info']}>Asset Invoice Location </div>
-        <div className={styles['info']}></div>
-        <input type='text' name={"employee"} className={styles['search-input']} placeholder='employee id' onInput={(e)=>{const target = e.target as HTMLInputElement;setQuery(target.value); setFetchData(true)} }/>
-        
+
+        <input type='text' name={"employee"} className={styles['search-input']} placeholder='employee id' onInput={handleInputChange}/>
+        <div className={styles['info']}>
+        {data && data.map((employee) => (
+          <div key={employee.id}>{employee.employee_name}</div>
+        ))}
+      </div>
         <button className={styles['assign-button']} onClick={() => {
   if (data != null) {
     console.log("employee name =", data[0].employee_name);
