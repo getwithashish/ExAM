@@ -23,8 +23,8 @@ const AssetTable = () => {
       return res.data
     }),
   });
-   if (isLoading) return <div className="spin"> <Spin /></div>;
-   if (isError) return <div>Error fetching data</div>;
+  //  if (isLoading) return <div className="spin"> <Spin /></div>;
+  //  if (isError) return <div>Error fetching data</div>;
   // //  const assetListData = assetData?.data.data.map.map((item:  DataType) => ({
   // //   value: item.asset_type
   // // }));
@@ -36,6 +36,7 @@ const AssetTable = () => {
 
   const handleRowClick = (record: React.SetStateAction<null>) => {
     setSelectedRow(record);
+    
     setDrawerVisible(true);
   };
 
@@ -904,9 +905,8 @@ const AssetTable = () => {
           +
         </Button>
       ),
- 
-    
-    },
+    }
+    ,
   
   ];
   
@@ -929,13 +929,13 @@ const AssetTable = () => {
     date_of_purchase: result.date_of_purchase,
     warranty_period: result.warranty_period,
     approval_status: result.approval_status,
-    conceder: result.conceder.username,
+    conceder: result.conceder?.username,
     model_number: result.model_number,
     serial_number: result.serial_number,
     memory: result.memory.memory_space,
     storage: result.storage,
     configuration: result.configuration,
-    custodian: result.custodian.employee_name,
+    custodian: result.custodian?.employee_name,
     product_name: result.product_name,
     owner: result.owner,
     requester: result.requester.username,
@@ -964,7 +964,7 @@ const AssetTable = () => {
         columns={columns}
         dataSource={data}
         onRow={(record) => ({
-          onClick: () => handleRowClick(record),
+          onClick: () => handleRowClick(record)
         })}
         scroll={{ x: 'max-content' }}
         className="mainTable"
@@ -975,7 +975,8 @@ const AssetTable = () => {
           borderRadius: 10,
           padding: 20,
           boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-          fontSize: "50px"
+          fontSize: "50px",
+          zIndex:-30
         }}
       />
       <DrawerComponent

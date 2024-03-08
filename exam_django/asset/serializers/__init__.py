@@ -6,7 +6,8 @@ from .BusinessUnitSerializer import BusinessUnitSerializer
 from .MemorySerializer import MemorySerializer
 from .EmployeeSerializer import EmployeeSerializer
 from .AssetLogSerializer import AssetLogSerializer
-from .EmployeeSearchSerializer import EmployeeSearchSerializer
+from .AssignAssetSerializer import AssignAssetSerializer
+
 __all__ = [
     "LocationSerializer",
     "AssetReadSerializer",
@@ -17,5 +18,5 @@ __all__ = [
     "MemorySerializer",
     "EmployeeSerializer",
     "AssetLogSerializer",
-    "EmployeeSearchSerializer"
+    "AssignAssetSerializer",
 ]

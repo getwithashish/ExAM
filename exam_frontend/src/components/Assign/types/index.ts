@@ -1,10 +1,9 @@
 import React, { ReactNode } from 'react';
 
 interface SideDrawerProps {
-  
+  buttonTextDefault: string;
   children: ReactNode;
-  displayDrawer:boolean
-  closeDrawer:()=>void
+  displayDrawer:boolean;
 }
 
 export default SideDrawerProps;

@@ -5,5 +5,6 @@
     isClicked: boolean;
     openSidebar: () => void;
     closeSidebar: () => void;
+    addAsset:()=> void
   }
  
