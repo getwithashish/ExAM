@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import ExamSidebar from './sidebar';
 
-export const SidebarHandler = () => {
+export const SidebarHandler = ({ addAsset }: { addAsset: () => void }) => {
   const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(true);
   const [isClicked, setIsClicked] = useState<boolean>(false);
 
@@ -32,12 +32,13 @@ export const SidebarHandler = () => {
   };
 
   return (
-    <div>
+    <div style={{ backgroundColor: 'white' }} >
       <ExamSidebar
         isSidebarVisible={isSidebarVisible}
         isClicked={isClicked}
         openSidebar={openSidebar}
         closeSidebar={closeSidebar}
+        addAsset={addAsset}
       />
     </div>
   );

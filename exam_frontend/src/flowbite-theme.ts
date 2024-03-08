@@ -35,7 +35,7 @@ const flowbiteTheme: CustomFlowbiteTheme = {
   },
   modal: {
     content: {
-      inner: "relative rounded-lg bg-white shadow dark:bg-gray-800",
+      inner: "relative rounded-lg bg-white shadow dark:bg-gray-800 bg-white",
     },
     header: {
       base: "flex items-start justify-between rounded-t px-5 pt-5",
