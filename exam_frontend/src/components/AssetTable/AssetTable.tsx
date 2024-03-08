@@ -10,7 +10,7 @@ import axiosInstance from '../../config/AxiosConfig';
 import { useQuery } from '@tanstack/react-query';
 import {DataType} from '../AssetTable/types'
 import { Spin } from 'antd';
-
+import {ColumnFilterItem} from '../AssetTable/types'
 
 const AssetTable = () => {
 
@@ -24,15 +24,26 @@ const AssetTable = () => {
       return res.data
     }),
   });
-   if (isLoading) return <div className="spin"> <Spin /></div>;
-   if (isError) return <div>Error fetching data</div>;
+  // if (isLoading) return <div className="spin"> <Spin /></div>;
+  // if (isError) return <div>Error fetching data</div>;
   // //  const assetListData = assetData?.data.data.map.map((item:  DataType) => ({
   // //   value: item.asset_type
   // // }));
   const assetDataList = assetData?.data.results;
   console.log("Testing on 65:", assetDataList? assetDataList[0].results : [])
 
-  
+  const locations = new Set(); // Use a Set to avoid duplicate locations
+assetDataList?.forEach((asset) => {
+  locations.add(asset.location.location_name);
+  console.log("Location Data:", assetData.data.results.map(asset => asset.location.location_name));
+
+});
+
+const locationFilters: ColumnFilterItem[] = Array.from(locations).map((location) => ({
+  text: location as React.ReactNode,
+  value: location,
+}));
+
   
 
   const handleRowClick = (record: React.SetStateAction<null>) => {
@@ -104,37 +115,37 @@ const AssetTable = () => {
   
     },
 
-    {
-      title: 'Asset Id',
-      dataIndex: 'asset_id',
-      fixed:'left',
-      responsive: ['md'],
-      filters: [
-        {
-          text: 'AC101',
-          value: 'AC101',
-        },
-        {
-          text: 'AC102',
-          value: 'AC102',
-        },
+    // {
+    //   title: 'Asset Id',
+    //   dataIndex: 'asset_id',
+    //   fixed:'left',
+    //   responsive: ['md'],
+    //   filters: [
+    //     {
+    //       text: 'AC101',
+    //       value: 'AC101',
+    //     },
+    //     {
+    //       text: 'AC102',
+    //       value: 'AC102',
+    //     },
         
-      ],
-      // Specify the condition of filtering result
-      // Here is that finding the name started with `value`
-      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+    //   ],
+    //   // Specify the condition of filtering result
+    //   // Here is that finding the name started with `value`
+    //   onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
-        if (Array.isArray(value)) {
-          return value.includes(record.asset_id);
-        }
-        return record.asset_id.indexOf(value.toString()) === 0;
-      },
+    //     if (Array.isArray(value)) {
+    //       return value.includes(record.asset_id);
+    //     }
+    //     return record.asset_id.indexOf(value.toString()) === 0;
+    //   },
   
-      sorter: (a, b) => a.asset_id.localeCompare(b.asset_id),
-      sortDirections: ['ascend', 'descend'],
-      // sorter: (a, b) => a.AssetId.length - b.AssetId.length,
-      // sortDirections: ['descend'],
-    },
+    //   sorter: (a, b) => a.asset_id.localeCompare(b.asset_id),
+    //   sortDirections: ['ascend', 'descend'],
+    //   // sorter: (a, b) => a.AssetId.length - b.AssetId.length,
+    //   // sortDirections: ['descend'],
+    // },
    
     {
       title: 'Asset Category',
@@ -162,88 +173,79 @@ const AssetTable = () => {
   
     },
   
-    {
-      title: 'Asset Type',
-      dataIndex: 'asset_type',
-      responsive: ['md'],
-      filters: [
-        {
-          text: 'Laptop',
-          value: 'Laptop',
-        },
-        {
-          text: 'Monitor',
-          value: 'Monitor',
-        },
-      ],
-      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+    // {
+    //   title: 'Asset Type',
+    //   dataIndex: 'asset_type',
+    //   responsive: ['md'],
+    //   filters: [
+    //     {
+    //       text: 'Laptop',
+    //       value: 'Laptop',
+    //     },
+    //     {
+    //       text: 'Monitor',
+    //       value: 'Monitor',
+    //     },
+    //   ],
+    //   onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
-        if (Array.isArray(value)) {
-          return value.includes(record.asset_type);
-        }
-        return record.asset_type.indexOf(value.toString()) === 0;
-      },
-    },
-    {
-      title: 'Version',
-      dataIndex: 'version',
-      responsive: ['md'],
-      filters: [
-        {
-          text: 1,
-          value: 1,
-        },
-        {
-          text: 2,
-          value: 2,
-        },
-      ],
-      onFilter: (value, record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.version);
-        }
-        return record.version === value;
-      },
-      sorter: (a, b) => a.version - b.version,
-      sortDirections: ['ascend', 'descend'],
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      responsive: ['md'],
-      filters: [
-        {
-          text: 'In Use ',
-          value: 'In Use',
-        },
-        {
-          text: 'In Store',
-          value: 'In Store',
-        },
-      ],
+    //     if (Array.isArray(value)) {
+    //       return value.includes(record.asset_type);
+    //     }
+    //     return record.asset_type.indexOf(value.toString()) === 0;
+    //   },
+    // },
+    // {
+    //   title: 'Version',
+    //   dataIndex: 'version',
+    //   responsive: ['md'],
+    //   filters: [
+    //     {
+    //       text: 1,
+    //       value: 1,
+    //     },
+    //     {
+    //       text: 2,
+    //       value: 2,
+    //     },
+    //   ],
+    //   onFilter: (value, record: DataType) => {
+    //     if (Array.isArray(value)) {
+    //       return value.includes(record.version);
+    //     }
+    //     return record.version === value;
+    //   },
+    //   sorter: (a, b) => a.version - b.version,
+    //   sortDirections: ['ascend', 'descend'],
+    // },
+    // {
+    //   title: 'Status',
+    //   dataIndex: 'status',
+    //   responsive: ['md'],
+    //   filters: [
+    //     {
+    //       text: 'In Use ',
+    //       value: 'In Use',
+    //     },
+    //     {
+    //       text: 'In Store',
+    //       value: 'In Store',
+    //     },
+    //   ],
      
-      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+    //   onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
      
-        if (Array.isArray(value)) {
-          return value.includes(record.status);
-        }
-        return record.status.indexOf(value.toString()) === 0;
-      },
-    },
+    //     if (Array.isArray(value)) {
+    //       return value.includes(record.status);
+    //     }
+    //     return record.status.indexOf(value.toString()) === 0;
+    //   },
+    // },
     {
       title: 'Location',
       dataIndex: 'location', // Corrected dataIndex
       responsive: ['md'],
-      filters: [
-        {
-          text: 'Kochi ',
-          value: 'Kochi',
-        },
-        {
-          text: 'Trivandrum',
-          value: 'Trivandrum',
-        },
-      ],
+      filters:locationFilters,
      
       onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
@@ -254,378 +256,378 @@ const AssetTable = () => {
       },
     },
     
-    {
-      title: 'Invoice Location',
-      dataIndex: 'invoice_location',
-      responsive: ['md'],
-      filters: [
-        {
-          text: 'Kochi ',
-          value: 'Kochi',
-        },
-        {
-          text: 'Trivandrum',
-          value: 'Trivandrum',
-        },
-      ],
-      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+    // {
+    //   title: 'Invoice Location',
+    //   dataIndex: 'invoice_location',
+    //   responsive: ['md'],
+    //   filters: [
+    //     {
+    //       text: 'Kochi ',
+    //       value: 'Kochi',
+    //     },
+    //     {
+    //       text: 'Trivandrum',
+    //       value: 'Trivandrum',
+    //     },
+    //   ],
+    //   onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
-        if (Array.isArray(value)) {
-          return value.includes(record.invoice_location);
-        }
-        return record.invoice_location.indexOf(value.toString()) === 0;
-      },
-    },
-    {
-      title: 'Business Unit',
-      dataIndex: 'business_unit',
-      responsive: ['md'],
-      filters: [
-        {
-          text: 'du1 ',
-          value: 'du1',
-        },
-        {
-          text: 'du2',
-          value: 'du2',
-        },
-        {
-          text: 'du3 ',
-          value: 'du3',
-        },
-        {
-          text: 'du4',
-          value: 'du4',
-        },
-      ],
+    //     if (Array.isArray(value)) {
+    //       return value.includes(record.invoice_location);
+    //     }
+    //     return record.invoice_location.indexOf(value.toString()) === 0;
+    //   },
+    // },
+    // {
+    //   title: 'Business Unit',
+    //   dataIndex: 'business_unit',
+    //   responsive: ['md'],
+    //   filters: [
+    //     {
+    //       text: 'du1 ',
+    //       value: 'du1',
+    //     },
+    //     {
+    //       text: 'du2',
+    //       value: 'du2',
+    //     },
+    //     {
+    //       text: 'du3 ',
+    //       value: 'du3',
+    //     },
+    //     {
+    //       text: 'du4',f
+    //       value: 'du4',
+    //     },
+    //   ],
      
-      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+    //   onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
-        if (Array.isArray(value)) {
-          return value.includes(record.business_unit);
-        }
-        return record.business_unit.indexOf(value.toString()) === 0;
-      },
-    },
-    {
-      title: 'Os',
-      dataIndex: 'os',
-      responsive: ['md'],
-      filters: [
-        {
-          text: 'Linux ',
-          value: 'Linux',
-        },
-        {
-          text: 'Windows',
-          value: 'Windows',
-        },
-      ],
+    //     if (Array.isArray(value)) {
+    //       return value.includes(record.business_unit);
+    //     }
+    //     return record.business_unit.indexOf(value.toString()) === 0;
+    //   },
+    // },
+    // {
+    //   title: 'Os',
+    //   dataIndex: 'os',
+    //   responsive: ['md'],
+    //   filters: [
+    //     {
+    //       text: 'Linux ',
+    //       value: 'Linux',
+    //     },
+    //     {
+    //       text: 'Windows',
+    //       value: 'Windows',
+    //     },
+    //   ],
      
-      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+    //   onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
-        if (Array.isArray(value)) {
-          return value.includes(record.os);
-        }
-        return record.os.indexOf(value.toString()) === 0;
-      },
-    },
-    {
-      title: 'Os Version',
-      dataIndex: 'os_version',
-      responsive: ['md'],
-      filters: [
-        {
-          text: '11',
-          value: '11',
-        },
-        {
-          text: '12',
-          value: '12',
-        }
-      ],
-      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+    //     if (Array.isArray(value)) {
+    //       return value.includes(record.os);
+    //     }
+    //     return record.os.indexOf(value.toString()) === 0;
+    //   },
+    // },
+    // {
+    //   title: 'Os Version',
+    //   dataIndex: 'os_version',
+    //   responsive: ['md'],
+    //   filters: [
+    //     {
+    //       text: '11',
+    //       value: '11',
+    //     },
+    //     {
+    //       text: '12',
+    //       value: '12',
+    //     }
+    //   ],
+    //   onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
-        if (Array.isArray(value)) {
-          return value.includes(record.os_version);
-        }
-        return record.os_version.indexOf(value.toString()) === 0;
-      },
-    },
-    {
-      title: 'Mobile Os',
-      dataIndex: 'mobile_os',
-      responsive: ['md'],
-      filters: [
-        {
-          text: 'iOS',
-          value: 'iOS',
-        },
-        {
-          text: 'Android',
-          value: 'Android',
-        },
-      ],
+    //     if (Array.isArray(value)) {
+    //       return value.includes(record.os_version);
+    //     }
+    //     return record.os_version.indexOf(value.toString()) === 0;
+    //   },
+    // },
+    // {
+    //   title: 'Mobile Os',
+    //   dataIndex: 'mobile_os',
+    //   responsive: ['md'],
+    //   filters: [
+    //     {
+    //       text: 'iOS',
+    //       value: 'iOS',
+    //     },
+    //     {
+    //       text: 'Android',
+    //       value: 'Android',
+    //     },
+    //   ],
      
-      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+    //   onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
-        if (Array.isArray(value)) {
-          return value.includes(record.mobile_os);
-        }
-        return record.mobile_os.indexOf(value.toString()) === 0;
-      },
-    },
-    {
-      title: 'Processor',
-      dataIndex: 'processor',
-      responsive: ['md'],
-      filters: [
-        {
-          text: 'i5',
-          value: 'i5',
-        },
-        {
-          text: 'i3',
-          value: 'i3',
-        },
-      ],
+    //     if (Array.isArray(value)) {
+    //       return value.includes(record.mobile_os);
+    //     }
+    //     return record.mobile_os.indexOf(value.toString()) === 0;
+    //   },
+    // },
+    // {
+    //   title: 'Processor',
+    //   dataIndex: 'processor',
+    //   responsive: ['md'],
+    //   filters: [
+    //     {
+    //       text: 'i5',
+    //       value: 'i5',
+    //     },
+    //     {
+    //       text: 'i3',
+    //       value: 'i3',
+    //     },
+    //   ],
      
-      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+    //   onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
-        if (Array.isArray(value)) {
-          return value.includes(record.processor);
-        }
-        return record.processor.indexOf(value.toString()) === 0;
-      },
-    },
-    {
-      title: 'Generation',
-      dataIndex: 'Generation',
-      responsive: ['md'],
-      filters: [
-        {
-          text: 'In Use ',
-          value: 'In Use',
-        },
-        {
-          text: 'In Store',
-          value: 'In Store',
-        },
-      ],
+    //     if (Array.isArray(value)) {
+    //       return value.includes(record.processor);
+    //     }
+    //     return record.processor.indexOf(value.toString()) === 0;
+    //   },
+    // },
+    // {
+    //   title: 'Generation',
+    //   dataIndex: 'Generation',
+    //   responsive: ['md'],
+    //   filters: [
+    //     {
+    //       text: 'In Use ',
+    //       value: 'In Use',
+    //     },
+    //     {
+    //       text: 'In Store',
+    //       value: 'In Store',
+    //     },
+    //   ],
      
-      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+    //   onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
-        if (Array.isArray(value)) {
-          return value.includes(record.Generation);
-        }
-        return record.Generation.indexOf(value.toString()) === 0;
-      },
-    },
-    {
-      title: 'Accessories',
-      dataIndex: 'accessories',
-      responsive: ['md'],
-      filters: [
-        {
-          text: 'In Use ',
-          value: 'In Use',
-        },
-        {
-          text: 'In Store',
-          value: 'In Store',
-        },
-      ],
-      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+    //     if (Array.isArray(value)) {
+    //       return value.includes(record.Generation);
+    //     }
+    //     return record.Generation.indexOf(value.toString()) === 0;
+    //   },
+    // },
+    // {
+    //   title: 'Accessories',
+    //   dataIndex: 'accessories',
+    //   responsive: ['md'],
+    //   filters: [
+    //     {
+    //       text: 'In Use ',
+    //       value: 'In Use',
+    //     },
+    //     {
+    //       text: 'In Store',
+    //       value: 'In Store',
+    //     },
+    //   ],
+    //   onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
-        if (Array.isArray(value)) {
-          return value.includes(record.accessories);
-        }
-        return record.accessories.indexOf(value.toString()) === 0;
-      },
-    },
-    {
-      title: 'Date Of Purchase',
-      dataIndex: 'date_of_purchase',
-      responsive: ['md'],
-      filters: [
-        {
-          text: '02/03/24 ',
-          value: '02/03/24 ',
-        },
-        {
-          text: '03/03/24 ',
-          value: '03/03/24 ',
-        },
-      ],
+    //     if (Array.isArray(value)) {
+    //       return value.includes(record.accessories);
+    //     }
+    //     return record.accessories.indexOf(value.toString()) === 0;
+    //   },
+    // },
+    // {
+    //   title: 'Date Of Purchase',
+    //   dataIndex: 'date_of_purchase',
+    //   responsive: ['md'],
+    //   filters: [
+    //     {
+    //       text: '02/03/24 ',
+    //       value: '02/03/24 ',
+    //     },
+    //     {
+    //       text: '03/03/24 ',
+    //       value: '03/03/24 ',
+    //     },
+    //   ],
      
-      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+    //   onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
-        const dateValue = new Date(value as string).getTime(); 
+    //     const dateValue = new Date(value as string).getTime(); 
     
       
-        const recordDate = new Date(record.date_of_purchase).getTime();
+    //     const recordDate = new Date(record.date_of_purchase).getTime();
     
-        if (Array.isArray(value)) {
+    //     if (Array.isArray(value)) {
     
-            return value.some(val => new Date(val).getTime() === recordDate);
-        } else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+    //         return value.some(val => new Date(val).getTime() === recordDate);
+    //     } else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
 
-            return recordDate === dateValue;
-        } else {
-            return false; 
-        }
-    },
-    sorter: (a, b) => {
-      const dateA = new Date(a.date_of_purchase).getTime();
-      const dateB = new Date(b.date_of_purchase).getTime();
-      return dateA - dateB;
-    },
+    //         return recordDate === dateValue;
+    //     } else {
+    //         return false; 
+    //     }
+    // },
+    // sorter: (a, b) => {
+    //   const dateA = new Date(a.date_of_purchase).getTime();
+    //   const dateB = new Date(b.date_of_purchase).getTime();
+    //   return dateA - dateB;
+    // },
     
-    },
-    {
-      title: 'Warranty Period',
-      dataIndex: 'warranty_period',
-      responsive: ['md'],
-      filters: [
-        {
-          text: ' 2Years',
-          value: '2Years',
-        },
-        {
-          text: '3Years',
-          value: '3Years',
-        },
-      ],
-      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+    // },
+    // {
+    //   title: 'Warranty Period',
+    //   dataIndex: 'warranty_period',
+    //   responsive: ['md'],
+    //   filters: [
+    //     {
+    //       text: ' 2Years',
+    //       value: '2Years',
+    //     },
+    //     {
+    //       text: '3Years',
+    //       value: '3Years',
+    //     },
+    //   ],
+    //   onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
      
-        if (Array.isArray(value)) {
-          return value.includes(record.warranty_period);
-        }
-        return record.warranty_period.toString().indexOf(value.toString()) === 0;
-      },
-      sorter: (a, b) => {
-        const dateA = new Date(a.warranty_period).getTime();
-        const dateB = new Date(b.warranty_period).getTime();
-        return dateA - dateB;
-      },
-    },
-    {
-      title: 'Warranty Countdown',
-      dataIndex: 'WarrantyPeriod',
-      responsive: ['md'],
-      filters: [
-        {
-          text: ' 2Years',
-          value: '2Years',
-        },
-        {
-          text: '3Years',
-          value: '3Years',
-        },
-      ],
-      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+    //     if (Array.isArray(value)) {
+    //       return value.includes(record.warranty_period);
+    //     }
+    //     return record.warranty_period.toString().indexOf(value.toString()) === 0;
+    //   },
+    //   sorter: (a, b) => {
+    //     const dateA = new Date(a.warranty_period).getTime();
+    //     const dateB = new Date(b.warranty_period).getTime();
+    //     return dateA - dateB;
+    //   },
+    // },
+    // {
+    //   title: 'Warranty Countdown',
+    //   dataIndex: 'WarrantyPeriod',
+    //   responsive: ['md'],
+    //   filters: [
+    //     {
+    //       text: ' 2Years',
+    //       value: '2Years',
+    //     },
+    //     {
+    //       text: '3Years',
+    //       value: '3Years',
+    //     },
+    //   ],
+    //   onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
-        if (Array.isArray(value)) {
-          return value.includes(record.WarrantyPeriod);
-        }
-        return record.WarrantyPeriod.toString().indexOf(value.toString()) === 0;
-      },
-    },
-    {
-      title: 'Approval Status',
-      dataIndex: 'approval_status',
-      responsive: ['md'],
-      filters: [
-        {
-          text: 'Approved ',
-          value: 'Approved',
-        },
-        {
-          text: 'Rejected',
-          value: 'Rejected',
-        },
-        {
-          text: 'Pending',
-          value: 'Pending',
-        },
-      ],
+    //     if (Array.isArray(value)) {
+    //       return value.includes(record.WarrantyPeriod);
+    //     }
+    //     return record.WarrantyPeriod.toString().indexOf(value.toString()) === 0;
+    //   },
+    // },
+    // {
+    //   title: 'Approval Status',
+    //   dataIndex: 'approval_status',
+    //   responsive: ['md'],
+    //   filters: [
+    //     {
+    //       text: 'Approved ',
+    //       value: 'Approved',
+    //     },
+    //     {
+    //       text: 'Rejected',
+    //       value: 'Rejected',
+    //     },
+    //     {
+    //       text: 'Pending',
+    //       value: 'Pending',
+    //     },
+    //   ],
      
-      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+    //   onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
-        if (Array.isArray(value)) {
-          return value.includes(record.approval_status);
-        }
-        return record.approval_status.indexOf(value.toString()) === 0;
-      },
-    },
-    {
-      title: 'Conceder',
-      dataIndex: 'conceder',
-      responsive: ['md'],
-      filters: [
-        {
-          text: 'Sfm Lead',
-          value: 'Sfm Lead',
-        },
-        {
-          text: 'Sfm Manager',
-          value: 'Sfm Manager',
-        },
-      ],
+    //     if (Array.isArray(value)) {
+    //       return value.includes(record.approval_status);
+    //     }
+    //     return record.approval_status.indexOf(value.toString()) === 0;
+    //   },
+    // },
+    // {
+    //   title: 'Conceder',
+    //   dataIndex: 'conceder',
+    //   responsive: ['md'],
+    //   filters: [
+    //     {
+    //       text: 'Sfm Lead',
+    //       value: 'Sfm Lead',
+    //     },
+    //     {
+    //       text: 'Sfm Manager',
+    //       value: 'Sfm Manager',
+    //     },
+    //   ],
      
-      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+    //   onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
-        if (Array.isArray(value)) {
-          return value.includes(record.conceder);
-        }
-        return record.conceder.indexOf(value.toString()) === 0;
-      },
-    },
+    //     if (Array.isArray(value)) {
+    //       return value.includes(record.conceder);
+    //     }
+    //     return record.conceder.indexOf(value.toString()) === 0;
+    //   },
+    // },
 
 
-    {
-      title: 'Model Number',
-      dataIndex: 'model_number', // Corrected dataIndex
-      responsive: ['md'],
-      filterIcon: <SearchOutlined rev={undefined} />,
-      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-        <div style={{ padding: 8 }}>
-          <Input
-            placeholder="Search Model Number"
-            value={selectedKeys[0]}
-            onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-            onPressEnter={() => confirm()}
-            style={{ marginBottom: 8, display: 'block' }}
-          />
-          <Space>
-            <button
-              type="button"
-              onClick={confirm}
+    // {
+    //   title: 'Model Number',
+    //   dataIndex: 'model_number', // Corrected dataIndex
+    //   responsive: ['md'],
+    //   filterIcon: <SearchOutlined rev={undefined} />,
+    //   filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+    //     <div style={{ padding: 8 }}>
+    //       <Input
+    //         placeholder="Search Model Number"
+    //         value={selectedKeys[0]}
+    //         onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+    //         onPressEnter={() => confirm()}
+    //         style={{ marginBottom: 8, display: 'block' }}
+    //       />
+    //       <Space>
+    //         <button
+    //           type="button"
+    //           onClick={confirm}
               
-              style={{ width: 90 ,fontSize:'16px'}}
-            >
-              Search
-            </button>
-            <button
-              type="button"
-              onClick={clearFilters}
+    //           style={{ width: 90 ,fontSize:'16px'}}
+    //         >
+    //           Search
+    //         </button>
+    //         <button
+    //           type="button"
+    //           onClick={clearFilters}
               
-              style={{ width: 90 ,fontSize:'16px' }}
-            >
-              Reset
-            </button>
-          </Space>
-        </div>
-      ),
-      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+    //           style={{ width: 90 ,fontSize:'16px' }}
+    //         >
+    //           Reset
+    //         </button>
+    //       </Space>
+    //     </div>
+    //   ),
+    //   onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
-        if (Array.isArray(value)) {
-          return value.includes(record.model_number);
-        }
-        return record.model_number.indexOf(value.toString()) === 0;
-      },
-    },
+    //     if (Array.isArray(value)) {
+    //       return value.includes(record.model_number);
+    //     }
+    //     return record.model_number.indexOf(value.toString()) === 0;
+    //   },
+    // },
     
     
      
@@ -674,185 +676,185 @@ const AssetTable = () => {
     
     
     },
-    {
-      title: 'Memory',
-      dataIndex: 'memory',
-      responsive: ['md'],
-      filters: [
-        {
-          text: '16Gb',
-          value: '16Gb',
-        },
-        {
-          text: '128Gb',
-          value: '128Gb',
-        },
-      ],
-      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+    // {
+    //   title: 'Memory',
+    //   dataIndex: 'memory',
+    //   responsive: ['md'],
+    //   filters: [
+    //     {
+    //       text: '16Gb',
+    //       value: '16Gb',
+    //     },
+    //     {
+    //       text: '128Gb',
+    //       value: '128Gb',
+    //     },
+    //   ],
+    //   onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
-        if (Array.isArray(value)) {
-          return value.includes(record.memory);
-        }
-        return record.memory.indexOf(value.toString()) === 0;
-      },
-    },
-    {
-      title: 'Storage',
-      dataIndex: 'storage',
-      responsive: ['md'],
-      filters: [
-        {
-          text: '16Gb',
-          value: '16Gb',
-        },
-        {
-          text: '128Gb',
-          value: '128Gb',
-        },
-      ],
-      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+    //     if (Array.isArray(value)) {
+    //       return value.includes(record.memory);
+    //     }
+    //     return record.memory.indexOf(value.toString()) === 0;
+    //   },
+    // },
+    // {
+    //   title: 'Storage',
+    //   dataIndex: 'storage',
+    //   responsive: ['md'],
+    //   filters: [
+    //     {
+    //       text: '16Gb',
+    //       value: '16Gb',
+    //     },
+    //     {
+    //       text: '128Gb',
+    //       value: '128Gb',
+    //     },
+    //   ],
+    //   onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
-        if (Array.isArray(value)) {
-          return value.includes(record.storage);
-        }
-        return record.storage.indexOf(value.toString()) === 0;
-      },
-    },
-    {
-      title: 'Owner',
-      dataIndex: 'owner',
-      responsive: ['md'],
+    //     if (Array.isArray(value)) {
+    //       return value.includes(record.storage);
+    //     }
+    //     return record.storage.indexOf(value.toString()) === 0;
+    //   },
+    // },
+    // {
+    //   title: 'Owner',
+    //   dataIndex: 'owner',
+    //   responsive: ['md'],
   
     
-    },
-    {
-      title: 'Requester',
-      dataIndex: 'requester',
-      responsive: ['md'],
-      filters: [
-        {
-          text: 'sfmManger',
-          value: 'sfmManager',
-        },
-        {
-          text: 'sfmLead',
-          value: 'sfmLead',
-        },
-        {
-          text: 'sfmSenior',
-          value: 'sfmSenior',
-        },
-      ],
-      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+    // },
+    // {
+    //   title: 'Requester',
+    //   dataIndex: 'requester',
+    //   responsive: ['md'],
+    //   filters: [
+    //     {
+    //       text: 'sfmManger',
+    //       value: 'sfmManager',
+    //     },
+    //     {
+    //       text: 'sfmLead',
+    //       value: 'sfmLead',
+    //     },
+    //     {
+    //       text: 'sfmSenior',
+    //       value: 'sfmSenior',
+    //     },
+    //   ],
+    //   onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
-        if (Array.isArray(value)) {
-          return value.includes(record.requester);
-        }
-        return record.requester.indexOf(value.toString()) === 0;
-      },
+    //     if (Array.isArray(value)) {
+    //       return value.includes(record.requester);
+    //     }
+    //     return record.requester.indexOf(value.toString()) === 0;
+    //   },
   
     
-    },
-    {
-      title: 'Configuration',
-      dataIndex: 'configuration',
-      responsive: ['md'],
-      filters: [
-        {
-          text: 'Intel Core i7-1165G7, 16GB RAM, 512GB SSD, 13.4"',
-          value: 'Intel Core i7-1165G7, 16GB RAM, 512GB SSD, 13.4"',
-        },
-        {
-          text: 'Intel Core i5-1165G7, 128GB RAM, 512GB SSD, 13.4" ',
-          value: 'Intel Core i5-1165G7, 128GB RAM, 512GB SSD, 13.4" ',
-        },
-      ],
-      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+    // },
+    // {
+    //   title: 'Configuration',
+    //   dataIndex: 'configuration',
+    //   responsive: ['md'],
+    //   filters: [
+    //     {
+    //       text: 'Intel Core i7-1165G7, 16GB RAM, 512GB SSD, 13.4"',
+    //       value: 'Intel Core i7-1165G7, 16GB RAM, 512GB SSD, 13.4"',
+    //     },
+    //     {
+    //       text: 'Intel Core i5-1165G7, 128GB RAM, 512GB SSD, 13.4" ',
+    //       value: 'Intel Core i5-1165G7, 128GB RAM, 512GB SSD, 13.4" ',
+    //     },
+    //   ],
+    //   onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
-        if (Array.isArray(value)) {
-          return value.includes(record.configuration);
-        }
-        return record.configuration === value;
-      },
-    },
+    //     if (Array.isArray(value)) {
+    //       return value.includes(record.configuration);
+    //     }
+    //     return record.configuration === value;
+    //   },
+    // },
   
  
-    {
-      title: 'Created At',
-      dataIndex: 'created_at',
-      fixed:'left',
-      responsive: ['md'],
-      filters: [
-        {
-          text: '2024-03-05T10:00:00',
-          value: '2024-03-05T10:00:00',
-        },
-        {
-          text: '2024-03-05T10:00:00',
-          value: '2024-03-05T10:00:00',
-        },
+    // {
+    //   title: 'Created At',
+    //   dataIndex: 'created_at',
+    //   fixed:'left',
+    //   responsive: ['md'],
+    //   filters: [
+    //     {
+    //       text: '2024-03-05T10:00:00',
+    //       value: '2024-03-05T10:00:00',
+    //     },
+    //     {
+    //       text: '2024-03-05T10:00:00',
+    //       value: '2024-03-05T10:00:00',
+    //     },
         
-      ],
-      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+    //   ],
+    //   onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
-        const dateValue = new Date(value as string).getTime(); 
-        const recordDate = new Date(record.created_at).getTime();
-        if (Array.isArray(value)) {
-          return value.some(val => new Date(val as string).getTime() === recordDate);
-        } else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-          return recordDate === dateValue;
-        } else {
-          return false; 
-        }
-      },
-      sorter: (a, b) => {
-        const dateA = new Date(a.created_at).getTime();
-        const dateB = new Date(b.created_at).getTime();
-        return dateA - dateB;
-      },
-      sortDirections: ['ascend', 'descend'],
-    },
-    {
-      title: 'Updated At',
-      dataIndex: 'updated_at',
-      fixed:'left',
-      responsive: ['md'],
-      filters: [
-        {
-          text: '2024-03-05T10:00:00',
-          value: '2024-03-05T10:00:00',
-        },
-        {
-          text: '2024-03-05T10:00:00',
-          value: '2024-03-05T10:00:00',
-        },
+    //     const dateValue = new Date(value as string).getTime(); 
+    //     const recordDate = new Date(record.created_at).getTime();
+    //     if (Array.isArray(value)) {
+    //       return value.some(val => new Date(val as string).getTime() === recordDate);
+    //     } else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+    //       return recordDate === dateValue;
+    //     } else {
+    //       return false; 
+    //     }
+    //   },
+    //   sorter: (a, b) => {
+    //     const dateA = new Date(a.created_at).getTime();
+    //     const dateB = new Date(b.created_at).getTime();
+    //     return dateA - dateB;
+    //   },
+    //   sortDirections: ['ascend', 'descend'],
+    // },
+    // {
+    //   title: 'Updated At',
+    //   dataIndex: 'updated_at',
+    //   fixed:'left',
+    //   responsive: ['md'],
+    //   filters: [
+    //     {
+    //       text: '2024-03-05T10:00:00',
+    //       value: '2024-03-05T10:00:00',
+    //     },
+    //     {
+    //       text: '2024-03-05T10:00:00',
+    //       value: '2024-03-05T10:00:00',
+    //     },
         
-      ],
-      onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
+    //   ],
+    //   onFilter: (value: string | number | boolean | React.ReactText[] | Key, record: DataType) => {
 
-        const dateValue = new Date(value as string).getTime(); 
-        const recordDate = new Date(record.updated_at).getTime();
-        if (Array.isArray(value)) {
-          return value.some(val => new Date(val as string).getTime() === recordDate);
-        } else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-          return recordDate === dateValue;
-        } else {
-          return false; 
-        }
-      },
-      sorter: (a, b) => {
-        const dateA = new Date(a.updated_at).getTime();
-        const dateB = new Date(b.updated_at).getTime();
-        return dateA - dateB;
-      },
-      sortDirections: ['ascend', 'descend'],
-    },
-    {
-      title: 'Notes',
-      dataIndex: 'notes',
+    //     const dateValue = new Date(value as string).getTime(); 
+    //     const recordDate = new Date(record.updated_at).getTime();
+    //     if (Array.isArray(value)) {
+    //       return value.some(val => new Date(val as string).getTime() === recordDate);
+    //     } else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+    //       return recordDate === dateValue;
+    //     } else {
+    //       return false; 
+    //     }
+    //   },
+    //   sorter: (a, b) => {
+    //     const dateA = new Date(a.updated_at).getTime();
+    //     const dateB = new Date(b.updated_at).getTime();
+    //     return dateA - dateB;
+    //   },
+    //   sortDirections: ['ascend', 'descend'],
+    // },
+    // {
+    //   title: 'Notes',
+    //   dataIndex: 'notes',
       
   
-    },
+    // },
     {
       title: 'Custodian',
       dataIndex: 'custodian',
@@ -896,18 +898,18 @@ const AssetTable = () => {
       
   
     },
-    {
-      title: 'Assign Asset',
-      dataIndex: 'AssignAsset',
-      fixed:'right',
-      render: (_data, record) => (
-        <Button ghost style={{borderRadius:'10px',background:'#D3D3D3',color:'black'}} >
-          +
-        </Button>
-      ),
+    // {
+    //   title: 'Assign Asset',
+    //   dataIndex: 'AssignAsset',
+    //   fixed:'right',
+    //   render: (_data, record) => (
+    //     <Button ghost style={{borderRadius:'10px',background:'#D3D3D3',color:'black'}} >
+    //       +
+    //     </Button>
+    //   ),
  
     
-    },
+    // },
   
   ];
   
