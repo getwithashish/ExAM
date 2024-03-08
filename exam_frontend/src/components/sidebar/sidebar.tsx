@@ -27,7 +27,7 @@ const ExamSidebar: React.FC<ExamSidebarProps> = ({ isSidebarVisible, isClicked, 
       <div className={` ${isClicked ? styles['open'] : isSidebarVisible ? styles['sidebar'] : styles['hidden']}`} >
         <Sidebar aria-label="Sidebar with multi-level dropdown example ">
         
-          <div className="flex h-full flex-col justify-between py-2 bg-white">
+          <div className="flex h-full flex-col justify-between  bg-white">
             <div>
               <button className={styles['closeButton']} onClick={closeSidebar}>
                 <BsX />

@@ -26,7 +26,7 @@ const AssignmentDrawer: React.FC<SideDrawerProps> = ({children, buttonTextDefaul
   return (
     <>
       <Space>
-        <Button type="primary" onClick={showDefaultDrawer}>
+        <Button type="primary" ghost onClick={showDefaultDrawer}>
         {buttonTextDefault}
         </Button>
         
