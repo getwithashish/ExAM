@@ -14,7 +14,7 @@ export const Assignment = () => {
   const { data, isError } = useQuery<ApiResponse>({
     queryKey: ['Assign'],
     enabled: fetchData && query.trim().length > 0,
-    queryFn: (): Promise<ApiResponse> => axiosInstance.get(`/asset/employee?query=${query}`).then((res) => {
+    queryFn: (): Promise<ApiResponse> => axiosInstance.get(`/asset/employee?name=${query}`).then((res) => {
       console.log(res);
       console.log("res.data",res.data.data)
       setFetchData(false)
