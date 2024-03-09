@@ -33,3 +33,7 @@ export interface DataType {
   updated_at:Date;
   
 }
+ export interface ColumnFilterItem {
+  text: React.ReactNode;
+  value: string | number | boolean;
+}
