@@ -53,7 +53,7 @@ class BusinessUnitView(ListCreateAPIView):
             # Filter queryset based on search query
             if search_query:
                 business_units = business_units.filter(
-                    business_unit_name__icontains=search_query
+                    business_unit_name__istartswith=search_query
                 )
 
             serializer = BusinessUnitSerializer(business_units, many=True)
