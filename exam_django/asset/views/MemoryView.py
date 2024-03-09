@@ -7,9 +7,21 @@ from rest_framework import status
 
 class MemoryView(APIView):
     def get(self, request, format=None):
-        memories = Memory.objects.all()
-        serializer = MemorySerializer(memories, many=True)
-        return Response(serializer.data)
+        try:
+            query = request.query_params.get("query")
+            if query:
+                memories = Memory.objects.filter(memory_space=query)
+            else:
+                memories = Memory.objects.all()
+
+            serializer = MemorySerializer(memories, many=True)
+            return Response(serializer.data)
+
+        except Exception:
+            return Response(
+                "Sorry, we encountered an error",
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
     def post(self, request, format=None):
         serializer = MemorySerializer(data=request.data)
