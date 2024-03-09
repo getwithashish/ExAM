@@ -20,5 +20,5 @@ __all__ = [
     "UserView",
     "AssignAssetView",
     "AssetSearchWithFilterView",
-    "AssetLogView"
+    "AssetLogView",
 ]

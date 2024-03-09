@@ -344,6 +344,7 @@ const AssetTable = () => {
 
   const handleOtherColumnClick = (record) => {
     setSelectedRow(record);
+    
     setDrawerVisible(true);
   };
 
@@ -1074,13 +1075,13 @@ const AssetTable = () => {
     date_of_purchase: result.date_of_purchase,
     warranty_period: result.warranty_period,
     approval_status: result.approval_status,
-    conceder: result.conceder.username,
+    conceder: result.conceder?.username,
     model_number: result.model_number,
     serial_number: result.serial_number,
     memory: result.memory.memory_space,
     storage: result.storage,
     configuration: result.configuration,
-    custodian: result.custodian.employee_name,
+    custodian: result.custodian?.employee_name,
     product_name: result.product_name,
     owner: result.owner,
     requester: result.requester.username,
