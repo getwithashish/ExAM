@@ -48,11 +48,13 @@ class EmployeeView(ListCreateAPIView):
 
     def get(self, request):
         try:
-            query = request.query_params.get("query")  
-            if query:
-                employees = Employee.objects.filter(
-                    employee_name__startswith=query
-                )  
+            # Get the query parameter for the employee name
+            name = request.query_params.get('name', None)
+            if name:
+                # Search for employees by name
+                employees = Employee.objects.filter(employee_name__istartswith=name)
+                serializer = EmployeeSerializer(employees, many=True)
+                message = f"Employee details with name containing '{name}' successfully retrieved"
             else:
                 employees = (
                     Employee.objects.all()
