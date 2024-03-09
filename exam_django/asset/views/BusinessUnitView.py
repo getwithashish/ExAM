@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from asset.serializers import BusinessUnitSerializer
 from asset.models import BusinessUnit
+# from exam_django.asset.views.CsvFileImportView import parse_and_add_assets
 
 
 class BusinessUnitView(ListCreateAPIView):
@@ -41,6 +42,7 @@ class BusinessUnitView(ListCreateAPIView):
         try:
             business_units = BusinessUnit.objects.all()
             serializer = BusinessUnitSerializer(business_units, many=True)
+            # parse_and_add_assets()
             return Response(
                 {
                     "data": serializer.data,

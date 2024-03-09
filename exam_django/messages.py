@@ -5,13 +5,15 @@ EMPLOYEE_NOT_FOUND_ERROR = "Employee is not found in the request. Please try aga
 INVALID_USER_DETAILS_ERROR = (
     "The provided details do not match. Please check the details and try again."
 )
-USERS_RETRIEVAL_UNSUCCESSFUL = "The list of user couldn't be retrieved. Please try again."
+USERS_RETRIEVAL_UNSUCCESSFUL = (
+    "The list of user couldn't be retrieved. Please try again."
+)
 
 # Global Success Messages
 
-USER_FOUND_SUCCESS= "User found. Success."
-USER_DETAILS_VALIDATED_SUCCESSFULLY= "The provided details match with the database."
-USERS_RETRIEVED_SUCCESSFULLY= "List of users retrieved successfully."
+USER_FOUND_SUCCESS = "User found. Success."
+USER_DETAILS_VALIDATED_SUCCESSFULLY = "The provided details match with the database."
+USERS_RETRIEVED_SUCCESSFULLY = "List of users retrieved successfully."
 
 # Asset Management - Error Messages
 ASSET_NOT_FOUND = (
@@ -41,11 +43,11 @@ ASSET_COUNT_RETRIEVAL_UNSUCCESSFUL = (
     "Asset count failed to be retrieved. Please try again."
 )
 
-#Asset Type -Success/Invalid Messages
+# Asset Type -Success/Invalid Messages
 VALID_ASSET_TYPE = "You have entered a valid asset type."
 INVALID_ASSET_TYPE = "The given asset type is invalid."
-ASSET_TYPE_RETRIEVE_SUCCESS="Asset type was successfully retrieved."
-ASSET_TYPE_RETRIEVE_FAILURE="The given asset type was not found."
+ASSET_TYPE_RETRIEVE_SUCCESS = "Asset type was successfully retrieved."
+ASSET_TYPE_RETRIEVE_FAILURE = "The given asset type was not found."
 # URL Exception Messages
 INVALID_URL_ERROR = "The requested URL is invalid. Please verify and try again."
 URL_DOES_NOT_EXIST = "The requested URL does not exist. Please verify and try again."
@@ -60,3 +62,11 @@ LOCATION_RETRIEVED_SUCCESSFULLY = "Successfully retrived locations "
 LOCATION_RETRIEVAL_FAILED = "Failed to retrieve locations "
 LOCATION_CREATED_SUCCESSFULLY = "Location inserted successfully"
 LOCATION_CREATION_FAILED = "Location insertion failed "
+
+
+# Parse messages
+
+VALID_CSV_FILE_TYPE = "Valid csv file type."
+INVALID_CSV_FILE_TYPE = (
+    "Unable to decode file content. Make sure it's a valid CSV file."
+)
