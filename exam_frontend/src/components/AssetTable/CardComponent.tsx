@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Card, Form, Space,Input, Button,Select } from 'antd';
+import { Card, Form, Space,Input, Button,Select, ConfigProvider } from 'antd';
 import './CardComponent.css'
 import { DataType } from '../AssetTable/types/index'
 
@@ -13,12 +13,13 @@ const CardComponent: React.FC<{
   onUpdate: (updatedData: DataType) => void;
   
   // Specify the data prop type as DataType
-}> = ({ data,onUpdate,statusOptions,businessUnitOptions,locationOptions,memoryoptions }) => {
+}> = ({ data,onUpdate,statusOptions,businessUnitOptions,locationOptions,memoryoptions,assetTypeOptions }) => {
   
   const uniqueStatusOptions = Array.from(new Set(statusOptions));
   const uniqueBusinessOptions=Array.from(new Set(businessUnitOptions));
-  const uniqueLocationoptions=Array.from(new Set(locationOptions))
-  const uniqueMemoryOptions=Array.from(new Set(memoryoptions))
+  const uniqueLocationoptions=Array.from(new Set(locationOptions));
+  const uniqueMemoryOptions=Array.from(new Set(memoryoptions));
+  const uniqueAssetTypeOptions=Array.from(new Set(assetTypeOptions));
   const [editedData, setEditedData] = useState(data);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,10 +37,7 @@ const CardComponent: React.FC<{
     width: '25%',
     height:'30%',
     textAlign: 'center',
-    // padding:'8px',
-    // gap:'5px',
-    // marginTop: '10px',
-    
+  
     
   };
   const mainCardStyle = {
@@ -61,17 +59,39 @@ const CardComponent: React.FC<{
   }
   const inputStyle: React.CSSProperties = {
     border: 'none',
-    width: '100px',
+    width: '200px',
     boxShadow: 'none',
-    textAlign: 'center',
-    background: '#FAFAFA'
+    textAlign: 'center'
   };
+  <ConfigProvider
+  theme={{
+    components: {
+      Select: {
+        multipleItemBorderColor:'transparent',
+        colorBorder:'none',
+        
+      },
+    },
+  }}
+>
+  ...
+</ConfigProvider>
   return (
     
     <Card key={data.asset_id} className='mainCard' title=""  style={mainCardStyle}>
                 <Card.Grid style={gridStyle}><b>Asset Category: </b><Form.Item name="version"> <Input defaultValue={data. asset_category} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
-
-        <Card.Grid style={gridStyle}><b>Asset Type: </b><Form.Item name="version"> <Input defaultValue={data.asset_type} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
+        <Card.Grid style={gridStyle} ><b> Asset Type:</b>
+       <Form.Item name="status" style={{ background: '#FAFAFA', boxShadow: 'none', border: 'none' }}>
+      <Select 
+      defaultValue={uniqueAssetTypeOptions[0]} style={{ background: '#FAFAFA', boxShadow: 'none', border: 'none' }} onChange={(value) => handleChange("Status", value)}>
+        {uniqueAssetTypeOptions.map((asset_type, index) => (
+          <Select.Option key={index} value={asset_type}>{asset_type}</Select.Option>
+        ))}
+      </Select>
+    </Form.Item>
+      
+      </Card.Grid>
+       
 
        <Card.Grid style={gridStyle}><b>Version: </b><Form.Item name="version"> <Input defaultValue={data.version} onChange={handleInputChange} style={inputStyle}/> </Form.Item></Card.Grid>
        <Card.Grid style={gridStyle} ><b> Asset Status:</b>
@@ -85,7 +105,7 @@ const CardComponent: React.FC<{
       
       </Card.Grid>
       
-      <Card.Grid style={gridStyle} ><b>Location:</b>
+      <Card.Grid style={gridStyle} ><b> Asset Location:</b>
        <Form.Item name="location" style={{ background: '#FAFAFA', boxShadow: 'none', border: 'none' }}>
       <Select defaultValue={uniqueLocationoptions[0]} style={{ background: '#FAFAFA', boxShadow: 'none', border: 'none' }} onChange={(value) => handleChange("location", value)}>
         {uniqueLocationoptions.map((location, index) => (

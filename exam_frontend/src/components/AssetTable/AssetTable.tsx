@@ -37,8 +37,8 @@ const AssetTable = () => {
   );
   
   const memoryoptions=assetData?.data.results.map((item)=>item.memory.memory_space)
-
-  // if (isLoading) return <div className="spin"> <Spin /></div>;
+  const assetTypeOptions=assetData?.data.results.map((item)=>item.asset_type.asset_type_name)
+// if (isLoading) return <div className="spin"> <Spin /></div>;
   // if (isError) return <div>Error fetching data</div>;
   // //  const assetListData = assetData?.data.data.map.map((item:  DataType) => ({
   // //   value: item.asset_type
@@ -1096,9 +1096,40 @@ const AssetTable = () => {
   return (
     <>
       <div className="mainHeading">
-        <h1>Asset Overview</h1>
+        <h1>Asset Details</h1>
       </div>
-      <Table
+
+      <div style={{ position: 'relative', display: 'inline-block' }}>
+  <Table
+    assetdetails={assetdetails}
+    columns={columns}
+    dataSource={data}
+    scroll={{ x: "max-content" }}
+    className="mainTable"
+    pagination={false}
+    bordered={false}
+    style={{
+      borderRadius: 10,
+      padding: 20,
+      boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+      fontSize: "50px",
+    }}
+  />
+  <a
+     href="../../AssetDetailView/AssetDetailView"
+    style={{
+      position: 'absolute',
+      bottom: 0,
+      right: 0,
+      margin: '20px',
+      fontSize: '16px',
+      color: 'blue',
+    }}
+  >
+    View more details
+  </a>
+</div>
+      {/* <Table
         assetdetails={assetdetails}
         columns={columns}
         dataSource={data}
@@ -1112,7 +1143,7 @@ const AssetTable = () => {
           boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
           fontSize: "50px",
         }}
-      />
+      /> */}
       <DrawerComponent
         visible={drawerVisible}
         onClose={onCloseDrawer}
@@ -1135,6 +1166,7 @@ const AssetTable = () => {
             businessUnitOptions={businessUnitOptions}
             locationOptions={locationOptions}
             memoryoptions={memoryoptions}
+            assetTypeOptions={assetTypeOptions}
           />
         )}
         {button && (
