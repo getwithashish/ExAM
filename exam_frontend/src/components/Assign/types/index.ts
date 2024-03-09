@@ -1,3 +1,4 @@
+
 import React, { ReactNode } from 'react';
 
 interface SideDrawerProps {
@@ -7,3 +8,15 @@ interface SideDrawerProps {
 }
 
 export default SideDrawerProps;
+
+export type EmployeeDetails={
+  id:BigInteger;
+	employee_name:string;
+  employee_department:string;
+	employee_designation:string;
+}
+
+export type ApiResponse={
+  message:string;
+  data:EmployeeDetails[];
+}

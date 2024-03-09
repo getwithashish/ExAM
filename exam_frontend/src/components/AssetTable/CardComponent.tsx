@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { Card, Form, Space,Input, Button,Select, ConfigProvider } from 'antd';
 import './CardComponent.css'
 import { DataType } from '../AssetTable/types/index'
-import { DataType } from '../AssetTable/types/index'
 
 const CardComponent: React.FC<{
   data: DataType; 
