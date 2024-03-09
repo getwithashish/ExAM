@@ -48,7 +48,16 @@ class EmployeeView(ListCreateAPIView):
 
     def get(self, request):
         try:
-            employees = Employee.objects.all()
+            query = request.query_params.get("query")  
+            if query:
+                employees = Employee.objects.filter(
+                    employee_name__startswith=query
+                )  
+            else:
+                employees = (
+                    Employee.objects.all()
+                )  
+
             serializer = EmployeeSerializer(employees, many=True)
             return APIResponse(
                 data=serializer.data,
