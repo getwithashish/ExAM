@@ -70,3 +70,12 @@ VALID_CSV_FILE_TYPE = "Valid csv file type."
 INVALID_CSV_FILE_TYPE = (
     "Unable to decode file content. Make sure it's a valid CSV file."
 )
+FILE_NOT_FOUND = "File is not found"
+FILE_FOUND = "File found"
+
+
+# Memory messages
+MEMORY_CREATION_SUCCESSFUL = "Memory creation is successful"
+MEMORY_CREATION_UNSUCCESSFUL = "Memory creation is unsuccessful"
+MEMORY_SUCCESSFULLY_RETRIEVED = "Memory retrieved succesfully"
+MEMORY_EXISTS = "Memory already exists"

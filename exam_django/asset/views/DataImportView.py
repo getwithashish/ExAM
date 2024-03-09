@@ -6,6 +6,7 @@ from user_auth.rbac import IsSeniorLead
 from response import APIResponse
 from messages import (
     INVALID_CSV_FILE_TYPE,
+    FILE_NOT_FOUND,
 )
 
 
@@ -18,8 +19,10 @@ class DataImportView(APIView):
             # Check if the file is provided in the request
             file = request.FILES.get("file")
             if not file:
-                return JsonResponse(
-                    {"error": "No file provided in the request"},
+
+                return APIResponse(
+                    data=[],
+                    message=FILE_NOT_FOUND,
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
