@@ -11,6 +11,7 @@ from messages import (
     LOCATION_RETRIEVED_SUCCESSFULLY,
     LOCATION_CREATED_SUCCESSFULLY,
     LOCATION_RETRIEVAL_FAILED,
+    GLOBAL_500_EXCEPTION_ERROR
 )
 
 
@@ -57,7 +58,7 @@ class LocationView(ListCreateAPIView):
             )
 
         except Exception:
-            return Response(
-                "Sorry, we encountered an error",
+           return APIResponse(
+                message=GLOBAL_500_EXCEPTION_ERROR,
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )

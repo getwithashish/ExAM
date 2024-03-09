@@ -14,7 +14,7 @@ USERS_RETRIEVAL_UNSUCCESSFUL = (
 USER_FOUND_SUCCESS = "User found. Success."
 USER_DETAILS_VALIDATED_SUCCESSFULLY = "The provided details match with the database."
 USERS_RETRIEVED_SUCCESSFULLY = "List of users retrieved successfully."
-
+PAGINATED_RESPONSE_RETRIEVED_SUCESSFULLY="Paginated response sucessfully retrieved."
 # Asset Management - Error Messages
 ASSET_NOT_FOUND = (
     "The requested asset could not be found. Please review the details and try again."
