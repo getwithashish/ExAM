@@ -7,7 +7,6 @@ from rest_framework import status
 
 from messages import (
     ASSET_COUNT_SUCCESSFULLY_RETRIEVED,
-    
 )
 
 

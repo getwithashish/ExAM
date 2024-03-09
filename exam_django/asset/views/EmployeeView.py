@@ -51,7 +51,7 @@ class EmployeeView(ListCreateAPIView):
             query = request.query_params.get("query")  
             if query:
                 employees = Employee.objects.filter(
-                    employee_name__startswith=query
+                    employee_name__istartswith=query
                 )  
             else:
                 employees = (
