@@ -63,9 +63,7 @@ class AssignAssetView(APIView):
                     message=ASSET_NOT_FOUND,
                     status=status.HTTP_404_NOT_FOUND,
                 )
-                    message=ASSET_NOT_FOUND,
-                    status=status.HTTP_404_NOT_FOUND,
-                )
+                   
 
             # Check if the asset status is expired or disposed
             if asset.status in ["EXPIRED", "DISPOSED"]:
