@@ -1,5 +1,4 @@
 from rest_framework import status
-from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from asset.models import Asset, Employee
@@ -8,10 +7,11 @@ from asset.serializers import AssignAssetSerializer
 from response import APIResponse
 from messages import (
     ASSET_SUCCESSFULLY_ASSIGNED,
-    ASSET_NOT_FOUND ,
+    ASSET_NOT_FOUND,
     EMPLOYEE_NOT_FOUND_ERROR,
-    GLOBAL_500_EXCEPTION_ERROR
+    GLOBAL_500_EXCEPTION_ERROR,
 )
+
 
 class AssignAssetView(APIView):
     def get_permissions(self):
@@ -36,25 +36,24 @@ class AssignAssetView(APIView):
                 serializer.validated_data["requester"] = requester
                 asset.save()
                 return APIResponse(
-                data=serializer.data,
-                message=ASSET_SUCCESSFULLY_ASSIGNED,
-                status=status.HTTP_201_CREATED,
-            )
+                    data=serializer.data,
+                    message=ASSET_SUCCESSFULLY_ASSIGNED,
+                    status=status.HTTP_201_CREATED,
+                )
             except Asset.DoesNotExist:
                 return APIResponse(
-                message=ASSET_NOT_FOUND ,
-                status=status.HTTP_404_NOT_FOUND,
-            )
+                    message=ASSET_NOT_FOUND,
+                    status=status.HTTP_404_NOT_FOUND,
+                )
 
             except Employee.DoesNotExist:
                 return APIResponse(
-                message=EMPLOYEE_NOT_FOUND_ERROR ,
-                status=status.HTTP_404_NOT_FOUND,
-            )
-               
+                    message=EMPLOYEE_NOT_FOUND_ERROR,
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+
         else:
-             return APIResponse(
+            return APIResponse(
                 message=GLOBAL_500_EXCEPTION_ERROR,
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
-
