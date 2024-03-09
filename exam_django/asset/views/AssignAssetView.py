@@ -1,5 +1,4 @@
 from rest_framework import status
-from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from asset.models import Asset, Employee
@@ -9,9 +8,12 @@ from response import APIResponse
 from messages import (
     ASSET_SUCCESSFULLY_ASSIGNED,
     ASSET_NOT_FOUND,
+    ASSET_NOT_FOUND,
     EMPLOYEE_NOT_FOUND_ERROR,
     GLOBAL_500_EXCEPTION_ERROR,
+    GLOBAL_500_EXCEPTION_ERROR,
 )
+
 
 
 class AssignAssetView(APIView):
@@ -58,6 +60,9 @@ class AssignAssetView(APIView):
                 asset = Asset.objects.get(asset_uuid=asset_id)
             except Asset.DoesNotExist:
                 return APIResponse(
+                    message=ASSET_NOT_FOUND,
+                    status=status.HTTP_404_NOT_FOUND,
+                )
                     message=ASSET_NOT_FOUND,
                     status=status.HTTP_404_NOT_FOUND,
                 )
