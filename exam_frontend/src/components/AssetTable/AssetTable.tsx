@@ -332,7 +332,7 @@ const AssetTable = () => {
             background: "#D3D3D3",
             color: "black",
           }}
-          onClick={() => handleAssignAssetClick(record)}
+          onClick={() =>{if(record.custodian === null || record.custodian === undefined)assignAsset(record); else alert("asset is already assigned ")}}
         >
           +
         </Button>
