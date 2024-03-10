@@ -5,37 +5,25 @@ from rest_framework.permissions import IsAuthenticated
 from response import APIResponse
 from rest_framework import status
 
-from messages import (
-    ASSET_COUNT_SUCCESSFULLY_RETRIEVED,
-    
-)
+from messages import ASSET_COUNT_SUCCESSFULLY_RETRIEVED
 
 
 class AssetCountView(ListAPIView):
     permission_classes = (IsAuthenticated,)
 
     def list(self, request, *args, **kwargs):
-        hardware_counts = (
-            Asset.objects.filter(asset_category="HARDWARE", approval_status="APPROVED")
-            .values("status")
-            .annotate(count=Count("status"))
-        )
+        asset_type = self.request.query_params.get("asset_type")
 
-        software_counts = (
-            Asset.objects.filter(asset_category="SOFTWARE", approval_status="APPROVED")
-            .values("status")
-            .annotate(count=Count("status"))
-        )
+        queryset = Asset.objects.filter(approval_status="APPROVED")
+        if asset_type:
+            queryset = queryset.filter(asset_type=asset_type)
+
+        asset_counts = queryset.values("status").annotate(count=Count("status"))
+        total_assets = queryset.count()
 
         response_data = {
-            "hardware": [
-                {"status": item["status"], "count": item["count"]}
-                for item in hardware_counts
-            ],
-            "software": [
-                {"status": item["status"], "count": item["count"]}
-                for item in software_counts
-            ],
+            "total_assets": total_assets,
+            "asset_status": {item["status"]: item["count"] for item in asset_counts},
         }
 
         return APIResponse(
