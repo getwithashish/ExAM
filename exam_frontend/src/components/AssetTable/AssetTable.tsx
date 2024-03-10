@@ -10,7 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { DataType } from "../AssetTable/types";
 import { ColumnFilterItem } from "../AssetTable/types";
 
-const AssetTable = () => {
+const AssetTable = ({assignAsset}) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
 
@@ -328,7 +328,7 @@ const AssetTable = () => {
             background: "#D3D3D3",
             color: "black",
           }}
-          onClick={() => handleAssignAssetClick(record)}
+          onClick={() =>{if(record.custodian === null || record.custodian === undefined)assignAsset(record); else alert("asset is already assigned ")}}
         >
           +
         </Button>
