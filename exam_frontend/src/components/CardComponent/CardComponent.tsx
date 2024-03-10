@@ -416,7 +416,7 @@ const CardComponent: React.FC<CardType> = ({
         <Form.Item name="configuration">
           {" "}
           <Input
-            defaultValue={data.created_at}
+            defaultValue={data.created_at.toLocaleString()}
             onChange={handleInputChange}
             style={inputStyle}
           />{" "}
@@ -427,7 +427,7 @@ const CardComponent: React.FC<CardType> = ({
         <Form.Item name="configuration">
           {" "}
           <Input
-            defaultValue={data.updated_at}
+            defaultValue={data.updated_at.toLocaleString()}
             onChange={handleInputChange}
             style={inputStyle}
           />{" "}
