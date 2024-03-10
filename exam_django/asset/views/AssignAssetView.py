@@ -32,7 +32,7 @@ class AssignAssetView(APIView):
             # Check if the requester is a lead
             elif role == "LEAD":
                 requester_role = "LEAD"
-                allowed_statuses = ["UNASSIGNED", "REJECTED", "ASSIGN_PENDING"]
+                allowed_statuses = ["UNASSIGNED", "REJECTED"]
 
             # Manager doesn't have permission to assign assets
             elif role == "MANAGER":
