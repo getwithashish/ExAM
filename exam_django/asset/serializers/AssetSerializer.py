@@ -41,7 +41,8 @@ class AssetWriteSerializer(serializers.ModelSerializer):
         read_only_fields = (
             "custodian",
             "conceder",
-            "approval_status",
+            "assign_status"
+            "asset_detail_status",
             "created_at",
             "updated_at",
             "requester",
