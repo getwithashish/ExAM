@@ -10,6 +10,7 @@ import SideDrawerComponent from "../components/SideDrawerComponent/SideDrawerCom
 import { SidebarHandler } from "../components/sidebar/SidebarHandler";
 import AssignmentDrawer from "../components/Assign/AssignmentDrawer";
 import { Assignment } from "../components/Assign/Assignment";
+import TableNavbar from "../components/TableNavBar/TableNavbar";
 
 
 const DashboardPage: FC = function () {
@@ -30,7 +31,7 @@ const [displaydrawer,setDisplayDrawer] = useState(false)
         <div>
           <SidebarHandler addAsset={showDefaultDrawer} />
             <Statistics />        
-                
+            <TableNavbar/>
         <AssignmentDrawer buttonTextDefault="Assign" displayDrawer={displaydrawer} >
           <Assignment />
         </AssignmentDrawer>
