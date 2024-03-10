@@ -9,6 +9,7 @@ from .EmployeeView import EmployeeView
 from .UserView import UserView
 from .AssignAssetView import AssignAssetView
 from .AssetLogView import AssetLogView
+from .AssetExportView import AssetExportView
 __all__ = [
     "AssetView",
     "AssetTypeView",
@@ -21,4 +22,5 @@ __all__ = [
     "AssignAssetView",
     "AssetSearchWithFilterView",
     "AssetLogView",
+    "AssetExportView"
 ]
