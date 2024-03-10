@@ -27,7 +27,6 @@ class AssetView(ListCreateAPIView):
     def post(self, request, format=None):
         serializer = AssetWriteSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.validated_data["request_type"] = "CREATE"
             requester = request.user
             serializer.validated_data["requester"] = requester
             serializer.save()
@@ -86,8 +85,8 @@ def log_asset_changes(sender, instance, **kwargs):
     old_instance = Asset.objects.filter(pk=instance.pk).values().first()
     if (
         old_instance
-        and instance.approval_status == "APPROVED"
-        or instance.approval_status == "REJECTED"
+        and instance.asset_detail_status == "APPROVED"
+        or instance.asset_detail_status == "REJECTED"
     ):
         changes = {
             field: (getattr(instance, field))

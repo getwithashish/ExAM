@@ -5,8 +5,8 @@ from django.contrib.auth.models import AbstractUser, Group, Permission
 class UserScope:
     USER_SCOPES = [
         ("MANAGER", "MANAGER"),
-        ("SENIOR_LEAD", "SENIOR_LEAD"),
         ("LEAD", "LEAD"),
+        ("SYSTEM_ADMIN", "SYSTEM_ADMIN"),
     ]
 
 
