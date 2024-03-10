@@ -43,10 +43,19 @@ class BusinessUnitView(ListCreateAPIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
-
     def get(self, request):
         try:
             business_units = BusinessUnit.objects.all()
+
+            # Retrieve query parameters
+            search_query = request.GET.get('query', None)
+
+            # Filter queryset based on search query
+            if search_query:
+                business_units = business_units.filter(
+                    business_unit_name__istartswith=search_query
+                )
+
             serializer = BusinessUnitSerializer(business_units, many=True)
             return APIResponse(
                 data=serializer.data,
