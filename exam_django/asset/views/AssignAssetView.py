@@ -9,10 +9,13 @@ from messages import (
     ASSET_SUCCESSFULLY_ASSIGNED,
     ASSET_NOT_FOUND,
     ASSET_NOT_FOUND,
+    ASSET_NOT_FOUND,
     EMPLOYEE_NOT_FOUND_ERROR,
     GLOBAL_500_EXCEPTION_ERROR,
     GLOBAL_500_EXCEPTION_ERROR,
+    GLOBAL_500_EXCEPTION_ERROR,
 )
+
 
 
 
@@ -48,12 +51,41 @@ class AssignAssetView(APIView):
 
             try:
                 employee_id = request.data.get("id")
+            requester = request.user
+            role = requester.user_scope
+
+            # Check if the requester is a system admin
+            if role == "SYSTEM_ADMIN":
+                requester_role = "SYSTEM_ADMIN"
+                allowed_statuses = ["UNASSIGNED", "REJECTED"]
+
+            # Check if the requester is a lead
+            elif role == "LEAD":
+                requester_role = "LEAD"
+                allowed_statuses = ["UNASSIGNED", "REJECTED", "ASSIGN_PENDING"]
+
+            # Manager doesn't have permission to assign assets
+            elif role == "MANAGER":
+                return APIResponse(
+                    message="Unauthorized. You do not have permission to assign assets.",
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+
+            try:
+                employee_id = request.data.get("id")
                 employee = Employee.objects.get(id=employee_id)
+            except Employee.DoesNotExist:
             except Employee.DoesNotExist:
                 return APIResponse(
                     message=EMPLOYEE_NOT_FOUND_ERROR,
                     status=status.HTTP_404_NOT_FOUND,
+                    message=EMPLOYEE_NOT_FOUND_ERROR,
+                    status=status.HTTP_404_NOT_FOUND,
                 )
+
+            asset_id = request.data.get("asset_uuid")
+            try:
+                asset = Asset.objects.get(asset_uuid=asset_id)
 
             asset_id = request.data.get("asset_uuid")
             try:
@@ -63,6 +95,17 @@ class AssignAssetView(APIView):
                     message=ASSET_NOT_FOUND,
                     status=status.HTTP_404_NOT_FOUND,
                 )
+                   
+
+            # Check if the asset status is expired or disposed
+            if asset.status in ["EXPIRED", "DISPOSED"]:
+                return APIResponse(
+                    message="Cannot assign the asset. Status is expired or disposed.",
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            # Check if the asset assign status is allowed
+            if asset.assign_status not in allowed_statuses:
                    
 
             # Check if the asset status is expired or disposed
@@ -99,6 +142,8 @@ class AssignAssetView(APIView):
             )
         else:
             return APIResponse(
+                message=serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST,
                 message=serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST,
             )
