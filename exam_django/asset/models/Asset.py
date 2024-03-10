@@ -25,15 +25,15 @@ asset_detail_status = (
     ("UPDATE_PENDING", "UPDATE_PENDING"),
     ("CREATED", "CREATED"),
     ("UPDATED", "UPDATED"),
-    ("CREATE_REJECTED","CREATE_REJECTED"),
-    ("UPDATE_REJECTED","UPDATE_REJECTED")
+    ("CREATE_REJECTED", "CREATE_REJECTED"),
+    ("UPDATE_REJECTED", "UPDATE_REJECTED"),
 )
 
-assign_status=(
-    ("UNASSIGNED","UNASSIGNED"),
-    ("ASSIGN_PENDING","ASSIGN_PENDING"),
-    ("ASSIGNED","ASSIGNED"),
-    ("REJECTED","REJECTED")
+assign_status = (
+    ("UNASSIGNED", "UNASSIGNED"),
+    ("ASSIGN_PENDING", "ASSIGN_PENDING"),
+    ("ASSIGNED", "ASSIGNED"),
+    ("REJECTED", "REJECTED"),
 )
 
 
@@ -106,20 +106,19 @@ class Asset(models.Model):
         null=True,
         blank=False,
     )
-    asset_detail_status  = models.CharField(
+    asset_detail_status = models.CharField(
         max_length=50,
         default="CREATE_PENDING",
-        choices=asset_detail_status ,
+        choices=asset_detail_status,
         null=False,
         blank=False,
     )
-    assign_status=models.CharField(
+    assign_status = models.CharField(
         max_length=50,
         default="UNASSIGNED",
         choices=assign_status,
         null=False,
         blank=False,
-
     )
     approval_status_message = models.TextField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -132,7 +131,7 @@ class Asset(models.Model):
         null=True,
         blank=False,
     )
-   
+
     is_deleted = models.BooleanField(default=False, null=False, blank=False)
 
     def __str__(self):
