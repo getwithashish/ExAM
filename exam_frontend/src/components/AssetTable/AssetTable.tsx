@@ -26,6 +26,7 @@ const AssetTable = () => {
         return res.data;
       }),
   });
+  
   const statusOptions =
     assetData?.data.results.map((item) => item.status) || [];
   const businessUnitOptions =
@@ -204,6 +205,8 @@ const AssetTable = () => {
         }
         return record.serial_number.indexOf(value.toString()) === 0;
       },
+      sorter: (a, b) => a.serial_number.localeCompare(b.serial_number),
+      sortDirections: ["ascend", "descend"],
       render: (_, record) => (
         <div
           data-column-name="Serial Number"
