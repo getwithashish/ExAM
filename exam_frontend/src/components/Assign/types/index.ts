@@ -1,22 +1,27 @@
 
 import React, { ReactNode } from 'react';
 
-interface SideDrawerProps {
-  buttonTextDefault: string;
+interface AssignDrawerProps {
+  closeAssignDrawer:()=>void
   children: ReactNode;
-  displayDrawer:boolean;
+  isAssign:boolean;
+
 }
 
-export default SideDrawerProps;
+export default AssignDrawerProps;
 
-export type EmployeeDetails={
-  id:BigInteger;
-	employee_name:string;
-  employee_department:string;
-	employee_designation:string;
+export type EmployeeDetails = {
+  id: number; 
+  employee_name: string;
+  employee_department: string;
+  employee_designation: string;
 }
 
-export type ApiResponse={
-  message:string;
-  data:EmployeeDetails[];
+export type ApiResponse = {
+  message: string;
+  data: EmployeeDetails[];
+}
+
+export type AssignmentProps ={
+  uuid:string
 }

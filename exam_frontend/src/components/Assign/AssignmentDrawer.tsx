@@ -1,55 +1,35 @@
-import React, { useState ,useEffect} from 'react';
-import SideDrawerProps from './types';
-import { Button, Drawer, Space } from 'antd';
+import React, { useState, useEffect } from 'react';
+import AssignDrawerProps from './types';
+import { Drawer } from 'antd';
 import type { DrawerProps } from 'antd';
 
-const AssignmentDrawer: React.FC<SideDrawerProps> = ({children, buttonTextDefault,displayDrawer}) => {
-  const [open, setOpen] = useState(false);
-  const [size, setSize] = useState<DrawerProps['size']>();
+const AssignmentDrawer: React.FC<AssignDrawerProps> = ({ children, closeAssignDrawer, isAssign }) => {
+  const [size, setSize] = useState<DrawerProps['size']>('default');
 
-  const showDefaultDrawer = () => {
+  const showAssignDrawer = () => {
     setSize('default');
-    setOpen(true);
-  };
-
- 
-  const onClose = () => {
-    setOpen(false);
   };
 
   useEffect(() => {
-    if(displayDrawer)
-    showDefaultDrawer();
-    
-  }, []);
+    if (isAssign) {
+      showAssignDrawer();
+    }
+  }, [isAssign]);
+
+  const onClose = () => {
+    closeAssignDrawer();
+  };
 
   return (
-    <>
-      <Space>
-        <Button type="primary" ghost onClick={showDefaultDrawer}>
-        {buttonTextDefault}
-        </Button>
-        
-      </Space>
-      <Drawer
-        // title={`${size} Drawer`}
-        placement="right"
-        size={size}
-        onClose={onClose}
-        open={open}
-        style={{borderRadius:"10px"}}
-        // extra={
-      //     <Space>
-      //       <Button onClick={onClose}>Cancel</Button>
-      //       <Button  ghost style={{background:"blue"}} onClick={onClose}>
-      //         OK
-      //       </Button>
-      //     </Space>
-      //   }
-      >
-          {children}
-      </Drawer>
-    </>
+    <Drawer
+      placement="right"
+      size={size}
+      onClose={onClose}
+      open={isAssign}
+      style={{ borderRadius: "10px" }}
+    >
+      {children} 
+    </Drawer>
   );
 };
 
