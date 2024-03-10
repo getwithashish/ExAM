@@ -82,6 +82,7 @@ class AssignAssetView(APIView):
             # Assign the asset
             if requester_role == "LEAD":
                 asset.assign_status = "ASSIGNED"
+                asset.status = "IN USE"
             else:
                 asset.assign_status = "ASSIGN_PENDING"
 

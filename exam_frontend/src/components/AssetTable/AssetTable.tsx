@@ -3,7 +3,7 @@ import { Button, Input, Space, Table, TableColumnsType } from "antd";
 import DrawerComponent from "../DrawerComponent/DrawerComponent";
 import { SearchOutlined } from "@ant-design/icons";
 import "./AssetTable.css";
-import CardComponent from "./CardComponent";
+import CardComponent from "../CardComponent/CardComponent"
 import { CloseOutlined } from "@ant-design/icons";
 import axiosInstance from "../../config/AxiosConfig";
 import { useQuery } from "@tanstack/react-query";
@@ -21,7 +21,7 @@ const AssetTable = () => {
   } = useQuery({
     queryKey: ["assetList"],
     queryFn: () =>
-      axiosInstance.get("/asset/?limit=10").then((res) => {
+      axiosInstance.get("/asset/?limit=5").then((res) => {
         console.log("Returned Data: ", res.data.data.results);
         return res.data;
       }),
@@ -1116,7 +1116,7 @@ const AssetTable = () => {
       fontSize: "50px",
     }}
   />
-  <a
+  {/* <a
      href="../../AssetDetailView/AssetDetailView"
     style={{
       position: 'absolute',
@@ -1128,23 +1128,8 @@ const AssetTable = () => {
     }}
   >
     View more details
-  </a>
+  </a> */}
 </div>
-      {/* <Table
-        assetdetails={assetdetails}
-        columns={columns}
-        dataSource={data}
-        scroll={{ x: "max-content" }}
-        className="mainTable"
-        pagination={false}
-        bordered={false}
-        style={{
-          borderRadius: 10,
-          padding: 20,
-          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-          fontSize: "50px",
-        }}
-      /> */}
       <DrawerComponent
         visible={drawerVisible}
         onClose={onCloseDrawer}
