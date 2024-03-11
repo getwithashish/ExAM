@@ -1,7 +1,11 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
 from user_auth.models import User
-from user_auth.serializers import UserSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+from user_auth.serializers import (
+    UsernameAndUserscopeTokenObtainPairSerializer,
+    UserSerializer,
+)
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from response import APIResponse
 from messages import (
@@ -30,7 +34,7 @@ class UserRetrievalView(generics.GenericAPIView):
             data=serializer.data,
             message=USERS_RETRIEVED_SUCCESSFULLY,
             status=status.HTTP_200_OK,
-            )
+        )
         # Return queryset as a response
 
 
@@ -48,7 +52,7 @@ class UserRegistrationView(generics.GenericAPIView):
                 first_name__icontains=query_param
             ) | queryset.filter(last_name__icontains=query_param)
 
-        serializer = UserSerializer(queryset, many=True) 
+        serializer = UserSerializer(queryset, many=True)
         return Response(serializer.data)  # Return queryset as a response
 
     def post(self, request):
@@ -78,3 +82,7 @@ class UserRegistrationView(generics.GenericAPIView):
                 "data": {"error": str(ex)},
             }
             return Response(res_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class UsernameAndUserscopeTokenObtainPairView(TokenObtainPairView):
+    serializer_class = UsernameAndUserscopeTokenObtainPairSerializer
