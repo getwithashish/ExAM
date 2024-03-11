@@ -1200,7 +1200,7 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
     conceder: result.conceder?.username,
     model_number: result.model_number,
     serial_number: result.serial_number,
-    memory: result.memory.memory_space,
+    memory: result.memory?.memory_space,
     storage: result.storage,
     configuration: result.configuration,
     custodian: result.custodian?.employee_name,
