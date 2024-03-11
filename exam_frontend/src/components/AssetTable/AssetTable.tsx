@@ -1,16 +1,17 @@
-import React, { Key, useState } from "react";
+import React, { Key, SetStateAction, useState } from "react";
 import { Button, Input, Space, Table, TableColumnsType } from "antd";
 import DrawerComponent from "../DrawerComponent/DrawerComponent";
 import { SearchOutlined } from "@ant-design/icons";
 import "./AssetTable.css";
-import CardComponent from "./CardComponent";
+import CardComponent from "../CardComponent/CardComponent"
 import { CloseOutlined } from "@ant-design/icons";
 import axiosInstance from "../../config/AxiosConfig";
 import { useQuery } from "@tanstack/react-query";
 import { DataType } from "../AssetTable/types";
 import { ColumnFilterItem } from "../AssetTable/types";
-
-const AssetTable = ({assignAsset}) => {
+import { AssetResult } from "../AssetTable/types";
+import {FilterDropdownProps} from "../AssetTable/types";
+const AssetTable = () => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
 
@@ -21,19 +22,20 @@ const AssetTable = ({assignAsset}) => {
   } = useQuery({
     queryKey: ["assetList"],
     queryFn: () =>
-      axiosInstance.get("/asset/?limit=10").then((res) => {
+      axiosInstance.get("/asset/?limit=5").then((res) => {
         console.log("Returned Data: ", res.data.data.results);
         return res.data;
       }),
   });
+  
   const statusOptions =
-    assetData?.data.results.map((item) => item.status) || [];
+    assetData?.data.results.map((item:AssetResult) => item.status) || [];
   const businessUnitOptions =
     assetData?.data.results.map(
-      (item) => item.business_unit.business_unit_name
+      (item:AssetResult) => item.business_unit.business_unit_name
     ) || [];
   const locationOptions = assetData?.data.results.map(
-    (item) => item.location.location_name
+    (item:AssetResult) => item.location.location_name
   );
   
   const memoryoptions=assetData?.data.results.map((item)=>item.memory.memory_space)
@@ -204,6 +206,8 @@ const AssetTable = ({assignAsset}) => {
         }
         return record.serial_number.indexOf(value.toString()) === 0;
       },
+      sorter: (a, b) => a.serial_number.localeCompare(b.serial_number),
+      sortDirections: ["ascend", "descend"],
       render: (_, record) => (
         <div
           data-column-name="Serial Number"
@@ -336,20 +340,19 @@ const AssetTable = ({assignAsset}) => {
     },
   ];
 
-  const handleColumnClick = (record: string[], columnName) => {
+  const handleColumnClick = (record: string[], columnName: string) => {
     if (columnName !== "Assign Asset") {
       handleOtherColumnClick(record);
     }
   };
 
-  const handleOtherColumnClick = (record) => {
-    setSelectedRow(record);
-    
-    setDrawerVisible(true);
-  };
+  
+const handleOtherColumnClick = (record: SetStateAction<null>) => {
+  setSelectedRow(record);
+  setDrawerVisible(true);
+};
+  const handleAssignAssetClick = (record: DataType) => {
 
-  const handleAssignAssetClick = (record) => {
-    console.log("llllll");
     // Your implementation for handling clicks on "Assign Asset" column
   };
 
@@ -378,7 +381,7 @@ const AssetTable = ({assignAsset}) => {
         }
         return record.asset_id.indexOf(value.toString()) === 0;
       },
-      sorter: (a, b) => a.asset_id.localeCompare(b.asset_id),
+      sorter: (a: { asset_id: string; }, b: { asset_id: any; }) => a.asset_id.localeCompare(b.asset_id),
       sortDirections: ["ascend", "descend"],
     },
     {
@@ -419,13 +422,13 @@ const AssetTable = ({assignAsset}) => {
           value: 2,
         },
       ],
-      onFilter: (value, record: DataType) => {
+      onFilter: (value: number | number[], record: DataType) => {
         if (Array.isArray(value)) {
           return value.includes(record.version);
         }
         return record.version === value;
       },
-      sorter: (a, b) => a.version - b.version,
+      sorter: (a: { version: number; }, b: { version: number; }) => a.version - b.version,
       sortDirections: ["ascend", "descend"],
     },
     {
@@ -694,7 +697,7 @@ const AssetTable = ({assignAsset}) => {
           return false;
         }
       },
-      sorter: (a, b) => {
+      sorter: (a: { date_of_purchase: string | number | Date; }, b: { date_of_purchase: string | number | Date; }) => {
         const dateA = new Date(a.date_of_purchase).getTime();
         const dateB = new Date(b.date_of_purchase).getTime();
         return dateA - dateB;
@@ -725,7 +728,7 @@ const AssetTable = ({assignAsset}) => {
           record.warranty_period.toString().indexOf(value.toString()) === 0
         );
       },
-      sorter: (a, b) => {
+      sorter: (a: { warranty_period: string | number | Date; }, b: { warranty_period: string | number | Date; }) => {
         const dateA = new Date(a.warranty_period).getTime();
         const dateB = new Date(b.warranty_period).getTime();
         return dateA - dateB;
@@ -733,7 +736,7 @@ const AssetTable = ({assignAsset}) => {
     },
     {
       title: "Warranty Countdown",
-      dataIndex: "WarrantyPeriod",
+      dataIndex: "WarrantyCountdown",
       responsive: ["md"],
       filters: [
         {
@@ -750,9 +753,9 @@ const AssetTable = ({assignAsset}) => {
         record: DataType
       ) => {
         if (Array.isArray(value)) {
-          return value.includes(record.WarrantyPeriod);
+          return value.includes(record.WarrantyCountdown);
         }
-        return record.WarrantyPeriod.toString().indexOf(value.toString()) === 0;
+        return record.WarrantyCountdown.toString().indexOf(value.toString()) === 0;
       },
     },
     {
@@ -820,7 +823,7 @@ const AssetTable = ({assignAsset}) => {
         selectedKeys,
         confirm,
         clearFilters,
-      }) => (
+      }:FilterDropdownProps) => (
         <div style={{ padding: 8 }}>
           <Input
             placeholder="Search Model Number"
@@ -1001,7 +1004,7 @@ const AssetTable = ({assignAsset}) => {
           return false;
         }
       },
-      sorter: (a, b) => {
+      sorter: (a: { created_at: string | number | Date; }, b: { created_at: string | number | Date; }) => {
         const dateA = new Date(a.created_at).getTime();
         const dateB = new Date(b.created_at).getTime();
         return dateA - dateB;
@@ -1043,7 +1046,7 @@ const AssetTable = ({assignAsset}) => {
           return false;
         }
       },
-      sorter: (a, b) => {
+      sorter: (a: { updated_at: string | number | Date; }, b: { updated_at: string | number | Date; }) => {
         const dateA = new Date(a.updated_at).getTime();
         const dateB = new Date(b.updated_at).getTime();
         return dateA - dateB;
@@ -1116,7 +1119,7 @@ const AssetTable = ({assignAsset}) => {
       fontSize: "50px",
     }}
   />
-  <a
+  {/* <a
      href="../../AssetDetailView/AssetDetailView"
     style={{
       position: 'absolute',
@@ -1128,23 +1131,8 @@ const AssetTable = ({assignAsset}) => {
     }}
   >
     View more details
-  </a>
+  </a> */}
 </div>
-      {/* <Table
-        assetdetails={assetdetails}
-        columns={columns}
-        dataSource={data}
-        scroll={{ x: "max-content" }}
-        className="mainTable"
-        pagination={false}
-        bordered={false}
-        style={{
-          borderRadius: 10,
-          padding: 20,
-          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-          fontSize: "50px",
-        }}
-      /> */}
       <DrawerComponent
         visible={drawerVisible}
         onClose={onCloseDrawer}
