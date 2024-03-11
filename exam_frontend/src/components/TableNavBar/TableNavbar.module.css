@@ -1,26 +1,68 @@
-/* TableNavBar.module.css */
+/* 
 
-.navbar {
+
+   .fileActionsNavbar {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    background-color: #f2eaea;
+    background-color: #333;
     padding: 0.5rem;
-    flex-direction: row; /* Ensures the navbar items are in a row */
   }
   
   .fileActionsContainer {
     display: flex;
+    flex-direction: row;
     align-items: center;
+  }
+  
+  .fileInputContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 1rem;
+  }
+  
+  .fileInputLabel {
+    padding: 0.5rem;
+    background-color: #444;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
   }
   
   .fileInput {
     padding: 0.5rem;
-    margin-right: 1rem; /* Add some space between the file input and buttons */
-    background-color: #a94c4c;
+    margin-top: 0.5rem;
+    background-color: #ebcaca;
     color: white;
     border: none;
     border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    opacity: 0;
+    position: absolute;
+    height: 0;
+    width: 0;
+  }
+  
+  .selectedFileName {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: white;
+  }
+  
+  .noFileSelected {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: #aaa;
+  }
+  
+  .buttonContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
   }
   
   .importButton,
@@ -39,14 +81,33 @@
   }
   
   .importButton:hover {
-    background-color: #45a049;
+    background-color: #4caf50;
+  } */
+
+
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 1022px;
+    background-color: #c9cfdc;
+    padding: 0.5rem;
+    margin: 35px;
+    border-radius: 10px;
   }
   
-  .exportButton {
+  .button {
+    padding: 0.5rem 1rem;
+    margin: 0 0.5rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    color: white;
     background-color: #007bff;
   }
   
-  .exportButton:hover {
-    background-color: #0069d9;
+  .button:hover {
+    background-color: #0056b3;
   }
   
