@@ -14,7 +14,7 @@ class AssetCountView(ListAPIView):
     def list(self, request, *args, **kwargs):
         asset_type = self.request.query_params.get("asset_type")
 
-        queryset = Asset.objects.filter(approval_status="APPROVED")
+        queryset = Asset.objects.all()
         if asset_type:
             queryset = queryset.filter(asset_type=asset_type)
 

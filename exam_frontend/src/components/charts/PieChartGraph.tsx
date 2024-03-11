@@ -1,87 +1,135 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Stack from "@mui/material/Stack";
 import { PieChart } from "@mui/x-charts/PieChart";
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import axiosInstance from '../../config/AxiosConfig';
-import { AssetCountData, PieChartGraphProps, ApiResponse, CheckboxChangeEvent } from './types/ChartTypes';
+import { AssetCountData, ChartData, PieChartGraphProps, AssetTypeData } from './types/ChartTypes';
 
-const PieChartGraph: React.FC<PieChartGraphProps> = ({ type }) => {
-  const [legendHidden, setLegendHidden] = useState(false);
+export const PieChartGraph: React.FC<PieChartGraphProps> = () => {
+  const [assetTypeData, setAssetTypeData] = useState<AssetTypeData[]>([]);
+  const [selectedType, setSelectedType] = useState<string>('');
+  const [filteredChartData, setFilteredChartData] = useState<ChartData[]>([]);
+  const [allChartData, setAllChartData] = useState<ChartData[]>([]); // Store all data initially
 
-  const { data, isLoading, isError } = useQuery<ApiResponse>({
+  const { data: assetCountData, isLoading: assetCountLoading, isError: assetCountError } = useQuery<AssetCountData>({
     queryKey: ['assetCount'],
-    queryFn: (): Promise<ApiResponse> => axiosInstance.get('/asset/asset_count').then((res) => {
+    queryFn: (): Promise<AssetCountData> => axiosInstance.get('/asset/asset_count').then((res) => {
       console.log(res);
       return res.data.data;
     }),
   });
 
-  if (isLoading) return (
+  const statusColors: { [key: string]: string } = {
+    'IN STORE': '#FF8C01', 
+    'IN REPAIR': '#FFE733',
+    'IN USE': '#65FE08', 
+    'DISPOSED': '#808080', 
+    'EXPIRED': '#ED2938', 
+  };
+
+  useEffect(() => {
+    // Fetch asset type data once initially
+    axiosInstance.get('/asset/asset_type')
+      .then((res) => {
+        console.log(res.data.data);
+        setAssetTypeData(res.data.data);
+      })
+      .catch(error => {
+        console.error("Error fetching asset type data:", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    // Fetch all chart data once initially
+    axiosInstance.get(`/asset/asset_count`)
+      .then((res) => {
+        const assetCountData = res.data.data;
+        const allData = Object.entries(assetCountData?.asset_status ?? {}).map(([label, value]) => ({
+          label,
+          value: value as number,
+          color: statusColors[label], // Assign color based on status
+        }));
+        setAllChartData(allData);
+        setFilteredChartData(allData); // Set filtered data initially
+      })
+      .catch(error => {
+        console.error("Error fetching asset count data:", error);
+        setFilteredChartData([]);
+      });
+  }, []);
+
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const assetTypeValue = parseInt(e.target.value);
+    setSelectedType(assetTypeValue.toString());
+
+    if (assetTypeValue === 0) {
+      // If "All" option is selected, display all data
+      setFilteredChartData(allChartData);
+    } else {
+      axiosInstance.get(`/asset/asset_count?asset_type=${assetTypeValue}`)
+        .then((res) => {
+          const assetCountData = res.data.data;
+          const filteredData = Object.entries(assetCountData?.asset_status ?? {}).map(([label, value]) => ({
+            label,
+            value: value as number,
+            color: statusColors[label], // Assign color based on status
+          }));
+          setFilteredChartData(filteredData);
+        })
+        .catch(error => {
+          console.error("Error fetching asset count data:", error);
+          setFilteredChartData([]);
+        });
+    }
+  };
+
+  if (assetCountLoading) return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
       <FontAwesomeIcon icon={faSpinner} spin size="3x" />
     </div>
   );
 
-  if (isError) return <div>Error fetching data</div>;
-
-  const Shades = ['#304069', '#455e90', '#4f92ef', '#7db1fb', '#b3d2f8'];
-  const chartData = type === 'hardware' ? data.hardware.map((item: AssetCountData, index: number) => ({
-    label: item.status,
-    value: item.count,
-    color: Shades[index % Shades.length]
-  })) : data.software.map((item: AssetCountData, index: number) => ({
-    label: item.status,
-    value: item.count,
-    color: Shades[index % Shades.length]
-  }));
-
-  const handleCheckboxChange = (event: CheckboxChangeEvent) => {
-    setLegendHidden(event.target.checked);
-  };
+  if (assetCountError) return <div>Error fetching data</div>;
 
   return (
     <Stack direction="row">
-      <FormControlLabel
-        control={
-          <Checkbox
-            checked={legendHidden}
-            onChange={handleCheckboxChange}
-          />
-        }
-        label="Hide Legend"
-        labelPlacement="end"
-      />
-      
-      <PieChart
-        series={[
-          {
-            data: chartData,
-            innerRadius: 60,
-            outerRadius: 140,
-            paddingAngle: 1,
-            cornerRadius: 5,
-            startAngle: 0,
-            endAngle: 360,
-            cx: 100,
-            cy:150,
-            highlightScope: { faded: 'global', highlighted: 'item' },
-            faded: { innerRadius: 80, additionalRadius: -50, color: 'gray' },
-          },
-        ]}
-        width={500}
-        height={300}
-        legend={{
-          direction: 'column',
-          position: { vertical: 'middle', horizontal: 'right' },
-          hidden: legendHidden
-        }}
-      />
+      <div>
+        <h3 className="text-right font-normal text-gray-600 dark:text-gray-400">
+          Total Asset count: {assetCountData?.total_assets ?? 0}
+        </h3>
+        <select onChange={handleSelectChange}>
+          <option value="0">All Asset Types</option>
+          {assetTypeData.map((assetType) => (
+            <option key={assetType.id} value={assetType.id}>{assetType.asset_type_name}</option>
+          ))}
+        </select>
+        <PieChart
+          series={[
+            {
+              data: filteredChartData,
+              innerRadius: 60,
+              outerRadius: 140,
+              paddingAngle: 1,
+              cornerRadius: 5,
+              startAngle: 0,
+              endAngle: 360,
+              cx: 300,
+              cy: 150,
+              highlightScope: { faded: 'global', highlighted: 'item' },
+              faded: { innerRadius: 80, additionalRadius: -50, color: 'gray' },
+            },
+          ]}
+          width={700}
+          height={300}
+          legend={{
+            direction: 'column',
+            position: { vertical: 'middle', horizontal: 'right' },
+            hidden: false
+          }}
+        />
+      </div>
     </Stack>
   );
-}
-
-export default PieChartGraph;
+};

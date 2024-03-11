@@ -2,6 +2,8 @@ from rest_framework.views import APIView
 from rest_framework import status
 from django.http import JsonResponse
 import json
+from asset.models import AssetLog, Location, BusinessUnit, Memory, AssetType, Employee
+from user_auth.models import User
 from response import APIResponse
 from messages import (
     ASSET_NOT_FOUND,
@@ -113,8 +115,6 @@ class AssetLogView(APIView):
                 }
                 response_data["logs"].append(log_data)
 
-            # response_data["message"] = "Assets found"
-            # return JsonResponse(response_data, status=200)
             return APIResponse(
                 data=response_data,
                 message=ASSET_LOG_FOUND,
@@ -122,13 +122,6 @@ class AssetLogView(APIView):
             )
 
         except Exception:
-            # return JsonResponse(
-            #     {
-            #         "message": "An error occurred while processing the request",
-            #         "error": str(e),
-            #     },
-            #     status=500,
-            # )
             return APIResponse(
                 data=[],
                 message=ASSET_NOT_FOUND,
