@@ -25,7 +25,7 @@ const [displaydrawer,setDisplayDrawer] = useState(false)
  }
 
   return (
-    <QueryClientProvider client={new QueryClient()}>
+   
       <NavbarSidebarLayout>
         <div>
           <SidebarHandler addAsset={showDefaultDrawer} />
@@ -45,7 +45,7 @@ const [displaydrawer,setDisplayDrawer] = useState(false)
           </div>
         </div>
       </NavbarSidebarLayout>
-    </QueryClientProvider>   
+    
   );
 };
 

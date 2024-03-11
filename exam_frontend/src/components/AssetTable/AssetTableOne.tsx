@@ -12,7 +12,7 @@ import { ColumnFilterItem } from "../AssetTable/types";
 import { AssetResult } from "../AssetTable/types";
 import {FilterDropdownProps} from "../AssetTable/types";
 import { useInfiniteQuery } from 'react-query';
-const AssetTable = () => {
+const AssetTableOne = () => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
 
@@ -1175,4 +1175,4 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
   );
 };
 
-export default AssetTable;
+export default AssetTableOne;
