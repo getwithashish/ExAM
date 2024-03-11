@@ -8,13 +8,8 @@ from response import APIResponse
 from messages import (
     ASSET_SUCCESSFULLY_ASSIGNED,
     ASSET_NOT_FOUND,
-    ASSET_NOT_FOUND,
     EMPLOYEE_NOT_FOUND_ERROR,
-    GLOBAL_500_EXCEPTION_ERROR,
-    GLOBAL_500_EXCEPTION_ERROR,
 )
-
-
 
 class AssignAssetView(APIView):
     def get_permissions(self):
@@ -37,7 +32,7 @@ class AssignAssetView(APIView):
             # Check if the requester is a lead
             elif role == "LEAD":
                 requester_role = "LEAD"
-                allowed_statuses = ["UNASSIGNED", "REJECTED", "ASSIGN_PENDING"]
+                allowed_statuses = ["UNASSIGNED", "REJECTED"]
 
             # Manager doesn't have permission to assign assets
             elif role == "MANAGER":
@@ -63,7 +58,6 @@ class AssignAssetView(APIView):
                     message=ASSET_NOT_FOUND,
                     status=status.HTTP_404_NOT_FOUND,
                 )
-                   
 
             # Check if the asset status is expired or disposed
             if asset.status in ["EXPIRED", "DISPOSED"]:
@@ -82,6 +76,7 @@ class AssignAssetView(APIView):
             # Assign the asset
             if requester_role == "LEAD":
                 asset.assign_status = "ASSIGNED"
+                asset.status = "IN USE"
             else:
                 asset.assign_status = "ASSIGN_PENDING"
 
