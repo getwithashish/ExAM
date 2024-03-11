@@ -13,11 +13,11 @@ class IsManager(permissions.BasePermission):
             return False
 
 
-class IsSeniorLead(permissions.BasePermission):
+class IsLead(permissions.BasePermission):
     def has_permission(self, request, view):
         try:
             user_scope = request.user.user_scope
-            if user_scope == "SENIOR_LEAD":
+            if user_scope == "LEAD":
                 return True
             else:
                 return False
@@ -25,11 +25,11 @@ class IsSeniorLead(permissions.BasePermission):
             return False
 
 
-class IsLead(permissions.BasePermission):
+class IsSystemAdmin(permissions.BasePermission):
     def has_permission(self, request, view):
         try:
             user_scope = request.user.user_scope
-            if user_scope == "LEAD":
+            if user_scope == "SYSTEM_ADMIN":
                 return True
             else:
                 return False
