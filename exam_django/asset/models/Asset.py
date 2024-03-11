@@ -20,17 +20,20 @@ os_choices = (
     ("MAC", "MAC"),
 )
 
-approval_status_choices = (
-    ("PENDING", "PENDING"),
-    ("APPROVED", "APPROVED"),
-    ("REJECTED", "REJECTED"),
-    ("CANCELLED", "CANCELLED"),
+asset_detail_status = (
+    ("CREATE_PENDING", "CREATE_PENDING"),
+    ("UPDATE_PENDING", "UPDATE_PENDING"),
+    ("CREATED", "CREATED"),
+    ("UPDATED", "UPDATED"),
+    ("CREATE_REJECTED", "CREATE_REJECTED"),
+    ("UPDATE_REJECTED", "UPDATE_REJECTED"),
 )
 
-request_type_choices = (
-    ("CREATE", "CREATE"),
-    ("ASSIGN", "ASSIGN"),
-    ("UPDATE", "UPDATE"),
+assign_status = (
+    ("UNASSIGNED", "UNASSIGNED"),
+    ("ASSIGN_PENDING", "ASSIGN_PENDING"),
+    ("ASSIGNED", "ASSIGNED"),
+    ("REJECTED", "REJECTED"),
 )
 
 
@@ -103,10 +106,17 @@ class Asset(models.Model):
         null=True,
         blank=False,
     )
-    approval_status = models.CharField(
+    asset_detail_status = models.CharField(
         max_length=50,
-        default="PENDING",
-        choices=approval_status_choices,
+        default="CREATE_PENDING",
+        choices=asset_detail_status,
+        null=False,
+        blank=False,
+    )
+    assign_status = models.CharField(
+        max_length=50,
+        default="UNASSIGNED",
+        choices=assign_status,
         null=False,
         blank=False,
     )
@@ -121,12 +131,7 @@ class Asset(models.Model):
         null=True,
         blank=False,
     )
-    request_type = models.CharField(
-        max_length=50,
-        choices=request_type_choices,
-        null=False,
-        blank=False,
-    )
+
     is_deleted = models.BooleanField(default=False, null=False, blank=False)
 
     def __str__(self):
