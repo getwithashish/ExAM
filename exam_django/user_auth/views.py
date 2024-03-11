@@ -48,7 +48,7 @@ class UserRegistrationView(generics.GenericAPIView):
                 first_name__icontains=query_param
             ) | queryset.filter(last_name__icontains=query_param)
 
-        serializer = RegisterSerializer(queryset, many=True) 
+        serializer = UserSerializer(queryset, many=True) 
         return Response(serializer.data)  # Return queryset as a response
 
     def post(self, request):

@@ -16,6 +16,7 @@ export interface DataType {
   accessories:string;
   date_of_purchase:Date;
   warranty_period:number;
+  WarrantyCountdown:number;
   approval_status:string;
   conceder:string;
   AssignAsset:string;
@@ -36,4 +37,17 @@ export interface DataType {
  export interface ColumnFilterItem {
   text: React.ReactNode;
   value: string | number | boolean;
+}
+export interface AssetResult {
+  status: string; 
+  business_unit:string;
+  location:string;
+
+}
+
+export interface FilterDropdownProps {
+  setSelectedKeys: (keys: React.ReactText[]) => void;
+  selectedKeys: React.ReactText[];
+  confirm: () => void;
+  clearFilters: () => void;
 }
