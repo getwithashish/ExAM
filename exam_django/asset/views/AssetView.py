@@ -89,7 +89,7 @@ class AssetView(ListCreateAPIView):
                 message=ASSET_LIST_SUCCESSFULLY_RETRIEVED,
                 status=status.HTTP_200_CREATED,
             )
-        except Exception as e:
+        except Exception:
             return APIResponse(
                 data=serializer.errors,
                 message=ASSET_LIST_RETRIEVAL_UNSUCCESSFUL,
@@ -102,8 +102,10 @@ def log_asset_changes(sender, instance, **kwargs):
     old_instance = Asset.objects.filter(pk=instance.pk).values().first()
     if (
         old_instance
-        and instance.asset_detail_status == "APPROVED"
-        or instance.asset_detail_status == "REJECTED"
+        and instance.asset_detail_status == "CREATED"
+        or instance.asset_detail_status == "UPDATED"
+        or instance.asset_detail_status == "CREATE_REJECTED"
+        or instance.asset_detail_status == "UPDATE_REJECTED"
     ):
         changes = {
             field: (getattr(instance, field))
