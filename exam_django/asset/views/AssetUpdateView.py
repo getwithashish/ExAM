@@ -42,28 +42,6 @@ class AssetUpdateView(APIView):
         )
 
         if serializer.is_valid():
-            # Increment version of asset if there is a change in values of the defined fields
-            original_data = AssetWriteSerializer(asset).data
-            changed_fields = TableUtil.get_changed_fields(
-                original_data, serializer.validated_data
-            )
-
-            fields_affecting_version = {
-                "os",
-                "os_version",
-                "mobile_os",
-                "processor",
-                "processor_gen",
-                "memory",
-                "storage",
-                "configuration",
-                "accessories",
-            }
-            has_fields_affecting_version = TableUtil.has_expected_keys(
-                changed_fields, fields_affecting_version
-            )
-            if has_fields_affecting_version:
-                serializer.validated_data["version"] = original_data.get("version") + 1
 
             if user_scope == "SYSTEM_ADMIN":
                 if asset.asset_detail_status == "CREATE_REJECTED":
@@ -97,6 +75,32 @@ class AssetUpdateView(APIView):
                 ]:
                     serializer.validated_data["asset_detail_status"] = "UPDATED"
                     message = ASSET_SUCCESSFULLY_UPDATED
+
+                    # TODO How about doing this operation in trigger
+                    # Increment version of asset if there is a change in values of the defined fields
+                    original_data = AssetWriteSerializer(asset).data
+                    changed_fields = TableUtil.get_changed_fields(
+                        original_data, serializer.validated_data
+                    )
+
+                    fields_affecting_version = {
+                        "os",
+                        "os_version",
+                        "mobile_os",
+                        "processor",
+                        "processor_gen",
+                        "memory",
+                        "storage",
+                        "configuration",
+                        "accessories",
+                    }
+                    has_fields_affecting_version = TableUtil.has_expected_keys(
+                        changed_fields, fields_affecting_version
+                    )
+                    if has_fields_affecting_version:
+                        serializer.validated_data["version"] = (
+                            original_data.get("version") + 1
+                        )
 
                 elif asset.asset_detail_status in ["CREATE_PENDING", "UPDATE_PENDING"]:
                     return APIResponse(
