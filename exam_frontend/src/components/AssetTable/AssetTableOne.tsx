@@ -39,7 +39,7 @@ const AssetTable = () => {
     (item:AssetResult) => item.location.location_name
   );
   
-  const memoryoptions=assetData?.data.results.map((item)=>item.memory?.memory_space)
+  const memoryoptions=assetData?.data.results.map((item)=>item.memory.memory_space)
   const assetTypeOptions=assetData?.data.results.map((item)=>item.asset_type.asset_type_name)
 // if (isLoading) return <div className="spin"> <Spin /></div>;
   // if (isError) return <div>Error fetching data</div>;
@@ -1082,13 +1082,13 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
     conceder: result.conceder?.username,
     model_number: result.model_number,
     serial_number: result.serial_number,
-    memory: result.memory?.memory_space,
+    memory: result.memory.memory_space,
     storage: result.storage,
     configuration: result.configuration,
     custodian: result.custodian?.employee_name,
     product_name: result.product_name,
     owner: result.owner,
-    requester: result.requester?.username,
+    requester: result.requester.username,
     AssignAsset: "assign",
     created_at: result.created_at,
     updated_at: result.updated_at,

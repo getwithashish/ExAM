@@ -1,5 +1,4 @@
 from rest_framework.generics import ListCreateAPIView
-from rest_framework.response import Response
 from rest_framework import status
 from asset.serializers import AssetTypeSerializer
 from asset.models import AssetType
