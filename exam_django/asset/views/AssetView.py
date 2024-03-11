@@ -35,7 +35,7 @@ class AssetView(ListCreateAPIView):
                 serializer.validated_data["asset_detail_status"] = "CREATE_PENDING"
 
             elif user_scope == "LEAD":
-                serializer.validated_data["conceder"] = request.user
+                serializer.validated_data["approved_by"] = request.user
                 serializer.validated_data["asset_detail_status"] = "CREATED"
 
             elif user_scope == "MANAGER":
