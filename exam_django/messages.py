@@ -36,6 +36,7 @@ MEMORY_CREATED_UNSUCCESSFUL = "Error while creating memory.Please try again late
 EMPLOYEE_CREATION_UNSUCCESSFUL = (
     "Error while creating an employee.Please try again later."
 )
+USER_UNAUTHORIZED = "User does not have permission to perform this action"
 # Asset Management - Success Messages
 ASSET_LIST_SUCCESSFULLY_RETRIEVED = "Asset list is successfully retreived."
 ASSET_LIST_RETRIEVAL_UNSUCCESSFUL = (
