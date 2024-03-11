@@ -36,6 +36,7 @@ MEMORY_CREATED_UNSUCCESSFUL = "Error while creating memory.Please try again late
 EMPLOYEE_CREATION_UNSUCCESSFUL = (
     "Error while creating an employee.Please try again later."
 )
+USER_UNAUTHORIZED = "User does not have permission to perform this action"
 # Asset Management - Success Messages
 ASSET_LIST_SUCCESSFULLY_RETRIEVED = "Asset list is successfully retreived."
 ASSET_LIST_RETRIEVAL_UNSUCCESSFUL = (
@@ -81,7 +82,7 @@ BAD_REQUEST_ERROR = "The server has encountered a validation error"
 LOCATION_RETRIEVED_SUCCESSFULLY = "Successfully retrived locations "
 LOCATION_RETRIEVAL_FAILED = "Failed to retrieve locations "
 LOCATION_CREATED_SUCCESSFULLY = "Location inserted successfully"
-LOCATION_CREATION_FAILED = "Location insertion failed "
+LOCATION_CREATION_FAILED = "Duplicate value cannot be inserted "
 
 # Asset Log
 ASSET_LOG_FOUND = "Asset log found successfully."
