@@ -1,16 +1,16 @@
 from rest_framework.generics import ListCreateAPIView
 from rest_framework import status
-from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from asset.serializers import BusinessUnitSerializer
 from asset.models import BusinessUnit
 from response import APIResponse
-from messages import(
-BUSINESS_UNIT_SUCCESSFULLY_CREATED,
-BUSINESS_UNIT_CREATED_UNSUCCESSFUL,
-GLOBAL_500_EXCEPTION_ERROR,
-BUSINESS_UNIT_SUCCESSFULLY_RETRIEVED
+from messages import (
+    BUSINESS_UNIT_SUCCESSFULLY_CREATED,
+    BUSINESS_UNIT_CREATED_UNSUCCESSFUL,
+    GLOBAL_500_EXCEPTION_ERROR,
+    BUSINESS_UNIT_SUCCESSFULLY_RETRIEVED,
 )
+
 
 class BusinessUnitView(ListCreateAPIView):
 
@@ -48,7 +48,7 @@ class BusinessUnitView(ListCreateAPIView):
             business_units = BusinessUnit.objects.all()
 
             # Retrieve query parameters
-            search_query = request.GET.get('query', None)
+            search_query = request.GET.get("query", None)
 
             # Filter queryset based on search query
             if search_query:
