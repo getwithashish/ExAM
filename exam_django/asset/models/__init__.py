@@ -4,7 +4,6 @@ from .BusinessUnit import BusinessUnit
 from .Employee import Employee
 from .Location import Location
 from .Memory import Memory
-from .User import User
 from .AssetLog import AssetLog
 
 __all__ = [
@@ -14,6 +13,5 @@ __all__ = [
     "Employee",
     "Location",
     "Memory",
-    "User",
     "AssetLog",
 ]

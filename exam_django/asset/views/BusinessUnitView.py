@@ -37,7 +37,7 @@ class BusinessUnitView(ListCreateAPIView):
                 message=BUSINESS_UNIT_CREATED_UNSUCCESSFUL,
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        except Exception as e:
+        except Exception:
             return APIResponse(
                 message=GLOBAL_500_EXCEPTION_ERROR,
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -62,7 +62,7 @@ class BusinessUnitView(ListCreateAPIView):
                 message=BUSINESS_UNIT_SUCCESSFULLY_RETRIEVED,
                 status=status.HTTP_200_OK,
             )
-        except Exception as e:
+        except Exception:
             return APIResponse(
                 message=GLOBAL_500_EXCEPTION_ERROR,
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
