@@ -29,10 +29,10 @@ const [displaydrawer,setDisplayDrawer] = useState(false)
       <NavbarSidebarLayout>
         <div>
           <SidebarHandler addAsset={showDefaultDrawer} />
-            {/* <Statistics />         */}
+            <Statistics />        
                 
         <AssignmentDrawer buttonTextDefault="Assign" displayDrawer={displaydrawer} >
-          <Assignment />
+          {/* <Assignment /> */}
         </AssignmentDrawer>
 
                     <AssetTable showDrawer={showDefaultDrawer} />
