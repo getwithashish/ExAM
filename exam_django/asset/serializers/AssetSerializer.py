@@ -16,7 +16,7 @@ class AssetReadSerializer(serializers.ModelSerializer):
     location = LocationSerializer()
     invoice_location = LocationSerializer()
     business_unit = BusinessUnitSerializer()
-    conceder = UserSerializer()
+    approved_by = UserSerializer()
     requester = UserSerializer()
     memory = MemorySerializer()
 
@@ -40,7 +40,7 @@ class AssetWriteSerializer(serializers.ModelSerializer):
         # exclude = ["conceder", "approval_status", "created_at", "updated_at", "requester", "request_type"]
         read_only_fields = (
             "custodian",
-            "conceder",
+            "approved_by",
             "assign_status",
             "asset_detail_status",
             "created_at",

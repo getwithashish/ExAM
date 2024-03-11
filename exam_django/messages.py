@@ -103,7 +103,7 @@ URL_SERVER_ERROR = "The server encountered an error while processing the request
 LOCATION_RETRIEVED_SUCCESSFULLY = "Successfully retrived locations "
 LOCATION_RETRIEVAL_FAILED = "Failed to retrieve locations "
 LOCATION_CREATED_SUCCESSFULLY = "Location inserted successfully"
-LOCATION_CREATION_FAILED = "Location insertion failed "
+LOCATION_CREATION_FAILED = "Duplicate value cannot be inserted "
 
 # Parse Exception Messages
 VALID_CSV_FILE_TYPE = "Valid csv file type."

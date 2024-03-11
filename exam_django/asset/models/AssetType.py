@@ -3,7 +3,9 @@ from django.db import models
 
 class AssetType(models.Model):
 
-    asset_type_name = models.CharField(max_length=50, null=False, blank=False)
+    asset_type_name = models.CharField(
+        max_length=50, null=False, blank=False, unique=True
+    )
 
     def __str__(self):
         return str(self.asset_type_name)

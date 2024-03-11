@@ -99,7 +99,7 @@ class Asset(models.Model):
     configuration = models.CharField(max_length=255, null=True, blank=False)
     accessories = models.CharField(max_length=50, null=True, blank=False)
     notes = models.TextField(null=True)
-    conceder = models.ForeignKey(
+    approved_by = models.ForeignKey(
         User,
         related_name="%(app_label)s_%(class)s_conceder",
         on_delete=models.CASCADE,
