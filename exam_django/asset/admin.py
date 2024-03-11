@@ -5,7 +5,6 @@ from asset.models import (
     Employee,
     Location,
     Asset,
-    User,
     Memory,
     AssetLog,
 )
@@ -16,6 +15,5 @@ admin.site.register(BusinessUnit)
 admin.site.register(Employee)
 admin.site.register(Location)
 admin.site.register(Asset)
-admin.site.register(User)
 admin.site.register(Memory)
 admin.site.register(AssetLog)

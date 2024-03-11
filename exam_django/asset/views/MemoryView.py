@@ -3,6 +3,7 @@ from asset.serializers import MemorySerializer
 from rest_framework.views import APIView
 from rest_framework import status
 from response import APIResponse
+from rest_framework.permissions import IsAuthenticated
 from messages import (
     MEMORY_SUCCESSFULLY_RETRIEVED,
     GLOBAL_500_EXCEPTION_ERROR,
@@ -12,6 +13,14 @@ from messages import (
 
 
 class MemoryView(APIView):
+    def get_permissions(self):
+        if self.request.method == "GET":
+            return [IsAuthenticated()]
+        elif self.request.method == "POST":
+            return [IsAuthenticated()]
+        else:
+            return super().get_permissions()
+
     def get(self, request, format=None):
         try:
             query = request.query_params.get("query")

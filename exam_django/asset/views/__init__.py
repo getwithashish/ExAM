@@ -6,7 +6,6 @@ from .LocationView import LocationView
 from .AssetCountView import AssetCountView
 from .MemoryView import MemoryView
 from .EmployeeView import EmployeeView
-from .UserView import UserView
 from .AssignAssetView import AssignAssetView
 from .AssetLogView import AssetLogView
 from .DataImportView import DataImportView
@@ -19,7 +18,6 @@ __all__ = [
     "AssetCountView",
     "MemoryView",
     "EmployeeView",
-    "UserView",
     "AssignAssetView",
     "AssetSearchWithFilterView",
     "AssetLogView",
