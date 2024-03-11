@@ -4,7 +4,6 @@ import DrawerComponent from "../DrawerComponent/DrawerComponent";
 import { SearchOutlined } from "@ant-design/icons";
 import "./AssetTable.css";
 import CardComponent from "../CardComponent/CardComponent"
-import CardComponent from "../CardComponent/CardComponent"
 import { CloseOutlined } from "@ant-design/icons";
 import axiosInstance from "../../config/AxiosConfig";
 import { useQuery } from "@tanstack/react-query";
