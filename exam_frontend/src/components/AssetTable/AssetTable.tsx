@@ -27,59 +27,51 @@ const items = [
 ];
 
 const AssetTable = () => {
+  const { data: logsData } = useQuery('assetLogs', async () => {
+    const response = await axiosInstance.get('asset_logs/<str:asset_uuid');
+    return response.data.data.logs;
+  });
+
   const expandedRowRender = () => {
     const columns: TableColumnsType<ExpandedDataType> = [
-      { title: 'Date', dataIndex: 'date', key: 'date' },
-      { title: 'Name', dataIndex: 'name', key: 'name' },
+      { title: 'timestamp', dataIndex: 'timestamp', key: 'timestamp' },
+      { title: 'asset_category', dataIndex: 'asset_category', key: 'asset_category' },
       {
-        title: 'Status',
+        title: 'asset_detail_status',
         key: 'state',
-        render: () => <Badge status="success" text="Finished" />,
-      },
-      { title: 'Upgrade Status', dataIndex: 'upgradeNum', key: 'upgradeNum' },
-      {
-        title: 'Action',
-        dataIndex: 'operation',
-        key: 'operation',
-        render: () => (
-          <Space size="middle">
-            <a>Pause</a>
-            <a>Stop</a>
-            <Dropdown menu={{ items }}>
-              <a>
-                More <DownOutlined />
-              </a>
-            </Dropdown>
 
-          </Space>
-        ),
       },
+      { title: 'assign_status', dataIndex: 'assign_status', key: 'assign_status' },
+      { title: 'created_at', dataIndex: 'created_at',key: 'created_at',},
+      {title: 'product_name',dataIndex: 'product_name',key: 'product_name',},
+      {title: 'updated_at',dataIndex: 'updated_at',key: 'updated_at',},
+      { title: 'date_of_purchase', dataIndex: 'date_of_purchase', key: 'date_of_purchase', },
+      {title: 'model_number',dataIndex: 'model_number', key: 'model_number',},
+      { title: 'updated_at', dataIndex: 'updated_at', key: 'updated_at',},
     ];
 
-    const data = [];
-    for (let i = 0; i < 3; ++i) {
-      data.push({
-        key: i.toString(),
-        date: '2014-12-24 23:12:00',
-        name: 'This is production name',
-        upgradeNum: 'Upgraded: 56',
+    const logsDataExpanded = [];
+    for (let i = 0; i < 1; ++i) {
+      logsDataExpanded.push({
+        // key: i.toString(),
+        // date: '2014-12-24 23:12:00',
+        // name: 'This is production name',
+        // upgradeNum: 'Upgraded: 56',
       });
     }
-    return <Table columns={columns} dataSource={data} pagination={false} />;
+    return <Table columns={columns} dataSource={data} pagination={false} style={{ maxHeight: 300, overflowY: 'auto', maxWidth: '100%', scrollbarWidth: 'none', msOverflowStyle: 'none' }} />;
   };
 
  const nestedcolumns: TableColumnsType<DataType> = [
-    { title: 'Name', dataIndex: 'name', key: 'name' },
-    { title: 'Platform', dataIndex: 'platform', key: 'platform' },
-    { title: 'Version', dataIndex: 'version', key: 'version' },
-    { title: 'Upgraded', dataIndex: 'upgradeNum', key: 'upgradeNum' },
-    { title: 'Creator', dataIndex: 'creator', key: 'creator' },
-    { title: 'Date', dataIndex: 'createdAt', key: 'createdAt' },
-    { title: 'Action', key: 'operation', render: () => <a>Publish</a> },
+    // { title: 'timestamp', dataIndex: 'timestamp', key: 'timestamp' },
+    // { title: 'Platform', dataIndex: 'platform', key: 'platform' },
+    // { title: 'Version', dataIndex: 'version', key: 'version' },
+    // { title: 'Upgraded', dataIndex: 'upgradeNum', key: 'upgradeNum' },
+    // { title: 'Creator', dataIndex: 'creator', key: 'creator' },
   ];
 
   const nesteddata: DataType[] = [];
-  for (let i = 0; i < 3; ++i) {
+  for (let i = 0; i < 1; ++i) {
     nesteddata.push({
       key: i.toString(),
       name: 'Screen',
