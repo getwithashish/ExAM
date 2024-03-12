@@ -11,7 +11,9 @@ from messages import (
     EMPLOYEE_NOT_FOUND_ERROR,
 )
 
+
 class AssignAssetView(APIView):
+
     def get_permissions(self):
         if self.request.method == "POST":
             return [IsAuthenticated()]

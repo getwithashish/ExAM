@@ -4,12 +4,17 @@ from django.db.models import Count
 from rest_framework.permissions import IsAuthenticated
 from response import APIResponse
 from rest_framework import status
-
+from rest_framework import serializers
 from messages import ASSET_COUNT_SUCCESSFULLY_RETRIEVED
+
+
+class DummySerializer(serializers.Serializer):
+    pass
 
 
 class AssetCountView(ListAPIView):
     permission_classes = (IsAuthenticated,)
+    serializer_class = DummySerializer
 
     def list(self, request, *args, **kwargs):
         asset_type = self.request.query_params.get("asset_type")
