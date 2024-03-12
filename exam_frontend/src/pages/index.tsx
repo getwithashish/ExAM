@@ -10,6 +10,11 @@ import SideDrawerComponent from "../components/SideDrawerComponent/SideDrawerCom
 import { SidebarHandler } from "../components/sidebar/SidebarHandler";
 import AssignmentDrawer from "../components/Assign/AssignmentDrawer";
 import { Assignment } from "../components/Assign/Assignment";
+import TableNavbar from "../components/TableNavBar/TableNavbar";
+// import Upload from "antd/es/upload/Upload";
+import { Upload } from "antd";
+import {styles} from '../components/SideDrawerComponent/SideDrawerComponent.module.css'
+import UploadComponent from "../components/Upload/UploadComponent";
 
 
 const DashboardPage: FC = function () {
@@ -35,24 +40,51 @@ const DashboardPage: FC = function () {
   const closeAssignDrawer = ()=> {
   setIsAssign(false)
   console.log("displaydrwer value is " ,displaydrawer)
-  }
+ }
+
+ const toggleDrawer = () => {
+  setDisplayDrawer(!displaydrawer);
+};
+
+const [showUpload, setShowUpload] = useState(false);
+const closeImportDrawer = ()=> {
+  setShowUpload(false)
+  console.log("Import drwer value is " ,showUploaddrawer)
+ }
+
 
   return (
    
       <NavbarSidebarLayout>
         <div>
           <SidebarHandler addAsset={showDefaultDrawer} />
-            {/* <Statistics />         */}
-                
+            <Statistics />        
+            <TableNavbar showUpload={showUpload} setShowUpload={setShowUpload}/>
+          
         <AssignmentDrawer buttonTextDefault="Assign" displayDrawer={displaydrawer} >
           {/* <Assignment /> */}
         </AssignmentDrawer>
+
 
                     <AssetTable showDrawer={showDefaultDrawer} />
 
                   <SideDrawerComponent  displayDrawer={displaydrawer} closeDrawer={closeDrawer}>
                     <AddAsset/>
                   </SideDrawerComponent>   
+
+                  <SideDrawerComponent  displayDrawer={showUpload} closeDrawer={closeImportDrawer}>
+                  <UploadComponent/>
+                  </SideDrawerComponent>   
+
+                  {/* <AssignmentDrawer buttonTextDefault="Import" displayDrawer={showUpload} >
+                    <UploadComponent/>
+                  </AssignmentDrawer> */}
+
+                  {/* <SideDrawerComponent  displayDrawer={displaydrawer} closeDrawer={toggleDrawer}>
+                  <div className="{styles.small-upload}">
+                  <UploadComponent />
+                  </div>
+                  </SideDrawerComponent>  */}
 
             <div>      
           </div>
