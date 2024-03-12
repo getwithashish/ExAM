@@ -16,8 +16,8 @@ USERS_RETRIEVAL_UNSUCCESSFUL = (
 )
 USER_UNAUTHORIZED = "User does not have permission to perform this action"
 EMPLOYEE_NOT_FOUND_ERROR = "Employee is not found in the request. Please try again."
-EMPLOYEE_CREATION_UNSUCCESSFUL = (
-    "Error while creating an employee.Please try again later."
+EMPLOYEE_SUCCESSFULLY_CREATED = (
+    "Employee has been created successfully."
 )
 USER_UNAUTHORIZED = "User does not have permission to perform this action"
 EMPLOYEE_NOT_FOUND_ERROR = "Employee is not found in the request. Please try again."
@@ -145,8 +145,6 @@ LOCATION_RETRIEVAL_FAILED = "Failed to retrieve locations "
 LOCATION_CREATED_SUCCESSFULLY = "Location inserted successfully"
 LOCATION_CREATION_FAILED = "Duplicate value cannot be inserted "
 
-
-)
 FILE_NOT_FOUND = "File is not found"
 FILE_FOUND = "File found"
 # Parse messages
