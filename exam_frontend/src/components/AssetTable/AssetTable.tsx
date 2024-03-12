@@ -27,20 +27,19 @@ const items = [
 ];
 
 const AssetTable = () => {
-  const { data: logsData } = useQuery('assetLogs', async () => {
-    const response = await axiosInstance.get('asset_logs/<str:asset_uuid');
-    return response.data.data.logs;
+  const { data: logsData } = useQuery({
+    queryKey: ['assetLogsData'],
+    queryFn: () =>
+      axiosInstance.get('asset/asset_logs/3059600b50cf4c53a9237525b34fd1f4').then((response) => {
+        console.log('Returned Log Data: ', response.data.data.logs);
+        return response.data.data.logs;
+      }),
   });
-
   const expandedRowRender = () => {
     const columns: TableColumnsType<ExpandedDataType> = [
       { title: 'timestamp', dataIndex: 'timestamp', key: 'timestamp' },
       { title: 'asset_category', dataIndex: 'asset_category', key: 'asset_category' },
-      {
-        title: 'asset_detail_status',
-        key: 'state',
-
-      },
+      {title: 'asset_detail_status',key: 'asset_detail_status',dataIndex:'asset_detail_status'},
       { title: 'assign_status', dataIndex: 'assign_status', key: 'assign_status' },
       { title: 'created_at', dataIndex: 'created_at',key: 'created_at',},
       {title: 'product_name',dataIndex: 'product_name',key: 'product_name',},
@@ -51,15 +50,25 @@ const AssetTable = () => {
     ];
 
     const logsDataExpanded = [];
-    for (let i = 0; i < 1; ++i) {
+    for (let i = 0; i < logsData.length; ++i) {
       logsDataExpanded.push({
-        // key: i.toString(),
-        // date: '2014-12-24 23:12:00',
-        // name: 'This is production name',
-        // upgradeNum: 'Upgraded: 56',
+        key: i.toString(),
+        timestamp: logsData[i].timestamp,
+        asset_category: logsData[i].asset_log.asset_category,
+        asset_detail_status:logsData[i].asset_log.asset_detail_status,
+        assign_status:logsData[i].asset_log.assign_status,
+        created_at:logsData[i].asset_log.created_at,
+        product_name:logsData[i].asset_log.product_name,
+        updated_at:logsData[i].asset_log.updated_at,
+        date_of_purchase:logsData[i].asset_log.date_of_purchase,
+        // model_number:logsData[i].asset_logs.model_number,
+
+
       });
     }
-    return <Table columns={columns} dataSource={data} pagination={false} style={{ maxHeight: 300, overflowY: 'auto', maxWidth: '100%', scrollbarWidth: 'none', msOverflowStyle: 'none' }} />;
+    // return <Table columns={columns} dataSource={logsData}  pagination={false} style={{ maxHeight: 300, overflowY: 'auto', maxWidth: '100%', scrollbarWidth: 'none', msOverflowStyle: 'none' }} />;
+    return <Table columns={columns} dataSource={logsDataExpanded}  pagination={false} style={{ maxHeight: 300, overflowY: 'auto', maxWidth: '100%', scrollbarWidth: 'none', msOverflowStyle: 'none' }} />;
+    
   };
 
  const nestedcolumns: TableColumnsType<DataType> = [

@@ -71,6 +71,7 @@ const CardComponent: React.FC<CardType> = ({
   >
     ...
   </ConfigProvider>;
+  
   function formatDate(dateString: string | number | Date) {
     if (!dateString) return ''; 
     const date = new Date(dateString);
