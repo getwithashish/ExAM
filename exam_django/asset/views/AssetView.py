@@ -12,6 +12,7 @@ import json
 
 from response import APIResponse
 from messages import (
+    ASSET_CREATE_PENDING_SUCCESSFUL,
     ASSET_CREATED_UNSUCCESSFUL,
     ASSET_LIST_RETRIEVAL_UNSUCCESSFUL,
     ASSET_LIST_SUCCESSFULLY_RETRIEVED,
@@ -33,12 +34,14 @@ class AssetView(ListCreateAPIView):
 
             if user_scope == "SYSTEM_ADMIN":
                 serializer.validated_data["asset_detail_status"] = "CREATE_PENDING"
+                message = ASSET_CREATE_PENDING_SUCCESSFUL
 
             elif user_scope == "LEAD":
                 serializer.validated_data["approved_by"] = request.user
                 serializer.validated_data["asset_detail_status"] = "CREATED"
+                message = ASSET_SUCCESSFULLY_CREATED
 
-            elif user_scope == "MANAGER":
+            else:
                 return APIResponse(
                     data={},
                     message=USER_UNAUTHORIZED,
@@ -49,7 +52,7 @@ class AssetView(ListCreateAPIView):
             serializer.save()
             return APIResponse(
                 data=serializer.data,
-                message=ASSET_SUCCESSFULLY_CREATED,
+                message=message,
                 status=status.HTTP_201_CREATED,
             )
         return APIResponse(
@@ -73,7 +76,6 @@ class AssetView(ListCreateAPIView):
             # Applying pagination
             page = self.paginate_queryset(queryset)
 
-            # TODO Wrap in custom response format
             if page is not None:
                 serializer = AssetReadSerializer(page, many=True)
                 paginated_data = self.get_paginated_response(serializer.data)
