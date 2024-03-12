@@ -47,15 +47,25 @@ ASSET_COUNT_RETRIEVAL_UNSUCCESSFUL = (
 )
 ASSET_ASSIGNMENT_FAILED = "Failed to assign asset. Please try again."
 
-
 # Asset Success Messages
 ASSET_LIST_SUCCESSFULLY_RETRIEVED = "Asset list is successfully retreived."
 ASSET_SUCCESSFULLY_CREATED = "Asset successfully created."
 ASSET_SUCCESSFULLY_UPDATED = "Asset details successfully updated."
 ASSET_SUCCESSFULLY_ASSIGNED = "Asset assigned successfully."
+ASSET_SUCCESSFULLY_UNASSIGNED = "Asset unassigned successfully."
 ASSET_COUNT_SUCCESSFULLY_RETRIEVED = "Asset count is successfully retreived."
 ASSET_CREATE_PENDING_SUCCESSFUL = "Asset Creation successfully added to pending state. Approval required to complete Asset Creation."
 ASSET_UPDATE_PENDING_SUCCESSFUL = "Asset Updation successfully added to pending state. Approval required to complete Asset Updation."
+
+# Approval Exception Messages
+APPROVAL_TYPE_NOT_FOUND = (
+    "Specified approval type is not valid. Try with correct value."
+)
+CANNOT_APPROVE_ACKNOWLEDGED_ASSET = "Cannot Approve already acknowledged asset."
+CANNOT_ASSIGN_UNAPPROVED_ASSET = "Cannot assign asset which is not approved."
+
+# Approval Success Messages
+
 
 # Asset Type Exception Messages
 INVALID_ASSET_TYPE = "The given asset type is invalid."
