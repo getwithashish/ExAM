@@ -32,7 +32,7 @@ const [displaydrawer,setDisplayDrawer] = useState(false)
             {/* <Statistics />         */}
                 
         <AssignmentDrawer buttonTextDefault="Assign" displayDrawer={displaydrawer} >
-          <Assignment />
+          {/* <Assignment /> */}
         </AssignmentDrawer>
 
                     <AssetTable showDrawer={showDefaultDrawer} />
