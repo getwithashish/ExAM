@@ -74,10 +74,19 @@ class AssetView(ListCreateAPIView):
             limit = request.query_params.get("limit")
             offset = request.query_params.get("offset")
 
+            query_params = request.query_params
+            query_params_to_exclude = ["limit", "offset"]
+            required_query_params = self.remove_fields_from_dict(
+                query_params, query_params_to_exclude
+            )
+
             if limit:
                 self.pagination_class.default_limit = limit
             if offset:
                 self.pagination_class.default_offset = offset
+
+            if required_query_params:
+                queryset = queryset.filter(**required_query_params)
 
             # Applying pagination
             page = self.paginate_queryset(queryset)
@@ -103,6 +112,13 @@ class AssetView(ListCreateAPIView):
                 message=ASSET_LIST_RETRIEVAL_UNSUCCESSFUL,
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+    def remove_fields_from_dict(self, input_dict, fields_to_remove):
+        return {
+            key: value
+            for key, value in input_dict.items()
+            if key not in fields_to_remove
+        }
 
 
 @receiver(pre_save, sender=Asset)
