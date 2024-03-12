@@ -5,11 +5,12 @@ import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
 import AddAsset from "../../components/AddAsset/AddAsset";
 import AssetTable from '../../components/AssetTable/AssetTable'
 import SideDrawerComponent from "../../components/SideDrawerComponent/SideDrawerComponent";
-import { SidebarHandler } from "../../components/sidebar/SidebarHandler";
+import { SidebarHandler } from "../../components/Sidebar/SidebarHandler";
 import AssignmentDrawer from "../../components/Assign/AssignmentDrawer";
 import { Assignment } from "../../components/Assign/Assignment";
-import { Statistics } from "../../components/charts/Statistics";
+// import { Statistics } from "../../components/charts/Statistics";
 import { RecordProps } from "./types";
+import ExportButton from "../../components/Export/Export";
 
 
 const DashboardPage: FC = function () {
@@ -41,9 +42,12 @@ console.log("displaydrwer value is " ,displaydrawer)
     <QueryClientProvider client={new QueryClient()}>
       <NavbarSidebarLayout>
         <div>
+           
+        <ExportButton />
           <SidebarHandler addAsset={showDefaultDrawer} />
-            <Statistics />        
-                
+            {/* <Statistics />         */}
+            
+            
             {record && (
         <AssignmentDrawer closeAssignDrawer={closeAssignDrawer} isAssign={isAssign}>
            <Assignment record={record} />
@@ -59,6 +63,7 @@ console.log("displaydrwer value is " ,displaydrawer)
             <div>      
           </div>
         </div>
+        
       </NavbarSidebarLayout>
     </QueryClientProvider>   
   );
