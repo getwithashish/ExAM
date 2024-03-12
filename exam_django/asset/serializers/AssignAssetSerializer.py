@@ -23,7 +23,7 @@ class AssignAssetSerializer(serializers.ModelSerializer):
             "location",
             "invoice_location",
             "memory",
-            "conceder",
+            "approved_by",
             "requester",
         )
 
