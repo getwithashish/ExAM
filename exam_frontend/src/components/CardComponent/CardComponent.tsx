@@ -3,34 +3,103 @@ import { Card, Form, Space, Input, Button, Select, ConfigProvider } from "antd";
 import "./CardComponent.css";
 import { DataType } from "../AssetTable/types/index";
 import { CardType } from "./types/index";
-
+import { useQuery } from "@tanstack/react-query";
+import axiosInstance from "../../config/AxiosConfig";
 const CardComponent: React.FC<CardType> = ({
   data,
   onUpdate,
   statusOptions,
   businessUnitOptions,
-  locationData,
+  locations,
   memoryData,
   assetTypeData
 }) => {
   const uniqueStatusOptions = Array.from(new Set(statusOptions));
   const uniqueBusinessOptions = Array.from(new Set(businessUnitOptions));
-  const uniqueLocationoptions = Array.from(new Set(locationData));
+  const uniqueLocationoptions = Array.from(new Set(locations));
   const uniqueMemoryOptions = Array.from(new Set(memoryData));
   const uniqueAssetTypeOptions = Array.from(new Set(assetTypeData));
   const [editedData, setEditedData] = useState(data);
 
-  const handleChange = (newValue: string) => {
-    // Assuming you want to update some state with the new value
+  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const {name,value}=e.target;
+  //   setEditedData((prevData) => ({
+  //     ...prevData,
+  //     propertyName: newValue, 
+  //     [name]: value,
+  //   }));
+  // };
+
+  const handleChange = (name: string, value: string | number) => {
+    let updatedValue = value;
+    if (name === 'location' || name === 'invoice_location' || name === 'business_unit') {
+      updatedValue = mapInputValueToPrimaryKey(name, value);
+    }
+    // Add additional handling for 'asset_type' and 'memory' fields
+    else if (name === 'asset_type') {
+      updatedValue = mapInputValueToPrimaryKey(name, value, assetTypeData);
+    } else if (name === 'memory') {
+      updatedValue = mapInputValueToPrimaryKey(name, value, memoryData);
+    }
     setEditedData((prevData) => ({
       ...prevData,
-      propertyName: newValue, // Replace 'propertyName' with the appropriate property name
+      [name]: updatedValue,
     }));
   };
 
-  const handleUpdate = () => {
-    onUpdate(editedData);
+  const mapInputValueToPrimaryKey = (fieldName: string, value: string | number) => {
+    // Assuming you have access to arrays like uniqueLocationoptions, uniqueBusinessOptions, etc.
+    switch (fieldName) {
+      case 'location':
+        // Find the location object with the matching name and return its ID
+        const location = uniqueLocationoptions.find(option => option.location_name === value);
+        return location ? location.id : value; // Return ID if found, otherwise return the original value
+      case 'invoice_location':
+        // Find the invoice_location object with the matching name and return its ID
+        const invoiceLocation = uniqueLocationoptions.find(option => option.location_name === value);
+        return invoiceLocation ? invoiceLocation.id : value; // Return ID if found, otherwise return the original value
+      case 'business_unit':
+        // Find the business_unit object with the matching name and return its ID
+        const businessUnit = uniqueBusinessOptions.find(option => option === value);
+        return businessUnit ? businessUnit.id : value; // Return ID if found, otherwise return the original value
+        case 'asset_type':
+          // Find the asset_type object with the matching name and return its ID
+          const assetType = options.find(option => option.asset_type_name === value);
+          return assetType ? assetType.id : value; // Return ID if found, otherwise return the original value
+        case 'memory':
+          // Find the memory object with the matching space and return its ID
+          const memory = options.find(option => option.memory_space === value);
+          return memory ? memory.id : value; // Return ID if found, otherwise return the original value
+      default:
+        return value; // For fields other than location, invoice_location, and business_unit, return the original value
+    }
   };
+  
+
+  const handleUpdate = () => {
+    axiosInstance.patch('http://localhost:8000/api/v1/asset/update', 
+    {
+      asset_uuid: editedData.key,
+      data: editedData
+    }, 
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    .then(response => {
+      if (response.status === 200) {
+        alert('Data updated successfully!');
+      } else {
+        throw new Error('Failed to update data');
+      }
+    })
+    .catch(error => {
+      console.error('Error updating data:', error);
+      alert('Failed to update data. Please try again later.');
+    });
+  };
+
   const gridStyle: React.CSSProperties = {
     width: "25%",
     height: "30%",
@@ -50,15 +119,15 @@ const CardComponent: React.FC<CardType> = ({
   const handleInputChange = (e: any) => {
     setvalue(e.target.value);
   };
-  const handleFormClose = () => {
-    setOriginalValue(orgiginalValue);
-  };
+ 
   const inputStyle: React.CSSProperties = {
     border: "none",
     width: "200px",
     boxShadow: "none",
     textAlign: "center",
+
   };
+  
   <ConfigProvider
     theme={{
       components: {
@@ -79,17 +148,7 @@ const CardComponent: React.FC<CardType> = ({
     }
     return date.toLocaleString();
   }
-  
-  
-  function formatDate(dateString: string | number | Date) {
-    if (!dateString) return ''; 
-    const date = new Date(dateString);
-      if (isNaN(date.getTime())) {
-      return ''; 
-    }
-    return date.toLocaleString();
-  }
-  
+
   
   return (
     <Card
@@ -169,7 +228,7 @@ const CardComponent: React.FC<CardType> = ({
           <Select
             defaultValue={data.location}
             style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
-            onChange={(value) => handleChange(value)} // Pass only the value
+            onChange={(value) => handleChange(value)} 
           >
             {uniqueLocationoptions.map((location, index) => (
               <Select.Option key={index} value={location.id}>
@@ -192,8 +251,8 @@ const CardComponent: React.FC<CardType> = ({
             onChange={(value) => handleChange(value)} // Pass only the value
           >
             {uniqueLocationoptions.map((location, index) => (
-              <Select.Option key={index} value={location}>
-                {location}
+              <Select.Option key={index} value={location.id}>
+                {location.location_name}
               </Select.Option>
             ))}
           </Select>
@@ -448,7 +507,7 @@ const CardComponent: React.FC<CardType> = ({
     {" "}
     <Input
       defaultValue={formatDate(data.updated_at)}
-      onChange={handleInputChange}
+  
       style={inputStyle}
     />{" "}
   </Form.Item>

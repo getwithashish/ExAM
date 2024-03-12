@@ -50,23 +50,54 @@ const AssetTable = () => {
       { title: 'updated_at', dataIndex: 'updated_at', key: 'updated_at',},
     ];
 
+
+
     const logsDataExpanded = [];
     for (let i = 0; i < logsData.length; ++i) {
-      logsDataExpanded.push({
-        key: i.toString(),
-        timestamp: logsData[i].timestamp,
-        asset_category: logsData[i].asset_log.asset_category,
-        asset_detail_status:logsData[i].asset_log.asset_detail_status,
-        assign_status:logsData[i].asset_log.assign_status,
-        created_at:logsData[i].asset_log.created_at,
-        product_name:logsData[i].asset_log.product_name,
-        updated_at:logsData[i].asset_log.updated_at,
-        date_of_purchase:logsData[i].asset_log.date_of_purchase,
-        // model_number:logsData[i].asset_logs.model_number,
-
-
-      });
+      const assetLog = logsData[i].asset_log;
+    
+      if (assetLog) {
+        const timestamp = new Date(logsData[i].timestamp); // Convert timestamp to Date object
+        const formattedTimestamp = timestamp.toLocaleString(); // Format the timestamp as a string in the local time zone
+    
+        const createdAt = new Date(assetLog.created_at); // Convert created_at timestamp to Date object
+        const formattedCreatedAt = createdAt.toLocaleString(); // Format the created_at timestamp
+    
+        const updatedAt = new Date(assetLog.updated_at); // Convert updated_at timestamp to Date object
+        const formattedUpdatedAt = updatedAt.toLocaleString(); // Format the updated_at timestamp
+    
+        logsDataExpanded.push({
+          key: i.toString(),
+          timestamp: formattedTimestamp,
+          asset_category: assetLog.asset_category,
+          asset_detail_status: assetLog.asset_detail_status,
+          assign_status: assetLog.assign_status,
+          created_at: formattedCreatedAt,
+          product_name: assetLog.product_name,
+          updated_at: formattedUpdatedAt,
+          date_of_purchase: assetLog.date_of_purchase,
+        });
+      }
     }
+    
+
+    // const logsDataExpanded = [];
+    // for (let i = 0; i < logsData.length; ++i) {
+    //   logsDataExpanded.push({
+    //     key: i.toString(),
+    //     timestamp: logsData[i].timestamp,
+    //     asset_category: logsData[i].asset_log.asset_category,
+    //     asset_detail_status:logsData[i].asset_log.asset_detail_status,
+    //     assign_status:logsData[i].asset_log.assign_status,
+    //     created_at:logsData[i].asset_log.created_at,
+    //     product_name:logsData[i].asset_log.product_name,
+    //     updated_at:logsData[i].asset_log.updated_at,
+    //     date_of_purchase:logsData[i].asset_log.date_of_purchase,
+    //     // model_number:logsData[i].asset_logs.model_number,
+
+
+    //   });
+    // }
     // return <Table columns={columns} dataSource={logsData}  pagination={false} style={{ maxHeight: 300, overflowY: 'auto', maxWidth: '100%', scrollbarWidth: 'none', msOverflowStyle: 'none' }} />;
     return <Table columns={columns} dataSource={logsDataExpanded}  pagination={false} style={{ maxHeight: 300, overflowY: 'auto', maxWidth: '100%', scrollbarWidth: 'none', msOverflowStyle: 'none' }} />;
     
@@ -117,17 +148,27 @@ const AssetTable = () => {
       (item:AssetResult) => item.business_unit.business_unit_name
     ) || [];
 
-    const { data: locationData } = useQuery({
-      queryKey: ['assetDrawerlocation'],
-      queryFn: () => axiosInstance.get('/asset/location').then((res) => res.data.data),
+    // const { data: locationData } = useQuery({
+    //   queryKey: ['location'],
+    //   queryFn: () => axiosInstance.get('/asset/location').then((res) => res.data.data),
+    // });
+    // console.log(locationData)
+    // const locationFilters = locationData?.map(location => ({
+    //   text:location.location_name,
+    //   value: location.location_name
+    // })) ?? [];
+    const { data: locationResults } = useQuery({
+      queryKey: ['location'],
+      queryFn: () => axiosInstance.get('/asset/location').then((res) => res.data),
     });
-    console.log(locationData)
     
-    const locationFilters = locationData?.map(location => ({
-      text:location.location_name,
-      value: location.location_name
-    })) ?? [];
-    console.log(locationFilters)
+    // Access locations from the response data (assuming results is an array)
+    const locations = locationResults?.results ?? [];
+    
+    const locationFilters = locations.map(location => ({
+      text: location.location_name,
+      value: location.location_name,
+    }));
   
     const { data: memoryData } = useQuery({
       queryKey: ['memorySpace'],
@@ -342,7 +383,10 @@ const AssetTable = () => {
       responsive: ["md"],
       width: 180,
       filters:locationFilters,
-      onFilter: (value, record) => {
+      onFilter: (
+        value: string | number | boolean | React.ReactText[] | Key,
+        record: DataType
+      ) => {
         if (Array.isArray(value)) {
           return value.includes(record.location);
         }
@@ -1223,9 +1267,7 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
       <div className="mainHeading">
         <h1>Asset Details</h1>
       </div>
-      <div>
-      <ExportButton />
-      </div>
+     
       <div style={{ position: 'relative', display: 'inline-block' }}>
   <Table
     assetdetails={assetdetails}
@@ -1286,7 +1328,7 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
             data={selectedRow}
             statusOptions={statusOptions}
             businessUnitOptions={businessUnitOptions}
-            locationData={locationData}
+            locations={locations}
             memoryData={memoryData}
             assetTypeData={assetTypeData}
           />

@@ -265,63 +265,33 @@ const AssetTableOne = (assignAsset) => {
         </div>
       ),
     },
-    // {
-    //   title: "Custodian",
-    //   dataIndex: "custodian",
-    //   responsive: ["md"],
-    //   fixed: "right",
-    //   width: 150,
-    //   filterIcon: <SearchOutlined />,
-    //   filterDropdown: ({
-    //     setSelectedKeys,
-    //     selectedKeys,
-    //     confirm,
-    //     clearFilters,
-    //   }) => (
-    //     <div style={{ padding: 8 }}>
-    //       <Input
-    //         placeholder="Search Custodian"
-    //         value={selectedKeys[0]}
-    //         onChange={(e) =>
-    //           setSelectedKeys(e.target.value ? [e.target.value] : [])
-    //         }
-    //         onPressEnter={() => confirm()}
-    //         style={{ marginBottom: 8, display: "block" }}
-    //       />
-    //       <Space>
-    //         <button
-    //           type="button"
-    //           onClick={confirm}
-    //           style={{ width: 90, fontSize: "16px" }}
-    //         >
-    //           Search
-    //         </button>
-    //         <button
-    //           type="button"
-    //           onClick={clearFilters}
-    //           style={{ width: 90, fontSize: "16px" }}
-    //         >
-    //           Reset
-    //         </button>
-    //       </Space>
-    //     </div>
-    //   ),
-    //   onFilter: (value, record) => {
-    //     if (Array.isArray(value)) {
-    //       return value.includes(record.custodian);
-    //     }
-    //     return record.custodian.indexOf(value.toString()) === 0;
-    //   },
-    //   render: (_, record) => (
-    //     <div
-    //       data-column-name="Custodian"
-    //       onClick={() => handleColumnClick(record, "Custodian")}
-    //       style={{ cursor: "pointer" }}
-    //     >
-    //       {record.custodian}
-    //     </div>
-    //   ),
-    // },
+    {
+      title: "Asset Status",
+      dataIndex: "status",
+      responsive: ["md"],
+      filters: [
+        {
+          text: "In Use ",
+          value: "In Use",
+        },
+        {
+          text: "In Store",
+          value: "In Store",
+        },
+      ],
+
+      onFilter: (
+        value: string | number | boolean | React.ReactText[] | Key,
+        record: DataType
+      ) => {
+        if (Array.isArray(value)) {
+          return value.includes(record.status);
+        }
+        return record.status.indexOf(value.toString()) === 0;
+      },
+    },
+
+   
     {
       title: "Assign Asset",
       dataIndex: "AssignAsset",
@@ -1119,6 +1089,9 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
       padding: 20,
       boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
       fontSize: "50px",
+      scrollbarWidth: 'none',
+      msOverflowStyle: 'none',
+      border:'none'
     }}
   />
   {/* <a

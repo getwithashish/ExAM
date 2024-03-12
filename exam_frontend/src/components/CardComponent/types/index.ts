@@ -4,8 +4,8 @@ export interface CardType{
     data: DataType; 
     statusOptions: string[];
     businessUnitOptions:string[];
-    locationOptions:string[];
-    memoryoptions:string[];
-    assetTypeOptions:string[];
+    locations:string[];
+    memoryData:string[];
+    assetTypeData :string[];
     onUpdate: (updatedData: DataType) => void;
 }
