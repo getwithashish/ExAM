@@ -13,6 +13,7 @@ from messages import (
 
 
 class BusinessUnitView(ListCreateAPIView):
+    serializer_class = BusinessUnitSerializer
 
     def get_permissions(self):
         if self.request.method == "GET":
