@@ -11,12 +11,13 @@ from messages import (
     LOCATION_RETRIEVED_SUCCESSFULLY,
     LOCATION_CREATED_SUCCESSFULLY,
     GLOBAL_500_EXCEPTION_ERROR,
-    LOCATION_CREATION_FAILED
+    LOCATION_CREATION_FAILED,
 )
 
 
 class LocationView(ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
+    serializer_class = LocationSerializer  # Define the serializer_class attribute
 
     def post(self, request):
         try:
@@ -31,7 +32,7 @@ class LocationView(ListCreateAPIView):
             return APIResponse(
                 data=[],
                 message=LOCATION_CREATION_FAILED,
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
         except Exception:
             return APIResponse(
