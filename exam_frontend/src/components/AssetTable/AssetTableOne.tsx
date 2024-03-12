@@ -12,11 +12,13 @@ import { ColumnFilterItem } from "../AssetTable/types";
 import { AssetResult } from "../AssetTable/types";
 import {FilterDropdownProps} from "../AssetTable/types";
 import { useInfiniteQuery } from 'react-query';
+import { RecordProps } from "../../pages/index/types";
 
-const AssetTableOne = (assignAsset) => {
+
+const AssetTableOne = ({ showAssignDrawer }) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
-
+  const [displaydrawer,setDisplayDrawer] = useState(false)
   const {
     data: assetData,
     isLoading,
@@ -265,63 +267,7 @@ const AssetTableOne = (assignAsset) => {
         </div>
       ),
     },
-    // {
-    //   title: "Custodian",
-    //   dataIndex: "custodian",
-    //   responsive: ["md"],
-    //   fixed: "right",
-    //   width: 150,
-    //   filterIcon: <SearchOutlined />,
-    //   filterDropdown: ({
-    //     setSelectedKeys,
-    //     selectedKeys,
-    //     confirm,
-    //     clearFilters,
-    //   }) => (
-    //     <div style={{ padding: 8 }}>
-    //       <Input
-    //         placeholder="Search Custodian"
-    //         value={selectedKeys[0]}
-    //         onChange={(e) =>
-    //           setSelectedKeys(e.target.value ? [e.target.value] : [])
-    //         }
-    //         onPressEnter={() => confirm()}
-    //         style={{ marginBottom: 8, display: "block" }}
-    //       />
-    //       <Space>
-    //         <button
-    //           type="button"
-    //           onClick={confirm}
-    //           style={{ width: 90, fontSize: "16px" }}
-    //         >
-    //           Search
-    //         </button>
-    //         <button
-    //           type="button"
-    //           onClick={clearFilters}
-    //           style={{ width: 90, fontSize: "16px" }}
-    //         >
-    //           Reset
-    //         </button>
-    //       </Space>
-    //     </div>
-    //   ),
-    //   onFilter: (value, record) => {
-    //     if (Array.isArray(value)) {
-    //       return value.includes(record.custodian);
-    //     }
-    //     return record.custodian.indexOf(value.toString()) === 0;
-    //   },
-    //   render: (_, record) => (
-    //     <div
-    //       data-column-name="Custodian"
-    //       onClick={() => handleColumnClick(record, "Custodian")}
-    //       style={{ cursor: "pointer" }}
-    //     >
-    //       {record.custodian}
-    //     </div>
-    //   ),
-    // },
+    
     {
       title: "Assign Asset",
       dataIndex: "AssignAsset",
@@ -334,7 +280,7 @@ const AssetTableOne = (assignAsset) => {
             background: "#D3D3D3",
             color: "black",
           }}
-          onClick={() =>{if(record.custodian === null || record.custodian === undefined)assignAsset(record);}}
+          onClick={() =>showAssignDrawer(record)}
         >
           +
         </Button>

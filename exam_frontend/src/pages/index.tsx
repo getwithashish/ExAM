@@ -14,8 +14,7 @@ import { Assignment } from "../components/Assign/Assignment";
 
 const DashboardPage: FC = function () {
   const [displaydrawer,setDisplayDrawer] = useState(false)
-  const [isAssign,setIsAssign] = useState(false)
-  const [record,setRecord] = useState<RecordProps>()
+ 
   
     const showDefaultDrawer =()=>{
       setDisplayDrawer(true)
@@ -26,29 +25,18 @@ const DashboardPage: FC = function () {
     console.log("displaydrwer value is " ,displaydrawer)
    }
   
-   const showAssignDrawer =(record:RecordProps)=>{
-    console.log("uuid",record)
-    setRecord(record)
-    setIsAssign(true)
-    console.log("displaydrawer value is ",displaydrawer)
-  }
-  const closeAssignDrawer = ()=> {
-  setIsAssign(false)
-  console.log("displaydrwer value is " ,displaydrawer)
-  }
+  
 
   return (
    
       <NavbarSidebarLayout>
         <div>
           <SidebarHandler addAsset={showDefaultDrawer} />
-            {/* <Statistics />         */}
+            <Statistics />        
                 
-        <AssignmentDrawer buttonTextDefault="Assign" displayDrawer={displaydrawer} >
-          {/* <Assignment /> */}
-        </AssignmentDrawer>
+        
 
-                    <AssetTable showDrawer={showDefaultDrawer} />
+                    <AssetTable  />
 
                   <SideDrawerComponent  displayDrawer={displaydrawer} closeDrawer={closeDrawer}>
                     <AddAsset/>
