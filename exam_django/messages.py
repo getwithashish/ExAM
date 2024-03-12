@@ -82,7 +82,7 @@ BAD_REQUEST_ERROR = "The server has encountered a validation error"
 LOCATION_RETRIEVED_SUCCESSFULLY = "Successfully retrived locations "
 LOCATION_RETRIEVAL_FAILED = "Failed to retrieve locations "
 LOCATION_CREATED_SUCCESSFULLY = "Location inserted successfully"
-LOCATION_CREATION_FAILED = "Location insertion failed "
+LOCATION_CREATION_FAILED = "Duplicate value cannot be inserted "
 
 # Asset Log
 ASSET_LOG_FOUND = "Asset log found successfully."

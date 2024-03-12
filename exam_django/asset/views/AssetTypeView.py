@@ -1,4 +1,5 @@
 from rest_framework.generics import ListCreateAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from asset.serializers import AssetTypeSerializer
 from asset.models import AssetType
@@ -12,6 +13,14 @@ from messages import (
 
 
 class AssetTypeView(ListCreateAPIView):
+    def get_permissions(self):
+        if self.request.method == "GET":
+            return [IsAuthenticated()]
+        elif self.request.method == "POST":
+            return [IsAuthenticated()]
+        else:
+            return super().get_permissions()
+
     def post(self, request, format=None):
         # queryset = AssetType.objects.all()
         serializer = AssetTypeSerializer(data=request.data)

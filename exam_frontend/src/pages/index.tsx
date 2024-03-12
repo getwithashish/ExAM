@@ -50,7 +50,7 @@ const closeImportDrawer = ()=> {
             <TableNavbar showUpload={showUpload} setShowUpload={setShowUpload}/>
           
         <AssignmentDrawer buttonTextDefault="Assign" displayDrawer={displaydrawer} >
-          <Assignment />
+          {/* <Assignment /> */}
         </AssignmentDrawer>
 
 
