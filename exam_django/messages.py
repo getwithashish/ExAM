@@ -16,8 +16,8 @@ USERS_RETRIEVAL_UNSUCCESSFUL = (
 )
 USER_UNAUTHORIZED = "User does not have permission to perform this action"
 EMPLOYEE_NOT_FOUND_ERROR = "Employee is not found in the request. Please try again."
-EMPLOYEE_CREATION_UNSUCCESSFUL = (
-    "Error while creating an employee.Please try again later."
+EMPLOYEE_SUCCESSFULLY_CREATED = (
+    "Employee has been created successfully."
 )
 USER_UNAUTHORIZED = "User does not have permission to perform this action"
 EMPLOYEE_NOT_FOUND_ERROR = "Employee is not found in the request. Please try again."
@@ -32,6 +32,8 @@ USER_DETAILS_VALIDATED_SUCCESSFULLY = "The provided details match with the datab
 USERS_RETRIEVED_SUCCESSFULLY = "List of users retrieved successfully."
 PAGINATED_RESPONSE_RETRIEVED_SUCESSFULLY="Paginated response sucessfully retrieved."
 # Asset Management - Error Messages
+PAGINATED_RESPONSE_RETRIEVED_SUCESSFULLY="Paginated response sucessfully retrieved."
+# Asset Management - Error Messages
 ASSET_NOT_FOUND = (
     "The requested asset could not be found. Please review the details and try again."
 )
@@ -43,6 +45,18 @@ ASSET_PARAM_EXCEPTION_ERROR = (
 INVALID_ASSET_DATA = (
     "The provided asset data is invalid. Please correct the information and try again."
 )
+ASSET_CREATED_UNSUCCESSFUL = "Error while creating an asset. Please try again later."
+ASSET_UPDATION_UNSUCCESSFUL = "Error while updating asset details. Please try again."
+ASSET_ASSIGNMENT_FAILED = "Failed to assign asset. Please try again."
+BUSINESS_UNIT_CREATED_UNSUCCESSFUL = (
+    "Error while creating business unit.Please try again later."
+)
+MEMORY_CREATED_UNSUCCESSFUL = "Error while creating memory.Please try again later."
+EMPLOYEE_CREATION_UNSUCCESSFUL = (
+    "Error while creating an employee.Please try again later."
+)
+# Asset Management - Success Messages
+ASSET_LIST_SUCCESSFULLY_RETRIEVED = "Asset list is successfully retreived."
 ASSET_CREATED_UNSUCCESSFUL = "Error while creating an asset. Please try again later."
 ASSET_UPDATION_UNSUCCESSFUL = "Error while updating asset details. Please try again."
 ASSET_ASSIGNMENT_FAILED = "Failed to assign asset. Please try again."
