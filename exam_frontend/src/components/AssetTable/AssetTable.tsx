@@ -1223,7 +1223,9 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
       <div className="mainHeading">
         <h1>Asset Details</h1>
       </div>
+      <div>
       <ExportButton />
+      </div>
       <div style={{ position: 'relative', display: 'inline-block' }}>
   <Table
     assetdetails={assetdetails}

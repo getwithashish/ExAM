@@ -3,13 +3,13 @@ import axios from 'axios';
 
 const ExportButton = () => {
   const buttonStyle = {
-    padding: '10px 20px',
+    padding: '2px 6px',
     backgroundColor: '#007bff',
     color: 'white',
     border: 'none',
-    borderRadius: '5px',
+    borderRadius: '1px',
     cursor: 'pointer',
-    
+    marginLeft: '100px'
   };
   const handleExport = () => {
   
