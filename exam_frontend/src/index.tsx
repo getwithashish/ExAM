@@ -9,7 +9,7 @@ import { BrowserRouter } from "react-router-dom";
 import DashboardPage from "./pages";
 import Login from "./pages/authentication/Login";
 import Logout from "./pages/authentication/Logout";
-import RequestPage from "./pages/e-commerce/Requests";
+import RequestPage from "./pages/RequestPage/Requests";
 // import UserListPage from "./pages/users/list";
 
 

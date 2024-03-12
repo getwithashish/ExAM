@@ -9,16 +9,17 @@ import {
   TextInput,
 } from "flowbite-react";
 import type { FC } from "react";
-import { useState } from "react";
 import {
   HiHome,
   HiPencilAlt,
 } from "react-icons/hi";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
+import { useEffect, useState } from 'react';
+import axiosInstance from '../../config/AxiosConfig';
 
 const RequestPage: FC = function () {
   return (
-    <NavbarSidebarLayout isFooter={false}>
+    <NavbarSidebarLayout isFooter={true}>
       <div className="block items-center justify-between border-b border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 sm:flex">
         <div className="mb-1 w-full">
           <div className="mb-4">
@@ -30,11 +31,11 @@ const RequestPage: FC = function () {
                 </div>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                Pending Request
+                Pending Asset Requests
               </Breadcrumb.Item>              
             </Breadcrumb>
             <h1 className="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">
-              Pending Requests
+              Pending Asset Requests
             </h1>
           </div>
           <div className="block items-center sm:flex">
@@ -46,7 +47,7 @@ const RequestPage: FC = function () {
         <div className="overflow-x-auto">
           <div className="inline-block min-w-full align-middle">
             <div className="overflow-hidden shadow">
-              <ProductsTable />
+              <RequestTable />
             </div>
           </div>
         </div>
@@ -54,6 +55,7 @@ const RequestPage: FC = function () {
     </NavbarSidebarLayout>
   );
 };
+
 const SearchRequests: FC = function () {
   return (
     <form className="mb-4 sm:mb-0 sm:pr-3" action="#" method="GET">
@@ -70,7 +72,8 @@ const SearchRequests: FC = function () {
     </form>
   );
 };
-const ViewRequest: FC = function () {
+
+const ViewRequest: FC<{ asset: any }> = function ({ asset }) {
   const [isOpen, setOpen] = useState(false);
 
   return (
@@ -81,58 +84,92 @@ const ViewRequest: FC = function () {
       </Button>
       <Modal onClose={() => setOpen(false)} show={isOpen}>
         <Modal.Header className="border-b border-gray-200 !p-6 dark:border-gray-700">
-          <strong>Approve Request</strong>
+          <strong>Request Details</strong>
         </Modal.Header>
         <Modal.Body>
           <form>
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               <div>
-                <Label htmlFor="request_type">Request Type</Label>
+                <Label htmlFor="assetId">ASSET ID</Label>
                 <TextInput
-                  id="request_type"
-                  name="request_type"
-                  placeholder='Asset Assign'
+                  id="assetId"
+                  name="assetId"
+                  value={asset.asset_id}
+                  disabled
                   className="mt-1"
                 />
               </div>
               <div>
-                <Label htmlFor="requester">Requester</Label>
+                <Label htmlFor="assetCategory">ASSET CATEGORY</Label>
                 <TextInput
-                  id="requester"
-                  name="requester"
-                  placeholder="Sukesh Midhun CS"
+                  id="assetCategory"
+                  name="assetCategory"
+                  value={asset.asset_category}
+                  disabled
                   className="mt-1"
                 />
               </div>
               <div>
-                <Label htmlFor="assignee">Assignee</Label>
+                <Label htmlFor="productName">PRODUCT NAME</Label>
                 <TextInput
-                  id="assignee"
-                  name="assignee"
-                  placeholder="Ashish Sam T George"
+                  id="productName"
+                  name="productName"
+                  value={asset.product_name}
+                  disabled
+                  className="mt-1"
+                />
+              </div> 
+              <div>
+                <Label htmlFor="serialNumber">SERIAL NUMBER</Label>
+                <TextInput
+                  id="serialNumber"
+                  name="serialNumber"
+                  value={asset.serial_number}
+                  disabled
                   className="mt-1"
                 />
               </div>
               <div>
-                <Label htmlFor="date">Request Date</Label>
+                <Label htmlFor="modelNumber">MODEL NUMBER</Label>
                 <TextInput
-                  id="date"
-                  name="date"
-                  type="date"
-                  placeholder="12/03/2024"
+                  id="modelNumber"
+                  name="modelNumber"
+                  value={asset.model_number}
+                  disabled
                   className="mt-1"
                 />
               </div>
-              <div className="lg:col-span-2">
-                <Label htmlFor="requestDetails">Request details</Label>
-                <Textarea
-                  id="requestDetails"
-                  name="requestDetails"
-                  placeholder="Assign the above asset to Ashish Sam T George"
-                  rows={6}
+              <div>
+                <Label htmlFor="status">STATUS</Label>
+                <TextInput
+                  id="status"
+                  name="status"
+                  value={asset.status}
+                  disabled
                   className="mt-1"
                 />
               </div>
+              <div>
+                <Label htmlFor="warrantyPeriod">WARRANTY PERIOD</Label>
+                <TextInput
+                  id="warrantyPeriod"
+                  name="warrantyPeriod"
+                  value={asset.warranty_period}
+                  disabled
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="dateOfPurchase">DATE OF PURCHASE</Label>
+                <TextInput
+                  id="dateOfPurchase"
+                  name="dateOfPurchase"
+                  value={asset.date_of_purchase}
+                  disabled
+                  className="mt-1"
+                />
+              </div>
+              {/* Add similar fields for other asset details */}
             </div>
           </form>
         </Modal.Body>
@@ -148,68 +185,57 @@ const ViewRequest: FC = function () {
     </>
   );
 };
-const ProductsTable: FC = function () {
+
+const RequestTable: FC = function () {  
+  const [assets, setAssets] = useState<any[]>([]); // State to store fetched assets
+
+  useEffect(() => {
+    // Fetch assets from the API
+    axiosInstance.get('/asset/')
+      .then(response => {
+        // Update the state with the fetched assets
+        setAssets(response.data.data.results);
+      })
+      .catch(error => {
+        console.error('Error fetching assets:', error);
+      });
+  }, []); 
+
   return (
     <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
-      <Table.Head className="bg-gray-100 dark:bg-gray-700">
-        <Table.HeadCell>Request</Table.HeadCell>
-        <Table.HeadCell>Requester</Table.HeadCell>
-        <Table.HeadCell>Assignee</Table.HeadCell>
-        <Table.HeadCell>Request Date</Table.HeadCell>
-        <Table.HeadCell>Actions</Table.HeadCell>
-      </Table.Head>
-      <Table.Body className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
-        <Table.Row className="hover:bg-gray-100 dark:hover:bg-gray-700">
+    <Table.Head className="bg-gray-100 dark:bg-gray-700">
+      <Table.HeadCell>Request type</Table.HeadCell>
+      <Table.HeadCell>Requester</Table.HeadCell>
+      <Table.HeadCell>Request Date</Table.HeadCell>
+      <Table.HeadCell>Actions</Table.HeadCell>
+    </Table.Head>
+    <Table.Body className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
+      {assets.map(asset => (
+        <Table.Row key={asset.asset_uuid} className="hover:bg-gray-100 dark:hover:bg-gray-700">
           <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
             <div className="text-base font-semibold text-gray-900 dark:text-white">
-              Assign Asset
+              {asset.asset_detail_status}
             </div>
             <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
               Details
             </div>
           </Table.Cell>
           <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
-            Sukesh Midhun
+            {asset.requester.username}
           </Table.Cell>
           <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
-            Ashish Sam T George
-          </Table.Cell>
-          <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
-            12/03/2024
+            {new Date(asset.created_at).toLocaleDateString()}
           </Table.Cell>
           <Table.Cell className="space-x-2 whitespace-nowrap p-4">
             <div className="flex items-center gap-x-3">
-              <ViewRequest />
+              <ViewRequest asset={asset} />
             </div>
           </Table.Cell>
         </Table.Row>
-        <Table.Row className="hover:bg-gray-100 dark:hover:bg-gray-700">
-          <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
-            <div className="text-base font-semibold text-gray-900 dark:text-white">
-              Update Asset
-            </div>
-            <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
-              Details..
-            </div>
-          </Table.Cell>
-          <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
-            Binu Adimali
-          </Table.Cell>
-          <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
-            -
-          </Table.Cell>
-          <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
-            10/03/2024
-          </Table.Cell>
-          <Table.Cell className="space-x-2 whitespace-nowrap p-4">
-            <div className="flex items-center gap-x-3">
-              <ViewRequest />
-            </div>
-          </Table.Cell>
-        </Table.Row>
-      </Table.Body>
-    </Table>
-  );
+      ))}
+    </Table.Body>
+  </Table>
+);
 };
 
 export default RequestPage;
