@@ -170,15 +170,15 @@ const ViewRequest: FC<{ asset: any }> = function ({ asset }) {
                 />
               </div>
               <div className="lg:col-span-2">
-                <Label htmlFor="approverNotes">APPROVER NOTES</Label>
+                <Label htmlFor="approverNotes">Approver Notes</Label>
                 <Textarea
                   id="approverNotes"
                   name="approverNotes"
+                  placeholder="Write here..."
                   rows={1}
                   className="mt-1"
                 />
               </div>
-
             </div>
           </form>
         </Modal.Body>
@@ -199,7 +199,7 @@ const RequestTable: FC = function () {
   const [assets, setAssets] = useState<any[]>([]);
 
   useEffect(() => {
-    axiosInstance.get('/asset/')
+    axiosInstance.get('/asset/?limit=10&asset_detail_status=CREATE_PENDING')
       .then(response => {
         setAssets(response.data.data.results);
       })

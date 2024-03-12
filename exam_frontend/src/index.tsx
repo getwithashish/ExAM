@@ -31,7 +31,7 @@ root.render(
           <Route path="/dashboard" element={<DashboardPage />} index />         
           <Route path="/logout" element={<Logout />} />
           <Route
-            path="/dashboard/requests"
+            path="/requests"
             element={<RequestPage />}
           />
           {/* <Route path="/users/list" element={<UserListPage />} /> */}
