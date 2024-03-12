@@ -25,3 +25,7 @@ export type ApiResponse = {
 export type AssignmentProps ={
   uuid:string
 }
+
+export type AssetTableOneProps = {
+  showAssignDrawer: (record: any) => void; // Replace 'any' with the appropriate type of record
+};

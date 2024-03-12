@@ -4,10 +4,9 @@ import { useState, type FC } from "react";
 import NavbarSidebarLayout from "../layouts/navbar-sidebar";
 import AddAsset from "../components/AddAsset/AddAsset";
 import AssetTable from '../components/AssetTable/AssetTable'
-import { Statistics } from "../components/Charts/Statistics";
-import { RecordProps } from "./types";
+import { Statistics } from "../components/charts/Statistics";
 import SideDrawerComponent from "../components/SideDrawerComponent/SideDrawerComponent";
-import { SidebarHandler } from "../components/sidebar/SidebarHandler";
+import { SidebarHandler } from "../components/Sidebar/SidebarHandler";
 import AssignmentDrawer from "../components/Assign/AssignmentDrawer";
 import { Assignment } from "../components/Assign/Assignment";
 

@@ -1,5 +1,5 @@
 import React, { Key, SetStateAction, useState } from "react";
-import { Button, Input, Space, Table, TableColumnsType } from "antd";
+import { Badge, Button, Dropdown, Input, Space, Table, TableColumnsType } from "antd";
 import DrawerComponent from "../DrawerComponent/DrawerComponent";
 import { SearchOutlined } from "@ant-design/icons";
 import "./AssetTable.css";
@@ -12,13 +12,90 @@ import { ColumnFilterItem } from "../AssetTable/types";
 import { AssetResult } from "../AssetTable/types";
 import {FilterDropdownProps} from "../AssetTable/types";
 import { useInfiniteQuery } from 'react-query';
-import { RecordProps } from "../../pages/index/types";
+
+import { DownOutlined } from '@ant-design/icons';
+
+interface ExpandedDataType {
+  key: React.Key;
+  date: string;
+  name: string;
+  upgradeNum: string;
+}
+const items = [
+  { key: '1', label: 'Action 1' },
+  { key: '2', label: 'Action 2' },
+];
+
+const AssetTableOne = ({showAssignDrawer}) => {
+  const { data: logsData } = useQuery({
+    queryKey: ['assetLogsData'],
+    queryFn: () =>
+      axiosInstance.get('asset/asset_logs/3059600b50cf4c53a9237525b34fd1f4').then((response) => {
+        console.log('Returned Log Data: ', response.data.data.logs);
+        return response.data.data.logs;
+      }),
+  });
+  const expandedRowRender = () => {
+    const columns: TableColumnsType<ExpandedDataType> = [
+      { title: 'timestamp', dataIndex: 'timestamp', key: 'timestamp' },
+      { title: 'asset_category', dataIndex: 'asset_category', key: 'asset_category' },
+      {title: 'asset_detail_status',key: 'asset_detail_status',dataIndex:'asset_detail_status'},
+      { title: 'assign_status', dataIndex: 'assign_status', key: 'assign_status' },
+      { title: 'created_at', dataIndex: 'created_at',key: 'created_at',},
+      {title: 'product_name',dataIndex: 'product_name',key: 'product_name',},
+      {title: 'updated_at',dataIndex: 'updated_at',key: 'updated_at',},
+      { title: 'date_of_purchase', dataIndex: 'date_of_purchase', key: 'date_of_purchase', },
+      {title: 'model_number',dataIndex: 'model_number', key: 'model_number',},
+      { title: 'updated_at', dataIndex: 'updated_at', key: 'updated_at',},
+    ];
+
+    const logsDataExpanded = [];
+    for (let i = 0; i < logsData.length; ++i) {
+      logsDataExpanded.push({
+        key: i.toString(),
+        timestamp: logsData[i].timestamp,
+        asset_category: logsData[i].asset_log.asset_category,
+        asset_detail_status:logsData[i].asset_log.asset_detail_status,
+        assign_status:logsData[i].asset_log.assign_status,
+        created_at:logsData[i].asset_log.created_at,
+        product_name:logsData[i].asset_log.product_name,
+        updated_at:logsData[i].asset_log.updated_at,
+        date_of_purchase:logsData[i].asset_log.date_of_purchase,
+        // model_number:logsData[i].asset_logs.model_number,
 
 
-const AssetTableOne = ({ showAssignDrawer }) => {
+      });
+    }
+    // return <Table columns={columns} dataSource={logsData}  pagination={false} style={{ maxHeight: 300, overflowY: 'auto', maxWidth: '100%', scrollbarWidth: 'none', msOverflowStyle: 'none' }} />;
+    return <Table columns={columns} dataSource={logsDataExpanded}  pagination={false} style={{ maxHeight: 300, overflowY: 'auto', maxWidth: '100%', scrollbarWidth: 'none', msOverflowStyle: 'none' }} />;
+    
+  };
+
+ const nestedcolumns: TableColumnsType<DataType> = [
+    // { title: 'timestamp', dataIndex: 'timestamp', key: 'timestamp' },
+    // { title: 'Platform', dataIndex: 'platform', key: 'platform' },
+    // { title: 'Version', dataIndex: 'version', key: 'version' },
+    // { title: 'Upgraded', dataIndex: 'upgradeNum', key: 'upgradeNum' },
+    // { title: 'Creator', dataIndex: 'creator', key: 'creator' },
+  ];
+
+  const nesteddata: DataType[] = [];
+  for (let i = 0; i < 1; ++i) {
+    nesteddata.push({
+      key: i.toString(),
+      name: 'Screen',
+      platform: 'iOS',
+      version: '10.3.4.5654',
+      upgradeNum: 500,
+      creator: 'Jack',
+      createdAt: '2014-12-24 23:12:00',
+    });
+  }
+
+  
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [displaydrawer,setDisplayDrawer] = useState(false)
+
   const {
     data: assetData,
     isLoading,
@@ -38,12 +115,36 @@ const AssetTableOne = ({ showAssignDrawer }) => {
     assetData?.data.results.map(
       (item:AssetResult) => item.business_unit.business_unit_name
     ) || [];
-  const locationOptions = assetData?.data.results.map(
-    (item:AssetResult) => item.location.location_name
-  );
+
+    const { data: locationData } = useQuery({
+      queryKey: ['assetDrawerlocation'],
+      queryFn: () => axiosInstance.get('/asset/location').then((res) => res.data.data),
+    });
+    console.log(locationData)
+    
+    const locationFilters = locationData?.map(location => ({
+      text:location.location_name,
+      value: location.location_name
+    })) ?? [];
+    console.log(locationFilters)
   
-  const memoryoptions=assetData?.data.results.map((item)=>item.memory?.memory_space)
-  const assetTypeOptions=assetData?.data.results.map((item)=>item.asset_type?.asset_type_name)
+    const { data: memoryData } = useQuery({
+      queryKey: ['memorySpace'],
+      queryFn: () => axiosInstance.get('/asset/memory_list').then((res) => res.data.data),
+    });
+
+  const { data: assetTypeData } = useQuery({
+    queryKey: ['assetDrawerassetType'],
+    queryFn: () => axiosInstance.get('/asset/asset_type').then((res) => res.data.data),
+  });
+  console.log(assetTypeData)
+  const assetTypeFilters = assetTypeData?.map(assetType => ({
+    text: assetType.asset_type_name,
+    value: assetType.asset_type_name
+  })) ?? [];
+
+  
+
 // if (isLoading) return <div className="spin"> <Spin /></div>;
   // if (isError) return <div>Error fetching data</div>;
   // //  const assetListData = assetData?.data.data.map.map((item:  DataType) => ({
@@ -52,21 +153,8 @@ const AssetTableOne = ({ showAssignDrawer }) => {
   const assetDataList = assetData?.data.results;
   console.log("Testing on 65:", assetDataList ? assetDataList[0].results : []);
 
-  const locations = new Set(); // Use a Set to avoid duplicate locations
-  assetDataList?.forEach((asset) => {
-    locations.add(asset.location.location_name);
-    console.log(
-      "Location Data:",
-      assetData.data.results.map((asset) => asset.location.location_name)
-    );
-  });
 
-  const locationFilters: ColumnFilterItem[] = Array.from(locations).map(
-    (location) => ({
-      text: location as React.ReactNode,
-      value: location,
-    })
-  );
+  
 
   let uniqueAssetCategories = [];
   if (assetData && assetData.data && assetData.data.results) {
@@ -102,6 +190,8 @@ const AssetTableOne = ({ showAssignDrawer }) => {
     );
   };
 
+
+  
   <div>
     <h1>Asset Overview</h1>
   </div>;
@@ -110,7 +200,7 @@ const AssetTableOne = ({ showAssignDrawer }) => {
       title: "Product Name",
       dataIndex: "product_name",
       fixed: "left",
-      width: 150,
+      width: 180,
       filterIcon: <SearchOutlined />,
       filterDropdown: ({
         setSelectedKeys,
@@ -168,7 +258,7 @@ const AssetTableOne = ({ showAssignDrawer }) => {
       title: "Serial Number",
       dataIndex: "serial_number",
       responsive: ["md"],
-      width: 150,
+      width: 180,
       filterIcon: <SearchOutlined />,
       filterDropdown: ({
         setSelectedKeys,
@@ -227,7 +317,7 @@ const AssetTableOne = ({ showAssignDrawer }) => {
     //   dataIndex: "asset_category",
     //   defaultSortOrder: "descend",
     //   responsive: ["md"],
-    //   width: 150,
+    //   width: 170,
     //   filters: filterOptions,
     //   onFilter: (value, record) => {
     //     if (Array.isArray(value)) {
@@ -249,8 +339,8 @@ const AssetTableOne = ({ showAssignDrawer }) => {
       title: "Location",
       dataIndex: "location",
       responsive: ["md"],
-      width: 150,
-      filters: locationFilters,
+      width: 180,
+      filters:locationFilters,
       onFilter: (value, record) => {
         if (Array.isArray(value)) {
           return value.includes(record.location);
@@ -267,7 +357,88 @@ const AssetTableOne = ({ showAssignDrawer }) => {
         </div>
       ),
     },
-    
+    {
+      title: "Custodian",
+      dataIndex: "custodian",
+      responsive: ["md"],
+      fixed: "right",
+      width: 180,
+      filterIcon: <SearchOutlined />,
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            placeholder="Search Custodian"
+            value={selectedKeys[0]}
+            onChange={(e) =>
+              setSelectedKeys(e.target.value ? [e.target.value] : [])
+            }
+            onPressEnter={() => confirm()}
+            style={{ marginBottom: 8, display: "block" }}
+          />
+          <Space>
+            <button
+              type="button"
+              onClick={confirm}
+              style={{ width: 90, fontSize: "16px" }}
+            >
+              Search
+            </button>
+            <button
+              type="button"
+              onClick={clearFilters}
+              style={{ width: 90, fontSize: "16px" }}
+            >
+              Reset
+            </button>
+          </Space>
+        </div>
+      ),
+      onFilter: (value, record) => {
+        if (Array.isArray(value)) {
+          return value.includes(record.custodian);
+        }
+        return record.custodian.indexOf(value.toString()) === 0;
+      },
+      render: (_, record) => (
+        <div
+          data-column-name="Custodian"
+          onClick={() => handleColumnClick(record, "Custodian")}
+          style={{ cursor: "pointer" }}
+        >
+          {record.custodian}
+        </div>
+      ),
+    },
+    {
+      title: "Asset Type",
+      dataIndex: "asset_type",
+      responsive: ["md"],
+      
+      filters: assetTypeFilters,
+      onFilter: (
+        value: string | number | boolean | React.ReactText[] | Key,
+        record: DataType
+      ) => {
+        if (Array.isArray(value)) {
+          return value.includes(record.asset_type);
+        }
+        return record.asset_type.indexOf(value.toString()) === 0;
+      },
+      render: (_, record) => (
+        <div
+          data-column-name="Asset Type"
+          onClick={() => handleColumnClick(record, "Asset Type")}
+          style={{ cursor: "pointer" }}
+        >
+          {record.asset_type}
+        </div>
+      ),
+    },
     {
       title: "Assign Asset",
       dataIndex: "AssignAsset",
@@ -280,7 +451,7 @@ const AssetTableOne = ({ showAssignDrawer }) => {
             background: "#D3D3D3",
             color: "black",
           }}
-          onClick={() =>showAssignDrawer(record)}
+          onClick={() =>{if(record.custodian === null || record.custodian === undefined)showAssignDrawer(record); else alert("asset is already assigned ")}}
         >
           +
         </Button>
@@ -288,6 +459,7 @@ const AssetTableOne = ({ showAssignDrawer }) => {
     },
   ];
 
+  
   const handleColumnClick = (record: string[], columnName: string) => {
     if (columnName !== "Assign Asset") {
       handleOtherColumnClick(record);
@@ -1048,7 +1220,7 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
   return (
     <>
       <div className="mainHeading">
-        <h1>Assign Asset</h1>
+        <h1>Asset Details</h1>
       </div>
 
       <div style={{ position: 'relative', display: 'inline-block' }}>
@@ -1066,7 +1238,17 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
       boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
       fontSize: "50px",
     }}
+
+    nestedcolumns={nestedcolumns}
+    expandable={{ expandedRowRender, defaultExpandedRowKeys: ['0'] }}
+    nesteddataSource={nesteddata}
   />
+     {/* <Table
+        columns={nestedcolumns}
+        expandable={{ expandedRowRender, defaultExpandedRowKeys: ['0'] }}
+        dataSource={nesteddata}
+      /> */}
+   
   {/* <a
      href="../../AssetDetailView/AssetDetailView"
     style={{
@@ -1101,9 +1283,9 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
             data={selectedRow}
             statusOptions={statusOptions}
             businessUnitOptions={businessUnitOptions}
-            locationOptions={locationOptions}
-            memoryoptions={memoryoptions}
-            assetTypeOptions={assetTypeOptions}
+            locationData={locationData}
+            memoryData={memoryData}
+            assetTypeData={assetTypeData}
           />
         )}
         {button && (
