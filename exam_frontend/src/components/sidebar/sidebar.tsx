@@ -9,6 +9,7 @@ import { IoCodeWorking } from 'react-icons/io5';
 import { BsX ,BsChevronDoubleRight} from 'react-icons/bs';
 import styles from './sidebar.module.css';
 import { ExamSidebarProps } from './types';
+import { Link } from 'react-router-dom';
 
 
 const ExamSidebar: React.FC<ExamSidebarProps> = ({ isSidebarVisible, isClicked, openSidebar, closeSidebar ,addAsset }) => {
@@ -39,6 +40,9 @@ const ExamSidebar: React.FC<ExamSidebarProps> = ({ isSidebarVisible, isClicked, 
                   </div>
                   <Sidebar.Item icon={HiViewBoards} className={styles['scaleup']}>Dashboard</Sidebar.Item>
                   <Sidebar.Item icon={FaDesktop} className={styles['scaleup']} onClick={addAsset} >Add Asset</Sidebar.Item>
+                  <Link to="/assignable_asset">
+                    <Sidebar.Item icon={FaDesktop} className={styles['scaleup']}>Assignable Assets</Sidebar.Item>
+                  </Link>
                 </Sidebar.ItemGroup>
 
                 <Sidebar.ItemGroup>

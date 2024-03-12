@@ -5,7 +5,7 @@ import NavbarSidebarLayout from "../layouts/navbar-sidebar";
 import AddAsset from "../components/AddAsset/AddAsset";
 import AssetTable from '../components/AssetTable/AssetTable'
 import { Statistics } from "../components/Charts/Statistics";
-
+import { RecordProps } from "./types";
 import SideDrawerComponent from "../components/SideDrawerComponent/SideDrawerComponent";
 import { SidebarHandler } from "../components/sidebar/SidebarHandler";
 import AssignmentDrawer from "../components/Assign/AssignmentDrawer";
@@ -18,15 +18,27 @@ import UploadComponent from "../components/Upload/UploadComponent";
 
 
 const DashboardPage: FC = function () {
-const [displaydrawer,setDisplayDrawer] = useState(false)
-
-
-  const showDefaultDrawer =()=>{
-    setDisplayDrawer(true)
+  const [displaydrawer,setDisplayDrawer] = useState(false)
+  const [isAssign,setIsAssign] = useState(false)
+  const [record,setRecord] = useState<RecordProps>()
+  
+    const showDefaultDrawer =()=>{
+      setDisplayDrawer(true)
+      console.log("displaydrawer value is ",displaydrawer)
+    }
+   const closeDrawer = ()=> {
+    setDisplayDrawer(false)
+    console.log("displaydrwer value is " ,displaydrawer)
+   }
+  
+   const showAssignDrawer =(record:RecordProps)=>{
+    console.log("uuid",record)
+    setRecord(record)
+    setIsAssign(true)
     console.log("displaydrawer value is ",displaydrawer)
   }
- const closeDrawer = ()=> {
-  setDisplayDrawer(false)
+  const closeAssignDrawer = ()=> {
+  setIsAssign(false)
   console.log("displaydrwer value is " ,displaydrawer)
  }
 
@@ -42,7 +54,7 @@ const closeImportDrawer = ()=> {
 
 
   return (
-    <QueryClientProvider client={new QueryClient()}>
+   
       <NavbarSidebarLayout>
         <div>
           <SidebarHandler addAsset={showDefaultDrawer} />
@@ -78,7 +90,7 @@ const closeImportDrawer = ()=> {
           </div>
         </div>
       </NavbarSidebarLayout>
-    </QueryClientProvider>   
+    
   );
 };
 
