@@ -1,0 +1,156 @@
+import { Layout, Menu, theme } from "antd";
+import {
+  AppstoreAddOutlined,
+  DashboardOutlined,
+  MailOutlined,
+  PieChartOutlined,
+  SelectOutlined,
+  UploadOutlined,
+  UserOutlined,
+  UserSwitchOutlined,
+  VideoCameraOutlined,
+} from "@ant-design/icons";
+import React, { useState } from "react";
+import ExampleNavbar from "../Navbar/navbar";
+
+import type { FC } from "react";
+import { Button, DarkThemeToggle, Navbar } from "flowbite-react";
+import { FaBell } from "react-icons/fa";
+import styles from "../Navbar/navbar.module.css";
+import AccountMenu from "../notificationMenuItem";
+import MenuListComposition from "../menuItem";
+import SideDrawerComponent from "../SideDrawerComponent/SideDrawerComponent";
+import AddAsset from "../AddAsset/AddAsset";
+import { Link } from "react-router-dom";
+
+const SidebarComponentNew = ({ children }) => {
+  // const { addAssetState, setAddAssetState } = useMyContext();
+  const [displaydrawer, setDisplayDrawer] = useState(false);
+  const closeDrawer = () => {
+    setDisplayDrawer(false);
+    console.log("displaydrwer value is ", displaydrawer);
+  };
+  const showDefaultDrawer = () => {
+    setDisplayDrawer(true);
+    console.log("displaydrawer value is ", displaydrawer);
+  };
+
+  const { Header, Content, Footer, Sider } = Layout;
+  const items = [
+    UserOutlined,
+    VideoCameraOutlined,
+    UploadOutlined,
+    UserOutlined,
+  ].map((icon, index) => ({
+    key: String(index + 1),
+    icon: React.createElement(icon),
+    label: `nav ${index + 1}`,
+  }));
+
+  return (
+    <Layout>
+      <Header
+        style={{
+          backgroundColor: "white",
+          zIndex: 110,
+          position: "sticky",
+          left: 0,
+          top: 0,
+          bottom: 0,
+        }}
+      >
+        {/* <ExampleNavbar /> */}
+
+        <div className="w-full p-3 lg:px-5 lg:pl-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              {/* <Navbar.Brand href="/"> */}
+
+              <span className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white">
+                <img
+                  src="../../public/images/logo.png"
+                  alt="Logo"
+                  className="mr-3 h-6 sm:h-8"
+                />
+              </span>
+              {/* </Navbar.Brand> */}
+            </div>
+            <div className="flex items-center gap-3">
+              <div
+                className={`flex items-center gap-3 ${styles["button-components"]}`}
+              >
+                <AccountMenu></AccountMenu>
+                {/*             
+              <Button>
+                <FaBell />
+              </Button> */}
+
+                {/* <DarkThemeToggle /> */}
+                <MenuListComposition />
+              </div>
+            </div>
+          </div>
+        </div>
+      </Header>
+      <Layout>
+        <Sider
+          theme="light"
+          style={{
+            // overflow: "auto",
+            zIndex: 100,
+            height: "100vh",
+            position: "sticky",
+            left: 0,
+            top: 0,
+            bottom: 0,
+            paddingTop: 100,
+          }}
+          breakpoint="lg"
+          collapsedWidth="0"
+          onBreakpoint={(broken) => {
+            console.log(broken);
+          }}
+          onCollapse={(collapsed, type) => {
+            console.log(collapsed, type);
+          }}
+        >
+          <div className="demo-logo-vertical" />
+          {/* <Menu
+            theme="light"
+            mode="inline"
+            defaultSelectedKeys={["4"]}
+            items={items}
+          /> */}
+          <Menu theme="light" mode="inline">
+            <Menu.Item icon={<PieChartOutlined />}>
+              <Link to="/exam/dashboard">Dashboard</Link>
+            </Menu.Item>
+            <Menu.Item
+              onClick={() => showDefaultDrawer()}
+              icon={<AppstoreAddOutlined />}
+            >
+              Add An Asset
+            </Menu.Item>
+            <Menu.Item icon={<SelectOutlined />}>
+              <Link to="/exam/requests">Pending Approvals</Link>
+            </Menu.Item>
+            <Menu.Item icon={<UserSwitchOutlined />}>
+              <Link to="/exam/requests">Pending Assignments</Link>
+            </Menu.Item>
+          </Menu>
+        </Sider>
+        <Content>
+          {children}
+          <SideDrawerComponent
+            displayDrawer={displaydrawer}
+            closeDrawer={closeDrawer}
+          >
+            <AddAsset />
+          </SideDrawerComponent>
+        </Content>
+      </Layout>
+    </Layout>
+  );
+};
+
+export default SidebarComponentNew;

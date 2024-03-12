@@ -11,6 +11,7 @@ import {
 import { HiHome, HiPencilAlt } from "react-icons/hi";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
 import axiosInstance from '../../config/AxiosConfig';
+import React from 'react';
 
 const RequestPage: FC = function () {
   const [assets, setAssets] = useState<any[]>([]);
@@ -62,7 +63,8 @@ const RequestPage: FC = function () {
   };
 
   return (
-    <NavbarSidebarLayout isFooter={true}>
+    <React.Fragment>
+    {/* <NavbarSidebarLayout isFooter={true}> */}
       <div className="block items-center justify-between border-b border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 sm:flex">
         <div className="mb-1 w-full">
           <div className="mb-4">
@@ -98,7 +100,8 @@ const RequestPage: FC = function () {
       {selectedAsset && (
         <ViewRequestModal asset={selectedAsset} handleApprove={handleApprove} handleReject={handleReject} onClose={() => setSelectedAsset(null)} />
       )}
-    </NavbarSidebarLayout>
+    {/* </NavbarSidebarLayout> */}
+    </React.Fragment>
   );
 };
 
