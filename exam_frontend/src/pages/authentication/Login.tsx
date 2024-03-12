@@ -45,36 +45,6 @@ export default function Login() {
     }
   };
 
-  useEffect(() => {
-    const refreshToken = localStorage.getItem('refresh_token');
-    if (refreshToken) {
-      const fetchNewAccessToken = async () => {
-        try {
-          const response = await axios.post('/refresh_token', { refresh_token: refreshToken });
-          localStorage.setItem('jwt', response.data.access_token);
-        } catch (error) {
-          // Handle refresh token expiration or other errors
-          console.log('Error refreshing access token:', error);
-          // Redirect to login page if refresh token is expired or invalid
-          navigate('/login');
-        }
-      };
-  
-      // Check if access token is expired (example assumes access token is JWT)
-      const accessToken = localStorage.getItem('jwt');
-      if (accessToken) {
-        const decodedToken = JSON.parse(atob(accessToken.split('.')[1]));
-        const expirationTime = decodedToken.exp * 1000; // Convert expiration time to milliseconds
-        const currentTime = Date.now();
-        if (currentTime >= expirationTime) {
-          // Access token is expired, fetch new access token using refresh token
-          fetchNewAccessToken();
-        }
-      }
-    }
-  }, []);
-  
-
   return (
     <div className="flex flex-col items-center justify-center px-6 lg:h-screen lg:gap-y-12">
       <div className="my-6 flex items-center gap-x-1 lg:my-0">

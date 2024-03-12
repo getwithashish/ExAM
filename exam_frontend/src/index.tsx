@@ -7,10 +7,11 @@ import { Flowbite } from "flowbite-react";
 import { Routes, Route } from "react-router";
 import { BrowserRouter } from "react-router-dom";
 import DashboardPage from "./pages";
-import SignInPage from "./pages/authentication/Login";
-import SignUpPage from "./pages/authentication/sign-up";
-import EcommerceProductsPage from "./pages/e-commerce/products";
-import UserListPage from "./pages/users/list";
+import Login from "./pages/authentication/Login";
+import Logout from "./pages/authentication/Logout";
+import RequestPage from "./pages/RequestPage/Requests";
+// import UserListPage from "./pages/users/list";
+
 
 const container = document.getElementById("root");
 
@@ -25,14 +26,14 @@ root.render(
     <Flowbite theme={{ theme }}>
       <BrowserRouter>
         <Routes>
-          <Route path="/login" element={<SignInPage />} />
+          <Route path="/" element={<Login />} />
           <Route path="/dashboard" element={<DashboardPage />} index />         
-          <Route path="/authentication/sign-up" element={<SignUpPage />} />
+          <Route path="/logout" element={<Logout />} />
           <Route
-            path="/e-commerce/products"
-            element={<EcommerceProductsPage />}
+            path="/dashboard/requests"
+            element={<RequestPage />}
           />
-          <Route path="/users/list" element={<UserListPage />} />
+          {/* <Route path="/users/list" element={<UserListPage />} /> */}
         </Routes>
       </BrowserRouter>
     </Flowbite>
