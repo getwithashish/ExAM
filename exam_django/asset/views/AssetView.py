@@ -132,7 +132,7 @@ def log_asset_changes(sender, instance, **kwargs):
         or instance.asset_detail_status == "UPDATE_REJECTED"
     ):
         changes = {
-            field: (getattr(instance, field))
+            field: getattr(instance, field)
             for field in old_instance
             if field != "asset_uuid"
         }
