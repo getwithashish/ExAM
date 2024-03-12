@@ -2,6 +2,15 @@ import React from 'react';
 import axios from 'axios';
 
 const ExportButton = () => {
+  const buttonStyle = {
+    padding: '10px 20px',
+    backgroundColor: '#007bff',
+    color: 'white',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    
+  };
   const handleExport = () => {
   
   axios.get('http://localhost:8000/api/v1/asset/export')
@@ -32,7 +41,7 @@ const ExportButton = () => {
 
   return (
     
-    <button onClick={handleExport}>Export Assets</button>
+    <button style={buttonStyle} onClick={handleExport}>Export Assets</button>
   );
 }
 

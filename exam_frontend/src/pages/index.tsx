@@ -42,7 +42,7 @@ const DashboardPage: FC = function () {
       <NavbarSidebarLayout>
         <div>
           <SidebarHandler addAsset={showDefaultDrawer} />
-            {/* <Statistics />         */}
+            <Statistics />        
                 
         <AssignmentDrawer buttonTextDefault="Assign" displayDrawer={displaydrawer} >
           {/* <Assignment /> */}

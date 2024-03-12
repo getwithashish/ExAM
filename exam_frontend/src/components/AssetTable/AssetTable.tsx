@@ -14,6 +14,7 @@ import {FilterDropdownProps} from "../AssetTable/types";
 import { useInfiniteQuery } from 'react-query';
 
 import { DownOutlined } from '@ant-design/icons';
+import ExportButton from "../Export/Export";
 
 interface ExpandedDataType {
   key: React.Key;
@@ -1222,7 +1223,7 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
       <div className="mainHeading">
         <h1>Asset Details</h1>
       </div>
-
+      <ExportButton />
       <div style={{ position: 'relative', display: 'inline-block' }}>
   <Table
     assetdetails={assetdetails}
@@ -1235,7 +1236,7 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
     style={{
       borderRadius: 10,
       padding: 20,
-      boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+      // boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
       fontSize: "50px",
     }}
 
