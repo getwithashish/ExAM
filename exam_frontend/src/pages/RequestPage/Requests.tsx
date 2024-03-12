@@ -169,7 +169,16 @@ const ViewRequest: FC<{ asset: any }> = function ({ asset }) {
                   className="mt-1"
                 />
               </div>
-              {/* Add similar fields for other asset details */}
+              <div className="lg:col-span-2">
+                <Label htmlFor="approverNotes">APPROVER NOTES</Label>
+                <Textarea
+                  id="approverNotes"
+                  name="approverNotes"
+                  rows={1}
+                  className="mt-1"
+                />
+              </div>
+
             </div>
           </form>
         </Modal.Body>
@@ -187,13 +196,11 @@ const ViewRequest: FC<{ asset: any }> = function ({ asset }) {
 };
 
 const RequestTable: FC = function () {  
-  const [assets, setAssets] = useState<any[]>([]); // State to store fetched assets
+  const [assets, setAssets] = useState<any[]>([]);
 
   useEffect(() => {
-    // Fetch assets from the API
     axiosInstance.get('/asset/')
       .then(response => {
-        // Update the state with the fetched assets
         setAssets(response.data.data.results);
       })
       .catch(error => {
