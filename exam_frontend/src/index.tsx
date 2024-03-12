@@ -8,7 +8,7 @@ import { Routes, Route } from "react-router";
 import { BrowserRouter } from "react-router-dom";
 import DashboardPage from "./pages";
 import SignInPage from "./pages/authentication/Login";
-import SignUpPage from "./pages/authentication/sign-up";
+import SignUpPage from "./pages/authentication/Logout";
 import EcommerceProductsPage from "./pages/e-commerce/products";
 import UserListPage from "./pages/users/list";
 import AssetTableOne from "./components/AssetTable/AssetTableOne";

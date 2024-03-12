@@ -24,7 +24,6 @@ class AssetTypeView(ListCreateAPIView):
             return super().get_permissions()
 
     def post(self, request, format=None):
-        # queryset = AssetType.objects.all()
         serializer = AssetTypeSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -43,10 +42,8 @@ class AssetTypeView(ListCreateAPIView):
         try:
             queryset = AssetType.objects.all()
 
-            # Retrieve query parameters
             search_query = request.GET.get("query", None)
 
-            # Filter queryset based on search query
             if search_query:
                 queryset = queryset.filter(asset_type_name__istartswith=search_query)
 
