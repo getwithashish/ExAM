@@ -1,13 +1,13 @@
 import csv
 from asset.models import (
     Asset,
-    User,
     AssetType,
     BusinessUnit,
     Employee,
     Location,
     Memory,
 )
+from user_auth.models import User
 
 
 def parse_and_add_assets(file_content):

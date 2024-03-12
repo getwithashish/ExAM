@@ -2,10 +2,11 @@
 
 import type { FC, PropsWithChildren } from "react";
 import { Footer } from "flowbite-react";
-import { SidebarHandler } from "../components/sidebar/SidebarHandler";
+import { SidebarHandler } from "../components/Sidebar/SidebarHandler";
 import Navbar from "../components/Navbar/navbar";
 import { MdFacebook } from "react-icons/md";
 import { FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
+import ExportButton from "../components/Export/Export";
 
 interface NavbarSidebarLayoutProps {
   isFooter?: boolean;
@@ -17,7 +18,7 @@ const NavbarSidebarLayout: FC<PropsWithChildren<NavbarSidebarLayoutProps>> =
       <>
         <Navbar />
         <div className="flex items-start pt-16 bg-white">
-          {/* <SidebarHandler /> */}
+          {/* <SidebarHandler /> */} <ExportButton />
           <MainContent isFooter={isFooter}>{children}</MainContent>
         </div>
       </>

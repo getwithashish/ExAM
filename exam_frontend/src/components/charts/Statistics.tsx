@@ -1,5 +1,5 @@
 import Carousel from './carousel';
-import PieChartGraph from './PieChartGraph';
+import { PieChartGraph } from './PieChartGraph';
 
 export const Statistics = () => {
   const items = [
@@ -8,14 +8,11 @@ export const Statistics = () => {
         <div className="mb-3 flex items-center justify-between">
           <div className="shrink-0">
             <span className="text-2xl font-bold leading-none text-gray-900 dark:text-white sm:text-3xl">
-              Hardware Asset Overview
+              Asset Status Overview
             </span>
-            <h3 className="text-base font-normal text-gray-600 dark:text-gray-400">
-              Status wise Report
-            </h3>
           </div>
         </div>
-        <PieChartGraph type="hardware" />
+        <PieChartGraph selectedAssetType="someValue" type="asset" />
       </div>
     </div>,
     <div>
@@ -30,11 +27,10 @@ export const Statistics = () => {
             </h3>
           </div>
         </div>
-        <PieChartGraph type="software" />
+        {/* <PieChartGraph type="software" /> */}
       </div>
     </div>
   ];
-
   return (
     <Carousel items={items} />
   );
