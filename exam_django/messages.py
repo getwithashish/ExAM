@@ -24,6 +24,7 @@ EMPLOYEE_NOT_FOUND_ERROR = "Employee is not found in the request. Please try aga
 EMPLOYEE_CREATION_UNSUCCESSFUL = (
     "Error while creating an employee.Please try again later."
 )
+EMPLOYEE_SUCCESSFULLY_CREATED = "Employee successfully created"
 
 # User Success Messages
 USER_FOUND_SUCCESS = "User found. Success."
@@ -146,7 +147,7 @@ LOCATION_CREATED_SUCCESSFULLY = "Location inserted successfully"
 LOCATION_CREATION_FAILED = "Duplicate value cannot be inserted "
 
 
-)
+
 FILE_NOT_FOUND = "File is not found"
 FILE_FOUND = "File found"
 # Parse messages
