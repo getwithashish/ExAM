@@ -19,6 +19,11 @@ EMPLOYEE_NOT_FOUND_ERROR = "Employee is not found in the request. Please try aga
 EMPLOYEE_CREATION_UNSUCCESSFUL = (
     "Error while creating an employee.Please try again later."
 )
+USER_UNAUTHORIZED = "User does not have permission to perform this action"
+EMPLOYEE_NOT_FOUND_ERROR = "Employee is not found in the request. Please try again."
+EMPLOYEE_CREATION_UNSUCCESSFUL = (
+    "Error while creating an employee.Please try again later."
+)
 
 # User Success Messages
 USER_FOUND_SUCCESS = "User found. Success."
@@ -47,15 +52,33 @@ ASSET_COUNT_RETRIEVAL_UNSUCCESSFUL = (
 )
 ASSET_ASSIGNMENT_FAILED = "Failed to assign asset. Please try again."
 
+# Asset Success Messages
+ASSET_LIST_SUCCESSFULLY_RETRIEVED = "Asset list is successfully retreived."
+ASSET_COUNT_RETRIEVAL_UNSUCCESSFUL = (
+    "Asset count failed to be retrieved. Please try again."
+)
+ASSET_ASSIGNMENT_FAILED = "Failed to assign asset. Please try again."
+
 
 # Asset Success Messages
 ASSET_LIST_SUCCESSFULLY_RETRIEVED = "Asset list is successfully retreived."
 ASSET_SUCCESSFULLY_CREATED = "Asset successfully created."
 ASSET_SUCCESSFULLY_UPDATED = "Asset details successfully updated."
 ASSET_SUCCESSFULLY_ASSIGNED = "Asset assigned successfully."
+ASSET_SUCCESSFULLY_UNASSIGNED = "Asset unassigned successfully."
 ASSET_COUNT_SUCCESSFULLY_RETRIEVED = "Asset count is successfully retreived."
 ASSET_CREATE_PENDING_SUCCESSFUL = "Asset Creation successfully added to pending state. Approval required to complete Asset Creation."
 ASSET_UPDATE_PENDING_SUCCESSFUL = "Asset Updation successfully added to pending state. Approval required to complete Asset Updation."
+
+# Approval Exception Messages
+APPROVAL_TYPE_NOT_FOUND = (
+    "Specified approval type is not valid. Try with correct value."
+)
+CANNOT_APPROVE_ACKNOWLEDGED_ASSET = "Cannot Approve already acknowledged asset."
+CANNOT_ASSIGN_UNAPPROVED_ASSET = "Cannot assign asset which is not approved."
+
+# Approval Success Messages
+
 
 # Asset Type Exception Messages
 INVALID_ASSET_TYPE = "The given asset type is invalid."

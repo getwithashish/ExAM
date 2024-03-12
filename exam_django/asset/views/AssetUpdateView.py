@@ -109,6 +109,7 @@ class AssetUpdateView(APIView):
                         status=status.HTTP_406_NOT_ACCEPTABLE,
                     )
 
+                # Renamed conceder to approved_by in Asset Model. Still, this somehow works. So, not changing
                 serializer.validated_data["conceder"] = request.user
 
             else:
