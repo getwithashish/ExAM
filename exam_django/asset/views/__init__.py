@@ -13,6 +13,7 @@ from .AssignAssetView import AssignAssetView
 from .AssetLogView import AssetLogView
 from .DataImportView import DataImportView
 
+from .AssetExportView import AssetExportView
 __all__ = [
     "AssetView",
     "AssetUpdateView",
@@ -27,4 +28,5 @@ __all__ = [
     "AssetSearchWithFilterView",
     "AssetLogView",
     "DataImportView",
+    "AssetExportView"
 ]
