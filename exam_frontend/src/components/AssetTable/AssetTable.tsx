@@ -150,7 +150,7 @@ const AssetTable = () => {
   // //   value: item.asset_type
   // // }));
   const assetDataList = assetData?.data.results;
-  console.log("Testing on 65:", assetDataList ? assetDataList[0].results : []);
+  // console.log("Testing on 65:", assetDataList ? assetDataList[0].results : []);
 
 
   
