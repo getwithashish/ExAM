@@ -10,28 +10,35 @@ from response import APIResponse
 from messages import (
     LOCATION_RETRIEVED_SUCCESSFULLY,
     LOCATION_CREATED_SUCCESSFULLY,
-    LOCATION_RETRIEVAL_FAILED,
-    GLOBAL_500_EXCEPTION_ERROR
+    GLOBAL_500_EXCEPTION_ERROR,
+    LOCATION_CREATION_FAILED,
 )
 
 
 class LocationView(ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
+    serializer_class = LocationSerializer  # Define the serializer_class attribute
 
     def post(self, request):
-        serializer = LocationSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
+        try:
+            serializer = LocationSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return APIResponse(
+                    data=[],
+                    message=LOCATION_CREATED_SUCCESSFULLY,
+                    status=status.HTTP_200_OK,
+                )
             return APIResponse(
                 data=[],
-                message=LOCATION_CREATED_SUCCESSFULLY,
-                status=status.HTTP_200_OK,
+                message=LOCATION_CREATION_FAILED,
+                status=status.HTTP_400_BAD_REQUEST,
             )
-        return APIResponse(
-            data=[],
-            message=LOCATION_RETRIEVAL_FAILED,
-            status=status.HTTP_400,
-        )
+        except Exception:
+            return APIResponse(
+                message=GLOBAL_500_EXCEPTION_ERROR,
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
     def get(self, request):
         try:
@@ -58,7 +65,7 @@ class LocationView(ListCreateAPIView):
             )
 
         except Exception:
-           return APIResponse(
+            return APIResponse(
                 message=GLOBAL_500_EXCEPTION_ERROR,
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )

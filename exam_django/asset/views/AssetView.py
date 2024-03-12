@@ -12,10 +12,12 @@ import json
 
 from response import APIResponse
 from messages import (
+    ASSET_CREATE_PENDING_SUCCESSFUL,
     ASSET_CREATED_UNSUCCESSFUL,
     ASSET_LIST_RETRIEVAL_UNSUCCESSFUL,
     ASSET_LIST_SUCCESSFULLY_RETRIEVED,
     ASSET_SUCCESSFULLY_CREATED,
+    USER_UNAUTHORIZED,
 )
 
 
@@ -23,16 +25,40 @@ class AssetView(ListCreateAPIView):
 
     pagination_class = LimitOffsetPagination
     permission_classes = (IsAuthenticated,)
+    serializer_class = AssetWriteSerializer
 
-    def post(self, request, format=None):
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return AssetReadSerializer  # For read operation
+        return self.serializer_class
+
+    def post(self, request):
         serializer = AssetWriteSerializer(data=request.data)
+
         if serializer.is_valid():
-            requester = request.user
-            serializer.validated_data["requester"] = requester
+            user_scope = request.user.user_scope
+
+            if user_scope == "SYSTEM_ADMIN":
+                serializer.validated_data["asset_detail_status"] = "CREATE_PENDING"
+                message = ASSET_CREATE_PENDING_SUCCESSFUL
+
+            elif user_scope == "LEAD":
+                serializer.validated_data["approved_by"] = request.user
+                serializer.validated_data["asset_detail_status"] = "CREATED"
+                message = ASSET_SUCCESSFULLY_CREATED
+
+            else:
+                return APIResponse(
+                    data={},
+                    message=USER_UNAUTHORIZED,
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
+
+            serializer.validated_data["requester"] = request.user
             serializer.save()
             return APIResponse(
                 data=serializer.data,
-                message=ASSET_SUCCESSFULLY_CREATED,
+                message=message,
                 status=status.HTTP_201_CREATED,
             )
         return APIResponse(
@@ -48,15 +74,23 @@ class AssetView(ListCreateAPIView):
             limit = request.query_params.get("limit")
             offset = request.query_params.get("offset")
 
+            query_params = request.query_params
+            query_params_to_exclude = ["limit", "offset"]
+            required_query_params = self.remove_fields_from_dict(
+                query_params, query_params_to_exclude
+            )
+
             if limit:
                 self.pagination_class.default_limit = limit
             if offset:
                 self.pagination_class.default_offset = offset
 
+            if required_query_params:
+                queryset = queryset.filter(**required_query_params)
+
             # Applying pagination
             page = self.paginate_queryset(queryset)
 
-            # TODO Wrap in custom response format
             if page is not None:
                 serializer = AssetReadSerializer(page, many=True)
                 paginated_data = self.get_paginated_response(serializer.data)
@@ -72,12 +106,19 @@ class AssetView(ListCreateAPIView):
                 message=ASSET_LIST_SUCCESSFULLY_RETRIEVED,
                 status=status.HTTP_200_CREATED,
             )
-        except Exception as e:
+        except Exception:
             return APIResponse(
                 data=serializer.errors,
                 message=ASSET_LIST_RETRIEVAL_UNSUCCESSFUL,
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+    def remove_fields_from_dict(self, input_dict, fields_to_remove):
+        return {
+            key: value
+            for key, value in input_dict.items()
+            if key not in fields_to_remove
+        }
 
 
 @receiver(pre_save, sender=Asset)
@@ -85,7 +126,10 @@ def log_asset_changes(sender, instance, **kwargs):
     old_instance = Asset.objects.filter(pk=instance.pk).values().first()
     if (
         old_instance
-        and (instance.approval_status == "APPROVED" or instance.approval_status == "REJECTED")
+        and instance.asset_detail_status == "CREATED"
+        or instance.asset_detail_status == "UPDATED"
+        or instance.asset_detail_status == "CREATE_REJECTED"
+        or instance.asset_detail_status == "UPDATE_REJECTED"
     ):
         changes = {
             field: getattr(instance, field)

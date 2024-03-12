@@ -9,15 +9,15 @@ const CardComponent: React.FC<CardType> = ({
   onUpdate,
   statusOptions,
   businessUnitOptions,
-  locationOptions,
-  memoryoptions,
-  assetTypeOptions,
+  locationData,
+  memoryData,
+  assetTypeData
 }) => {
   const uniqueStatusOptions = Array.from(new Set(statusOptions));
   const uniqueBusinessOptions = Array.from(new Set(businessUnitOptions));
-  const uniqueLocationoptions = Array.from(new Set(locationOptions));
-  const uniqueMemoryOptions = Array.from(new Set(memoryoptions));
-  const uniqueAssetTypeOptions = Array.from(new Set(assetTypeOptions));
+  const uniqueLocationoptions = Array.from(new Set(locationData));
+  const uniqueMemoryOptions = Array.from(new Set(memoryData));
+  const uniqueAssetTypeOptions = Array.from(new Set(assetTypeData));
   const [editedData, setEditedData] = useState(data);
 
   const handleChange = (newValue: string) => {
@@ -71,6 +71,25 @@ const CardComponent: React.FC<CardType> = ({
   >
     ...
   </ConfigProvider>;
+  function formatDate(dateString: string | number | Date) {
+    if (!dateString) return ''; 
+    const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+      return ''; 
+    }
+    return date.toLocaleString();
+  }
+  
+  
+  function formatDate(dateString: string | number | Date) {
+    if (!dateString) return ''; 
+    const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+      return ''; 
+    }
+    return date.toLocaleString();
+  }
+  
   
   return (
     <Card
@@ -97,13 +116,13 @@ const CardComponent: React.FC<CardType> = ({
           style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
         >
           <Select
-            defaultValue={uniqueAssetTypeOptions[0]}
+            defaultValue={data.asset_type}
             style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
             onChange={(value) => handleChange(value)} // Adjusted to accept only one argument
           >
             {uniqueAssetTypeOptions.map((asset_type, index) => (
-              <Select.Option key={index} value={asset_type}>
-                {asset_type}
+              <Select.Option key={index} value={asset_type.id}>
+                {asset_type.asset_type_name}
               </Select.Option>
             ))}
           </Select>
@@ -148,13 +167,13 @@ const CardComponent: React.FC<CardType> = ({
           style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
         >
           <Select
-            defaultValue={uniqueLocationoptions[0]}
+            defaultValue={data.location}
             style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
             onChange={(value) => handleChange(value)} // Pass only the value
           >
             {uniqueLocationoptions.map((location, index) => (
-              <Select.Option key={index} value={location}>
-                {location}
+              <Select.Option key={index} value={location.id}>
+                {location.location_name}
               </Select.Option>
             ))}
           </Select>
@@ -168,7 +187,7 @@ const CardComponent: React.FC<CardType> = ({
           style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
         >
           <Select
-            defaultValue={uniqueLocationoptions[0]}
+            defaultValue={data.invoice_location}
             style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
             onChange={(value) => handleChange(value)} // Pass only the value
           >
@@ -270,7 +289,7 @@ const CardComponent: React.FC<CardType> = ({
         <Form.Item name="date of purchase">
           {" "}
           <Input
-            defaultValue={data.date_of_purchase.toString()}
+            defaultValue={formatDate(data.date_of_purchase.toString())}
             onChange={handleInputChange}
             style={inputStyle}
           />{" "}
@@ -343,13 +362,13 @@ const CardComponent: React.FC<CardType> = ({
           style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
         >
           <Select
-            defaultValue={uniqueMemoryOptions[0]}
+            defaultValue={data.memory}
             style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
             onChange={(value) => handleChange(value)} // Pass only the value
           >
             {uniqueMemoryOptions.map((memory, index) => (
-              <Select.Option key={index} value={memory}>
-                {memory}
+              <Select.Option key={index} value={memory.id}>
+                {memory.memory_space}
               </Select.Option>
             ))}
           </Select>
@@ -411,7 +430,32 @@ const CardComponent: React.FC<CardType> = ({
           />{" "}
         </Form.Item>
       </Card.Grid>
+
       <Card.Grid style={gridStyle}>
+  <b>Created At: </b>
+  <Form.Item name="configuration">
+    {" "}
+    <Input
+      defaultValue={formatDate(data.created_at)}
+      onChange={handleInputChange}
+      style={inputStyle}
+    />{" "}
+  </Form.Item>
+</Card.Grid>
+<Card.Grid style={gridStyle}>
+  <b>Updated At: </b>
+  <Form.Item name="configuration">
+    {" "}
+    <Input
+      defaultValue={formatDate(data.updated_at)}
+      onChange={handleInputChange}
+      style={inputStyle}
+    />{" "}
+  </Form.Item>
+</Card.Grid>
+
+
+      {/* <Card.Grid style={gridStyle}>
         <b>Created At: </b>
         <Form.Item name="configuration">
           {" "}
@@ -432,7 +476,7 @@ const CardComponent: React.FC<CardType> = ({
             style={inputStyle}
           />{" "}
         </Form.Item>
-      </Card.Grid>
+      </Card.Grid> */}
 
       {/* Add more card details as needed */}
       <Button
@@ -451,3 +495,8 @@ const CardComponent: React.FC<CardType> = ({
   );
 };
 export default CardComponent;
+
+
+
+
+
