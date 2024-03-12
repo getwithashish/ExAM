@@ -13,6 +13,7 @@
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "moduleResolution": "node",
     "noEmit": true,
+    "module": "commonjs",
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
     "noPropertyAccessFromIndexSignature": true,
@@ -24,7 +25,7 @@
     "sourceMap": true,
     "strict": true,
     "target": "ESNext",
-    "types": ["vite/client"]
+    "types": ["vite/client","@types/jwt-decode"]
   },
   "exclude": ["node_modules"],
   "include": ["**/*.cjs", "**/*.mjs", "**/*.ts", "**/*.tsx"]
