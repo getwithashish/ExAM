@@ -81,6 +81,16 @@ const CardComponent: React.FC<CardType> = ({
   }
   
   
+  function formatDate(dateString: string | number | Date) {
+    if (!dateString) return ''; 
+    const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+      return ''; 
+    }
+    return date.toLocaleString();
+  }
+  
+  
   return (
     <Card
       key={data.asset_id}

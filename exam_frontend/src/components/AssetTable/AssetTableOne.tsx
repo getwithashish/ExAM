@@ -12,7 +12,8 @@ import { ColumnFilterItem } from "../AssetTable/types";
 import { AssetResult } from "../AssetTable/types";
 import {FilterDropdownProps} from "../AssetTable/types";
 import { useInfiniteQuery } from 'react-query';
-const AssetTable = () => {
+
+const AssetTableOne = (assignAsset) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
 
@@ -39,8 +40,8 @@ const AssetTable = () => {
     (item:AssetResult) => item.location.location_name
   );
   
-  const memoryoptions=assetData?.data.results.map((item)=>item.memory.memory_space)
-  const assetTypeOptions=assetData?.data.results.map((item)=>item.asset_type.asset_type_name)
+  const memoryoptions=assetData?.data.results.map((item)=>item.memory?.memory_space)
+  const assetTypeOptions=assetData?.data.results.map((item)=>item.asset_type?.asset_type_name)
 // if (isLoading) return <div className="spin"> <Spin /></div>;
   // if (isError) return <div>Error fetching data</div>;
   // //  const assetListData = assetData?.data.data.map.map((item:  DataType) => ({
@@ -219,29 +220,29 @@ const AssetTable = () => {
         </div>
       ),
     },
-    {
-      title: "Asset Category",
-      dataIndex: "asset_category",
-      defaultSortOrder: "descend",
-      responsive: ["md"],
-      width: 150,
-      filters: filterOptions,
-      onFilter: (value, record) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.asset_category);
-        }
-        return record.asset_category.indexOf(value.toString()) === 0;
-      },
-      render: (_, record) => (
-        <div
-          data-column-name="Asset Category"
-          onClick={() => handleColumnClick(record, "Asset Category")}
-          style={{ cursor: "pointer" }}
-        >
-          {record.asset_category}
-        </div>
-      ),
-    },
+    // {
+    //   title: "Asset Category",
+    //   dataIndex: "asset_category",
+    //   defaultSortOrder: "descend",
+    //   responsive: ["md"],
+    //   width: 150,
+    //   filters: filterOptions,
+    //   onFilter: (value, record) => {
+    //     if (Array.isArray(value)) {
+    //       return value.includes(record.asset_category);
+    //     }
+    //     return record.asset_category.indexOf(value.toString()) === 0;
+    //   },
+    //   render: (_, record) => (
+    //     <div
+    //       data-column-name="Asset Category"
+    //       onClick={() => handleColumnClick(record, "Asset Category")}
+    //       style={{ cursor: "pointer" }}
+    //     >
+    //       {record.asset_category}
+    //     </div>
+    //   ),
+    // },
     {
       title: "Location",
       dataIndex: "location",
@@ -264,63 +265,63 @@ const AssetTable = () => {
         </div>
       ),
     },
-    {
-      title: "Custodian",
-      dataIndex: "custodian",
-      responsive: ["md"],
-      fixed: "right",
-      width: 150,
-      filterIcon: <SearchOutlined />,
-      filterDropdown: ({
-        setSelectedKeys,
-        selectedKeys,
-        confirm,
-        clearFilters,
-      }) => (
-        <div style={{ padding: 8 }}>
-          <Input
-            placeholder="Search Custodian"
-            value={selectedKeys[0]}
-            onChange={(e) =>
-              setSelectedKeys(e.target.value ? [e.target.value] : [])
-            }
-            onPressEnter={() => confirm()}
-            style={{ marginBottom: 8, display: "block" }}
-          />
-          <Space>
-            <button
-              type="button"
-              onClick={confirm}
-              style={{ width: 90, fontSize: "16px" }}
-            >
-              Search
-            </button>
-            <button
-              type="button"
-              onClick={clearFilters}
-              style={{ width: 90, fontSize: "16px" }}
-            >
-              Reset
-            </button>
-          </Space>
-        </div>
-      ),
-      onFilter: (value, record) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.custodian);
-        }
-        return record.custodian.indexOf(value.toString()) === 0;
-      },
-      render: (_, record) => (
-        <div
-          data-column-name="Custodian"
-          onClick={() => handleColumnClick(record, "Custodian")}
-          style={{ cursor: "pointer" }}
-        >
-          {record.custodian}
-        </div>
-      ),
-    },
+    // {
+    //   title: "Custodian",
+    //   dataIndex: "custodian",
+    //   responsive: ["md"],
+    //   fixed: "right",
+    //   width: 150,
+    //   filterIcon: <SearchOutlined />,
+    //   filterDropdown: ({
+    //     setSelectedKeys,
+    //     selectedKeys,
+    //     confirm,
+    //     clearFilters,
+    //   }) => (
+    //     <div style={{ padding: 8 }}>
+    //       <Input
+    //         placeholder="Search Custodian"
+    //         value={selectedKeys[0]}
+    //         onChange={(e) =>
+    //           setSelectedKeys(e.target.value ? [e.target.value] : [])
+    //         }
+    //         onPressEnter={() => confirm()}
+    //         style={{ marginBottom: 8, display: "block" }}
+    //       />
+    //       <Space>
+    //         <button
+    //           type="button"
+    //           onClick={confirm}
+    //           style={{ width: 90, fontSize: "16px" }}
+    //         >
+    //           Search
+    //         </button>
+    //         <button
+    //           type="button"
+    //           onClick={clearFilters}
+    //           style={{ width: 90, fontSize: "16px" }}
+    //         >
+    //           Reset
+    //         </button>
+    //       </Space>
+    //     </div>
+    //   ),
+    //   onFilter: (value, record) => {
+    //     if (Array.isArray(value)) {
+    //       return value.includes(record.custodian);
+    //     }
+    //     return record.custodian.indexOf(value.toString()) === 0;
+    //   },
+    //   render: (_, record) => (
+    //     <div
+    //       data-column-name="Custodian"
+    //       onClick={() => handleColumnClick(record, "Custodian")}
+    //       style={{ cursor: "pointer" }}
+    //     >
+    //       {record.custodian}
+    //     </div>
+    //   ),
+    // },
     {
       title: "Assign Asset",
       dataIndex: "AssignAsset",
@@ -333,7 +334,7 @@ const AssetTable = () => {
             background: "#D3D3D3",
             color: "black",
           }}
-          onClick={() =>{if(record.custodian === null || record.custodian === undefined)assignAsset(record); else alert("asset is already assigned ")}}
+          onClick={() =>{if(record.custodian === null || record.custodian === undefined)assignAsset(record);}}
         >
           +
         </Button>
@@ -1082,7 +1083,7 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
     conceder: result.conceder?.username,
     model_number: result.model_number,
     serial_number: result.serial_number,
-    memory: result.memory.memory_space,
+    memory: result.memory?.memory_space,
     storage: result.storage,
     configuration: result.configuration,
     custodian: result.custodian?.employee_name,
@@ -1101,7 +1102,7 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
   return (
     <>
       <div className="mainHeading">
-        <h1>Asset Details</h1>
+        <h1>Assign Asset</h1>
       </div>
 
       <div style={{ position: 'relative', display: 'inline-block' }}>
@@ -1175,4 +1176,4 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
   );
 };
 
-export default AssetTable;
+export default AssetTableOne;

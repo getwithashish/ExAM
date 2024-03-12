@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./index.css";
 import theme from "./flowbite-theme";
 import { Flowbite } from "flowbite-react";
@@ -22,6 +22,7 @@ if (!container) {
 const root = createRoot(container);
 
 root.render(
+  <QueryClientProvider client={new QueryClient()}>
   <StrictMode>
     <Flowbite theme={{ theme }}>
       <BrowserRouter>
@@ -38,4 +39,5 @@ root.render(
       </BrowserRouter>
     </Flowbite>
   </StrictMode>
+  </QueryClientProvider>  
 );
