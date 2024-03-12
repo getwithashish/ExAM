@@ -24,6 +24,12 @@ class AssetView(ListCreateAPIView):
 
     pagination_class = LimitOffsetPagination
     permission_classes = (IsAuthenticated,)
+    serializer_class = AssetWriteSerializer
+
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return AssetReadSerializer  # For read operation
+        return self.serializer_class
 
     def post(self, request):
         serializer = AssetWriteSerializer(data=request.data)

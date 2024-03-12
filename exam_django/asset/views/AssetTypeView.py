@@ -13,6 +13,8 @@ from messages import (
 
 
 class AssetTypeView(ListCreateAPIView):
+    serializer_class = AssetTypeSerializer
+
     def get_permissions(self):
         if self.request.method == "GET":
             return [IsAuthenticated()]

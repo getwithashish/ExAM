@@ -14,6 +14,8 @@ from messages import (
 
 
 class EmployeeView(ListCreateAPIView):
+    serializer_class = EmployeeSerializer
+
     def get_permissions(self):
         if self.request.method == "GET":
             return [IsAuthenticated()]
