@@ -19,6 +19,11 @@ EMPLOYEE_NOT_FOUND_ERROR = "Employee is not found in the request. Please try aga
 EMPLOYEE_CREATION_UNSUCCESSFUL = (
     "Error while creating an employee.Please try again later."
 )
+USER_UNAUTHORIZED = "User does not have permission to perform this action"
+EMPLOYEE_NOT_FOUND_ERROR = "Employee is not found in the request. Please try again."
+EMPLOYEE_CREATION_UNSUCCESSFUL = (
+    "Error while creating an employee.Please try again later."
+)
 
 # User Success Messages
 USER_FOUND_SUCCESS = "User found. Success."
@@ -46,6 +51,14 @@ ASSET_COUNT_RETRIEVAL_UNSUCCESSFUL = (
     "Asset count failed to be retrieved. Please try again."
 )
 ASSET_ASSIGNMENT_FAILED = "Failed to assign asset. Please try again."
+
+# Asset Success Messages
+ASSET_LIST_SUCCESSFULLY_RETRIEVED = "Asset list is successfully retreived."
+ASSET_COUNT_RETRIEVAL_UNSUCCESSFUL = (
+    "Asset count failed to be retrieved. Please try again."
+)
+ASSET_ASSIGNMENT_FAILED = "Failed to assign asset. Please try again."
+
 
 # Asset Success Messages
 ASSET_LIST_SUCCESSFULLY_RETRIEVED = "Asset list is successfully retreived."
