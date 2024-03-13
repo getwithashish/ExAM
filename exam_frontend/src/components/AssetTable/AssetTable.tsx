@@ -166,19 +166,31 @@ const AssetTable = () => {
       (item: AssetResult) => item.business_unit.business_unit_name
     ) || [];
 
-  const { data: locationData } = useQuery({
-    queryKey: ["assetDrawerlocation"],
-    queryFn: () =>
-      axiosInstance.get("/asset/location").then((res) => res.data.data),
-  });
-  console.log(locationData);
+  // const { data: locationData } = useQuery({
+  //   queryKey: ["assetDrawerlocation"],
+  //   queryFn: () =>
+  //     axiosInstance.get("/asset/location").then((res) => res.data.data),
+  // });
+  // console.log(locationData);
 
-  const locationFilters =
-    locationData?.map((location) => ({
-      text: location.location_name,
-      value: location.location_name,
-    })) ?? [];
-  console.log(locationFilters);
+  // const locationFilters =
+  //   locationData?.map((location) => ({
+  //     text: location.location_name,
+  //     value: location.location_name,
+  //   })) ?? [];
+  // console.log(locationFilters);
+
+  const { data: locationResults } = useQuery({
+    queryKey: ["location"],
+    queryFn: () => axiosInstance.get("/asset/location").then((res) => res.data),
+  });
+ 
+  const locations = locationResults?.results ?? [];
+ 
+  const locationFilters = locations.map((location) => ({
+    text: location.location_name,
+    value: location.location_name,
+  }));
 
   const { data: memoryData } = useQuery({
     queryKey: ["memorySpace"],
@@ -1362,7 +1374,7 @@ const AssetTable = () => {
             data={selectedRow}
             statusOptions={statusOptions}
             businessUnitOptions={businessUnitOptions}
-            locationData={locationData}
+            locationData={locationResults}
             memoryData={memoryData}
             assetTypeData={assetTypeData}
           />
