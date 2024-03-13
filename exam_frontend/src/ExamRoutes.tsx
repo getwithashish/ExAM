@@ -4,6 +4,7 @@ import SidebarComponentNew from "./components/sidebar/SidebarComponentNew";
 import DashboardPage from "./pages";
 import RequestPage from "./pages/RequestPage/Requests";
 import Login from "./pages/authentication/Login";
+import Assignableasset from "./pages/assignableasset";
 
 
 const ExamRoutes = () => {
@@ -29,6 +30,7 @@ const ExamRoutes = () => {
               <Routes>
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/requests" element={<RequestPage />} />
+                <Route path="/assignable_asset" element={<Assignableasset />} />
               </Routes>
             </SidebarComponentNew>
           }

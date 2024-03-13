@@ -178,6 +178,9 @@ const SidebarComponentNew = ({ children }) => {
               Add An Asset
             </Menu.Item>
             <Menu.Item icon={<SelectOutlined />}>
+              <Link to="/exam/assignable_asset">Assign an Asset</Link>
+            </Menu.Item>
+            <Menu.Item icon={<SelectOutlined />}>
               <Link to="/exam/requests">Pending Approvals</Link>
             </Menu.Item>
             <Menu.Item icon={<UserSwitchOutlined />}>
