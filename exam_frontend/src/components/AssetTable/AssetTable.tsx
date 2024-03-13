@@ -7,7 +7,7 @@ import CardComponent from "../CardComponent/CardComponent"
 import { CloseOutlined } from "@ant-design/icons";
 import axiosInstance from "../../config/AxiosConfig";
 import { useQuery } from "@tanstack/react-query";
-import { DataType } from "../AssetTable/types";
+import { DataType, LogData } from "../AssetTable/types";
 import { ColumnFilterItem } from "../AssetTable/types";
 import { AssetResult } from "../AssetTable/types";
 import {FilterDropdownProps} from "../AssetTable/types";
@@ -31,14 +31,13 @@ const items = [
 const AssetTable = () => {
   const [selectedAssetId, setSelectedAssetId] = useState<string|null>(null); // State to store the selected asset ID
 
-  const { data: logsData, error, isLoading, refetch } = useQuery({
+  const { data: logsData, error, isLoading,isSuccess, refetch } = useQuery({
     queryKey: ['assetLogsData', selectedAssetId], // Include selectedAssetId in the query key
-    queryFn: getAssetLog(selectedAssetId),
+    queryFn: getAssetLog(selectedAssetId) as Promise<[] | LogData[]>,
   });  
  
-  
   const expandedRowRender = (assetId: string) => {
-   
+    refetch();
     console.log("from expanded row", assetId, selectedAssetId)
     const columns: TableColumnsType<ExpandedDataType> = [
       { title: 'timestamp', dataIndex: 'timestamp', key: 'timestamp' },
@@ -52,9 +51,9 @@ const AssetTable = () => {
       {title: 'model_number',dataIndex: 'model_number', key: 'model_number',},
       { title: 'updated_at', dataIndex: 'updated_at', key: 'updated_at',},
     ];
-    refetch();
     const logsDataExpanded = [];
-for (let i = 0; i < logsData.length; ++i) {
+    if(isSuccess && (logsData as LogData[]).length){
+for (let i = 0; i < (logsData as LogData[]).length; ++i) {
   const assetLog = logsData[i].asset_log;
   if (assetLog && assetLog.asset_id === assetId) {
     const timestamp = new Date(logsData[i].timestamp); // Convert timestamp to Date object
@@ -81,7 +80,7 @@ for (let i = 0; i < logsData.length; ++i) {
       }
     }
     
-
+  }
    
 
     
@@ -1267,9 +1266,8 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
     nestedcolumns={nestedcolumns}
     
     expandable={{
-      onExpand:(expanded,record)=>{setSelectedAssetId(record.key); console.log(record)},
-      expandedRowRender: (record, index, indent, expanded) => { if(expanded && selectedAssetId)return expandedRowRender(record.key); else return;}, // Pass asset ID to expandedRowRender
-      // defaultExpandedRowKeys: ['0']
+      onExpand:(expanded,record)=>{setSelectedAssetId(record.key);},
+      expandedRowRender: (record, index, indent, expanded) => { if(expanded && selectedAssetId)return expandedRowRender(record.key);else return;}, 
     }}
     nesteddataSource={nesteddata}
   />
