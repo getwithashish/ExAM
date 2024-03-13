@@ -25,7 +25,7 @@ const RequestPage: FC = function () {
   const fetchAssets = () => {
     setLoading(true);
     axiosInstance
-      .get("/asset/?limit=10&asset_detail_status=CREATE_PENDING,UPDATE_PENDING")
+      .get("/asset/?limit=10&asset_detail_status=CREATE_PENDING")
       .then((response) => {
         setAssets(response.data.data.results);
       })

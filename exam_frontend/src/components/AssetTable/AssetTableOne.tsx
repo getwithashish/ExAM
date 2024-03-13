@@ -1210,7 +1210,7 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
     custodian: result.custodian?.employee_name,
     product_name: result.product_name,
     owner: result.owner,
-    requester: result.requester.username,
+    requester: result.requester?.username,
     AssignAsset: "assign",
     created_at: result.created_at,
     updated_at: result.updated_at,
