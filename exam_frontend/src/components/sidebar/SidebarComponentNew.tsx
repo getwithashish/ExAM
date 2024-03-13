@@ -1,7 +1,9 @@
 import { Layout, Menu, theme } from "antd";
 import {
   AppstoreAddOutlined,
+  CarryOutOutlined,
   DashboardOutlined,
+  LogoutOutlined,
   MailOutlined,
   PieChartOutlined,
   SelectOutlined,
@@ -21,7 +23,7 @@ import AccountMenu from "../notificationMenuItem";
 import MenuListComposition from "../menuItem";
 import SideDrawerComponent from "../SideDrawerComponent/SideDrawerComponent";
 import AddAsset from "../AddAsset/AddAsset";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const SidebarComponentNew = ({ children }) => {
   // const { addAssetState, setAddAssetState } = useMyContext();
@@ -53,35 +55,43 @@ const SidebarComponentNew = ({ children }) => {
     // Function to decode JWT token
     const decodeJWT = (token: string) => {
       try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const base64Url = token.split(".")[1];
+        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
         const jsonPayload = decodeURIComponent(
           atob(base64)
-            .split('')
-            .map(function(c) {
-              return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            .split("")
+            .map(function (c) {
+              return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
             })
-            .join('')
+            .join("")
         );
         return JSON.parse(jsonPayload);
       } catch (error) {
-        console.error('Error decoding JWT:', error);
+        console.error("Error decoding JWT:", error);
         return null;
       }
     };
 
     // Get JWT token from localStorage
-    const jwtToken = localStorage.getItem('jwt');
-    console.log(jwtToken)
+    const jwtToken = localStorage.getItem("jwt");
+    console.log(jwtToken);
 
     // Decode JWT token and set payload
     if (jwtToken) {
       const payload = decodeJWT(jwtToken);
-      console.log(payload)
-      console.log(payload.username)
+      console.log(payload);
+      console.log(payload.username);
       setJwtPayload(payload);
     }
   }, []);
+
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("jwt");
+    localStorage.removeItem("refresh_token");
+    navigate('/login')
+  };
 
   return (
     <Layout>
@@ -122,17 +132,20 @@ const SidebarComponentNew = ({ children }) => {
               </Button> */}
 
                 {/* <DarkThemeToggle /> */}
-                
 
                 {jwtPayload && jwtPayload.username && (
-  <div className={styles["username-container"]}>
-    {/* <MenuListComposition /> */}
-    <span className={styles["username"]}>Hi, {jwtPayload.username}</span>
-    {jwtPayload && jwtPayload.user_scope && (
-      <span className={styles["userscope"]}>{jwtPayload.user_scope}</span>
-    )}
-  </div>
-)}
+                  <div className={styles["username-container"]}>
+                    {/* <MenuListComposition /> */}
+                    <span className={styles["username"]}>
+                      Hi, {jwtPayload.username}
+                    </span>
+                    {jwtPayload && jwtPayload.user_scope && (
+                      <span className={styles["userscope"]}>
+                        {jwtPayload.user_scope}
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -177,14 +190,20 @@ const SidebarComponentNew = ({ children }) => {
             >
               Add An Asset
             </Menu.Item>
-            <Menu.Item icon={<SelectOutlined />}>
+            <Menu.Item icon={<UserSwitchOutlined />}>
               <Link to="/exam/assignable_asset">Assign an Asset</Link>
             </Menu.Item>
-            <Menu.Item icon={<SelectOutlined />}>
-              <Link to="/exam/requests">Pending Approvals</Link>
+            <Menu.Item icon={<CarryOutOutlined />}>
+              <Link to="/exam/requests">Pending(Assets)</Link>
             </Menu.Item>
-            <Menu.Item icon={<UserSwitchOutlined />}>
-              <Link to="/exam/requests">Pending Assignments</Link>
+            <Menu.Item icon={<CarryOutOutlined />}>
+              <Link to="/exam/assign_requests">Pending(Assign)</Link>
+            </Menu.Item>
+            <Menu.Item
+              onClick={() => handleLogout()}
+              icon={<LogoutOutlined />}
+            >
+              Logout
             </Menu.Item>
           </Menu>
         </Sider>

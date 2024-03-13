@@ -65,7 +65,7 @@ export default function Login() {
           className="w-full md:max-w-screen-sm [&>img]:hidden md:[&>img]:w-96 md:[&>img]:p-0 md:[&>*]:w-full md:[&>*]:p-16 lg:[&>img]:block"
         >
           <h1 className="mb-3 text-2xl font-bold dark:text-white md:text-3xl">
-            Login to platform
+            Login
           </h1>
           <form onSubmit={handleSubmit}>
             <div className="mb-4 flex flex-col gap-y-3">
