@@ -26,7 +26,10 @@ const items = [
   { key: '2', label: 'Action 2' },
 ];
 
-const AssetTableOne = ({showAssignDrawer}) => {
+interface AssetTableOneProps {
+  showAssignDrawer:(record:DataType)=>void
+}
+const AssetTableOne = ({showAssignDrawer}:AssetTableOneProps) => {
   const { data: logsData } = useQuery({
     queryKey: ['assetLogsData'],
     queryFn: () =>
@@ -451,7 +454,7 @@ const AssetTableOne = ({showAssignDrawer}) => {
             background: "#D3D3D3",
             color: "black",
           }}
-          onClick={() =>{if(record.custodian === null || record.custodian === undefined)showAssignDrawer(record); else alert("asset is already assigned ")}}
+          onClick={() =>{showAssignDrawer && showAssignDrawer(record); }}
         >
           +
         </Button>

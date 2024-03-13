@@ -12,6 +12,7 @@ import SignUpPage from "./pages/authentication/sign-up";
 import EcommerceProductsPage from "./pages/e-commerce/products";
 import UserListPage from "./pages/users/list";
 import AssetTableOne from "./components/AssetTable/AssetTableOne";
+import Assignableasset from "./pages/assignableasset";
 
 const container = document.getElementById("root");
 
@@ -30,7 +31,7 @@ root.render(
           <Route path="/login" element={<SignInPage />} />
           <Route path="/dashboard" element={<DashboardPage />} index />         
           <Route path="/authentication/sign-up" element={<SignUpPage />} />
-          <Route path="/assignable_asset" element={<AssetTableOne />} />
+          <Route path="/assignable_asset" element={<Assignableasset />} />
 
           <Route
             path="/e-commerce/products"
