@@ -135,17 +135,28 @@ const AssetTable = () => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
 
+  const assetGetQueryParams = {
+    limit: 10,
+  };
+
+  const pushToAssetGetQueryParams = (keyToPush, valueToPush) => {
+    assetGetQueryParams[keyToPush] = valueToPush[0]
+  }
+
   const {
     data: assetData,
     isLoading,
     isError,
+    refetch: assetDataRefetch,
   } = useQuery({
-    queryKey: ["assetList"],
+    queryKey: ["assetList", assetGetQueryParams],
     queryFn: () =>
-      axiosInstance.get("/asset/?limit=5").then((res) => {
-        console.log("Returned Data: ", res.data.data.results);
-        return res.data;
-      }),
+      axiosInstance
+        .get("/asset/", { params: assetGetQueryParams })
+        .then((res) => {
+          console.log("Returned Data: ", res.data.data.results);
+          return res.data;
+        }),
   });
 
   const statusOptions =
@@ -252,7 +263,11 @@ const AssetTable = () => {
             onChange={(e) =>
               setSelectedKeys(e.target.value ? [e.target.value] : [])
             }
-            onPressEnter={() => confirm()}
+            onPressEnter={() => {
+              pushToAssetGetQueryParams("product_name", selectedKeys)
+              assetDataRefetch()
+              // confirm();
+            }}
             style={{ marginBottom: 8, display: "block" }}
           />
           <Space>
