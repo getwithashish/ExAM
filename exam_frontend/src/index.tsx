@@ -9,7 +9,8 @@ import { BrowserRouter } from "react-router-dom";
 import DashboardPage from "./pages";
 import Login from "./pages/authentication/Login";
 import Logout from "./pages/authentication/Logout";
-import RequestPage from "./pages/RequestPage/Requests";
+import RequestPage from "./pages/RequestPage/AssetRequest";
+import AssignPage from "./pages/RequestPage/AssignRequest";
 // import UserListPage from "./pages/users/list";
 
 
@@ -34,6 +35,7 @@ root.render(
             path="/requests"
             element={<RequestPage />}
           />
+          <Route path="/assign-requests" element={<AssignPage/>}/>
           {/* <Route path="/users/list" element={<UserListPage />} /> */}
         </Routes>
       </BrowserRouter>

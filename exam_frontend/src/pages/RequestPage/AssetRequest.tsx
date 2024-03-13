@@ -15,20 +15,25 @@ import axiosInstance from '../../config/AxiosConfig';
 const RequestPage: FC = function () {
   const [assets, setAssets] = useState<any[]>([]);
   const [selectedAsset, setSelectedAsset] = useState<any | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     fetchAssets();
   }, []);
 
   const fetchAssets = () => {
-    axiosInstance.get('/asset/?limit=10&asset_detail_status=CREATE_PENDING')
+    setLoading(true);
+    axiosInstance.get('/asset/?limit=10&asset_detail_status=CREATE_PENDING,UPDATE_PENDING')
       .then(response => {
         setAssets(response.data.data.results);
       })
       .catch(error => {
         console.error('Error fetching assets:', error);
+      })
+      .finally(() => {
+        setLoading(false);
       });
-  };
+  };  
 
   const handleApprove = () => {
     if (selectedAsset) {
@@ -40,29 +45,24 @@ const RequestPage: FC = function () {
 
       axiosInstance.post('/asset/approve_asset', approvalData)
         .then(() => {
-          // Refresh assets after approval
-          fetchAssets();
-          setSelectedAsset(null); // Close modal
-          window.location.reload(); // Reload the page
+          fetchAssets(); 
+          setSelectedAsset(null);
         })
         .catch(error => {
           console.error('Error approving asset:', error);
-          // Handle error if needed
         });
     }
   };
 
   const handleReject = () => {
     if (selectedAsset) {
-      // Remove the selected asset from the list
       setAssets(assets.filter(asset => asset.asset_uuid !== selectedAsset.asset_uuid));
-      setSelectedAsset(null); // Close modal
-      window.location.reload(); // Reload the page
+      setSelectedAsset(null);
     }
   };
 
   return (
-    <NavbarSidebarLayout isFooter={true}>
+    <NavbarSidebarLayout isFooter={true}>   
       <div className="block items-center justify-between border-b border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 sm:flex">
         <div className="mb-1 w-full">
           <div className="mb-4">
@@ -88,11 +88,17 @@ const RequestPage: FC = function () {
       </div>
       <div className="flex flex-col">
         <div className="overflow-x-auto">
-          <div className="inline-block min-w-full align-middle">
-            <div className="overflow-hidden shadow">
-              <RequestTable assets={assets} setSelectedAsset={setSelectedAsset} />
+          {loading ? (
+            <div className="flex justify-center items-center h-full">
+              <p>Loading...</p>
             </div>
-          </div>
+          ) : (
+            <div className="inline-block min-w-full align-middle">
+              <div className="overflow-hidden shadow">
+                <RequestTable assets={assets} setSelectedAsset={setSelectedAsset} />
+              </div>
+            </div>
+          )}
         </div>
       </div>
       {selectedAsset && (
@@ -132,12 +138,9 @@ const RequestTable: FC<{ assets: any[], setSelectedAsset: (asset: any | null) =>
         {assets.map(asset => (
           <Table.Row key={asset.asset_uuid} className="hover:bg-gray-100 dark:hover:bg-gray-700">
             <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
-              <div className="text-base font-semibold text-gray-900 dark:text-white">
-                {asset.asset_detail_status}
-              </div>
-              <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                Details
-              </div>
+            <div className="text-base font-semibold text-gray-900 dark:text-white">
+              {asset.asset_detail_status === "CREATE_PENDING" ? "CREATE REQUEST" : asset.asset_detail_status === "UPDATE_PENDING" ? "UPDATE REQUEST" : asset.asset_detail_status}
+            </div>
             </Table.Cell>
             <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
               {asset.requester.username}
