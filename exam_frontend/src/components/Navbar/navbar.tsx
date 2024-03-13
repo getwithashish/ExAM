@@ -60,12 +60,13 @@ const ExampleNavbar: FC = function () {
               {/* <DarkThemeToggle /> */}
               <MenuListComposition />
               {jwtPayload && jwtPayload.username && (
-                <span className={styles["username"]}>Hi, {jwtPayload.username}</span>
-                
-              )}
-               {jwtPayload && jwtPayload.user_scope && (
-                <span className={styles["userscope"]}>{jwtPayload.user_scope}</span>
-              )}
+  <div className={styles["username-container"]}>
+    <span className={styles["username"]}>Hi, {jwtPayload.username}</span>
+    {jwtPayload && jwtPayload.user_scope && (
+      <span className={styles["userscope"]}>{jwtPayload.user_scope}</span>
+    )}
+  </div>
+)}
             </div>
           </div>
         </div>

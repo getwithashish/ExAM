@@ -2,23 +2,31 @@
     display: flex;
     justify-content: space-around;
     gap: 10px;
-    /* background-color: yellow; */
+   
+    
   }
 
+  .username-container {
+    display: flex; /* Use flexbox to align items */
+    flex-direction: column; /* Stack items vertically */
+    align-items: flex-end;
+  }
+  
   .username {
-    font-size:large; /* Adjust the font size as needed */
-    font-family: 'Poppins', sans-serif; /* Set the font family to Poppins */
-    text-transform: capitalize; /* Capitalize each word in the username */
+    font-size: large;
+    font-family: 'Poppins', sans-serif;
+    text-transform: capitalize;
     margin: 0;
-    
   }
-  .userscope
-  {
-    font-size:small; /* Adjust the font size as needed */
-    font-family: 'Poppins', sans-serif; /* Set the font family to Poppins */
-    text-transform: capitalize; /* Capitalize each word in the username */
-    margin-top:40px;
-    margin-right: 50px;
-    
+  
+  .userscope {
+    font-size: small;
+    font-family: 'Poppins', sans-serif;
+    text-transform: capitalize;
+    margin-top: 5px;
+  }
+  
+  
 
-  }
+
+
