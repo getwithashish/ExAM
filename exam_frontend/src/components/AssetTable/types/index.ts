@@ -1,5 +1,5 @@
 export interface DataType {
-  key: React.Key;
+  key: string;
   asset_id: string;
   asset_category: string;
   asset_type: string;

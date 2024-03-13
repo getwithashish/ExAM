@@ -35,7 +35,6 @@ const CardComponent: React.FC<CardType> = ({
     if (name === 'location' || name === 'invoice_location' || name === 'business_unit') {
       updatedValue = mapInputValueToPrimaryKey(name, value);
     }
-    // Add additional handling for 'asset_type' and 'memory' fields
     else if (name === 'asset_type') {
       updatedValue = mapInputValueToPrimaryKey(name, value, assetTypeData);
     } else if (name === 'memory') {
@@ -48,30 +47,26 @@ const CardComponent: React.FC<CardType> = ({
   };
 
   const mapInputValueToPrimaryKey = (fieldName: string, value: string | number) => {
-    // Assuming you have access to arrays like uniqueLocationoptions, uniqueBusinessOptions, etc.
     switch (fieldName) {
       case 'location':
-        // Find the location object with the matching name and return its ID
         const location = uniqueLocationoptions.find(option => option.location_name === value);
-        return location ? location.id : value; // Return ID if found, otherwise return the original value
+        return location ? location.id : value; 
       case 'invoice_location':
-        // Find the invoice_location object with the matching name and return its ID
         const invoiceLocation = uniqueLocationoptions.find(option => option.location_name === value);
-        return invoiceLocation ? invoiceLocation.id : value; // Return ID if found, otherwise return the original value
+        return invoiceLocation ? invoiceLocation.id : value; 
       case 'business_unit':
-        // Find the business_unit object with the matching name and return its ID
         const businessUnit = uniqueBusinessOptions.find(option => option === value);
-        return businessUnit ? businessUnit.id : value; // Return ID if found, otherwise return the original value
+        return businessUnit ? businessUnit.id : value; 
         case 'asset_type':
-          // Find the asset_type object with the matching name and return its ID
+          
           const assetType = options.find(option => option.asset_type_name === value);
-          return assetType ? assetType.id : value; // Return ID if found, otherwise return the original value
+          return assetType ? assetType.id : value; 
         case 'memory':
-          // Find the memory object with the matching space and return its ID
+          
           const memory = options.find(option => option.memory_space === value);
-          return memory ? memory.id : value; // Return ID if found, otherwise return the original value
+          return memory ? memory.id : value; 
       default:
-        return value; // For fields other than location, invoice_location, and business_unit, return the original value
+        return value; 
     }
   };
   

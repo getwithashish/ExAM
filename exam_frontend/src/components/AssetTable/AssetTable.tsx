@@ -15,6 +15,7 @@ import { useInfiniteQuery } from 'react-query';
 
 import { DownOutlined } from '@ant-design/icons';
 import ExportButton from "../Export/Export";
+import { getAssetLog } from "./api/getAssetLog";
 
 interface ExpandedDataType {
   key: React.Key;
@@ -28,15 +29,17 @@ const items = [
 ];
 
 const AssetTable = () => {
-  const { data: logsData } = useQuery({
-    queryKey: ['assetLogsData'],
-    queryFn: () =>
-      axiosInstance.get('asset/asset_logs/3059600b50cf4c53a9237525b34fd1f4').then((response) => {
-        console.log('Returned Log Data: ', response.data.data.logs);
-        return response.data.data.logs;
-      }),
-  });
-  const expandedRowRender = () => {
+  const [selectedAssetId, setSelectedAssetId] = useState<string|null>(null); // State to store the selected asset ID
+
+  const { data: logsData, error, isLoading, refetch } = useQuery({
+    queryKey: ['assetLogsData', selectedAssetId], // Include selectedAssetId in the query key
+    queryFn: getAssetLog(selectedAssetId),
+  });  
+ 
+  
+  const expandedRowRender = (assetId: string) => {
+   
+    console.log("from expanded row", assetId, selectedAssetId)
     const columns: TableColumnsType<ExpandedDataType> = [
       { title: 'timestamp', dataIndex: 'timestamp', key: 'timestamp' },
       { title: 'asset_category', dataIndex: 'asset_category', key: 'asset_category' },
@@ -49,24 +52,22 @@ const AssetTable = () => {
       {title: 'model_number',dataIndex: 'model_number', key: 'model_number',},
       { title: 'updated_at', dataIndex: 'updated_at', key: 'updated_at',},
     ];
-
-
-
+    refetch();
     const logsDataExpanded = [];
-    for (let i = 0; i < logsData.length; ++i) {
-      const assetLog = logsData[i].asset_log;
-    
-      if (assetLog) {
-        const timestamp = new Date(logsData[i].timestamp); // Convert timestamp to Date object
-        const formattedTimestamp = timestamp.toLocaleString(); // Format the timestamp as a string in the local time zone
-    
-        const createdAt = new Date(assetLog.created_at); // Convert created_at timestamp to Date object
-        const formattedCreatedAt = createdAt.toLocaleString(); // Format the created_at timestamp
-    
-        const updatedAt = new Date(assetLog.updated_at); // Convert updated_at timestamp to Date object
-        const formattedUpdatedAt = updatedAt.toLocaleString(); // Format the updated_at timestamp
+for (let i = 0; i < logsData.length; ++i) {
+  const assetLog = logsData[i].asset_log;
+  if (assetLog && assetLog.asset_id === assetId) {
+    const timestamp = new Date(logsData[i].timestamp); // Convert timestamp to Date object
+    const formattedTimestamp = timestamp.toLocaleString(); // Format the timestamp as a string in the local time zone
+
+    const createdAt = new Date(assetLog.created_at); // Convert created_at timestamp to Date object
+    const formattedCreatedAt = createdAt.toLocaleString(); // Format the created_at timestamp
+
+    const updatedAt = new Date(assetLog.updated_at); // Convert updated_at timestamp to Date object
+    const formattedUpdatedAt = updatedAt.toLocaleString(); 
     
         logsDataExpanded.push({
+          ...assetLog,
           key: i.toString(),
           timestamp: formattedTimestamp,
           asset_category: assetLog.asset_category,
@@ -81,34 +82,15 @@ const AssetTable = () => {
     }
     
 
-    // const logsDataExpanded = [];
-    // for (let i = 0; i < logsData.length; ++i) {
-    //   logsDataExpanded.push({
-    //     key: i.toString(),
-    //     timestamp: logsData[i].timestamp,
-    //     asset_category: logsData[i].asset_log.asset_category,
-    //     asset_detail_status:logsData[i].asset_log.asset_detail_status,
-    //     assign_status:logsData[i].asset_log.assign_status,
-    //     created_at:logsData[i].asset_log.created_at,
-    //     product_name:logsData[i].asset_log.product_name,
-    //     updated_at:logsData[i].asset_log.updated_at,
-    //     date_of_purchase:logsData[i].asset_log.date_of_purchase,
-    //     // model_number:logsData[i].asset_logs.model_number,
+   
 
-
-    //   });
-    // }
-    // return <Table columns={columns} dataSource={logsData}  pagination={false} style={{ maxHeight: 300, overflowY: 'auto', maxWidth: '100%', scrollbarWidth: 'none', msOverflowStyle: 'none' }} />;
+    
     return <Table columns={columns} dataSource={logsDataExpanded}  pagination={false} style={{ maxHeight: 300, overflowY: 'auto', maxWidth: '100%', scrollbarWidth: 'none', msOverflowStyle: 'none' }} />;
     
   };
 
  const nestedcolumns: TableColumnsType<DataType> = [
-    // { title: 'timestamp', dataIndex: 'timestamp', key: 'timestamp' },
-    // { title: 'Platform', dataIndex: 'platform', key: 'platform' },
-    // { title: 'Version', dataIndex: 'version', key: 'version' },
-    // { title: 'Upgraded', dataIndex: 'upgradeNum', key: 'upgradeNum' },
-    // { title: 'Creator', dataIndex: 'creator', key: 'creator' },
+  
   ];
 
   const nesteddata: DataType[] = [];
@@ -130,8 +112,6 @@ const AssetTable = () => {
 
   const {
     data: assetData,
-    isLoading,
-    isError,
   } = useQuery({
     queryKey: ["assetList"],
     queryFn: () =>
@@ -1285,7 +1265,12 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
     }}
 
     nestedcolumns={nestedcolumns}
-    expandable={{ expandedRowRender, defaultExpandedRowKeys: ['0'] }}
+    
+    expandable={{
+      onExpand:(expanded,record)=>{setSelectedAssetId(record.key); console.log(record)},
+      expandedRowRender: (record, index, indent, expanded) => { if(expanded && selectedAssetId)return expandedRowRender(record.key); else return;}, // Pass asset ID to expandedRowRender
+      // defaultExpandedRowKeys: ['0']
+    }}
     nesteddataSource={nesteddata}
   />
      {/* <Table
