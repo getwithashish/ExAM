@@ -151,7 +151,7 @@ const AssetTable = () => {
   // //   value: item.asset_type
   // // }));
   const assetDataList = assetData?.data.results;
-  console.log("Testing on 65:", assetDataList ? assetDataList[0].results : []);
+  // console.log("Testing on 65:", assetDataList ? assetDataList[0].results : []);
 
 
   
@@ -1207,7 +1207,7 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
     custodian: result.custodian?.employee_name,
     product_name: result.product_name,
     owner: result.owner,
-    requester: result.requester.username,
+    requester: result.requester?.username,
     AssignAsset: "assign",
     created_at: result.created_at,
     updated_at: result.updated_at,
