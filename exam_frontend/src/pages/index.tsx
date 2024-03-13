@@ -29,16 +29,7 @@ const DashboardPage: FC = function () {
     console.log("displaydrwer value is " ,displaydrawer)
    }
   
-   const showAssignDrawer =(record:RecordProps)=>{
-    console.log("uuid",record)
-    setRecord(record)
-    setIsAssign(true)
-    console.log("displaydrawer value is ",displaydrawer)
-  }
-  const closeAssignDrawer = ()=> {
-  setIsAssign(false)
-  console.log("displaydrwer value is " ,displaydrawer)
- }
+   
 
  const toggleDrawer = () => {
   setDisplayDrawer(!displaydrawer);
@@ -59,9 +50,7 @@ const closeImportDrawer = ()=> {
             <Statistics />        
             <TableNavbar showUpload={showUpload} setShowUpload={setShowUpload}/>
           
-        <AssignmentDrawer buttonTextDefault="Assign" displayDrawer={displaydrawer} >
-          <Assignment />
-        </AssignmentDrawer>
+       
 
 
                     <AssetTable showDrawer={showDefaultDrawer} />
