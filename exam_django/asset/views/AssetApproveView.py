@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 
 from asset.models import Asset
-from asset.serializers.AssetSerializer import AssetReadSerializer
+from asset.serializers.AssetSerializer import AssetReadSerializer, AssetWriteSerializer
 from messages import (
     APPROVAL_TYPE_NOT_FOUND,
     ASSET_NOT_FOUND,
@@ -66,14 +66,16 @@ class AssetApproveView(APIView):
                 if asset.asset_detail_status in ["CREATED", "UPDATED"]:
                     if asset.assign_status == "ASSIGN_PENDING":
                         if asset.custodian:
-                            asset.assign_status == "UNASSIGNED"
-                            asset.status = "IN STORE"
-                            message = ASSET_SUCCESSFULLY_UNASSIGNED
-
-                        else:
-                            asset.assign_status == "ASSIGNED"
+                            print("ASSIGNED HERE")
+                            asset.assign_status = "ASSIGNED"
                             asset.status = "IN USE"
                             message = ASSET_SUCCESSFULLY_ASSIGNED
+
+                        else:
+                            print("UNASSIGNED HERE")
+                            asset.assign_status = "UNASSIGNED"
+                            asset.status = "IN STORE"
+                            message = ASSET_SUCCESSFULLY_UNASSIGNED
 
                     else:
                         return APIResponse(
@@ -97,7 +99,7 @@ class AssetApproveView(APIView):
                 )
 
             asset.save()
-            serializer = AssetReadSerializer(asset)
+            serializer = AssetWriteSerializer(asset)
             print(serializer.data)
             return APIResponse(
                 data=serializer.data,
