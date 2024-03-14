@@ -129,10 +129,9 @@ def log_asset_changes(sender, instance, **kwargs):
     old_instance = Asset.objects.filter(pk=instance.pk).values().first()
     if (
         old_instance
-        and instance.asset_detail_status == "CREATED"
         or instance.asset_detail_status == "UPDATED"
-        or instance.asset_detail_status == "CREATE_REJECTED"
-        or instance.asset_detail_status == "UPDATE_REJECTED"
+        or instance.asset_detail_status == "ASSIGNED"
+        or instance.asset_detail_status == "UNASSIGNED"
     ):
         changes = {
             field: getattr(instance, field)
