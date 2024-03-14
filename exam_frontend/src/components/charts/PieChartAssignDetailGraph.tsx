@@ -5,39 +5,34 @@ import { PieChart } from "@mui/x-charts/PieChart";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import axiosInstance from '../../config/AxiosConfig';
-import { AssetCountData, ChartData, PieChartGraphProps, AssetTypeData } from './types/ChartTypes';
+import { AssignDetailStatus, AssignDetailStatusData, ChartData, PieChartAssignGraphProps} from './types/ChartTypes';
 
-export const PieChartGraph: React.FC<PieChartGraphProps> = () => {
-  const [assetTypeData, setAssetTypeData] = useState<AssetTypeData[]>([]);
+export const PieChartAssignDetailGraph: React.FC<PieChartAssignGraphProps> = () => {
+  const [assetAssignStatus, setAssetAssignStatus] = useState<AssignDetailStatusData[]>([]);
   const [selectedType, setSelectedType] = useState<string>('');
   const [filteredChartData, setFilteredChartData] = useState<ChartData[]>([]);
-  const [allChartData, setAllChartData] = useState<ChartData[]>([]); // Store all data initially
+  const [allChartAssignData, setAllChartAssignData] = useState<ChartData[]>([]); // Store all data initially
 
-  const { data: assetCountData, isLoading: assetCountLoading, isError: assetCountError } = useQuery<AssetCountData>({
-    queryKey: ['assetCount'],
-    queryFn: (): Promise<AssetCountData> => axiosInstance.get('/asset/asset_count').then((res) => {
-      console.log(res);
-      return res.data.data;
-    }),
+  const { data: assetDetailStatusData, isLoading: assetAssignStatusLoading, isError: assetAssignStatusError } = useQuery<AssignDetailStatus>({
+    queryKey: ['assetAssignStatus'],
+    queryFn: (): Promise<AssignDetailStatus> => axiosInstance.get('/asset/asset_count').then((res) => res.data.data),
   });
 
   const statusColors: { [key: string]: string } = {
-    'IN STORE': '#FF8C01', 
-    'IN REPAIR': '#FFE733',
-    'IN USE': '#65FE08', 
-    'DISPOSED': '#808080', 
-    'EXPIRED': '#ED2938', 
+    'UNASSIGNED': '#FD6A02', 
+    'ASSIGN_PENDING': '#FCE205',
+    'ASSIGNED': '#3BB143',  
+    'REJECTED': '#ED2938',
   };
 
   useEffect(() => {
     // Fetch asset type data once initially
     axiosInstance.get('/asset/asset_type')
       .then((res) => {
-        console.log(res.data.data);
-        setAssetTypeData(res.data.data);
+        setAssetAssignStatus(res.data.data);
       })
       .catch(error => {
-        console.error("Error fetching asset type data:", error);
+        console.error("Error fetching asset assign data:", error);
       });
   }, []);
 
@@ -45,17 +40,17 @@ export const PieChartGraph: React.FC<PieChartGraphProps> = () => {
     // Fetch all chart data once initially
     axiosInstance.get(`/asset/asset_count`)
       .then((res) => {
-        const assetCountData = res.data.data;
-        const allData = Object.entries(assetCountData?.asset_status ?? {}).map(([label, value]) => ({
+        const assetAssignStatusData = res.data.data;
+        const allData = Object.entries(assetAssignStatusData?.assign_status ?? {}).map(([label, value]) => ({
           label,
           value: value as number,
-          color: statusColors[label], // Assign color based on status
+          color: statusColors[label] || '#000000', // Default color if not found
         }));
-        setAllChartData(allData);
-        setFilteredChartData(allData); // Set filtered data initially
+        setAllChartAssignData(allData);
+        setFilteredChartData(allData);
       })
       .catch(error => {
-        console.error("Error fetching asset count data:", error);
+        console.error("Error fetching asset assign status data:", error);
         setFilteredChartData([]);
       });
   }, []);
@@ -65,16 +60,15 @@ export const PieChartGraph: React.FC<PieChartGraphProps> = () => {
     setSelectedType(assetTypeValue.toString());
 
     if (assetTypeValue === 0) {
-      // If "All" option is selected, display all data
-      setFilteredChartData(allChartData);
+      setFilteredChartData(allChartAssignData);
     } else {
       axiosInstance.get(`/asset/asset_count?asset_type=${assetTypeValue}`)
         .then((res) => {
-          const assetCountData = res.data.data;
-          const filteredData = Object.entries(assetCountData?.asset_status ?? {}).map(([label, value]) => ({
+          const assetAssignStatusData = res.data.data;
+          const filteredData = Object.entries(assetAssignStatusData?.assign_status ?? {}).map(([label, value]) => ({
             label,
             value: value as number,
-            color: statusColors[label], // Assign color based on status
+            color: statusColors[label] || '#000000', // Default color if not found
           }));
           setFilteredChartData(filteredData);
         })
@@ -85,44 +79,41 @@ export const PieChartGraph: React.FC<PieChartGraphProps> = () => {
     }
   };
 
-  if (assetCountLoading) return (
+  if (assetAssignStatusLoading) return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
       <FontAwesomeIcon icon={faSpinner} spin size="3x" />
     </div>
   );
 
-  if (assetCountError) return <div>Error fetching data</div>;
+  if (assetAssignStatusError) return <div>Error fetching data</div>;
 
   return (
     <Stack direction="row">
       <div>
-        <h3 className="text-right font-normal text-gray-600 dark:text-gray-400">
-          Total Asset count: {assetCountData?.total_assets ?? 0}
-        </h3>
-        <select onChange={handleSelectChange}>
-          <option value="0">All Asset Types</option>
-          {assetTypeData.map((assetType) => (
-            <option key={assetType.id} value={assetType.id}>{assetType.asset_type_name}</option>
+        {/* <select onChange={handleSelectChange}>
+          <option value="0">All</option>
+          {assetDetailStatus.map((assetType) => (
+            <option key={assetType.id} value={assetType.id}>{assetType.asset_detail_status}</option>
           ))}
-        </select>
+        </select> */}
         <PieChart
           series={[
             {
               data: filteredChartData,
-              innerRadius: 60,
-              outerRadius: 140,
+              innerRadius: 50,
+              outerRadius: 100,
               paddingAngle: 1,
               cornerRadius: 5,
               startAngle: 0,
               endAngle: 360,
-              cx: 300,
-              cy: 150,
+              cx: 100,
+              cy: 200,
               highlightScope: { faded: 'global', highlighted: 'item' },
-              faded: { innerRadius: 80, additionalRadius: -50, color: 'gray' },
+              faded: { innerRadius: 75, additionalRadius: -40, color: 'grey' },
             },
           ]}
-          width={700}
-          height={300}
+          width={410}
+          height={400}
           legend={{
             direction: 'column',
             position: { vertical: 'middle', horizontal: 'right' },

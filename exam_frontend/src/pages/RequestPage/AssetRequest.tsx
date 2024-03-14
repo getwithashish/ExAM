@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState } from "react";
 import {
   Breadcrumb,
   Button,
@@ -10,7 +10,8 @@ import {
 } from "flowbite-react";
 import { HiHome, HiPencilAlt } from "react-icons/hi";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
-import axiosInstance from '../../config/AxiosConfig';
+import axiosInstance from "../../config/AxiosConfig";
+import React from "react";
 
 const RequestPage: FC = function () {
   const [assets, setAssets] = useState<any[]>([]);
@@ -23,46 +24,50 @@ const RequestPage: FC = function () {
 
   const fetchAssets = () => {
     setLoading(true);
-    axiosInstance.get('/asset/?limit=10&asset_detail_status=CREATE_PENDING,UPDATE_PENDING')
-      .then(response => {
+    axiosInstance
+      .get("/asset/?limit=10&asset_detail_status=CREATE_PENDING")
+      .then((response) => {
         setAssets(response.data.data.results);
       })
-      .catch(error => {
-        console.error('Error fetching assets:', error);
+      .catch((error) => {
+        console.error("Error fetching assets:", error);
       })
       .finally(() => {
         setLoading(false);
       });
-  };  
+  };
 
   const handleApprove = () => {
     if (selectedAsset) {
       const approvalData = {
-        approval_type: 'ASSET_DETAIL_STATUS',
+        approval_type: "ASSET_DETAIL_STATUS",
         asset_uuid: selectedAsset.asset_uuid,
         comments: selectedAsset.approverNotes,
       };
 
-      axiosInstance.post('/asset/approve_asset', approvalData)
+      axiosInstance
+        .post("/asset/approve_asset", approvalData)
         .then(() => {
-          fetchAssets(); 
+          fetchAssets();
           setSelectedAsset(null);
         })
-        .catch(error => {
-          console.error('Error approving asset:', error);
+        .catch((error) => {
+          console.error("Error approving asset:", error);
         });
     }
   };
 
   const handleReject = () => {
     if (selectedAsset) {
-      setAssets(assets.filter(asset => asset.asset_uuid !== selectedAsset.asset_uuid));
+      setAssets(
+        assets.filter((asset) => asset.asset_uuid !== selectedAsset.asset_uuid)
+      );
       setSelectedAsset(null);
     }
   };
 
   return (
-    <NavbarSidebarLayout isFooter={true}>   
+    <React.Fragment>
       <div className="block items-center justify-between border-b border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 sm:flex">
         <div className="mb-1 w-full">
           <div className="mb-4">
@@ -73,16 +78,14 @@ const RequestPage: FC = function () {
                   <span className="dark:text-white">Dashboard</span>
                 </div>
               </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                Pending Asset Requests
-              </Breadcrumb.Item>              
+              <Breadcrumb.Item>Pending Asset Requests</Breadcrumb.Item>
             </Breadcrumb>
             <h1 className="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">
               Pending Asset Requests
             </h1>
           </div>
           <div className="block items-center sm:flex">
-            <SearchRequests />
+            {/* <SearchRequests /> */}
           </div>
         </div>
       </div>
@@ -95,16 +98,24 @@ const RequestPage: FC = function () {
           ) : (
             <div className="inline-block min-w-full align-middle">
               <div className="overflow-hidden shadow">
-                <RequestTable assets={assets} setSelectedAsset={setSelectedAsset} />
+                <RequestTable
+                  assets={assets}
+                  setSelectedAsset={setSelectedAsset}
+                />
               </div>
             </div>
           )}
         </div>
       </div>
       {selectedAsset && (
-        <ViewRequestModal asset={selectedAsset} handleApprove={handleApprove} handleReject={handleReject} onClose={() => setSelectedAsset(null)} />
+        <ViewRequestModal
+          asset={selectedAsset}
+          handleApprove={handleApprove}
+          handleReject={handleReject}
+          onClose={() => setSelectedAsset(null)}
+        />
       )}
-    </NavbarSidebarLayout>
+    </React.Fragment>
   );
 };
 
@@ -125,7 +136,10 @@ const SearchRequests: FC = function () {
   );
 };
 
-const RequestTable: FC<{ assets: any[], setSelectedAsset: (asset: any | null) => void }> = function ({ assets, setSelectedAsset }) {  
+const RequestTable: FC<{
+  assets: any[];
+  setSelectedAsset: (asset: any | null) => void;
+}> = function ({ assets, setSelectedAsset }) {
   return (
     <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
       <Table.Head className="bg-gray-100 dark:bg-gray-700">
@@ -135,12 +149,19 @@ const RequestTable: FC<{ assets: any[], setSelectedAsset: (asset: any | null) =>
         <Table.HeadCell>Actions</Table.HeadCell>
       </Table.Head>
       <Table.Body className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
-        {assets.map(asset => (
-          <Table.Row key={asset.asset_uuid} className="hover:bg-gray-100 dark:hover:bg-gray-700">
+        {assets.map((asset) => (
+          <Table.Row
+            key={asset.asset_uuid}
+            className="hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
             <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
-            <div className="text-base font-semibold text-gray-900 dark:text-white">
-              {asset.asset_detail_status === "CREATE_PENDING" ? "CREATE REQUEST" : asset.asset_detail_status === "UPDATE_PENDING" ? "UPDATE REQUEST" : asset.asset_detail_status}
-            </div>
+              <div className="text-base font-semibold text-gray-900 dark:text-white">
+                {asset.asset_detail_status === "CREATE_PENDING"
+                  ? "CREATE REQUEST"
+                  : asset.asset_detail_status === "UPDATE_PENDING"
+                  ? "UPDATE REQUEST"
+                  : asset.asset_detail_status}
+              </div>
             </Table.Cell>
             <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
               {asset.requester.username}
@@ -163,8 +184,13 @@ const RequestTable: FC<{ assets: any[], setSelectedAsset: (asset: any | null) =>
   );
 };
 
-const ViewRequestModal: FC<{ asset: any, handleApprove: () => void, handleReject: () => void, onClose: () => void }> = function ({ asset, handleApprove, handleReject, onClose }) {
-  const [comments, setComments] = useState('');
+const ViewRequestModal: FC<{
+  asset: any;
+  handleApprove: () => void;
+  handleReject: () => void;
+  onClose: () => void;
+}> = function ({ asset, handleApprove, handleReject, onClose }) {
+  const [comments, setComments] = useState("");
 
   return (
     <Modal onClose={onClose} show={true}>
@@ -203,7 +229,7 @@ const ViewRequestModal: FC<{ asset: any, handleApprove: () => void, handleReject
                 disabled
                 className="mt-1"
               />
-            </div> 
+            </div>
             <div>
               <Label htmlFor="serialNumber">SERIAL NUMBER</Label>
               <TextInput
