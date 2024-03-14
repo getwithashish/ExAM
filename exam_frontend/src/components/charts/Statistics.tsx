@@ -1,22 +1,46 @@
-import { PieChartAssetDetailGraph } from './PieChartAssetDetailGraph';
-import { PieChartAssignDetailGraph } from './PieChartAssignDetailGraph';
-import { PieChartStatusGraph} from './PieChartStatusGraph';
+import { PieChartGraph } from './PieChartGraph';
 
 export const Statistics = () => {
   return (
     <div>
-      <div className="rounded-lg bg-white shadow-sm dark:bg-gray-800 xl:p-5 mx-10 my-10">
+      <div className="rounded-lg bg-white shadow-sm dark:bg-gray-800 xl:p-5 mx-2 my-2">
+        <nav className="flex mb-4" aria-label="Breadcrumb">
+            <ol className="inline-flex items-center space-x-1 md:space-x-3 rtl:space-x-reverse">
+              <li className="inline-flex items-center">
+                <a href="#" className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
+                  <svg className="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
+                  </svg>
+                  Dashboard
+                </a>
+              </li>
+              {/* <li>
+                <div className="flex items-center">
+                  <svg className="w-3 h-3 text-gray-400 mx-1 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                  </svg>
+                  <a href="#" className="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Projects</a>
+                </div>
+              </li> */}
+              {/* <li aria-current="page">
+                <div className="flex items-center">
+                  <svg className="w-3 h-3 text-gray-400 mx-1 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                  </svg>
+                  <span className="ms-1 text-sm font-medium text-gray-500 md:ms-2 dark:text-gray-400">Flowbite</span>
+                </div>
+              </li> */}
+            </ol>
+          </nav>
         <div className="mb-3 flex items-center justify-between">
           <div className="shrink-0">
-            <span className="text-x1 font-semibold leading-none text-gray-900 dark:text-white sm:text-3xl">
+            <span className="text-md font-bold leading-none text-gray-900 dark:text-white sm:text-3xl underline underline-offset-3 decoration-2 decoration-black-400 dark:decoration-blue-600">
               Asset Status Overview
             </span>
           </div>
         </div>
-        <div className="flex mx-10 gap-20">
-          <PieChartStatusGraph selectedAssetType="asset_status" type="asset"/>
-          <PieChartAssetDetailGraph selectedAssetType="asset_detail_status" type="asset_status" />
-          <PieChartAssignDetailGraph selectedAssetType="assign_status" type="assign"/>
+        <div>
+          <PieChartGraph selectedAssetType='asset_view' type="asset_view"/>
         </div>        
       </div>
     </div>
