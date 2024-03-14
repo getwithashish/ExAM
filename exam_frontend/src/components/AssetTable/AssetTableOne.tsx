@@ -454,7 +454,14 @@ const AssetTableOne = ({showAssignDrawer}:AssetTableOneProps) => {
             background: "#D3D3D3",
             color: "black",
           }}
-          onClick={() =>{showAssignDrawer && showAssignDrawer(record); }}
+          onClick={() => {
+            if (record.custodian == null || record.custodian == undefined) {
+              showAssignDrawer(record);
+            } else {
+              alert("Already assigned");
+            }
+          }}
+          
         >
           +
         </Button>
