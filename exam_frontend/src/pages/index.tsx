@@ -10,6 +10,7 @@ import SideDrawerComponent from "../components/SideDrawerComponent/SideDrawerCom
 import { SidebarHandler } from "../components/sidebar/SidebarHandler";
 import AssignmentDrawer from "../components/Assign/AssignmentDrawer";
 import { Assignment } from "../components/Assign/Assignment";
+import AssetTableHandler from "../components/AssetTable/AssetTableHandler";
 
 
 const DashboardPage: FC = function () {
@@ -48,7 +49,7 @@ const DashboardPage: FC = function () {
           {/* <Assignment /> */}
         </AssignmentDrawer>
 
-                    <AssetTable showDrawer={showDefaultDrawer} />
+                    <AssetTableHandler showDrawer={showDefaultDrawer} />
 
                   <SideDrawerComponent  displayDrawer={displaydrawer} closeDrawer={closeDrawer}>
                     <AddAsset/>

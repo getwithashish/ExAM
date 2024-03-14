@@ -83,6 +83,7 @@ interface Requester {
 }
 
 interface AssetLog {
+  id:string,
   accessories: string | null;
   approval_status_message: string | null;
   approved_by_id: number | null;
@@ -118,7 +119,33 @@ interface AssetLog {
 }
 
 export interface LogData {
-  id: number;
+  id:number,
+  asset_uuid: string;
   timestamp: string;
   asset_log: AssetLog;
 }
+export interface AssetTableProps {
+  logsData: LogData[] | undefined;
+  isLoading: boolean;
+  isSuccess: boolean;
+  selectedAssetId: string | null;
+  setSelectedAssetId: React.Dispatch<React.SetStateAction<string | null>>;
+  handleRowClick: (record: any) => void;
+  onCloseDrawer: () => void;
+  selectedRow: any;
+  drawerVisible: boolean;
+  assetData: any;
+  columns:any;
+  expandedRowRender?: (assetId: string) => JSX.Element | null;
+  statusOptions: string[],
+  businessUnitOptions: string[],
+  locations:string[],
+  memoryData:string[],
+  assetTypeData:string[],
+  handleUpdateData: (updatedData: {
+    key: any;
+}) => void,
+  drawerTitle:string,
+
+}
+
