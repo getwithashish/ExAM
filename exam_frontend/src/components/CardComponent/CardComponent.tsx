@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card, Form, Space, Input, Button, Select, ConfigProvider } from "antd";
+import { Card, Form, Space, Input, Button, Select, ConfigProvider, Row, Col } from "antd";
 import "./CardComponent.css";
 import { DataType } from "../AssetTable/types/index";
 import { CardType } from "./types/index";
@@ -95,11 +95,7 @@ const CardComponent: React.FC<CardType> = ({
     });
   };
 
-  const gridStyle: React.CSSProperties = {
-    width: "25%",
-    height: "30%",
-    textAlign: "center",
-  };
+
   const mainCardStyle = {
     marginLeft: "10%",
     width: "80%",
@@ -146,13 +142,17 @@ const CardComponent: React.FC<CardType> = ({
 
   
   return (
-    <Card
+    
+    <Form
       key={data.asset_id}
       className="mainCard"
       title=""
       style={mainCardStyle}
     >
-      <Card.Grid style={gridStyle}>
+      <div className="rowone">
+        <Row gutter={[16, 16]}>
+        <Col span={8}>
+
         <b>Asset Category: </b>
         <Form.Item name="version">
           {" "}
@@ -162,16 +162,17 @@ const CardComponent: React.FC<CardType> = ({
             style={inputStyle}
           />{" "}
         </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
+     
+        </Col>
+        <Col span={8}>
         <b> Asset Type:</b>
         <Form.Item
           name="status"
-          style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
+          style={{ boxShadow: "none", border: "none" }}
         >
           <Select
             defaultValue={data.asset_type}
-            style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
+            style={{ boxShadow: "none", border: "none",width:"200px" }}
             onChange={(value) => handleChange(value)} // Adjusted to accept only one argument
           >
             {uniqueAssetTypeOptions.map((asset_type, index) => (
@@ -181,9 +182,12 @@ const CardComponent: React.FC<CardType> = ({
             ))}
           </Select>
         </Form.Item>
-      </Card.Grid>
+        </Col>
 
-      <Card.Grid style={gridStyle}>
+    
+   
+    
+     <Col span={8}>
         <b>Version: </b>
         <Form.Item name="version">
           {" "}
@@ -193,16 +197,17 @@ const CardComponent: React.FC<CardType> = ({
             style={inputStyle}
           />{" "}
         </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
+    </Col>
+    </Row>
+    <Col span={12}>
         <b> Asset Status:</b>
         <Form.Item
           name="status"
-          style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
+          style={{ boxShadow: "none", border: "none" }}
         >
           <Select
             defaultValue={uniqueStatusOptions[0]}
-            style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
+            style={{ boxShadow: "none", border: "none",width:"200px" }}
             onChange={(value) => handleChange(value)} // Pass only the value
           >
             {uniqueStatusOptions.map((status, index) => (
@@ -212,17 +217,19 @@ const CardComponent: React.FC<CardType> = ({
             ))}
           </Select>
         </Form.Item>
-      </Card.Grid>
-
-      <Card.Grid style={gridStyle}>
+        </Col>
+          
+           <Row gutter={[16, 16]}>
+           <Col span={12}>
         <b> Asset Location:</b>
+
         <Form.Item
           name="location"
-          style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
+          style={{ boxShadow: "none", border: "none" }}
         >
           <Select
             defaultValue={data.location}
-            style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
+            style={{ boxShadow: "none", border: "none",width:"200px" }}
             onChange={(value) => handleChange(value)} 
           >
             {uniqueLocationoptions.map((location, index) => (
@@ -232,17 +239,18 @@ const CardComponent: React.FC<CardType> = ({
             ))}
           </Select>
         </Form.Item>
-      </Card.Grid>
+</Col>
 
-      <Card.Grid style={gridStyle}>
+      
+<Col span={12}>
         <b>Invoice Location:</b>
         <Form.Item
           name="location"
-          style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
+          style={{ boxShadow: "none", border: "none" }}
         >
           <Select
             defaultValue={data.invoice_location}
-            style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
+            style={{ boxShadow: "none", border: "none" ,width:"200px"}}
             onChange={(value) => handleChange(value)} // Pass only the value
           >
             {uniqueLocationoptions.map((location, index) => (
@@ -252,16 +260,19 @@ const CardComponent: React.FC<CardType> = ({
             ))}
           </Select>
         </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
+        </Col>
+        </Row>
+        <Row gutter={[16, 16]}>
+               
+<Col span={12}>
         <b>Business Unit:</b>
         <Form.Item
           name="business_unit"
-          style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
+          style={{ boxShadow: "none", border: "none" }}
         >
           <Select
             defaultValue={uniqueBusinessOptions[0]}
-            style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
+            style={{ boxShadow: "none", border: "none",width:"200px" }}
             onChange={(value) => handleChange(value)} // Pass only the value
           >
             {uniqueBusinessOptions.map((business_unit, index) => (
@@ -271,8 +282,9 @@ const CardComponent: React.FC<CardType> = ({
             ))}
           </Select>
         </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
+            
+</Col>
+<Col span={12}>
         <b>OS: </b>
         <Form.Item name="os">
           {" "}
@@ -282,8 +294,10 @@ const CardComponent: React.FC<CardType> = ({
             style={inputStyle}
           />{" "}
         </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
+        </Col>
+        </Row>
+        <Row gutter={[16, 16]}>
+        <Col span={12}>
         <b>OS Version:</b>
         <Form.Item name="os version">
           {" "}
@@ -293,8 +307,9 @@ const CardComponent: React.FC<CardType> = ({
             style={inputStyle}
           />{" "}
         </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
+        </Col>
+
+        <Col span={12}>
         <b>Mobile OS: </b>
         <Form.Item name="mobile os">
           {" "}
@@ -304,8 +319,10 @@ const CardComponent: React.FC<CardType> = ({
             style={inputStyle}
           />{" "}
         </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
+        </Col>
+        </Row>
+        <Row gutter={[16, 16]}>
+        <Col span={12}>
         <b>Processor: </b>
         <Form.Item name="processor">
           {" "}
@@ -315,8 +332,9 @@ const CardComponent: React.FC<CardType> = ({
             style={inputStyle}
           />{" "}
         </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
+        </Col>
+        <Col span={12}>
+
         <b>Generation:</b>
         <Form.Item name="generation">
           {" "}
@@ -326,8 +344,11 @@ const CardComponent: React.FC<CardType> = ({
             style={inputStyle}
           />{" "}
         </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
+        </Col>
+
+        </Row>
+        <Row gutter={[16, 16]}>
+        <Col span={12}>
         <b>Accessories:</b>{" "}
         <Form.Item name="accessories">
           {" "}
@@ -337,8 +358,8 @@ const CardComponent: React.FC<CardType> = ({
             style={inputStyle}
           />{" "}
         </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
+        </Col>
+        <Col span={12}>
         <b>Date of Purchase:</b>{" "}
         <Form.Item name="date of purchase">
           {" "}
@@ -348,8 +369,11 @@ const CardComponent: React.FC<CardType> = ({
             style={inputStyle}
           />{" "}
         </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
+        </Col>
+        </Row>
+        <Row gutter={[16, 16]}>
+        <Col span={12}>
+
         <b>Warranty Period:</b>
         <Form.Item name="warranty period">
           {" "}
@@ -359,18 +383,26 @@ const CardComponent: React.FC<CardType> = ({
             style={inputStyle}
           />{" "}
         </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
+        </Col>
+
+        <Col span={12}>
+
         <b>Approval Status: </b>
         <Form.Item name="date of purchase" style={inputStyle}>
           {data.approval_status}{" "}
         </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
+        </Col>
+
+        </Row>
+        <Row gutter={[16, 16]}>
+        <Col span={12}>
+
         <b>Approver:</b>{" "}
         <Form.Item name="date of purchase">{data.conceder} </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
+        </Col>
+
+        <Col span={12}>
+
         <b>Serial Number:</b>{" "}
         <Form.Item name="serial number">
           {" "}
@@ -380,8 +412,12 @@ const CardComponent: React.FC<CardType> = ({
             style={inputStyle}
           />{" "}
         </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
+        </Col>
+
+        </Row>
+        <Row gutter={[16, 16]}>
+        <Col span={12}>
+
         <b>Model Number:</b>{" "}
         <Form.Item name="serial number">
           {" "}
@@ -391,14 +427,19 @@ const CardComponent: React.FC<CardType> = ({
             style={inputStyle}
           />{" "}
         </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
+        </Col>
+        <Col span={12}>
+
         <b>Custodian:</b>
         <Form.Item name="date of purchase" style={inputStyle}>
           {data.custodian}{" "}
         </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
+        </Col>
+
+        </Row>
+        <Row gutter={[16, 16]}>
+        <Col span={12}>
+
         <b>Product Name:</b>
         <Form.Item name="product name">
           {" "}
@@ -408,16 +449,17 @@ const CardComponent: React.FC<CardType> = ({
             style={inputStyle}
           />{" "}
         </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
+        </Col>
+        <Col span={12}>
+
         <b>Memory:</b>
         <Form.Item
           name="business_unit"
-          style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
+          style={{ boxShadow: "none", border: "none" }}
         >
           <Select
             defaultValue={data.memory}
-            style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
+            style={{ boxShadow: "none", border: "none",width:"200px" }}
             onChange={(value) => handleChange(value)} // Pass only the value
           >
             {uniqueMemoryOptions.map((memory, index) => (
@@ -427,9 +469,12 @@ const CardComponent: React.FC<CardType> = ({
             ))}
           </Select>
         </Form.Item>
-      </Card.Grid>
+        </Col>
 
-      <Card.Grid style={gridStyle}>
+        </Row>
+        <Row gutter={[16, 16]}>
+        <Col span={12}>
+
         <b>Storage: </b>
         <Form.Item name="storage">
           {" "}
@@ -439,8 +484,8 @@ const CardComponent: React.FC<CardType> = ({
             style={inputStyle}
           />{" "}
         </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
+        </Col>
+        <Col span={12}>
         <b>Configuration: </b>
         <Form.Item name="configuration">
           {" "}
@@ -450,8 +495,12 @@ const CardComponent: React.FC<CardType> = ({
             style={inputStyle}
           />{" "}
         </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
+        </Col>
+
+        </Row>
+        <Row gutter={[16, 16]}>
+        <Col span={12}>
+
         <b>Owner: </b>
         <Form.Item name="configuration">
           {" "}
@@ -461,8 +510,9 @@ const CardComponent: React.FC<CardType> = ({
             style={inputStyle}
           />{" "}
         </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
+        </Col>
+        <Col span={12}>
+
         <b>Requester: </b>
         <Form.Item name="configuration">
           {" "}
@@ -472,8 +522,12 @@ const CardComponent: React.FC<CardType> = ({
             style={inputStyle}
           />{" "}
         </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
+        </Col>
+
+        </Row>
+        <Row gutter={[16, 16]}>
+        <Col span={12}>
+
         <b>Comments: </b>
         <Form.Item name="configuration">
           {" "}
@@ -483,9 +537,10 @@ const CardComponent: React.FC<CardType> = ({
             style={inputStyle}
           />{" "}
         </Form.Item>
-      </Card.Grid>
+        </Col>
 
-      <Card.Grid style={gridStyle}>
+        <Col span={12}>
+
   <b>Created At: </b>
   <Form.Item name="configuration">
     {" "}
@@ -495,8 +550,11 @@ const CardComponent: React.FC<CardType> = ({
       style={inputStyle}
     />{" "}
   </Form.Item>
-</Card.Grid>
-<Card.Grid style={gridStyle}>
+  </Col>
+
+  </Row>
+  <Row gutter={[16, 16]}>
+  <Col span={12}>
   <b>Updated At: </b>
   <Form.Item name="configuration">
     {" "}
@@ -506,33 +564,9 @@ const CardComponent: React.FC<CardType> = ({
       style={inputStyle}
     />{" "}
   </Form.Item>
-</Card.Grid>
-
-
-      {/* <Card.Grid style={gridStyle}>
-        <b>Created At: </b>
-        <Form.Item name="configuration">
-          {" "}
-          <Input
-            defaultValue={data.created_at.toLocaleString()}
-            onChange={handleInputChange}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
-        <b>Updated At: </b>
-        <Form.Item name="configuration">
-          {" "}
-          <Input
-            defaultValue={data.updated_at.toLocaleString()}
-            onChange={handleInputChange}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      </Card.Grid> */}
-
-      {/* Add more card details as needed */}
+  </Col>
+  <Col span={12}>
+  <Form.Item name="configuration">
       <Button
         style={{
           marginLeft: "1020px",
@@ -545,7 +579,13 @@ const CardComponent: React.FC<CardType> = ({
       >
         Update
       </Button>
-    </Card>
+    </Form.Item>
+    </Col>
+    </Row>
+      </div>
+    </Form>
+    
+  
   );
 };
 export default CardComponent;

@@ -94,7 +94,7 @@ const memoizedRowRender=useMemo(()=>rowRender,[isSuccess])
         visible={drawerVisible}
         onClose={onCloseDrawer}
         selectedRow={selectedRow}
-        title={drawerTitle}
+        drawerTitle={drawerTitle}
         // button={button}
         onUpdateData={handleUpdateData}
         closeIcon={<CloseOutlined rev={undefined} />}

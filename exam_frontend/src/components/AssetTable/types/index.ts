@@ -145,7 +145,7 @@ export interface AssetTableProps {
   handleUpdateData: (updatedData: {
     key: any;
 }) => void,
-  drawerTitle:string,
+  drawerTitle:string
 
 }
 

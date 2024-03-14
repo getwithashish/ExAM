@@ -3,11 +3,11 @@ import { Button, Drawer } from 'antd';
 import CardComponent from '../AssetTable/CardComponent';
 import './DrawerComponent.css'
 import { DrawerProps } from './types/index';
-const DrawerComponent:React.FC<DrawerProps> = ({ visible, onClose,title ,children}) => {
+const DrawerComponent:React.FC<DrawerProps> = ({ visible, onClose,drawerTitle ,children}) => {
   return (
     <Drawer
     
-      title={title}
+      title={drawerTitle}
       placement="bottom"
       width={200}
       height={600}

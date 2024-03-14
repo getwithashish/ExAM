@@ -484,24 +484,26 @@ const AssetTableHandler = () => {
   
   return (
     <AssetTable 
-    logsData={logsData}
-    isLoading={isLoading}
-    isSuccess={isSuccess}
-    selectedAssetId={selectedAssetId && selectedAssetId}
-    setSelectedAssetId={setSelectedAssetId}
-    handleRowClick={handleRowClick}
-    onCloseDrawer={onCloseDrawer}
-    selectedRow={selectedRow}
-    drawerVisible={drawerVisible}
-    assetData={data}
-    columns={columns}
-    expandedRowRender={expandedRowRender}
-    memoryData={memoryData}
-    assetTypeData={assetTypeData}
-    locations={locations}
-    statusOptions={statusOptions}
-    businessUnitOptions={businessUnitOptions}
-     />
+          drawerTitle={drawerTitle}
+          logsData={logsData}
+          isLoading={isLoading}
+          isSuccess={isSuccess}
+          selectedAssetId={selectedAssetId && selectedAssetId}
+          setSelectedAssetId={setSelectedAssetId}
+          handleRowClick={handleRowClick}
+          onCloseDrawer={onCloseDrawer}
+          selectedRow={selectedRow}
+          drawerVisible={drawerVisible}
+          assetData={data}
+          columns={columns}
+          expandedRowRender={expandedRowRender}
+          memoryData={memoryData}
+          assetTypeData={assetTypeData}
+          locations={locations}
+          statusOptions={statusOptions}
+          businessUnitOptions={businessUnitOptions} handleUpdateData={function (updatedData: { key: any; }): void {
+              throw new Error("Function not implemented.");
+          } } drawerTitle={""}     />
 
   )
 }
