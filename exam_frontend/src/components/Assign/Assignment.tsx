@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { RecordProps } from '../../pages/index/types';
 
 interface AssignmentProps {
-  record: RecordProps;
+  record: RecordProps|undefined;
 }
 
 export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
