@@ -32,7 +32,7 @@ export const SidebarHandler = ({ addAsset }: { addAsset: () => void }) => {
   };
 
   return (
-    <div style={{ backgroundColor: 'white' }} >
+    // <div style={{ backgroundColor: 'white' }} >
       <ExamSidebar
         isSidebarVisible={isSidebarVisible}
         isClicked={isClicked}
@@ -40,6 +40,6 @@ export const SidebarHandler = ({ addAsset }: { addAsset: () => void }) => {
         closeSidebar={closeSidebar}
         addAsset={addAsset}
       />
-    </div>
+    // </div>
   );
 };

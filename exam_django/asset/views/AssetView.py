@@ -86,7 +86,10 @@ class AssetView(ListCreateAPIView):
                 self.pagination_class.default_offset = offset
 
             if required_query_params:
-                queryset = queryset.filter(**required_query_params)
+                filter_kwargs = {}
+                for field, value in required_query_params.items():
+                    filter_kwargs[f"{field}__icontains"] = value
+                queryset = queryset.filter(**filter_kwargs)
 
             # Applying pagination
             page = self.paginate_queryset(queryset)
@@ -126,13 +129,12 @@ def log_asset_changes(sender, instance, **kwargs):
     old_instance = Asset.objects.filter(pk=instance.pk).values().first()
     if (
         old_instance
-        and instance.asset_detail_status == "CREATED"
         or instance.asset_detail_status == "UPDATED"
-        or instance.asset_detail_status == "CREATE_REJECTED"
-        or instance.asset_detail_status == "UPDATE_REJECTED"
+        or instance.asset_detail_status == "ASSIGNED"
+        or instance.asset_detail_status == "UNASSIGNED"
     ):
         changes = {
-            field: (getattr(instance, field))
+            field: getattr(instance, field)
             for field in old_instance
             if field != "asset_uuid"
         }

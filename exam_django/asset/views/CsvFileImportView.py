@@ -79,7 +79,7 @@ def parse_and_add_assets(file_content):
             created_at=row["created_at"],
             updated_at=row["updated_at"],
             is_deleted=row["is_deleted"],
-            conceder_id=conceder_user.id if conceder_user else None,
+            approved_by=conceder_user.id if conceder_user else None,
             requester_id=requester_user.id if requester_user else None,
             asset_type_id=asset_type.id if asset_type else None,
             business_unit_id=business_unit.id if business_unit else None,

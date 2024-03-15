@@ -12,12 +12,12 @@ import { ColumnFilterItem } from "../AssetTable/types";
 import { AssetResult } from "../AssetTable/types";
 import {FilterDropdownProps} from "../AssetTable/types";
 import { useInfiniteQuery } from 'react-query';
-
+ 
 import { DownOutlined } from '@ant-design/icons';
 import ExportButton from "../Export/Export";
 import { getAssetLog } from "./api/getAssetLog";
 import { AxiosError } from "axios";
-
+ 
 interface ExpandedDataType {
   key: React.Key;
   date: string;
@@ -28,9 +28,9 @@ const items = [
   { key: '1', label: 'Action 1' },
   { key: '2', label: 'Action 2' },
 ];
-
-
-
+ 
+ 
+ 
 const AssetTable = ({
   asset_uuid,
   logsData,
@@ -54,11 +54,11 @@ const AssetTable = ({
   expandedRowRender
 }:AssetTableProps
 ) => {
-
+ 
  
 const rowRender=(record, expanded)=>{if(isSuccess){ if(expanded && selectedAssetId && expandedRowRender)return expandedRowRender(record.key);else return;} else return <>not loaded</>}  
 const memoizedRowRender=useMemo(()=>rowRender,[isSuccess])
-
+ 
   return (
     <>
       <div className="mainHeading">
@@ -73,21 +73,21 @@ const memoizedRowRender=useMemo(()=>rowRender,[isSuccess])
     scroll={{ x: "max-content" }}
     className="mainTable"
     pagination={false}
-    bordered={false}
+    // bordered={false}
     handleRowClick={handleRowClick}
     style={{
       borderRadius: 10,
       padding: 20,
       fontSize: "50px",
     }}
-
-    
+ 
+   
   rowKey={(record:DataType)=>record.key}
     expandable={{
       onExpand:(expanded,record)=>{if(expanded) return setSelectedAssetId(record.key); else return},
-      expandedRowRender: (record, index, indent, expanded) => {return memoizedRowRender(record, expanded);}, 
+      expandedRowRender: (record, index, indent, expanded) => {return memoizedRowRender(record, expanded);},
     }}
-  
+ 
   />
  
 </div>
@@ -105,7 +105,7 @@ const memoizedRowRender=useMemo(()=>rowRender,[isSuccess])
             <h2 className="drawerHeading">{selectedRow.ProductName}</h2>
           </div>
         )}
-
+ 
         {selectedRow && (
           <CardComponent
             data={selectedRow}
@@ -118,20 +118,10 @@ const memoizedRowRender=useMemo(()=>rowRender,[isSuccess])
               throw new Error("Function not implemented.");
             } }          />
         )}
-        {/* {button && (
-          <div
-            style={{
-              marginBottom: "20px",
-              marginLeft: "1150px",
-              marginTop: "60px",
-            }}
-          >
-            {button}
-          </div>
-        )} */}<></>
+     
       </DrawerComponent>
     </>
   );
 };
-
+ 
 export default React.memo(AssetTable);
