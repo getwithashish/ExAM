@@ -7,3 +7,8 @@
     padding: 50px;
     box-shadow: none;
 }
+.formItem
+{
+    flex: 1;
+   
+}

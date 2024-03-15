@@ -10,7 +10,7 @@ const DrawerComponent:React.FC<DrawerProps> = ({ visible, onClose,drawerTitle ,c
       title={drawerTitle}
       placement="bottom"
       width={200}
-      height={600}
+      height={500}
       onClose={onClose}
       visible={visible}
       className="mainDrawer"
@@ -21,7 +21,7 @@ const DrawerComponent:React.FC<DrawerProps> = ({ visible, onClose,drawerTitle ,c
       borderTopRightRadius: "8%",
      }}
     >
-      
+      <h1><b>Asset Details</b></h1>
       {children}
 
     </Drawer>
