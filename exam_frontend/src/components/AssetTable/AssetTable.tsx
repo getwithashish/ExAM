@@ -17,6 +17,9 @@ import { DownOutlined } from '@ant-design/icons';
 import ExportButton from "../Export/Export";
 import { getAssetLog } from "./api/getAssetLog";
 import { AxiosError } from "axios";
+import TableNavbar from "../TableNavBar/TableNavbar";
+import SideDrawerComponent from "../SideDrawerComponent/SideDrawerComponent";
+import UploadComponent from "../Upload/UploadComponent";
  
 interface ExpandedDataType {
   key: React.Key;
@@ -58,6 +61,11 @@ const AssetTable = ({
  
 const rowRender=(record, expanded)=>{if(isSuccess){ if(expanded && selectedAssetId && expandedRowRender)return expandedRowRender(record.key);else return;} else return <>not loaded</>}  
 const memoizedRowRender=useMemo(()=>rowRender,[isSuccess])
+
+const [showUpload, setShowUpload] = useState(false);
+  const closeImportDrawer = () => {
+    setShowUpload(false);
+  };
  
   return (
     <>
@@ -65,7 +73,17 @@ const memoizedRowRender=useMemo(()=>rowRender,[isSuccess])
         <h1>Asset Details</h1>
       </div>
      
-      <div style={{ position: 'relative', display: 'inline-block' }}>
+      <div>
+        <TableNavbar showUpload={showUpload} setShowUpload={setShowUpload} />
+      </div>
+
+      <div style={{ position: "relative", display: "inline-block" }}>
+        <SideDrawerComponent
+          displayDrawer={showUpload}
+          closeDrawer={closeImportDrawer}
+        >
+          <UploadComponent />
+        </SideDrawerComponent>
   <Table
    
     columns={columns}
