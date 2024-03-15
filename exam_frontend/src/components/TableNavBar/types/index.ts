@@ -6,6 +6,10 @@ export interface TableNavBarModule {
     fileInput: string;
     importButton: string;
     exportButton: string;
+    visible: boolean;
+    onClose: () => void;
+    buttonTextDefault: string;
+    displayDrawer: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 declare const styles: TableNavBarModule;
