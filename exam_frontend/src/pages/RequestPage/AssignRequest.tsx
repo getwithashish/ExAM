@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import {
+import {   
   Breadcrumb,
   Button,
   Label,
@@ -11,58 +11,61 @@ import {
 import { HiHome, HiPencilAlt } from "react-icons/hi";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
 import axiosInstance from '../../config/AxiosConfig';
+import React from 'react';
 
-const RequestPage: FC = function () {
-  const [assets, setAssets] = useState<any[]>([]);
-  const [selectedAsset, setSelectedAsset] = useState<any | null>(null);
+const AssignPage: FC = function () {
+  const [assignRequests, setAssignRequests] = useState<any[]>([]);
+  const [selectedAssignRequest, setSelectedAssignRequest] = useState<any | null >(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    fetchAssets();
+    fetchAssignRequests();
   }, []);
 
-  const fetchAssets = () => {
-    axiosInstance.get('/asset/?limit=10&asset_detail_status=CREATE_PENDING')
+  const fetchAssignRequests = () => {
+    setLoading(true);
+    axiosInstance.get('/asset/?limit=10&assign_status=ASSIGN_PENDING')
       .then(response => {
-        setAssets(response.data.data.results);
+        console.log("hi")
+        setAssignRequests(response.data.data.results);
+        console.log(response.data.data.results);
       })
       .catch(error => {
-        console.error('Error fetching assets:', error);
+        console.error('Error fetching assign requests:', error);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
   const handleApprove = () => {
-    if (selectedAsset) {
+    if (selectedAssignRequest) {
       const approvalData = {
-        approval_type: 'ASSET_DETAIL_STATUS',
-        asset_uuid: selectedAsset.asset_uuid,
-        comments: selectedAsset.approverNotes,
-      };
+        approval_type: 'ASSIGN_STATUS',
+        asset_uuid: selectedAssignRequest.asset_uuid,
+        comments: selectedAssignRequest.approverNotes,
+      }
 
       axiosInstance.post('/asset/approve_asset', approvalData)
         .then(() => {
-          // Refresh assets after approval
-          fetchAssets();
-          setSelectedAsset(null); // Close modal
-          window.location.reload(); // Reload the page
+          fetchAssignRequests();
+          setSelectedAssignRequest(null)
         })
         .catch(error => {
-          console.error('Error approving asset:', error);
-          // Handle error if needed
-        });
+          console.error('Error assigning asset:', error); 
+        })
     }
-  };
+  }
 
   const handleReject = () => {
-    if (selectedAsset) {
-      // Remove the selected asset from the list
-      setAssets(assets.filter(asset => asset.asset_uuid !== selectedAsset.asset_uuid));
-      setSelectedAsset(null); // Close modal
-      window.location.reload(); // Reload the page
+    if (selectedAssignRequest){
+      setAssignRequests(assignRequests.filter(assignRequest => assignRequest.asset_uuid !== selectedAssignRequest.asset_uuid));
+      setSelectedAssignRequest(null)
     }
-  };
+  }
 
   return (
-    <NavbarSidebarLayout isFooter={true}>
+    <React.Fragment>
       <div className="block items-center justify-between border-b border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 sm:flex">
         <div className="mb-1 w-full">
           <div className="mb-4">
@@ -74,80 +77,72 @@ const RequestPage: FC = function () {
                 </div>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                Pending Asset Requests
+                Pending Assign Requests
               </Breadcrumb.Item>              
             </Breadcrumb>
             <h1 className="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">
-              Pending Asset Requests
+              Pending Assign Requests
             </h1>
-          </div>
-          <div className="block items-center sm:flex">
-            <SearchRequests />
           </div>
         </div>
       </div>
       <div className="flex flex-col">
         <div className="overflow-x-auto">
-          <div className="inline-block min-w-full align-middle">
-            <div className="overflow-hidden shadow">
-              <RequestTable assets={assets} setSelectedAsset={setSelectedAsset} />
+          {loading ? (
+            <div className="flex justify-center items-center h-full">
+              <p>Loading...</p>
             </div>
-          </div>
+          ) : (
+            <div className="inline-block min-w-full align-middle">
+              <div className="overflow-hidden shadow">
+                <AssignRequestTable assignRequests={assignRequests} setSelectedAssignRequest={setSelectedAssignRequest} />
+              </div>
+            </div>
+          )}
         </div>
       </div>
-      {selectedAsset && (
-        <ViewRequestModal asset={selectedAsset} handleApprove={handleApprove} handleReject={handleReject} onClose={() => setSelectedAsset(null)} />
+      {selectedAssignRequest && (
+        <ViewRequestModal assignRequest={selectedAssignRequest} handleApprove={handleApprove} handleReject={handleReject} onClose={() => setSelectedAssignRequest(null)} />
       )}
-    </NavbarSidebarLayout>
+      </React.Fragment>
   );
 };
 
-const SearchRequests: FC = function () {
-  return (
-    <form className="mb-4 sm:mb-0 sm:pr-3" action="#" method="GET">
-      <Label htmlFor="search-request" className="sr-only">
-        Search
-      </Label>
-      <div className="relative mt-1 lg:w-64 xl:w-96">
-        <TextInput
-          id="search-request"
-          name="search-request"
-          placeholder="Search for requests"
-        />
-      </div>
-    </form>
-  );
-};
 
-const RequestTable: FC<{ assets: any[], setSelectedAsset: (asset: any | null) => void }> = function ({ assets, setSelectedAsset }) {  
+
+const AssignRequestTable: FC<{ assignRequests: any[], setSelectedAssignRequest: (assignRequest: any | null)=>void }> = function ({ assignRequests, setSelectedAssignRequest }) {  
   return (
     <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
       <Table.Head className="bg-gray-100 dark:bg-gray-700">
-        <Table.HeadCell>Request type</Table.HeadCell>
+        <Table.HeadCell>Asset</Table.HeadCell>
         <Table.HeadCell>Requester</Table.HeadCell>
+        <Table.HeadCell>Assignee</Table.HeadCell>
         <Table.HeadCell>Request Date</Table.HeadCell>
         <Table.HeadCell>Actions</Table.HeadCell>
       </Table.Head>
       <Table.Body className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
-        {assets.map(asset => (
-          <Table.Row key={asset.asset_uuid} className="hover:bg-gray-100 dark:hover:bg-gray-700">
+        {assignRequests.map(assignRequest => (
+          <Table.Row key={assignRequest.asset_uuid} className="hover:bg-gray-100 dark:hover:bg-gray-700">
             <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
               <div className="text-base font-semibold text-gray-900 dark:text-white">
-                {asset.asset_detail_status}
+                {assignRequest.asset_type.asset_type_name}
               </div>
               <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                Details
+                {assignRequest.product_name}
               </div>
             </Table.Cell>
             <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
-              {asset.requester.username}
+              {assignRequest.requester.username}
             </Table.Cell>
             <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
-              {new Date(asset.created_at).toLocaleDateString()}
+              {assignRequest.custodian.employee_name}
+            </Table.Cell>
+            <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
+              {new Date(assignRequest.created_at).toLocaleDateString()}
             </Table.Cell>
             <Table.Cell className="space-x-2 whitespace-nowrap p-4">
               <div className="flex items-center gap-x-3">
-                <Button color="primary" onClick={() => setSelectedAsset(asset)}>
+                <Button color="primary" onClick={() => setSelectedAssignRequest(assignRequest)}>
                   <HiPencilAlt className="mr-2 text-lg" />
                   View Request
                 </Button>
@@ -160,7 +155,7 @@ const RequestTable: FC<{ assets: any[], setSelectedAsset: (asset: any | null) =>
   );
 };
 
-const ViewRequestModal: FC<{ asset: any, handleApprove: () => void, handleReject: () => void, onClose: () => void }> = function ({ asset, handleApprove, handleReject, onClose }) {
+const ViewRequestModal: FC<{ assignRequest: any, handleApprove: () => void, handleReject: () => void, onClose: () => void }> = function ({ assignRequest, handleApprove, handleReject, onClose }) {
   const [comments, setComments] = useState('');
 
   return (
@@ -176,17 +171,17 @@ const ViewRequestModal: FC<{ asset: any, handleApprove: () => void, handleReject
               <TextInput
                 id="assetId"
                 name="assetId"
-                value={asset.asset_id}
+                value={assignRequest.asset_id}
                 disabled
                 className="mt-1"
               />
             </div>
             <div>
-              <Label htmlFor="assetCategory">ASSET CATEGORY</Label>
+              <Label htmlFor="assetCategory">ASSIGNEE</Label>
               <TextInput
                 id="assetCategory"
                 name="assetCategory"
-                value={asset.asset_category}
+                value={assignRequest.custodian.employee_name}
                 disabled
                 className="mt-1"
               />
@@ -196,7 +191,7 @@ const ViewRequestModal: FC<{ asset: any, handleApprove: () => void, handleReject
               <TextInput
                 id="productName"
                 name="productName"
-                value={asset.product_name}
+                value={assignRequest.product_name}
                 disabled
                 className="mt-1"
               />
@@ -206,7 +201,7 @@ const ViewRequestModal: FC<{ asset: any, handleApprove: () => void, handleReject
               <TextInput
                 id="serialNumber"
                 name="serialNumber"
-                value={asset.serial_number}
+                value={assignRequest.serial_number}
                 disabled
                 className="mt-1"
               />
@@ -216,7 +211,7 @@ const ViewRequestModal: FC<{ asset: any, handleApprove: () => void, handleReject
               <TextInput
                 id="modelNumber"
                 name="modelNumber"
-                value={asset.model_number}
+                value={assignRequest.model_number}
                 disabled
                 className="mt-1"
               />
@@ -226,7 +221,7 @@ const ViewRequestModal: FC<{ asset: any, handleApprove: () => void, handleReject
               <TextInput
                 id="status"
                 name="status"
-                value={asset.status}
+                value={assignRequest.status}
                 disabled
                 className="mt-1"
               />
@@ -236,7 +231,7 @@ const ViewRequestModal: FC<{ asset: any, handleApprove: () => void, handleReject
               <TextInput
                 id="warrantyPeriod"
                 name="warrantyPeriod"
-                value={asset.warranty_period}
+                value={assignRequest.warranty_period}
                 disabled
                 className="mt-1"
               />
@@ -246,7 +241,7 @@ const ViewRequestModal: FC<{ asset: any, handleApprove: () => void, handleReject
               <TextInput
                 id="dateOfPurchase"
                 name="dateOfPurchase"
-                value={asset.date_of_purchase}
+                value={assignRequest.date_of_purchase}
                 disabled
                 className="mt-1"
               />
@@ -277,4 +272,4 @@ const ViewRequestModal: FC<{ asset: any, handleApprove: () => void, handleReject
   );
 };
 
-export default RequestPage;
+export default AssignPage;

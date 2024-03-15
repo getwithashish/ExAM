@@ -6,7 +6,6 @@ import { SidebarHandler } from "../components/Sidebar/SidebarHandler";
 import Navbar from "../components/Navbar/navbar";
 import { MdFacebook } from "react-icons/md";
 import { FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
-import ExportButton from "../components/Export/Export";
 
 interface NavbarSidebarLayoutProps {
   isFooter?: boolean;
@@ -18,10 +17,11 @@ const NavbarSidebarLayout: FC<PropsWithChildren<NavbarSidebarLayoutProps>> =
       <>
         <Navbar />
         <div className="flex items-start pt-16 bg-white">
-          {/* <SidebarHandler /> */} <ExportButton />
+          {/* <SidebarHandler /> */}
           <MainContent isFooter={isFooter}>{children}</MainContent>
         </div>
       </>
+      
     );
   };
 
@@ -47,14 +47,22 @@ const MainContentFooter: FC = function () {
       <Footer container>
         <div className="flex w-full flex-col gap-y-6 lg:flex-row lg:justify-between lg:gap-y-0">
           <Footer.LinkGroup>
-            <Footer.Link href="https://experionglobal.com/terms-of-use/" className="mr-3 mb-3 lg:mb-0">
+            <Footer.Link
+              href="https://experionglobal.com/terms-of-use/"
+              className="mr-3 mb-3 lg:mb-0"
+            >
               Terms and conditions
             </Footer.Link>
-            <Footer.Link href="https://experionglobal.com/privacy-policy/" className="mr-3 mb-3 lg:mb-0">
+            <Footer.Link
+              href="https://experionglobal.com/privacy-policy/"
+              className="mr-3 mb-3 lg:mb-0"
+            >
               Privacy Policy
             </Footer.Link>
-           
-            <Footer.Link href="https://experionglobal.com/">Contact</Footer.Link>
+
+            <Footer.Link href="https://experionglobal.com/">
+              Contact
+            </Footer.Link>
           </Footer.LinkGroup>
           <Footer.LinkGroup>
             <div className="flex gap-x-1">
