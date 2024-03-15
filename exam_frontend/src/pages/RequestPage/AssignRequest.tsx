@@ -1,6 +1,5 @@
 import { FC, useEffect, useState } from 'react';
 import {   
-  Breadcrumb,
   Button,
   Label,
   Modal,
@@ -8,7 +7,7 @@ import {
   Textarea,
   TextInput,
 } from "flowbite-react";
-import { HiHome, HiPencilAlt } from "react-icons/hi";
+import { HiPencilAlt } from "react-icons/hi";
 import axiosInstance from '../../config/AxiosConfig';
 import React from 'react';
 
@@ -86,14 +85,6 @@ const AssignPage: FC = function () {
                   <a href="#" className="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Pending Assign Requests</a>
                 </div>
               </li>
-              {/* <li aria-current="page">
-                <div className="flex items-center">
-                  <svg className="w-3 h-3 text-gray-400 mx-1 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
-                  </svg>
-                  <span className="ms-1 text-sm font-medium text-gray-500 md:ms-2 dark:text-gray-400">Flowbite</span>
-                </div>
-              </li> */}
             </ol>
           </nav>
             <h1 className="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">
@@ -151,7 +142,7 @@ const AssignRequestTable: FC<{ assignRequests: any[], setSelectedAssignRequest: 
               {assignRequest.requester.username}
             </Table.Cell>
             <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
-              {assignRequest.custodian.employee_name}
+              {assignRequest.custodian?.employee_name}
             </Table.Cell>
             <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
               {new Date(assignRequest.created_at).toLocaleDateString()}
@@ -175,116 +166,236 @@ const ViewRequestModal: FC<{ assignRequest: any, handleApprove: () => void, hand
   const [comments, setComments] = useState('');
 
   return (
-    <Modal onClose={onClose} show={true}>
-      <Modal.Header className="border-b border-gray-200 !p-6 dark:border-gray-700">
-        <strong>Request Details</strong>
-      </Modal.Header>
-      <Modal.Body>
-        <form>
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <div>
-              <Label htmlFor="assetId">ASSET ID</Label>
-              <TextInput
-                id="assetId"
-                name="assetId"
-                value={assignRequest.asset_id}
-                disabled
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="assetCategory">ASSIGNEE</Label>
-              <TextInput
-                id="assetCategory"
-                name="assetCategory"
-                value={assignRequest.custodian.employee_name}
-                disabled
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="productName">PRODUCT NAME</Label>
-              <TextInput
-                id="productName"
-                name="productName"
-                value={assignRequest.product_name}
-                disabled
-                className="mt-1"
-              />
-            </div> 
-            <div>
-              <Label htmlFor="serialNumber">SERIAL NUMBER</Label>
-              <TextInput
-                id="serialNumber"
-                name="serialNumber"
-                value={assignRequest.serial_number}
-                disabled
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="modelNumber">MODEL NUMBER</Label>
-              <TextInput
-                id="modelNumber"
-                name="modelNumber"
-                value={assignRequest.model_number}
-                disabled
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="status">STATUS</Label>
-              <TextInput
-                id="status"
-                name="status"
-                value={assignRequest.status}
-                disabled
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="warrantyPeriod">WARRANTY PERIOD</Label>
-              <TextInput
-                id="warrantyPeriod"
-                name="warrantyPeriod"
-                value={assignRequest.warranty_period}
-                disabled
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="dateOfPurchase">DATE OF PURCHASE</Label>
-              <TextInput
-                id="dateOfPurchase"
-                name="dateOfPurchase"
-                value={assignRequest.date_of_purchase}
-                disabled
-                className="mt-1"
-              />
-            </div>
-            <div className="lg:col-span-2">
-              <Label htmlFor="approverNotes">APPROVER NOTES</Label>
-              <Textarea
-                id="approverNotes"
-                name="approverNotes"
-                rows={1}
-                value={comments}
-                onChange={(e) => setComments(e.target.value)}
-                className="mt-1"
-              />
-            </div>
+    <Modal onClose={onClose} show={true} style={{ zIndex: 9999 }} >
+    <Modal.Header className="border-b border-gray-200 !p-6 dark:border-gray-700">
+      <strong>Request Details</strong>
+    </Modal.Header>
+    <Modal.Body>
+      <form>
+        <div className="grid grid-cols-4 gap-1 lg:grid-cols-5 text-sm">
+          <div>
+            <Label htmlFor="assetId">ASSET ID</Label>
+            <TextInput
+              id="assetId"
+              name="assetId"
+              value={assignRequest.asset_id}
+              disabled
+              className="mt-1"
+            />
           </div>
-        </form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button color="success" onClick={handleApprove}>
-          Approve
-        </Button>
-        <Button color="failure" onClick={handleReject}>
-          Reject
-        </Button>
-      </Modal.Footer>
-    </Modal>
+          <div>
+            <Label htmlFor="version">VERSION</Label>
+            <TextInput
+              id="version"
+              name="version"
+              value={assignRequest.version}
+              disabled
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label htmlFor="assetCategory">CATEGORY</Label>
+            <TextInput
+              id="assetCategory"
+              name="assetCategory"
+              value={assignRequest.asset_category}
+              disabled
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label htmlFor="modelNumber">MODEL NUMBER</Label>
+            <TextInput
+              id="modelNumber"
+              name="modelNumber"
+              value={assignRequest.model_number}
+              disabled
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label htmlFor="serialNumber">SERIAL NUMBER</Label>
+            <TextInput
+              id="serialNumber"
+              name="serialNumber"
+              value={assignRequest.serial_number}
+              disabled
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label htmlFor="owner">OWNER</Label>
+            <TextInput
+              id="owner"
+              name="owner"
+              value={assignRequest.owner}
+              disabled
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label htmlFor="dop">D.O.P</Label>
+            <TextInput
+              id="dop"
+              name="dop"
+              value={assignRequest.date_of_purchase}
+              disabled
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label htmlFor="warranty_period">WARRANTY</Label>
+            <TextInput
+              id="warranty_period"
+              name="warranty_period"
+              value={assignRequest.warranty_period}
+              disabled
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label htmlFor="os">OS</Label>
+            <TextInput
+              id="os"
+              name="os"
+              value={assignRequest.os}
+              disabled
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label htmlFor="os_version">OS VERSION</Label>
+            <TextInput
+              id="os_version"
+              name="os_version"
+              value={assignRequest.os_version}
+              disabled
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label htmlFor="mobile_os">MOBILE OS</Label>
+            <TextInput
+              id="mobile_os"
+              name="mobile_os"
+              value={assignRequest.mobile_os}
+              disabled
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label htmlFor="processor">PROCESSOR</Label>
+            <TextInput
+              id="processor"
+              name="processor"
+              value={assignRequest.mobile_os}
+              disabled
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label htmlFor="storage">STORAGE</Label>
+            <TextInput
+              id="storage"
+              name="storage"
+              value={assignRequest.storage}
+              disabled
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label htmlFor="configuration">CONFIGURATION</Label>
+            <TextInput
+              id="configuration"
+              name="configuration"
+              value={assignRequest.configuration}
+              disabled
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label htmlFor="accessories">ACCESSORIES</Label>
+            <TextInput
+              id="accessories"
+              name="accessories"
+              value={assignRequest.accessories}
+              disabled
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label htmlFor="location">LOCATION</Label>
+            <TextInput
+              id="location"
+              name="location"
+              value={assignRequest.location.location_name}
+              disabled
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label htmlFor="invoice_location">INV.LOCATION</Label>
+            <TextInput
+              id="invoice_location"
+              name="invoice_location"
+              value={assignRequest.location.location_name}
+              disabled
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label htmlFor="business_unit">BUSINESS UNIT</Label>
+            <TextInput
+              id="business_unit"
+              name="business_unit"
+              value={assignRequest.business_unit.business_unit_name}
+              disabled
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label htmlFor="assignee">ASSIGNEE</Label>
+            <TextInput
+              id="assignee"
+              name="assignee"
+              value={assignRequest.custodian?.employee_name}
+              disabled
+              className="mt-1"
+            />
+          </div>
+          <div className="lg:col-span-5">
+              <Label htmlFor="notes">NOTES</Label>
+              <Textarea
+                id="notes"
+                name="notes"
+                rows={1}
+                value={assignRequest.notes}
+                className="mt-1"
+              />
+            </div>
+          <div className="lg:col-span-5">
+            <Label htmlFor="approverNotes">APPROVER NOTES</Label>
+            <Textarea
+              id="approverNotes"
+              name="approverNotes"
+              rows={1}
+              value={assignRequest.approval_status_message}
+              onChange={(e) => setComments(e.target.value)}
+              className="mt-1"
+            />
+          </div>
+        </div>
+      </form>
+    </Modal.Body>
+    <Modal.Footer>
+      <Button color="success" onClick={handleApprove}>
+        Approve
+      </Button>
+      <Button color="failure" onClick={handleReject}>
+        Reject
+      </Button>
+    </Modal.Footer>
+  </Modal>    
   );
 };
 

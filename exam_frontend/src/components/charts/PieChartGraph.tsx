@@ -193,19 +193,19 @@ export const PieChartGraph: React.FC<PieChartGraphProps> = () => {
                         {
                             data: assetFilteredChartData,
                             innerRadius: 50,
-                            outerRadius: 100,
-                            paddingAngle: 1,
-                            cornerRadius: 5,
-                            startAngle: 0,
-                            endAngle: 360,
+                            outerRadius: 120,
+                            paddingAngle: 5,
+                            cornerRadius: 10,
+                            startAngle: -100,
+                            endAngle: 100,
                             cx:140,
-                            cy: 150,
+                            cy: 160,
                             highlightScope: { faded: 'global', highlighted: 'item' },
                             faded: { innerRadius: 75, additionalRadius: -40, color: 'grey' },
                         },
                     ]}
                     width={300}
-                    height={300}
+                    height={220}
                     slotProps={{
                         legend: {
                             direction: 'row',
@@ -229,19 +229,19 @@ export const PieChartGraph: React.FC<PieChartGraphProps> = () => {
                         {
                             data: detailFilteredChartData,
                             innerRadius: 50,
-                            outerRadius: 100,
-                            paddingAngle: 1,
-                            cornerRadius: 5,
-                            startAngle: 0,
-                            endAngle: 360,
+                            outerRadius: 120,
+                            paddingAngle: 5,
+                            cornerRadius: 10,
+                            startAngle: -100,
+                            endAngle: 100,
                             cx:140,
-                            cy: 150,
+                            cy: 160,
                             highlightScope: { faded: 'global', highlighted: 'item' },
                             faded: { innerRadius: 75, additionalRadius: -40, color: 'grey' },
                         },
                     ]}
                     width={300}
-                    height={300}
+                    height={230}
                     slotProps={{
                         legend: {
                             direction: 'row',
@@ -268,19 +268,19 @@ export const PieChartGraph: React.FC<PieChartGraphProps> = () => {
                         {
                             data: assignFilteredChartData,
                             innerRadius: 50,
-                            outerRadius: 100,
-                            paddingAngle: 1,
-                            cornerRadius: 5,
-                            startAngle: 0,
-                            endAngle: 360,
+                            outerRadius: 120,
+                            paddingAngle: 5,
+                            cornerRadius: 10,
+                            startAngle: -100,
+                            endAngle: 100,
                             cx:130,
-                            cy: 120,
+                            cy: 130,
                             highlightScope: { faded: 'global', highlighted: 'item' },
                             faded: { innerRadius: 75, additionalRadius: -40, color: 'grey' },
                         },
                     ]}
                     width={300}
-                    height={270}
+                    height={210}
                     slotProps={{
                         legend: {
                             direction: 'row',

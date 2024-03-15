@@ -1,6 +1,5 @@
 import { FC, useEffect, useState } from "react";
 import {
-  Breadcrumb,
   Button,
   Label,
   Modal,
@@ -8,8 +7,7 @@ import {
   Textarea,
   TextInput,
 } from "flowbite-react";
-import { HiHome, HiPencilAlt } from "react-icons/hi";
-import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
+import { HiPencilAlt } from "react-icons/hi";
 import axiosInstance from "../../config/AxiosConfig";
 import React from "react";
 
@@ -89,14 +87,6 @@ const RequestPage: FC = function () {
                   <a href="#" className="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Pending Asset Requests</a>
                 </div>
               </li>
-              {/* <li aria-current="page">
-                <div className="flex items-center">
-                  <svg className="w-3 h-3 text-gray-400 mx-1 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
-                  </svg>
-                  <span className="ms-1 text-sm font-medium text-gray-500 md:ms-2 dark:text-gray-400">Flowbite</span>
-                </div>
-              </li> */}
             </ol>
           </nav>
             <h1 className="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">
@@ -176,13 +166,13 @@ const RequestTable: FC<{
             <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
               <div className="text-base font-semibold text-gray-900 dark:text-white">
                 {asset.asset_detail_status === "CREATE_PENDING"
-                  ? "CREATION APPROVAL"
+                  ? "ASSET CREATION APPROVAL"
                   : asset.asset_detail_status === "UPDATE_PENDING"
-                  ? "UPDATION APPROVAL"
+                  ? "ASSET UPDATION APPROVAL"
                   : asset.asset_detail_status}
               </div>
             </Table.Cell>
-            <Table.Cell className="whitespace-nowrap p-4 text-base font-medium  text-left text-gray-900 dark:text-white">
+            <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-left text-gray-900 dark:text-white">
               {asset.requester.username}
             </Table.Cell>
             <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
@@ -212,13 +202,13 @@ const ViewRequestModal: FC<{
   const [comments, setComments] = useState("");
 
   return (
-    <Modal onClose={onClose} show={true}>
-      <Modal.Header className="border-b border-gray-200 !p-6 dark:border-gray-700">
+    <Modal onClose={onClose} show={true} style={{ zIndex: 9999 }} >
+      <Modal.Header className="border-b border-gray-200 !p-2 my-2 mx-2 dark:border-gray-700">
         <strong>Request Details</strong>
       </Modal.Header>
       <Modal.Body>
         <form>
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div className="grid grid-cols-4 gap-1 lg:grid-cols-5 text-sm">
             <div>
               <Label htmlFor="assetId">ASSET ID</Label>
               <TextInput
@@ -230,7 +220,17 @@ const ViewRequestModal: FC<{
               />
             </div>
             <div>
-              <Label htmlFor="assetCategory">ASSET CATEGORY</Label>
+              <Label htmlFor="version">VERSION</Label>
+              <TextInput
+                id="version"
+                name="version"
+                value={asset.version}
+                disabled
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="assetCategory">CATEGORY</Label>
               <TextInput
                 id="assetCategory"
                 name="assetCategory"
@@ -250,16 +250,6 @@ const ViewRequestModal: FC<{
               />
             </div>
             <div>
-              <Label htmlFor="serialNumber">SERIAL NUMBER</Label>
-              <TextInput
-                id="serialNumber"
-                name="serialNumber"
-                value={asset.serial_number}
-                disabled
-                className="mt-1"
-              />
-            </div>
-            <div>
               <Label htmlFor="modelNumber">MODEL NUMBER</Label>
               <TextInput
                 id="modelNumber"
@@ -270,42 +260,172 @@ const ViewRequestModal: FC<{
               />
             </div>
             <div>
-              <Label htmlFor="status">STATUS</Label>
+              <Label htmlFor="serialNumber">SERIAL NUMBER</Label>
               <TextInput
-                id="status"
-                name="status"
-                value={asset.status}
+                id="serialNumber"
+                name="serialNumber"
+                value={asset.serial_number}
+                disabled
+                className="mt-1"
+              />
+            </div>            
+            <div>
+              <Label htmlFor="owner">OWNER</Label>
+              <TextInput
+                id="owner"
+                name="owner"
+                value={asset.owner}
                 disabled
                 className="mt-1"
               />
             </div>
             <div>
-              <Label htmlFor="warrantyPeriod">WARRANTY PERIOD</Label>
+              <Label htmlFor="dop">D.O.P</Label>
               <TextInput
-                id="warrantyPeriod"
-                name="warrantyPeriod"
+                id="dop"
+                name="dop"
+                value={asset.date_of_purchase}
+                disabled
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="warranty_period">WARRANTY</Label>
+              <TextInput
+                id="warranty_period"
+                name="warranty_period"
                 value={asset.warranty_period}
                 disabled
                 className="mt-1"
               />
             </div>
             <div>
-              <Label htmlFor="dateOfPurchase">DATE OF PURCHASE</Label>
+              <Label htmlFor="os">OS</Label>
               <TextInput
-                id="dateOfPurchase"
-                name="dateOfPurchase"
-                value={asset.date_of_purchase}
+                id="os"
+                name="os"
+                value={asset.os}
                 disabled
                 className="mt-1"
               />
             </div>
-            <div className="lg:col-span-2">
+            <div>
+              <Label htmlFor="os_version">OS VERSION</Label>
+              <TextInput
+                id="os_version"
+                name="os_version"
+                value={asset.os_version}
+                disabled
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="mobile_os">MOBILE OS</Label>
+              <TextInput
+                id="mobile_os"
+                name="mobile_os"
+                value={asset.mobile_os}
+                disabled
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="processor">PROCESSOR</Label>
+              <TextInput
+                id="processor"
+                name="processor"
+                value={asset.processor}
+                disabled
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="p_gen">PROCESSOR GEN</Label>
+              <TextInput
+                id="p_gen"
+                name="p_gen"
+                value={asset.processor_gen}
+                disabled
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="storage">STORAGE</Label>
+              <TextInput
+                id="storage"
+                name="storage"
+                value={asset.storage}
+                disabled
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="configuration">CONFIGURATION</Label>
+              <TextInput
+                id="configuration"
+                name="configuration"
+                value={asset.configuration}
+                disabled
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="accessories">ACCESSORIES</Label>
+              <TextInput
+                id="accessories"
+                name="accessories"
+                value={asset.accessories}
+                disabled
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="location">LOCATION</Label>
+              <TextInput
+                id="location"
+                name="location"
+                value={asset.location.location_name}
+                disabled
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="invoice_location">INV.LOCATION</Label>
+              <TextInput
+                id="invoice_location"
+                name="invoice_location"
+                value={asset.location.location_name}
+                disabled
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="business_unit">BUSINESS UNIT</Label>
+              <TextInput
+                id="business_unit"
+                name="business_unit"
+                value={asset.business_unit.business_unit_name}
+                disabled
+                className="mt-1"
+              />
+            </div>
+            <div className="lg:col-span-5">
+              <Label htmlFor="notes">NOTES</Label>
+              <Textarea
+                id="notes"
+                name="notes"
+                rows={1}
+                value={asset.notes}
+                className="mt-1"
+              />
+            </div>           
+            <div className="lg:col-span-5">
               <Label htmlFor="approverNotes">APPROVER NOTES</Label>
               <Textarea
                 id="approverNotes"
                 name="approverNotes"
                 rows={1}
-                value={comments}
+                value={asset.approval_status_message}
                 onChange={(e) => setComments(e.target.value)}
                 className="mt-1"
               />
