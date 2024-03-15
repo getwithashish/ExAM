@@ -27,6 +27,9 @@ const CardComponent: React.FC<CardType> = ({
   const uniqueAssetTypeOptions = Array.from(new Set(assetTypeData));
 
 
+
+ 
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {name,value}=e.target;
     setEditedData((prevData) => ({
@@ -136,19 +139,22 @@ const CardComponent: React.FC<CardType> = ({
 
   
   return (
-    
+    <div>
+
     <Form
       key={data.asset_id}
       className="mainCard"
       title=""
-      style={mainCardStyle}
-    >
+      style={mainCardStyle}      
+    >       
+     
+      
       <div className="rowone">
         <Row gutter={[16, 16]}>
         <Col span={8}>
 
-        <b  style={{ display: "block", marginBottom: "8px" }}>Asset Category: </b>
-        <Form.Item name="version">
+        <Form.Item name="assetCategory">
+          <b  style={{ display: "block", marginBottom: "8px" }}>Asset Category: </b>
           {" "}
           <Input
             defaultValue={data.asset_category}
@@ -165,16 +171,16 @@ const CardComponent: React.FC<CardType> = ({
           style={{ boxShadow: "none", border: "none" }}
         >
           <Select
-            defaultValue={data.asset_type}
-            style={{ boxShadow: "none", border: "none",width:"200px" }}
-            onChange={(value) => handleChange("asset_type", value)} // Adjusted to accept only one argument
-          >
-            {uniqueAssetTypeOptions.map((asset_type, index) => (
-              <Select.Option key={index} value={asset_type.id}>
-                {asset_type.asset_type_name}
-              </Select.Option>
-            ))}
-          </Select>
+  defaultValue={data.asset_type}
+  style={{ boxShadow: "none", border: "none", width: "200px" }}
+  onChange={(value) => handleChange("asset_type", value)}
+>
+  {uniqueAssetTypeOptions.map((asset_type, index) => (
+    <Select.Option key={index} value={asset_type.id}>
+      {asset_type.asset_type_name}
+    </Select.Option>
+  ))}
+</Select>
         </Form.Item>
         </Col>
 
@@ -588,7 +594,7 @@ const CardComponent: React.FC<CardType> = ({
       </div>
     </Form>
     
-  
+    </div>
   );
 };
 export default CardComponent;
