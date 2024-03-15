@@ -3,14 +3,14 @@ import { Button, Drawer } from 'antd';
 import CardComponent from '../AssetTable/CardComponent';
 import './DrawerComponent.css'
 import { DrawerProps } from './types/index';
-const DrawerComponent:React.FC<DrawerProps> = ({ visible, onClose,title ,children}) => {
+const DrawerComponent:React.FC<DrawerProps> = ({ visible, onClose,drawerTitle ,children}) => {
   return (
     <Drawer
     
-      title={title}
+      title={drawerTitle}
       placement="bottom"
       width={200}
-      height={600}
+      height={500}
       onClose={onClose}
       visible={visible}
       className="mainDrawer"
@@ -21,7 +21,7 @@ const DrawerComponent:React.FC<DrawerProps> = ({ visible, onClose,title ,childre
       borderTopRightRadius: "8%",
      }}
     >
-      
+      <h1><b>Asset Details</b></h1>
       {children}
 
     </Drawer>
