@@ -1,6 +1,6 @@
 import React, { useState , useEffect } from 'react';
 import SideDrawerProps from './types';
-import { Button, Drawer, Space } from 'antd';
+import { Drawer, Space } from 'antd';
 import type { DrawerProps } from 'antd';
 
 const SideDrawerComponent: React.FC<SideDrawerProps> = ({children,displayDrawer,closeDrawer}) => {
@@ -13,12 +13,12 @@ const SideDrawerComponent: React.FC<SideDrawerProps> = ({children,displayDrawer,
   };
 
   useEffect(() => {
-    // Call showLargeDrawer function when displayDrawer is true
     if (displayDrawer) {
       showLargeDrawer();
     }
   }, [displayDrawer]);
-   
+
+
   const showLargeDrawer = () => {
     setSize('large');
     setOpen(true);
@@ -32,18 +32,13 @@ const SideDrawerComponent: React.FC<SideDrawerProps> = ({children,displayDrawer,
 
   return (
     <>
-      <Space>
-       
-        
-      </Space>
-      <Drawer
-        
+      <Space/>   
+      <Drawer        
         placement="right"
         size={size}
         onClose={onClose}
         open={open}
-        style={{borderRadius:"10px"}}
-      
+        style={{borderRadius:"10px"}}      
       >
           {children}
       </Drawer>

@@ -2,7 +2,6 @@ import { FC, useEffect, useState } from "react";
 import {
   Button,
   Label,
-  Modal,
   Table,
   Textarea,
   TextInput,
@@ -10,6 +9,8 @@ import {
 import { HiPencilAlt } from "react-icons/hi";
 import axiosInstance from "../../config/AxiosConfig";
 import React from "react";
+import DrawerViewRequest from "./DrawerViewRequest";
+
 
 const RequestPage: FC = function () {
   const [assets, setAssets] = useState<any[]>([]);
@@ -22,10 +23,16 @@ const RequestPage: FC = function () {
 
   const fetchAssets = () => {
     setLoading(true);
-    axiosInstance
-      .get("/asset/?limit=10&asset_detail_status=CREATE_PENDING")
-      .then((response) => {
-        setAssets(response.data.data.results);
+    Promise.all([
+      axiosInstance.get("/asset/?limit=10&asset_detail_status=CREATE_PENDING"),
+      axiosInstance.get("/asset/?limit=10&asset_detail_status=UPDATE_PENDING")
+    ])
+      .then((responses) => {
+        const createPendingAssets = responses[0].data.data.results;
+        const updatePendingAssets = responses[1].data.data.results;
+
+        const mergedAssets = [...createPendingAssets, ...updatePendingAssets];
+        setAssets(mergedAssets);
       })
       .catch((error) => {
         console.error("Error fetching assets:", error);
@@ -57,13 +64,26 @@ const RequestPage: FC = function () {
 
   const handleReject = () => {
     if (selectedAsset) {
-      setAssets(
-        assets.filter((asset) => asset.asset_uuid !== selectedAsset.asset_uuid)
-      );
-      setSelectedAsset(null);
+      const rejectedData = {
+        data: {
+          approval_type: "ASSET_DETAIL_STATUS",
+          asset_uuid: selectedAsset.asset_uuid,
+          comments: selectedAsset.approverNotes,
+        }
+      };
+  
+      axiosInstance
+        .delete("/asset/approve_asset", rejectedData)
+        .then(() => {
+          fetchAssets();
+          setSelectedAsset(null);
+        })
+        .catch((error) => {
+          console.error("Error rejecting asset:", error);
+        });
     }
   };
-
+  
   return (
     <React.Fragment>
       <div className="block items-center justify-between border-b border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 sm:flex">
@@ -145,12 +165,9 @@ const SearchRequests: FC = function () {
   );
 };
 
-const RequestTable: FC<{
-  assets: any[];
-  setSelectedAsset: (asset: any | null) => void;
-}> = function ({ assets, setSelectedAsset }) {
+const RequestTable: FC<{ assets: any[]; setSelectedAsset: (asset: any | null) => void;}> = function ({ assets, setSelectedAsset }) {
   return (
-    <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+    <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600 rounded-lg">
       <Table.Head className="bg-gray-100 dark:bg-gray-700">
         <Table.HeadCell>Request type</Table.HeadCell>
         <Table.HeadCell>Requester</Table.HeadCell>
@@ -166,10 +183,13 @@ const RequestTable: FC<{
             <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
               <div className="text-base font-semibold text-gray-900 dark:text-white">
                 {asset.asset_detail_status === "CREATE_PENDING"
-                  ? "ASSET CREATION APPROVAL"
+                  ? "Asset Creation Approval"
                   : asset.asset_detail_status === "UPDATE_PENDING"
-                  ? "ASSET UPDATION APPROVAL"
+                  ? "Asset Updation Approval"
                   : asset.asset_detail_status}
+              </div>
+              <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                {asset.asset_type.asset_type_name}
               </div>
             </Table.Cell>
             <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-left text-gray-900 dark:text-white">
@@ -193,22 +213,22 @@ const RequestTable: FC<{
   );
 };
 
-const ViewRequestModal: FC<{
-  asset: any;
-  handleApprove: () => void;
-  handleReject: () => void;
-  onClose: () => void;
-}> = function ({ asset, handleApprove, handleReject, onClose }) {
+const ViewRequestModal: FC<{ asset: any; handleApprove: () => void; handleReject: () => void; onClose: () => void;}> = function ({ asset, handleApprove, handleReject, onClose }) {
+
   const [comments, setComments] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [actionType, setActionType] = useState("");
+
+  const toggleModal = (type: string) => {
+    setActionType(type);
+    setModalOpen(!modalOpen);
+  };
 
   return (
-    <Modal onClose={onClose} show={true} style={{ zIndex: 9999 }} >
-      <Modal.Header className="border-b border-gray-200 !p-2 my-2 mx-2 dark:border-gray-700">
-        <strong>Request Details</strong>
-      </Modal.Header>
-      <Modal.Body>
+    <DrawerViewRequest title="Request Details" onClose={onClose} visible={true}>
+      <div>
         <form>
-          <div className="grid grid-cols-4 gap-1 lg:grid-cols-5 text-sm">
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">
             <div>
               <Label htmlFor="assetId">ASSET ID</Label>
               <TextInput
@@ -268,7 +288,7 @@ const ViewRequestModal: FC<{
                 disabled
                 className="mt-1"
               />
-            </div>            
+            </div>
             <div>
               <Label htmlFor="owner">OWNER</Label>
               <TextInput
@@ -418,7 +438,7 @@ const ViewRequestModal: FC<{
                 value={asset.notes}
                 className="mt-1"
               />
-            </div>           
+            </div>
             <div className="lg:col-span-5">
               <Label htmlFor="approverNotes">APPROVER NOTES</Label>
               <Textarea
@@ -432,17 +452,75 @@ const ViewRequestModal: FC<{
             </div>
           </div>
         </form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button color="success" onClick={handleApprove}>
-          Approve
-        </Button>
-        <Button color="failure" onClick={handleReject}>
-          Reject
-        </Button>
-      </Modal.Footer>
-    </Modal>
+      </div>
+      <div className="flex gap-2 my-4">
+      <button
+        className="block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-3 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+        onClick={() => toggleModal("approve")}
+      >
+        Approve
+      </button>
+
+      <button
+        className="block text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-6 py-3 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+        onClick={() => toggleModal("reject")}
+      >
+        Reject
+      </button>
+
+      {modalOpen && (
+  <div
+    id="popup-modal"
+    className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen bg-black bg-opacity-50"
+  >
+    <div className="bg-white rounded-lg p-4 md:p-5 text-center">
+      <svg
+        className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 20 20"
+      >
+        <path
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+        />
+      </svg>
+      <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+        Are you sure you want to {actionType}?
+      </h3>
+      {actionType === "approve" ? (
+        <button
+          onClick={handleApprove}
+          className="text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+        >
+          Yes, I'm sure
+        </button>
+      ) : (
+        <button
+          onClick={handleReject}
+          className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+        >
+          Yes, I'm sure
+        </button>
+      )}
+      <button
+        onClick={() => setModalOpen(false)}
+        className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+)}
+      </div>
+    </DrawerViewRequest>
   );
 };
 
 export default RequestPage;
+
+

@@ -2,7 +2,6 @@ import { FC, useEffect, useState } from 'react';
 import {   
   Button,
   Label,
-  Modal,
   Table,
   Textarea,
   TextInput,
@@ -10,6 +9,8 @@ import {
 import { HiPencilAlt } from "react-icons/hi";
 import axiosInstance from '../../config/AxiosConfig';
 import React from 'react';
+import DrawerViewRequest from "./DrawerViewRequest";
+
 
 const AssignPage: FC = function () {
   const [assignRequests, setAssignRequests] = useState<any[]>([]);
@@ -54,11 +55,26 @@ const AssignPage: FC = function () {
         })
     }
   }
-
+  
   const handleReject = () => {
     if (selectedAssignRequest){
-      setAssignRequests(assignRequests.filter(assignRequest => assignRequest.asset_uuid !== selectedAssignRequest.asset_uuid));
-      setSelectedAssignRequest(null)
+      const rejectedData = {
+        data:{
+          approval_type: 'ASSIGN_STATUS',
+          asset_uuid: selectedAssignRequest.asset_uuid,
+          comments: selectedAssignRequest.approverNotes,
+      }
+    }
+
+      axiosInstance
+      .delete('/asset/approve_asset', rejectedData)
+      .then(()=>{
+        fetchAssignRequests();
+        setSelectedAssignRequest(null)
+      })
+      .catch((error) =>{
+        console.error('Error rejecting assigning asset:', error);
+      })
     }
   }
 
@@ -91,6 +107,9 @@ const AssignPage: FC = function () {
               Pending Assign Requests
             </h1>
           </div>
+          <div className="block items-center sm:flex">
+            <SearchRequests />
+          </div>
         </div>
       </div>
       <div className="flex flex-col">
@@ -102,24 +121,47 @@ const AssignPage: FC = function () {
           ) : (
             <div className="inline-block min-w-full align-middle">
               <div className="overflow-hidden shadow">
-                <AssignRequestTable assignRequests={assignRequests} setSelectedAssignRequest={setSelectedAssignRequest} />
+                <AssignRequestTable 
+                  assignRequests={assignRequests} 
+                  setSelectedAssignRequest={setSelectedAssignRequest} 
+                />
               </div>
             </div>
           )}
         </div>
       </div>
       {selectedAssignRequest && (
-        <ViewRequestModal assignRequest={selectedAssignRequest} handleApprove={handleApprove} handleReject={handleReject} onClose={() => setSelectedAssignRequest(null)} />
+        <ViewRequestModal
+          assignRequest={selectedAssignRequest}
+          handleApprove={handleApprove} 
+          handleReject={handleReject} 
+          onClose={() => setSelectedAssignRequest(null)} 
+        />
       )}
       </React.Fragment>
   );
 };
 
-
+const SearchRequests: FC = function () {
+  return (
+    <form className="mb-4 sm:mb-0 sm:pr-3" action="#" method="GET">
+      <Label htmlFor="search-request" className="sr-only">
+        Search
+      </Label>
+      <div className="relative mt-1 lg:w-64 xl:w-96">
+        <TextInput
+          id="search-request"
+          name="search-request"
+          placeholder="Search for requests"
+        />
+      </div>
+    </form>
+  );
+};
 
 const AssignRequestTable: FC<{ assignRequests: any[], setSelectedAssignRequest: (assignRequest: any | null)=>void }> = function ({ assignRequests, setSelectedAssignRequest }) {  
   return (
-    <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+    <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600 mx-2 my-2 rounded-lg">
       <Table.Head className="bg-gray-100 dark:bg-gray-700">
         <Table.HeadCell>Asset</Table.HeadCell>
         <Table.HeadCell>Requester</Table.HeadCell>
@@ -151,7 +193,7 @@ const AssignRequestTable: FC<{ assignRequests: any[], setSelectedAssignRequest: 
               <div className="flex items-center gap-x-3">
                 <Button color="primary" onClick={() => setSelectedAssignRequest(assignRequest)}>
                   <HiPencilAlt className="mr-2 text-lg" />
-                  View Request
+                  View
                 </Button>
               </div>
             </Table.Cell>
@@ -163,14 +205,19 @@ const AssignRequestTable: FC<{ assignRequests: any[], setSelectedAssignRequest: 
 };
 
 const ViewRequestModal: FC<{ assignRequest: any, handleApprove: () => void, handleReject: () => void, onClose: () => void }> = function ({ assignRequest, handleApprove, handleReject, onClose }) {
-  const [comments, setComments] = useState('');
+   
+  const [comments, setComments] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [actionType, setActionType] = useState("");
+
+  const toggleModal = (type: string) => {
+    setActionType(type);
+    setModalOpen(!modalOpen);
+  };
 
   return (
-    <Modal onClose={onClose} show={true} style={{ zIndex: 9999 }} >
-    <Modal.Header className="border-b border-gray-200 !p-6 dark:border-gray-700">
-      <strong>Request Details</strong>
-    </Modal.Header>
-    <Modal.Body>
+    <DrawerViewRequest title="Assign Details" onClose={onClose} visible={true}>
+      <div>
       <form>
         <div className="grid grid-cols-4 gap-1 lg:grid-cols-5 text-sm">
           <div>
@@ -386,17 +433,73 @@ const ViewRequestModal: FC<{ assignRequest: any, handleApprove: () => void, hand
           </div>
         </div>
       </form>
-    </Modal.Body>
-    <Modal.Footer>
-      <Button color="success" onClick={handleApprove}>
+      </div>
+      <div className="flex gap-2 my-4">
+      <button
+        className="block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-3 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+        onClick={() => toggleModal("approve")}
+      >
         Approve
-      </Button>
-      <Button color="failure" onClick={handleReject}>
+      </button>
+
+      <button
+        className="block text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-6 py-3 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+        onClick={() => toggleModal("reject")}
+      >
         Reject
-      </Button>
-    </Modal.Footer>
-  </Modal>    
+      </button>  
+      {modalOpen && (
+  <div
+    id="popup-modal"
+    className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen bg-black bg-opacity-50"
+  >
+    <div className="bg-white rounded-lg p-4 md:p-5 text-center">
+      <svg
+        className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 20 20"
+      >
+        <path
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+        />
+      </svg>
+      <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+        Are you sure you want to {actionType}?
+      </h3>
+      {actionType === "approve" ? (
+        <button
+          onClick={handleApprove}
+          className="text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+        >
+          Yes, I'm sure
+        </button>
+      ) : (
+        <button
+          onClick={handleReject}
+          className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+        >
+          Yes, I'm sure
+        </button>
+      )}
+      <button
+        onClick={() => setModalOpen(false)}
+        className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+)}
+      </div>
+    </DrawerViewRequest>
   );
 };
+
 
 export default AssignPage;

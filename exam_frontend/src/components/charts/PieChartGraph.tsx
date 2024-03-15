@@ -196,23 +196,23 @@ export const PieChartGraph: React.FC<PieChartGraphProps> = () => {
                             outerRadius: 120,
                             paddingAngle: 5,
                             cornerRadius: 10,
-                            startAngle: -100,
-                            endAngle: 100,
-                            cx:140,
+                            startAngle: -110,
+                            endAngle: 110,
+                            cx:130,
                             cy: 160,
                             highlightScope: { faded: 'global', highlighted: 'item' },
                             faded: { innerRadius: 75, additionalRadius: -40, color: 'grey' },
                         },
                     ]}
                     width={300}
-                    height={220}
+                    height={230}
                     slotProps={{
                         legend: {
                             direction: 'row',
                             position: { vertical: 'bottom', horizontal: 'left' },
                             hidden: false,
                             labelStyle: {
-                                fontSize: 9,
+                                fontSize: 8,
                             },
                             itemMarkWidth: 5,
                             itemMarkHeight: 5,
@@ -232,23 +232,23 @@ export const PieChartGraph: React.FC<PieChartGraphProps> = () => {
                             outerRadius: 120,
                             paddingAngle: 5,
                             cornerRadius: 10,
-                            startAngle: -100,
-                            endAngle: 100,
-                            cx:140,
+                            startAngle: -110,
+                            endAngle: 110,
+                            cx:150,
                             cy: 160,
                             highlightScope: { faded: 'global', highlighted: 'item' },
                             faded: { innerRadius: 75, additionalRadius: -40, color: 'grey' },
                         },
                     ]}
                     width={300}
-                    height={230}
+                    height={240}
                     slotProps={{
                         legend: {
                             direction: 'row',
                             position: { vertical: 'bottom', horizontal: 'left' },
                             hidden: false,
                             labelStyle: {
-                                fontSize: 9,
+                                fontSize: 8,
                             },
                             itemMarkWidth: 5,
                             itemMarkHeight: 5,
@@ -271,23 +271,23 @@ export const PieChartGraph: React.FC<PieChartGraphProps> = () => {
                             outerRadius: 120,
                             paddingAngle: 5,
                             cornerRadius: 10,
-                            startAngle: -100,
-                            endAngle: 100,
-                            cx:130,
+                            startAngle: -110,
+                            endAngle: 110,
+                            cx:155,
                             cy: 130,
                             highlightScope: { faded: 'global', highlighted: 'item' },
                             faded: { innerRadius: 75, additionalRadius: -40, color: 'grey' },
                         },
                     ]}
                     width={300}
-                    height={210}
+                    height={202}
                     slotProps={{
                         legend: {
                             direction: 'row',
-                            position: { vertical: 'bottom', horizontal: 'left' },
+                            position: { vertical: 'bottom', horizontal: 'middle' },
                             hidden: false,
                             labelStyle: {
-                                fontSize: 9,
+                                fontSize: 8,
                             },
                             itemMarkWidth: 5,
                             itemMarkHeight: 5,

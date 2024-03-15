@@ -1,13 +1,12 @@
 import React, { Children } from 'react';
-import { Button, Drawer } from 'antd';
-import CardComponent from '../AssetTable/CardComponent';
+import { Drawer } from 'antd';
 import './DrawerComponent.css'
 import { DrawerProps } from './types/index';
-const DrawerComponent:React.FC<DrawerProps> = ({ visible, onClose,title ,children}) => {
+const DrawerComponent:React.FC<DrawerProps> = ({ visible, onClose,Request_Details,children}) => {
   return (
     <Drawer
     
-      title={title}
+      title={Request_Details}
       placement="bottom"
       width={200}
       height={600}
