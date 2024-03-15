@@ -1,17 +1,22 @@
 import type { CustomFlowbiteTheme } from "flowbite-react";
-
-// Define a new type that extends CustomFlowbiteTheme to include the fontFamily property
-type ExtendedFlowbiteTheme = CustomFlowbiteTheme & {
-  fontFamily?: {
-    sans?: string[]; // Change the type to accept an array of strings
-  };
-};
-
-// Define your theme object using the ExtendedFlowbiteTheme type
-const flowbiteTheme: ExtendedFlowbiteTheme = {
+ 
+const flowbiteTheme: CustomFlowbiteTheme = {
+  // badge: {
+  //   color: {
+  //    primary:
+  //       "bg-primary-100 text-primary-800 dark:bg-primary-200 dark:text-primary-800 group-hover:bg-primary-200 dark:group-hover:bg-primary-300",
+  //   },
+  //   icon: {
+  //     off: "rounded-full px-2 py-1",
+  //   },
+  //   size: {
+  //     xl: "px-3 py-2 text-base rounded-md",
+  //   },
+  // },
   button: {
     color: {
-      primary: "text-white bg-primary-700 hover:bg-primary-800 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800",
+      primary:
+        "text-white bg-primary-700 hover:bg-primary-800 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800",
     },
     outline: {
       on: "transition-all duration-75 ease-in group-hover:bg-opacity-0 group-hover:text-inherit",
@@ -56,10 +61,6 @@ const flowbiteTheme: ExtendedFlowbiteTheme = {
       },
     },
   },
-  // Apply Poppins font family to all components
-  fontFamily: {
-    sans: ['Poppins', 'sans-serif'],
-  },
 };
-
+ 
 export default flowbiteTheme;
