@@ -501,6 +501,8 @@ const AssetTableHandler = () => {
           assetTypeData={assetTypeData}
           locations={locations}
           statusOptions={statusOptions}
+          asset_uuid={selectedAssetId}
+          
           businessUnitOptions={businessUnitOptions} handleUpdateData={function (updatedData: { key: any; }): void {
               throw new Error("Function not implemented.");
           } } drawerTitle={""}     />

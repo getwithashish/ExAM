@@ -8,4 +8,5 @@ export interface CardType{
     memoryData:string[];
     assetTypeData :string[];
     onUpdate: (updatedData: DataType) => void;
+    asset_uuid:string;
 }

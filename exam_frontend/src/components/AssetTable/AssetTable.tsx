@@ -32,6 +32,7 @@ const items = [
 
 
 const AssetTable = ({
+  asset_uuid,
   logsData,
   isLoading,
   isSuccess,
@@ -113,7 +114,9 @@ const memoizedRowRender=useMemo(()=>rowRender,[isSuccess])
             locations={locations}
             memoryData={memoryData}
             assetTypeData={assetTypeData}
-          />
+            asset_uuid={asset_uuid} onUpdate={function (): void {
+              throw new Error("Function not implemented.");
+            } }          />
         )}
         {/* {button && (
           <div

@@ -1,4 +1,5 @@
 export interface DataType {
+  asset_uuid: any;
   key: string;
   asset_id: string;
   asset_category: string;
@@ -146,6 +147,6 @@ export interface AssetTableProps {
     key: any;
 }) => void,
   drawerTitle:string
-
+  asset_uuid: string;
 }
 
