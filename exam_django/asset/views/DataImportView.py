@@ -15,20 +15,7 @@ class DataImportView(APIView):
     def post(self, request, format=None):
         try:
             # Extract JWT token from request headers
-            jwt_token = request.headers.get("Authorization").split(" ")[1]
-            print(jwt_token)
-
-            # Ensure jwt_token is of type bytes
-            jwt_token_bytes = jwt_token.encode("utf-8")
-            print(jwt_token_bytes)
-
-            # Extract username directly from the token payload
-            payload = jwt.decode(jwt_token_bytes, algorithms=["none"], options={"verify_signature": False})
-            username = payload.get("username")
-            print(username)
-
-            # Query the database to get the corresponding User object
-            user = User.objects.get(username=username)
+            user = request.user
 
             # Check if the file is provided in the request
             file = request.FILES.get("file")
