@@ -12,7 +12,7 @@ import {
 
 const TableNavbar = ({ showUpload, setShowUpload }) => {
   // const [showUpload, setShowUpload] = useState(false); // State to control rendering of C1 component
- 
+
   // Function to handle import button click
   const handleImportClick = () => {
     console.log("Hello");
@@ -49,7 +49,7 @@ const TableNavbar = ({ showUpload, setShowUpload }) => {
         console.error("Error exporting assets:", error);
       });
   };
- 
+
   return (
     <nav className={styles["navbar"]}>
       {/* Import button */}
@@ -64,5 +64,5 @@ const TableNavbar = ({ showUpload, setShowUpload }) => {
     </nav>
   );
 };
- 
+
 export default TableNavbar;
