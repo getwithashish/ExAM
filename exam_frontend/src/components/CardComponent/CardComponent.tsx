@@ -27,14 +27,14 @@ const CardComponent: React.FC<CardType> = ({
   const uniqueAssetTypeOptions = Array.from(new Set(assetTypeData));
 
 
-  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const {name,value}=e.target;
-  //   setEditedData((prevData) => ({
-  //     ...prevData,
-  //     propertyName: newValue, 
-  //     [name]: value,
-  //   }));
-  // };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const {name,value}=e.target;
+    setEditedData((prevData) => ({
+      ...prevData,
+      propertyName: newValue, 
+      [name]: value,
+    }));
+  };
 
   const [editedData, setEditedData] = useState({ ...data });
 
@@ -42,12 +42,12 @@ const CardComponent: React.FC<CardType> = ({
     setEditedData({ ...data });
   }, [data]);
 
-  const handleChange = (name, value) => {
-    setEditedData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
+  // const handleChange = (name, value) => {
+  //   setEditedData((prevData) => ({
+  //     ...prevData,
+  //     [name]: value,
+  //   }));
+  // };
 
   const handleUpdate = async () => {
     try {
@@ -55,7 +55,7 @@ const CardComponent: React.FC<CardType> = ({
       const response = await axiosInstance.patch(
         "/asset/update",
         {
-          asset_uuid: data.asset_uuid,
+          asset_id: data.asset_id,
           data: editedData,
           
         },
