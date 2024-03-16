@@ -16,6 +16,8 @@ import { Upload } from "antd";
 import { styles } from "../components/SideDrawerComponent/SideDrawerComponent.module.css";
 import UploadComponent from "../components/Upload/UploadComponent";
 import DasboardAssetHandler from '../components/DashboardAssetTable/DasboardAssetHandler'
+import { QueryBuilder, QueryBuilderComponent } from "../components/QueryBuilder/QueryBuilder";
+
 const DashboardPage: FC = function () {
   const [displaydrawer, setDisplayDrawer] = useState(false);
 

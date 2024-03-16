@@ -246,7 +246,7 @@ import DasboardAssetTable from "./DasboardAssetTable";
         title: "Product Name",
         dataIndex: "product_name",
         fixed: "left",
-        width: 180,
+        width: 160,
         filterIcon: <SearchOutlined />,
         filterDropdown: ({
           setSelectedKeys,
@@ -304,7 +304,7 @@ import DasboardAssetTable from "./DasboardAssetTable";
         title: "Serial Number",
         dataIndex: "serial_number",
         responsive: ["md"],
-        width: 180,
+        width: 160,
         filterIcon: <SearchOutlined />,
         filterDropdown: ({
           setSelectedKeys,
@@ -363,7 +363,7 @@ import DasboardAssetTable from "./DasboardAssetTable";
         title: "Location",
         dataIndex: "location",
         responsive: ["md"],
-        width: 180,
+        width: 160,
         filters: locationFilters,
         onFilter: (
           value: string | number | boolean | React.ReactText[] | Key,
@@ -388,7 +388,7 @@ import DasboardAssetTable from "./DasboardAssetTable";
         title: "Invoice Location",
         dataIndex: "invoice_location",
         responsive: ["md"],
-        width: 180,
+        width: 160,
         filters: locationFilters,
         onFilter: (
           value: string | number | boolean | React.ReactText[] | Key,
@@ -414,7 +414,7 @@ import DasboardAssetTable from "./DasboardAssetTable";
         title: "Custodian",
         dataIndex: "custodian",
         responsive: ["md"],
-        width: 180,
+        width: 160,
         filterIcon: <SearchOutlined />,
         filterDropdown: ({
           setSelectedKeys,
@@ -471,6 +471,7 @@ import DasboardAssetTable from "./DasboardAssetTable";
         dataIndex: "asset_type",
         responsive: ["md"],
         fixed: "right",
+        width: 160,
         filters: assetTypeFilters,
         onFilter: (
           value: string | number | boolean | React.ReactText[] | Key,

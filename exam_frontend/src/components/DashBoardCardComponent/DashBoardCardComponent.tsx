@@ -97,7 +97,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "Asset Category",
       value: (
-        
+        <Card style={{background:"#f5f5fb" ,height:"120"}}>
         <Form.Item name="assetCategory"style={{ flex: "1" }} className="formItem">
           <b style={{ display: "block" }}>
             Asset Category:{" "}
@@ -110,7 +110,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
             disabled
           />{" "}
         </Form.Item>
-        
+        </Card>
       ),
     },
     {

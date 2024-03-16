@@ -92,8 +92,9 @@ const [showUpload, setShowUpload] = useState(false);
   <Table
    
     columns={columns}
+    scroll={{ y: 300 }} 
     dataSource={assetData}
-    scroll={{ x: "max-content" }}
+    // scroll={{ x: "max-content" }}
     className="mainTable"
     pagination={false}
     // bordered={false}
