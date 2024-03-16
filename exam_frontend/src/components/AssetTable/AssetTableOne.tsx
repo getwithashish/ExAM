@@ -1230,7 +1230,7 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
   return (
     <>
       <div className="mainHeading">
-        <h1>Assign Asset</h1>
+        <h1>Asset Details</h1>
       </div>
 
       <div style={{ position: 'relative', display: 'inline-block' }}>

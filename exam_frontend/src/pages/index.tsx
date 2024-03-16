@@ -17,6 +17,7 @@ import { styles } from "../components/SideDrawerComponent/SideDrawerComponent.mo
 import UploadComponent from "../components/Upload/UploadComponent";
 import AssetTableHandler from "../components/AssetTable/AssetTableHandler";
 
+
 const DashboardPage: FC = function () {
   const [displaydrawer, setDisplayDrawer] = useState(false);
 
