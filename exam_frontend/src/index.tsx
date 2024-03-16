@@ -13,6 +13,7 @@ import RequestPage from "./pages/RequestPage/AssetRequest";
 import AssignPage from "./pages/RequestPage/AssignRequest";
 import ExamRoutes from "./ExamRoutes";
 import Assignableasset from "./pages/assignableasset";
+import { AuthProvider } from "./pages/authentication/AuthContext";
 
 
 const container = document.getElementById("root");
@@ -30,7 +31,9 @@ root.render(
   <QueryClientProvider client={new QueryClient()}>
     <StrictMode>
       <Flowbite theme={{ theme }}>
-        <ExamRoutes />
+        <AuthProvider>
+          <ExamRoutes />
+        </AuthProvider>
       </Flowbite>
     </StrictMode>
   </QueryClientProvider>

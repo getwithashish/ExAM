@@ -5,13 +5,36 @@ import axiosInstance from "../../config/AxiosConfig";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import SidebarComponentNew from "../../components/sidebar/SidebarComponentNew";
+import { useAuth } from "./AuthContext";
 
 export default function Login() {
+
+  const {setAuthenticated, setUserRole} = useAuth();
+
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+
+  const decodeJWT = (token: string) => {
+    try {
+      const base64Url = token.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split("")
+          .map(function (c) {
+            return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+          })
+          .join("")
+      );
+      return JSON.parse(jsonPayload);
+    } catch (error) {
+      console.error("Error decoding JWT:", error);
+      return null;
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,9 +63,14 @@ export default function Login() {
       localStorage.setItem("jwt", response.data.access);
       localStorage.setItem("refresh_token", response.data.refresh);
 
-      axios.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${response.data.access}`;
+      const payload = decodeJWT(response.data.access);
+
+      // axios.defaults.headers.common[
+      //   "Authorization"
+      // ] = `Bearer ${response.data.access}`;
+
+      setAuthenticated(true);
+      setUserRole(payload.user_scope)
 
       // Redirect to dashboard after successful login
       navigate("/exam/dashboard");
