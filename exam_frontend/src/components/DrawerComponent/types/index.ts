@@ -8,4 +8,5 @@ export interface DrawerProps {
     title: string;
     button: React.ReactNode;
     children:string;
+    drawerTitle:string
   }

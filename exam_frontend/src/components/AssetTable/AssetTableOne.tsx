@@ -361,8 +361,8 @@ const AssetTableOne = ({showAssignDrawer}:AssetTableOneProps) => {
       ),
     },
     {
-      title: "Custodian",
-      dataIndex: "custodian",
+      title: "Asset Status",
+      dataIndex: "status",
       responsive: ["md"],
       fixed: "right",
       width: 180,
@@ -403,9 +403,9 @@ const AssetTableOne = ({showAssignDrawer}:AssetTableOneProps) => {
       ),
       onFilter: (value, record) => {
         if (Array.isArray(value)) {
-          return value.includes(record.custodian);
+          return value.includes(record.status);
         }
-        return record.custodian.indexOf(value.toString()) === 0;
+        return record.status.indexOf(value.toString()) === 0;
       },
       render: (_, record) => (
         <div
@@ -454,7 +454,14 @@ const AssetTableOne = ({showAssignDrawer}:AssetTableOneProps) => {
             background: "#D3D3D3",
             color: "black",
           }}
-          onClick={() =>{showAssignDrawer && showAssignDrawer(record); }}
+          onClick={() => {
+            if (record.custodian == null || record.custodian == undefined) {
+              showAssignDrawer(record);
+            } else {
+              alert("Already assigned");
+            }
+          }}
+          
         >
           +
         </Button>

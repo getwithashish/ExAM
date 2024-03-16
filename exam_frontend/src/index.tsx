@@ -15,6 +15,7 @@ import ExamRoutes from "./ExamRoutes";
 import Assignableasset from "./pages/assignableasset";
 import { AuthProvider } from "./pages/authentication/AuthContext";
 
+
 const container = document.getElementById("root");
 
 if (!container) {

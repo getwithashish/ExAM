@@ -25,12 +25,11 @@ class LocationView(ListCreateAPIView):
             if serializer.is_valid():
                 serializer.save()
                 return APIResponse(
-                    data=[],
+                    data=request.data,
                     message=LOCATION_CREATED_SUCCESSFULLY,
                     status=status.HTTP_200_OK,
                 )
             return APIResponse(
-                data=[],
                 message=LOCATION_CREATION_FAILED,
                 status=status.HTTP_400_BAD_REQUEST,
             )
