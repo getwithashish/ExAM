@@ -30,14 +30,14 @@ module.exports = {
       },
     },
     fontFamily: {
-      display: ['Poppins', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-      body: ['"Open Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      display: ['apple-system', 'BlinkMacSystemFont', ...defaultTheme.fontFamily.sans],
+      body: ['apple-system', 'BlinkMacSystemFont', ...defaultTheme.fontFamily.sans],
       serif: ['ui-serif', 'Georgia', 'Cambria', 'Times New Roman', 'Times', 'serif'],
       mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace'],
     },
     extend: {
       fontFamily: {
-        sans: ['Poppins', ...defaultTheme.fontFamily.sans]
+        sans: ['apple-system', 'BlinkMacSystemFont', ...defaultTheme.fontFamily.sans]
       },
       body: [
         "Inter",
