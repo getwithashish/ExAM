@@ -124,7 +124,7 @@ const CardComponent: React.FC<CardType> = ({
           <Select
             variant="filled"
             defaultValue={data.asset_type}
-            style={{ boxShadow: "none", border: "0.5px solid #d3d3d3", width: "180px",height:"40px" }}
+            style={{ boxShadow: "none", border: "0.5px solid #d3d3d3", width: "180px",height:"40px" , borderRadius: "5px"}}
             onChange={(value) => handleUpdateChange("asset_type", value)}
           >
             {uniqueAssetTypeOptions.map((asset_type, index) => (
@@ -139,7 +139,7 @@ const CardComponent: React.FC<CardType> = ({
     },
     { label: "Version", value:  (
     
-    <Form.Item name="version" style={{ flex: "1", marginLeft: "8px" }}className="formItem">
+    <Form.Item name="version" style={{ flex: "1", marginLeft: "8px" ,width:"180px"}}className="formItem">
     <b>Version: </b>
     <br></br>
     <br></br>
@@ -163,7 +163,7 @@ const CardComponent: React.FC<CardType> = ({
       <Select
          variant="filled"
         defaultValue={uniqueStatusOptions[0]}
-        style={{ boxShadow: "none", border: "0.5px solid #d3d3d3", width: "180px",height:"40px" }}
+        style={{ boxShadow: "none", border: "0.5px solid #d3d3d3", width: "180px",height:"40px", borderRadius: "5px" }}
         onChange={(value) => handleUpdateChange("status", value)} // Pass only the value
       >
         {uniqueStatusOptions.map((status, index) => (
@@ -183,7 +183,7 @@ const CardComponent: React.FC<CardType> = ({
     <Select
       variant="filled"
       defaultValue={data.location}
-      style={{ boxShadow: "none", border: "0.5px solid #d3d3d3", width: "180px",height:"40px" }}
+      style={{ boxShadow: "none", border: "0.5px solid #d3d3d3", width: "180px",height:"40px" , borderRadius: "5px"}}
       onChange={(value) => handleUpdateChange("location", value)}
     >
       {uniqueLocationoptions.map((location, index) => (
@@ -203,7 +203,7 @@ const CardComponent: React.FC<CardType> = ({
       <Select
         variant="filled"
         defaultValue={data.invoice_location}
-        style={{ boxShadow: "none", border: "0.5px solid #d3d3d3", width: "180px",height:"40px" }}
+        style={{ boxShadow: "none", border: "0.5px solid #d3d3d3", width: "160px",height:"40px", borderRadius: "5px" }}
         onChange={(value) => handleUpdateChange("invoice_location", value)} // Pass only the value
       >
         {uniqueLocationoptions.map((location, index) => (
@@ -420,7 +420,7 @@ const CardComponent: React.FC<CardType> = ({
   <Select
     variant="filled"
     defaultValue={uniqueBusinessOptions[0]}
-    style={{ boxShadow: "none", border: "0.5px solid #d3d3d3", width: "180px" ,height:"40px"}}
+    style={{ boxShadow: "none", border: "0.5px solid #d3d3d3", width: "180px" ,height:"40px", borderRadius: "5px"}}
     onChange={(value) => handleUpdateChange("business_unit", value)} // Pass only the value
   >
     {uniqueBusinessOptions.map((business_unit, index) => (
@@ -442,7 +442,7 @@ style={{ boxShadow: "none", border: "none" }}
 <Select
   variant="filled"
   defaultValue={data.memory}
-  style={{ boxShadow: "none", border: "0.5px solid #d3d3d3", width: "180px",height:"40px" }}
+  style={{ boxShadow: "none", border: "0.5px solid #d3d3d3", width: "180px",height:"40px" , borderRadius: "5px"}}
   onChange={(value) => handleUpdateChange("memory", value)} // Pass only the value
 >
   {uniqueMemoryOptions.map((memory, index) => (
@@ -544,7 +544,7 @@ style={{ boxShadow: "none", border: "none" }}
     display: "flex",
     flexWrap: "wrap",
     background:"white",
-    marginLeft: "7%",
+    marginLeft: "6%",
     alignItems: "flex-start",
     rowGap: "-10px"
   
@@ -585,7 +585,7 @@ style={{ boxShadow: "none", border: "none" }}
         placeholder="Search..."
         onChange={handleChange}
         style={{    border: "0.5px solid #d3d3d3",
-        marginTop:"30px" ,marginBottom: "30px",width:"300px" ,height:"30px", borderRadius: "5px",    background:" #f5f5fb",}}
+        marginTop:"0px" ,marginBottom: "30px",width:"300px" ,height:"30px", borderRadius: "5px",    background:" #f5f5fb",marginLeft:"75px",padding:"20px"}}
       />
 
 <Button

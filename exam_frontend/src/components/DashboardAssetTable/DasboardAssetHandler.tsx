@@ -570,6 +570,7 @@ import DasboardAssetTable from "./DasboardAssetTable";
         locations={locations}
         statusOptions={statusOptions}
         asset_uuid={selectedAssetId}
+        bordered={false}
         businessUnitOptions={businessUnitOptions}
         handleUpdateData={function (updatedData: { key: any }): void {
           throw new Error("Function not implemented.");

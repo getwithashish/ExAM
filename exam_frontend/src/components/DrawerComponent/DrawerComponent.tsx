@@ -17,13 +17,14 @@ const DrawerComponent:React.FC<DrawerProps> = ({ visible, onClose,drawerTitle ,c
       closeIcon={false}
       style={{ 
       padding:30,
-      borderTopLeftRadius: "8%",
-      borderTopRightRadius: "8%",
+      borderTopLeftRadius: "5%",
+      borderTopRightRadius: "5%",
+      borderBottomLeftRadius: "0%",
+      borderBottomRightRadius: "0%",
      }}
     >
       <div className='fixed-header'>
-      <h1><b>Asset Details</b></h1>
-      </div>
+      <h1 style={{ fontSize: '24px',textAlign:"center",marginBottom:"20px" }}>Asset Details</h1>      </div>
       {children}
 
     </Drawer>
