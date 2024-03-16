@@ -11,7 +11,7 @@ import {
   Col,
   message,
 } from "antd";
-import "./CardComponent.css";
+import "./DashBoardCardComponent.css"
 import { DataType } from "../AssetTable/types/index";
 import { CardType } from "./types/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -23,7 +23,7 @@ interface UpdateData {
   asset_uuid: string;
   data: Partial<DataType>; // Partial to allow updating only specific fields
 }
-const CardComponent: React.FC<CardType> = ({
+const DashBoardCardComponent: React.FC<CardType> = ({
   asset_uuid,
   data,
   onUpdate,
@@ -45,8 +45,8 @@ const CardComponent: React.FC<CardType> = ({
     boxShadow: "none",
     textAlign: "left",
     background:" #f5f5fb",
-    borderRadius: "5px"
-    
+    borderRadius: "5px",
+    color:"black"
   };
 
   const [updatedData, setUpdatedData] = useState<Partial<DataType>>({});
@@ -103,10 +103,11 @@ const CardComponent: React.FC<CardType> = ({
             Asset Category:{" "}
           </b>{" "}
           <br></br>
-          <Input
+          <Input  
             defaultValue={data.asset_category}
             onChange={(e) => handleUpdateChange("assetCategory", e.target.value)}
             style={inputStyle}
+            disabled
           />{" "}
         </Form.Item>
         
@@ -123,8 +124,9 @@ const CardComponent: React.FC<CardType> = ({
           <Select
             variant="filled"
             defaultValue={data.asset_type}
-            style={{ boxShadow: "none", border: "0.5px solid #d3d3d3", width: "180px",height:"40px" }}
+            style={{ boxShadow: "none", border: "0.5px solid #d3d3d3", width: "180px",height:"40px",color:"black", fontWeight: "bold" , opacity: "1", pointerEvents: "auto"}}
             onChange={(value) => handleUpdateChange("asset_type", value)}
+            disabled
           >
             {uniqueAssetTypeOptions.map((asset_type, index) => (
               <Select.Option key={index} value={asset_type.id}>
@@ -147,6 +149,7 @@ const CardComponent: React.FC<CardType> = ({
         defaultValue={data.version}
         onChange={(e) => handleUpdateChange("version", e.target.value)}
         style={inputStyle}
+        disabled
       />{" "}
     </Form.Item> 
     ),},
@@ -162,8 +165,9 @@ const CardComponent: React.FC<CardType> = ({
       <Select
          variant="filled"
         defaultValue={uniqueStatusOptions[0]}
-        style={{ boxShadow: "none", border: "0.5px solid #d3d3d3", width: "180px",height:"40px" }}
+        style={{ boxShadow: "none", border: "0.5px solid #d3d3d3", width: "180px",height:"40px",color:"black" }}
         onChange={(value) => handleUpdateChange("status", value)} // Pass only the value
+        disabled
       >
         {uniqueStatusOptions.map((status, index) => (
           <Select.Option key={index} value={status}>
@@ -222,6 +226,7 @@ const CardComponent: React.FC<CardType> = ({
         defaultValue={data.os}
         onChange={(e) => handleUpdateChange("os", e.target.value)}
         style={inputStyle}
+        disabled
       />{" "}
     </Form.Item> },
     { label: "OS Version", name: "osVersion", value:  <Form.Item name="os version">
@@ -233,6 +238,7 @@ const CardComponent: React.FC<CardType> = ({
         defaultValue={data.os_version}
         onChange={(e) => handleUpdateChange("os version", e.target.value)}
         style={inputStyle}
+        disabled
       />{" "}
     </Form.Item> },
     { label: "Mobile OS", name: "mobileOs", value:   <Form.Item name="mobile os">
@@ -244,6 +250,7 @@ const CardComponent: React.FC<CardType> = ({
         defaultValue={data.mobile_os}
         onChange={(e) => handleUpdateChange("mobile os", e.target.value)}
         style={inputStyle}
+        disabled
       />{" "}
     </Form.Item> },
         { label: "Processor", name: "processor", value:    <Form.Item name="processor">
@@ -255,6 +262,7 @@ const CardComponent: React.FC<CardType> = ({
             defaultValue={data.processor}
             onChange={(e) => handleUpdateChange("processor", e.target.value)}
             style={inputStyle}
+            disabled
           />{" "}
         </Form.Item> },
     { label: "Generation", name: "generation", value: <Form.Item name="generation">
@@ -266,6 +274,7 @@ const CardComponent: React.FC<CardType> = ({
         defaultValue={data.Generation}
         onChange={(e) => handleUpdateChange("generation", e.target.value)}
         style={inputStyle}
+        disabled
       />{" "}
     </Form.Item>  },
     { label: "Accessories", name: "accessories", value:  
@@ -278,6 +287,7 @@ const CardComponent: React.FC<CardType> = ({
         defaultValue={data.accessories}
         onChange={(e) => handleUpdateChange("accessories", e.target.value)}
         style={inputStyle}
+        disabled
       />{" "}
     </Form.Item> },
     { label: "Date of Purchase", name: "dateOfPurchase", value: <Form.Item name="date of purchase">
@@ -291,6 +301,7 @@ const CardComponent: React.FC<CardType> = ({
           handleUpdateChange("date of purchase", e.target.value)
         }
         style={inputStyle}
+        disabled
       />{" "}
     </Form.Item> },
     { label: "Warranty Period", name: "warrantyPeriod", value: <Form.Item name="warranty period">
@@ -304,6 +315,7 @@ const CardComponent: React.FC<CardType> = ({
           handleUpdateChange("warranty period", e.target.value)
         }
         style={inputStyle}
+        disabled
       />{" "}
     </Form.Item> },
     { label: "Approval Status", name: "approvalStatus", value: <Form.Item name="date of purchase">
@@ -317,6 +329,7 @@ const CardComponent: React.FC<CardType> = ({
         handleUpdateChange("serail number", e.target.value)
       }
       style={inputStyle}
+      disabled
     />{" "}
   
     </Form.Item> },
@@ -333,6 +346,7 @@ const CardComponent: React.FC<CardType> = ({
         handleUpdateChange("serail number", e.target.value)
       }
       style={inputStyle}
+      disabled
     />{" "}
      {" "} </Form.Item>
   },
@@ -347,6 +361,7 @@ const CardComponent: React.FC<CardType> = ({
         handleUpdateChange("serail number", e.target.value)
       }
       style={inputStyle}
+      disabled
     />{" "}
   </Form.Item> },
 
@@ -359,6 +374,7 @@ const CardComponent: React.FC<CardType> = ({
     defaultValue={data.model_number}
     onChange={(e) => handleUpdateChange("model number", e.target.value)}
     style={inputStyle}
+    disabled
   />{" "}
 </Form.Item> },
 { label: "Custodian", name: "custodian", value:   <Form.Item name="date of purchase" >
@@ -370,6 +386,7 @@ const CardComponent: React.FC<CardType> = ({
     defaultValue={data.custodian}
     onChange={(e) => handleUpdateChange("model number", e.target.value)}
     style={inputStyle}
+    disabled
   />{" "}
 </Form.Item> },
 { label: "Owner", name: "owner", value:  <Form.Item name="owner">
@@ -381,6 +398,7 @@ const CardComponent: React.FC<CardType> = ({
     defaultValue={data.owner}
     onChange={(e) => handleUpdateChange("owner", e.target.value)}
     style={inputStyle}
+    disabled
   />{" "}
 </Form.Item> },
 { label: "Requester", name: "requester", value:  
@@ -393,6 +411,7 @@ const CardComponent: React.FC<CardType> = ({
     defaultValue={data.requester}
     onChange={(e) => handleUpdateChange("requester", e.target.value)}
     style={inputStyle}
+    disabled
   />{" "}
 </Form.Item> },
 
@@ -405,6 +424,7 @@ const CardComponent: React.FC<CardType> = ({
     defaultValue={data.product_name}
     onChange={(e) => handleUpdateChange("product name", e.target.value)}
     style={inputStyle}
+    disabled
   />{" "}
 </Form.Item> },
 
@@ -461,6 +481,7 @@ style={{ boxShadow: "none", border: "none" }}
     defaultValue={data.storage}
     onChange={(e) => handleUpdateChange("storage", e.target.value)}
     style={inputStyle}
+    disabled
   />{" "}
 </Form.Item> },
 { label: "Configuration", name: "configuration", value:     
@@ -475,6 +496,7 @@ style={{ boxShadow: "none", border: "none" }}
       handleUpdateChange("configuration", e.target.value)
     }
     style={inputStyle}
+    disabled
   />{" "}
 </Form.Item> },
 { label: "Created At", name: "createdAt", value:     <Form.Item name="created_at">
@@ -484,6 +506,7 @@ style={{ boxShadow: "none", border: "none" }}
   <Input
     defaultValue={formatDate(data.created_at)}
     style={inputStyle}
+    disabled
   />
 </Form.Item>},
 { label: "Updated At", name: "updatedAt", value:<Form.Item name="updated_at">
@@ -493,6 +516,7 @@ style={{ boxShadow: "none", border: "none" }}
   <Input
     defaultValue={formatDate(data.updated_at)}
     style={inputStyle}
+    disabled
   />
 </Form.Item> },
 { label: "Comments", name: "comments", value: <Form.Item name="comments">
@@ -505,6 +529,7 @@ style={{ boxShadow: "none", border: "none" }}
     onChange={(e) => handleUpdateChange("comments", e.target.value)}
     style={{width:"387px",height:"100px",  background:" #f5f5fb",
     borderRadius: "5px",   border: "0.5px solid #d3d3d3",}}
+    disabled
   />{" "}
 </Form.Item> },
   ];
@@ -587,18 +612,7 @@ style={{ boxShadow: "none", border: "none" }}
         marginTop:"30px" ,marginBottom: "30px",width:"300px" ,height:"30px", borderRadius: "5px",    background:" #f5f5fb",}}
       />
 
-<Button
-        style={{
-          marginBottom: "40px",
-          color: "white",
-          border: "none",
-          background: "blue",
-          marginLeft:"800px"
-        }}
-        onClick={handleUpdate}
-      >
-        Update
-      </Button>
+
       </div>
       <div className="scrollable-content">
       <Form
@@ -626,4 +640,4 @@ style={{ boxShadow: "none", border: "none" }}
     </div>
   );
 };
-export default CardComponent;
+export default DashBoardCardComponent;
