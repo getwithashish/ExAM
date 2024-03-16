@@ -7,11 +7,11 @@ from asset.models import (
     Location,
     Memory,
 )
-from user_auth.models import User
 
 
-def parse_and_add_assets(file_content):
+def parse_and_add_assets(file_content, user):
     # Split the file content into lines and decode it as UTF-8
+    print(user)
     csv_reader = csv.DictReader(file_content.decode("utf-8").splitlines())
 
     # Get existing asset IDs and serial numbers from the database
@@ -79,8 +79,8 @@ def parse_and_add_assets(file_content):
             created_at=row["created_at"],
             updated_at=row["updated_at"],
             is_deleted=row["is_deleted"],
-            approved_by=conceder_user.id if conceder_user else None,
-            requester_id=requester_user.id if requester_user else None,
+            approved_by=user,  # Assign the User object obtained from the JWT payload
+            requester_id=user.id,  # Assign the User ID obtained from the JWT payload
             asset_type_id=asset_type.id if asset_type else None,
             business_unit_id=business_unit.id if business_unit else None,
             custodian_id=custodian.id if custodian else None,
