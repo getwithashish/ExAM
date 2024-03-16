@@ -24,8 +24,12 @@ import MenuListComposition from "../menuItem";
 import SideDrawerComponent from "../SideDrawerComponent/SideDrawerComponent";
 import AddAsset from "../AddAsset/AddAsset";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../pages/authentication/AuthContext";
 
 const SidebarComponentNew = ({ children }) => {
+
+  const { setUserRole, login, logout } = useAuth();
+
   // const { addAssetState, setAddAssetState } = useMyContext();
   const [displaydrawer, setDisplayDrawer] = useState(false);
   const closeDrawer = () => {
@@ -82,6 +86,8 @@ const SidebarComponentNew = ({ children }) => {
       console.log(payload);
       console.log(payload.username);
       setJwtPayload(payload);
+      // login()
+      setUserRole(payload.user_scope)
     }
   }, []);
 
@@ -90,7 +96,9 @@ const SidebarComponentNew = ({ children }) => {
   const handleLogout = () => {
     localStorage.removeItem("jwt");
     localStorage.removeItem("refresh_token");
-    navigate('/login')
+    // logout()
+    setUserRole("None")
+    navigate('/login', { replace: true })
   };
 
   return (
