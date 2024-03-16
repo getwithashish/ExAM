@@ -3,6 +3,7 @@ import AssetTableOne from '../../components/AssetTable/AssetTableOne'
 import AssignmentDrawer from '../../components/Assign/AssignmentDrawer'
 import { Assignment } from '../../components/Assign/Assignment'
 import { DataType } from '../../components/AssetTable/types'
+import AssetTableHandler from '../../components/AssetTable/AssetTableHandler'
 const assignableasset = () => {
   const [isAssign,setIsAssign] = useState(false)
   const [record,setRecord] = useState<DataType>()
@@ -22,7 +23,7 @@ setIsAssign(false)
   return (
     <div>
       <AssetTableOne showAssignDrawer={showAssignDrawer}/>
-
+      <AssetTableHandler/>
 
       <AssignmentDrawer isAssign={isAssign} closeAssignDrawer={closeAssignDrawer} >
          {record && <Assignment record={record} />} 

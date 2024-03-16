@@ -40,7 +40,7 @@ const DashboardPage: FC = function () {
       {/* <SidebarHandler addAsset={showDefaultDrawer} /> */}
       <Statistics />
 
-      <AssetTableHandler showDrawer={showDefaultDrawer} />
+      <AssetTableHandler  />
       {/* <AssetTable showDrawer={showDefaultDrawer} /> */}
 
       {/* <AssignmentDrawer buttonTextDefault="Import" displayDrawer={showUpload} >
@@ -52,7 +52,7 @@ const DashboardPage: FC = function () {
                   <UploadComponent />
                   </div>
                   </SideDrawerComponent>  */}
-                  <QueryBuilderComponent />
+                  {/* <QueryBuilderComponent /> */}
 
       <div></div>
     </div>
