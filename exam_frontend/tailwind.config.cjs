@@ -1,5 +1,7 @@
 /* eslint-disable no-undef */
 /** @type {import('tailwindcss').Config} */
+const defaultTheme = require('tailwindcss/defaultTheme');
+
 module.exports = {
   content: [
     "./index.html",
@@ -7,6 +9,12 @@ module.exports = {
     "./src/**/*.{ts,tsx}",
   ],
   theme: {
+    screens: {
+      sm: '480px',
+      md: '768px',
+      lg: '976px',
+      xl: '1440px',
+    },  
     colors: {
       primary: {
         50: "#eff6ff",
@@ -22,23 +30,15 @@ module.exports = {
       },
     },
     fontFamily: {
-      sans: [
-        "Inter",
-        "ui-sans-serif",
-        "system-ui",
-        "-apple-system",
-        "system-ui",
-        "Segoe UI",
-        "Roboto",
-        "Helvetica Neue",
-        "Arial",
-        "Noto Sans",
-        "sans-serif",
-        "Apple Color Emoji",
-        "Segoe UI Emoji",
-        "Segoe UI Symbol",
-        "Noto Color Emoji",
-      ],
+      display: ['Poppins', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      body: ['"Open Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      serif: ['ui-serif', 'Georgia', 'Cambria', 'Times New Roman', 'Times', 'serif'],
+      mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace'],
+    },
+    extend: {
+      fontFamily: {
+        sans: ['Poppins', ...defaultTheme.fontFamily.sans]
+      },
       body: [
         "Inter",
         "ui-sans-serif",
@@ -67,20 +67,6 @@ module.exports = {
         "monospace",
       ],
     },
-    extend: {},
   },
   plugins: [require("flowbite/plugin")],
 };
-
-
-// tailwind.config.js
-// module.exports = {
-//   darkMode: 'class',
-//   // ...
-// }
-
-// // tailwind.config.js
-// module.exports = {
-//   darkMode: 'media',
-//   // ...
-// }

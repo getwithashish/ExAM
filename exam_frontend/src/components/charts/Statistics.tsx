@@ -10,7 +10,7 @@ export const Statistics = () => {
               <svg className="w-4 h-4 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                 <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
               </svg>
-                <span className="text-md">
+                <span className="text-md font-display">
                   Dashboard
               </span>
             </a>
@@ -19,13 +19,13 @@ export const Statistics = () => {
           </nav>
       <div className="rounded-lg bg-white shadow-sm dark:bg-gray-800 xl:p-5 mx-2 my-2">
         <div className="mb-3 flex items-center justify-between">
-          <div className="shrink-0">
-            <span className="text-md font-bold leading-none text-gray-900 dark:text-white sm:text-3xl underline underline-offset-3 decoration-2 decoration-black-400 dark:decoration-blue-600">
+          <div className="shrink-0 my-3 mx-1">
+            <span className="text-md font-bold font-display mx-3 leading-none text-gray-900 dark:text-white text-xl">
               Asset Status Overview
             </span>
           </div>
         </div>
-        <div>
+        <div className="mx-3">
           <PieChartGraph selectedAssetType='asset_view' type="asset_view"/>
         </div>        
       </div>

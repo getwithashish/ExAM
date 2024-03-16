@@ -91,7 +91,7 @@ const RequestPage: FC = function () {
           <div className="mb-4">
             <nav className="flex mb-4" aria-label="Breadcrumb">
             <ol className="inline-flex items-center space-x-1 md:space-x-3 rtl:space-x-reverse">
-              <li className="inline-flex items-center">
+              <li className="inline-flex items-center font-display">
                 <a href="#" className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
                   <svg className="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                     <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
@@ -104,12 +104,12 @@ const RequestPage: FC = function () {
                   <svg className="w-3 h-3 text-gray-400 mx-1 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
                   </svg>
-                  <a href="#" className="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Pending Asset Requests</a>
+                  <a href="#" className="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white font-display">Pending Asset Requests</a>
                 </div>
               </li>
             </ol>
           </nav>
-            <h1 className="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">
+            <h1 className="text-xl font-display font-semibold text-gray-900 dark:text-white sm:text-2xl">
               Pending Asset Requests
             </h1>
           </div>
@@ -151,7 +151,7 @@ const RequestPage: FC = function () {
 const SearchRequests: FC = function () {
   return (
     <form className="mb-4 sm:mb-0 sm:pr-3" action="#" method="GET">
-      <Label htmlFor="search-request" className="sr-only">
+      <Label htmlFor="search-request" className="sr-only font-display">
         Search
       </Label>
       <div className="relative mt-1 lg:w-64 xl:w-96">
@@ -167,14 +167,14 @@ const SearchRequests: FC = function () {
 
 const RequestTable: FC<{ assets: any[]; setSelectedAsset: (asset: any | null) => void;}> = function ({ assets, setSelectedAsset }) {
   return (
-    <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600 rounded-lg">
-      <Table.Head className="bg-gray-100 dark:bg-gray-700">
+    <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600 rounded-md">
+      <Table.Head className="bg-gray-100 dark:bg-gray-700 font-display">
         <Table.HeadCell>Request type</Table.HeadCell>
         <Table.HeadCell>Requester</Table.HeadCell>
         <Table.HeadCell>Request Date</Table.HeadCell>
         <Table.HeadCell>Actions</Table.HeadCell>
       </Table.Head>
-      <Table.Body className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
+      <Table.Body className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800 font-display">
         {assets.map((asset) => (
           <Table.Row
             key={asset.asset_uuid}
@@ -192,16 +192,16 @@ const RequestTable: FC<{ assets: any[]; setSelectedAsset: (asset: any | null) =>
                 {asset.asset_type.asset_type_name}
               </div>
             </Table.Cell>
-            <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-left text-gray-900 dark:text-white">
+            <Table.Cell className="whitespace-nowrap p-4 text-base font-display font-md text-left text-gray-900 dark:text-white">
               {asset.requester.username}
             </Table.Cell>
-            <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
+            <Table.Cell className="whitespace-nowrap p-4 text-base font-display font-xs text-gray-900 dark:text-white">
               {new Date(asset.created_at).toLocaleDateString()}
             </Table.Cell>
             <Table.Cell className="space-x-2 whitespace-nowrap p-4">
               <div className="flex items-center gap-x-3">
                 <Button color="primary" onClick={() => setSelectedAsset(asset)}>
-                  <HiPencilAlt className="mr-2 text-lg" />
+                  <HiPencilAlt className="mr-2 text-lg font-display" />
                   View 
                 </Button>
               </div>
@@ -228,7 +228,7 @@ const ViewRequestModal: FC<{ asset: any; handleApprove: () => void; handleReject
     <DrawerViewRequest title="Request Details" onClose={onClose} visible={true}>
       <div>
         <form>
-          <div className="grid grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">
+          <div className="grid font-display grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">
             <div>
               <Label htmlFor="assetId">ASSET ID</Label>
               <TextInput
@@ -236,7 +236,7 @@ const ViewRequestModal: FC<{ asset: any; handleApprove: () => void; handleReject
                 name="assetId"
                 value={asset.asset_id}
                 disabled
-                className="mt-1"
+                className="mt-1 font-display"
               />
             </div>
             <div>
@@ -246,7 +246,7 @@ const ViewRequestModal: FC<{ asset: any; handleApprove: () => void; handleReject
                 name="version"
                 value={asset.version}
                 disabled
-                className="mt-1"
+                className="mt-1 font-display"
               />
             </div>
             <div>
@@ -256,7 +256,7 @@ const ViewRequestModal: FC<{ asset: any; handleApprove: () => void; handleReject
                 name="assetCategory"
                 value={asset.asset_category}
                 disabled
-                className="mt-1"
+                className="mt-1 font-display"
               />
             </div>
             <div>
@@ -266,7 +266,7 @@ const ViewRequestModal: FC<{ asset: any; handleApprove: () => void; handleReject
                 name="productName"
                 value={asset.product_name}
                 disabled
-                className="mt-1"
+                className="mt-1 font-display"
               />
             </div>
             <div>
@@ -276,7 +276,7 @@ const ViewRequestModal: FC<{ asset: any; handleApprove: () => void; handleReject
                 name="modelNumber"
                 value={asset.model_number}
                 disabled
-                className="mt-1"
+                className="mt-1 font-display"
               />
             </div>
             <div>
@@ -286,7 +286,7 @@ const ViewRequestModal: FC<{ asset: any; handleApprove: () => void; handleReject
                 name="serialNumber"
                 value={asset.serial_number}
                 disabled
-                className="mt-1"
+                className="mt-1 font-display"
               />
             </div>
             <div>
@@ -296,7 +296,7 @@ const ViewRequestModal: FC<{ asset: any; handleApprove: () => void; handleReject
                 name="owner"
                 value={asset.owner}
                 disabled
-                className="mt-1"
+                className="mt-1 font-display"
               />
             </div>
             <div>
@@ -306,7 +306,7 @@ const ViewRequestModal: FC<{ asset: any; handleApprove: () => void; handleReject
                 name="dop"
                 value={asset.date_of_purchase}
                 disabled
-                className="mt-1"
+                className="mt-1 font-display"
               />
             </div>
             <div>
@@ -316,7 +316,7 @@ const ViewRequestModal: FC<{ asset: any; handleApprove: () => void; handleReject
                 name="warranty_period"
                 value={asset.warranty_period}
                 disabled
-                className="mt-1"
+                className="mt-1 font-display"
               />
             </div>
             <div>
@@ -326,7 +326,7 @@ const ViewRequestModal: FC<{ asset: any; handleApprove: () => void; handleReject
                 name="os"
                 value={asset.os}
                 disabled
-                className="mt-1"
+                className="mt-1 font-display"
               />
             </div>
             <div>
@@ -336,7 +336,7 @@ const ViewRequestModal: FC<{ asset: any; handleApprove: () => void; handleReject
                 name="os_version"
                 value={asset.os_version}
                 disabled
-                className="mt-1"
+                className="mt-1 font-display"
               />
             </div>
             <div>
@@ -455,14 +455,14 @@ const ViewRequestModal: FC<{ asset: any; handleApprove: () => void; handleReject
       </div>
       <div className="flex gap-2 my-4">
       <button
-        className="block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-3 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+        className="block font-display text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-3 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
         onClick={() => toggleModal("approve")}
       >
         Approve
       </button>
 
       <button
-        className="block text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-6 py-3 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+        className="block font-display text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-6 py-3 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
         onClick={() => toggleModal("reject")}
       >
         Reject
@@ -509,7 +509,7 @@ const ViewRequestModal: FC<{ asset: any; handleApprove: () => void; handleReject
       )}
       <button
         onClick={() => setModalOpen(false)}
-        className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+        className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
       >
         Cancel
       </button>
