@@ -20,6 +20,7 @@ import RequestPage from "./pages/RequestPage/AssetRequest";
 import { useAuth } from "./pages/authentication/AuthContext";
 import ProtectedRoute from "./pages/authentication/ProtectedRoute";
 import UpdatableAsset from "./pages/UpdatableAssetPage/UpdatableAsset";
+import RejectedAsset from "./pages/RejectedAssetPage/RejectedAsset";
 
 const ExamRoutes = () => {
   const { authenticated, setAuthenticated, userRole } = useAuth();
@@ -71,6 +72,8 @@ const ExamRoutes = () => {
                   />
                   <Route path="/assign_requests" element={<AssignPage />} />
                   <Route path="/updatable_assets" element={<UpdatableAsset/>}/>
+                  <Route path="/rejected_assets" element={<RejectedAsset/>}/>
+
                 </Routes>
               </SidebarComponentNew>
             }

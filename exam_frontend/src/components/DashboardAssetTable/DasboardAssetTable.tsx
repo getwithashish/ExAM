@@ -2,7 +2,7 @@ import React, { Key, SetStateAction, useEffect, useMemo, useState } from "react"
 import { Badge, Button, Dropdown, Input, Space, Table, TableColumnsType } from "antd";
 import DrawerComponent from "../DrawerComponent/DrawerComponent";
 import { SearchOutlined } from "@ant-design/icons";
-import "./AssetTable.css";
+import "./DasboardAssetTable.css";
 import CardComponent from "../CardComponent/CardComponent"
 import { CloseOutlined } from "@ant-design/icons";
 import axiosInstance from "../../config/AxiosConfig";
@@ -20,6 +20,7 @@ import { AxiosError } from "axios";
 import TableNavbar from "../TableNavBar/TableNavbar";
 import SideDrawerComponent from "../SideDrawerComponent/SideDrawerComponent";
 import UploadComponent from "../Upload/UploadComponent";
+import DashBoardCardComponent from "../DashBoardCardComponent/DashBoardCardComponent";
  
 interface ExpandedDataType {
   key: React.Key;
@@ -34,7 +35,7 @@ const items = [
  
  
  
-const AssetTable = ({
+const DasboardAssetTable = ({
   asset_uuid,
   logsData,
   isLoading,
@@ -61,11 +62,13 @@ const AssetTable = ({
  
 const rowRender=(record, expanded)=>{if(isSuccess){ if(expanded && selectedAssetId && expandedRowRender)return expandedRowRender(record.key);else return;} else return <>not loaded</>}  
 const memoizedRowRender=useMemo(()=>rowRender,[isSuccess])
-
 const [showUpload, setShowUpload] = useState(false);
   const closeImportDrawer = () => {
     setShowUpload(false);
   };
+ 
+
+  
  
   return (
     <>
@@ -73,15 +76,25 @@ const [showUpload, setShowUpload] = useState(false);
         <h1>Asset Details</h1>
       </div>
      
-      
+      <div>
+        <TableNavbar showUpload={showUpload} setShowUpload={setShowUpload} />
+      </div>
+
+    
 
       <div style={{ position: "relative", display: "inline-block" }}>
-     
+      <SideDrawerComponent
+          displayDrawer={showUpload}
+          closeDrawer={closeImportDrawer}
+        >
+          <UploadComponent />
+        </SideDrawerComponent>
   <Table
    
     columns={columns}
+    scroll={{ y: 300 }} 
     dataSource={assetData}
-    scroll={{ x: "max-content" }}
+    // scroll={{ x: "max-content" }}
     className="mainTable"
     pagination={false}
     // bordered={false}
@@ -118,7 +131,7 @@ const [showUpload, setShowUpload] = useState(false);
         )}
  
         {selectedRow && (
-          <CardComponent
+          <DashBoardCardComponent
             selectedAssetId={ selectedAssetId}
 
             data={selectedRow}
@@ -137,4 +150,4 @@ const [showUpload, setShowUpload] = useState(false);
   );
 };
  
-export default React.memo(AssetTable);
+export default React.memo(DasboardAssetTable );
