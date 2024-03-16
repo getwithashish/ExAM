@@ -82,8 +82,9 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>
           <Select
+            variant="filled"
             defaultValue={data.asset_type}
-            style={{ boxShadow: "none", border: "none", width: "180px",background:"#f0f0fa",height:"40px" }}
+            style={{ boxShadow: "none", border: "none", width: "180px",height:"40px" }}
             onChange={(value) => handleChange("asset_type", value)}
           >
             {uniqueAssetTypeOptions.map((asset_type, index) => (
@@ -120,6 +121,7 @@ const CardComponent: React.FC<CardType> = ({
          <br></br>
     <br></br>
       <Select
+         variant="filled"
         defaultValue={uniqueStatusOptions[0]}
         style={{ boxShadow: "none", border: "none", width: "180px",height:"40px" }}
         onChange={(value) => handleChange("status", value)} // Pass only the value
@@ -139,6 +141,7 @@ const CardComponent: React.FC<CardType> = ({
        <br></br>
     <br></br>
     <Select
+      variant="filled"
       defaultValue={data.location}
       style={{ boxShadow: "none", border: "none", width: "180px",height:"40px" }}
       onChange={(value) => handleChange("location", value)}
@@ -158,6 +161,7 @@ const CardComponent: React.FC<CardType> = ({
        <br></br>
     <br></br>
       <Select
+        variant="filled"
         defaultValue={data.invoice_location}
         style={{ boxShadow: "none", border: "none", width: "180px",height:"40px" }}
         onChange={(value) => handleChange("invoice_location", value)} // Pass only the value
@@ -384,6 +388,7 @@ const CardComponent: React.FC<CardType> = ({
    <br></br>
     <br></br>
   <Select
+    variant="filled"
     defaultValue={uniqueBusinessOptions[0]}
     style={{ boxShadow: "none", border: "none", width: "180px" ,height:"40px"}}
     onChange={(value) => handleChange("business_unit", value)} // Pass only the value
@@ -405,6 +410,7 @@ style={{ boxShadow: "none", border: "none" }}
 <br></br>
     <br></br>
 <Select
+  variant="filled"
   defaultValue={data.memory}
   style={{ boxShadow: "none", border: "none", width: "180px",height:"40px" }}
   onChange={(value) => handleChange("memory", value)} // Pass only the value

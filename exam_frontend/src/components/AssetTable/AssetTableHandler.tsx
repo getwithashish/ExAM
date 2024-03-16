@@ -216,7 +216,7 @@ const AssetTableHandler = () => {
     })) ?? [];
 
   const assetDataList = assetData;
-  console.log("Testing on 65:", assetDataList ? assetDataList[0].results : []);
+  // console.log("Testing on 65:", assetDataList ? assetDataList[0].results : []);
 
   const handleRowClick = useCallback((record: React.SetStateAction<null>) => {
     setSelectedRow(record);
