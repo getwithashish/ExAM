@@ -216,7 +216,7 @@ const AssetTableHandler = () => {
     })) ?? [];
 
   const assetDataList = assetData;
-  console.log("Testing on 65:", assetDataList ? assetDataList[0].results : []);
+  // console.log("Testing on 65:", assetDataList ? assetDataList[0].results : []);
 
   const handleRowClick = useCallback((record: React.SetStateAction<null>) => {
     setSelectedRow(record);
@@ -383,6 +383,31 @@ const AssetTableHandler = () => {
         </div>
       ),
     },
+    {
+      title: "Invoice Location",
+      dataIndex: "invoice_location",
+      responsive: ["md"],
+      width: 180,
+      filters: locationFilters,
+      onFilter: (
+        value: string | number | boolean | React.ReactText[] | Key,
+        record: DataType
+      ) => {
+        if (Array.isArray(value)) {
+          return value.includes(record.location);
+        }
+        return record.location.indexOf(value.toString()) === 0;
+      },
+      render: (_, record) => (
+        <div
+          data-column-name="Invoice Location"
+          onClick={() => handleColumnClick(record, "Invoice Location")}
+          style={{ cursor: "pointer" }}
+        >
+          {record.location}
+        </div>
+      ),
+    },
 
     {
       title: "Custodian",
@@ -466,6 +491,7 @@ const AssetTableHandler = () => {
         </div>
       ),
     },
+  
   ];
 
   const handleColumnClick = (record: string[], columnName: string) => {
