@@ -46,7 +46,7 @@ interface ExpandedDataType {
   upgradeNum: string;
 }
 
-const AssetTableHandler = () => {
+const AssetTableHandler = ({showAssignDrawer}) => {
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null); // State to store the selected asset ID
 
   const {
@@ -491,6 +491,31 @@ const AssetTableHandler = () => {
         </div>
       ),
     },
+    {
+      title: "Assign Asset",
+      dataIndex: "AssignAsset",
+      fixed: "right",
+      render: (_data, record) => (
+        <Button
+          ghost
+          style={{
+            borderRadius: "10px",
+            background: "#D3D3D3",
+            color: "black",
+          }}
+          onClick={() => {
+            if (record.custodian == null || record.custodian == undefined) {
+              showAssignDrawer(record);
+            } else {
+              alert("Already assigned");
+            }
+          }}
+          
+        >
+          +
+        </Button>
+      ),
+    }
   
   ];
 
@@ -551,6 +576,7 @@ const AssetTableHandler = () => {
 
   return (
     <AssetTable
+      showAssignDrawer={showAssignDrawer}
       drawerTitle={drawerTitle}
       logsData={logsData}
       isLoading={isLoading}

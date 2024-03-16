@@ -1,10 +1,9 @@
 import  { useState } from 'react'
-import AssetTableOne from '../../components/AssetTable/AssetTableOne'
-import AssignmentDrawer from '../../components/Assign/AssignmentDrawer'
-import { Assignment } from '../../components/Assign/Assignment'
+import AssignmentDrawer from '../../components/AssignAsset/Assign/AssignmentDrawer'
+import { Assignment } from '../../components/AssignAsset/Assign/Assignment'
 import { DataType } from '../../components/AssetTable/types'
-import AssetTableHandler from '../../components/AssetTable/AssetTableHandler'
-const assignableasset = () => {
+import AssetTableHandler from '../../components/AssignAsset/AssetTable/AssetTableHandler'
+const Assignableasset = () => {
   const [isAssign,setIsAssign] = useState(false)
   const [record,setRecord] = useState<DataType>()
   
@@ -22,15 +21,15 @@ setIsAssign(false)
 }
   return (
     <div>
-      <AssetTableOne showAssignDrawer={showAssignDrawer}/>
-      <AssetTableHandler/>
+      {/* <AssetTableOne showAssignDrawer={showAssignDrawer}/> */}
+      <AssetTableHandler showAssignDrawer={showAssignDrawer}/>
 
       <AssignmentDrawer isAssign={isAssign} closeAssignDrawer={closeAssignDrawer} >
          {record && <Assignment record={record} />} 
-          <div></div>
+          
         </AssignmentDrawer>
     </div>
   )
 }
 
-export default assignableasset
+export default Assignableasset

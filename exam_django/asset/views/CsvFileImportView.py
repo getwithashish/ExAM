@@ -7,6 +7,7 @@ from asset.models import (
     Location,
     Memory,
 )
+from user_auth.models import User
 
 
 def parse_and_add_assets(file_content, user):

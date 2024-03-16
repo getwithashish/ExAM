@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import axiosInstance from "../../../config/AxiosConfig";
+import axiosInstance from "../../../../config/AxiosConfig";
 import { LogData } from "../types";
 
 const getAssetLog=async (selectedAssetId:string|null):Promise<LogData[]> => {
