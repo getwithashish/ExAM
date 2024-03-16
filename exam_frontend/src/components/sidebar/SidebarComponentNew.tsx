@@ -27,8 +27,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../pages/authentication/AuthContext";
 
 const SidebarComponentNew = ({ children }) => {
-
-  const { setUserRole, login, logout } = useAuth();
+  const { userRole, setUserRole, login, logout } = useAuth();
 
   // const { addAssetState, setAddAssetState } = useMyContext();
   const [displaydrawer, setDisplayDrawer] = useState(false);
@@ -87,7 +86,7 @@ const SidebarComponentNew = ({ children }) => {
       console.log(payload.username);
       setJwtPayload(payload);
       // login()
-      setUserRole(payload.user_scope)
+      setUserRole(payload.user_scope);
     }
   }, []);
 
@@ -97,8 +96,8 @@ const SidebarComponentNew = ({ children }) => {
     localStorage.removeItem("jwt");
     localStorage.removeItem("refresh_token");
     // logout()
-    setUserRole("None")
-    navigate('/login', { replace: true })
+    setUserRole("None");
+    navigate("/login", { replace: true });
   };
 
   return (
@@ -201,16 +200,21 @@ const SidebarComponentNew = ({ children }) => {
             <Menu.Item icon={<UserSwitchOutlined />}>
               <Link to="/exam/assignable_asset">Assign an Asset</Link>
             </Menu.Item>
-            <Menu.Item icon={<CarryOutOutlined />}>
-              <Link to="/exam/requests">Pending(Assets)</Link>
-            </Menu.Item>
-            <Menu.Item icon={<CarryOutOutlined />}>
-              <Link to="/exam/assign_requests">Pending(Assign)</Link>
-            </Menu.Item>
-            <Menu.Item
-              onClick={() => handleLogout()}
-              icon={<LogoutOutlined />}
-            >
+            {userRole === "LEAD" ? (
+              <Menu.Item icon={<CarryOutOutlined />}>
+                <Link to="/exam/requests">Pending(Assets)</Link>
+              </Menu.Item>
+            ) : (
+              ""
+            )}
+            {userRole === "LEAD" ? (
+              <Menu.Item icon={<CarryOutOutlined />}>
+                <Link to="/exam/assign_requests">Pending(Assign)</Link>
+              </Menu.Item>
+            ) : (
+              ""
+            )}
+            <Menu.Item onClick={() => handleLogout()} icon={<LogoutOutlined />}>
               Logout
             </Menu.Item>
           </Menu>
