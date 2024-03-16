@@ -5,18 +5,19 @@ import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
 import AddAsset from "../../components/AddAsset/AddAsset";
 import AssetTable from '../../components/AssetTable/AssetTable'
 import SideDrawerComponent from "../../components/SideDrawerComponent/SideDrawerComponent";
-import { SidebarHandler } from "../../components/Sidebar/SidebarHandler";
+import { SidebarHandler } from "../../components/sidebar/SidebarHandler";
 import AssignmentDrawer from "../../components/Assign/AssignmentDrawer";
 import { Assignment } from "../../components/Assign/Assignment";
 // import { Statistics } from "../../components/charts/Statistics";
 import { RecordProps } from "./types";
 import ExportButton from "../../components/Export/Export";
+import { DataType } from "../../components/AssetTable/types";
 
 
 const DashboardPage: FC = function () {
 const [displaydrawer,setDisplayDrawer] = useState(false)
 const [isAssign,setIsAssign] = useState(false)
-const [record,setRecord] = useState<RecordProps>()
+const [record,setRecord] = useState<DataType>()
 
   const showDefaultDrawer =()=>{
     setDisplayDrawer(true)
@@ -27,7 +28,7 @@ const [record,setRecord] = useState<RecordProps>()
   console.log("displaydrwer value is " ,displaydrawer)
  }
 
- const showAssignDrawer =(record:RecordProps)=>{
+ const showAssignDrawer =(record:DataType)=>{
   console.log("uuid",record)
   setRecord(record)
   setIsAssign(true)
@@ -54,7 +55,7 @@ console.log("displaydrwer value is " ,displaydrawer)
         </AssignmentDrawer>
 )}
 
-                    <AssetTable assignAsset={showAssignDrawer} />
+                    <AssetTable />
 
                   <SideDrawerComponent  displayDrawer={displaydrawer} closeDrawer={closeDrawer}>
                     <AddAsset/>
