@@ -1,3 +1,20 @@
+export interface AssetDetailData{
+  id: number;
+  asset_type_name: string;
+  asset_detail_status_name: string;
+  assign_status_name: string;
+}
+
+export type ChartData = {
+  label: string;
+  value: number;
+};
+
+export interface PieChartGraphProps {
+  selectedAssetType: string;
+  type: string;
+}
+
 export interface AssetData{
   total_assets: number;
   asset_status: {
@@ -11,19 +28,7 @@ export interface AssetData{
     };
 }
 
-export interface PieChartGraphProps {
-  selectedAssetType: string;
-  type: string;
-}
 
-export interface AssetDetailData{
-  id: number;
-  asset_type_name: string;
-  asset_detail_status_name: string;
-  assign_status_name: string;
-}
 
-export type ChartData = {
-  label: string;
-  value: number;
-};
+
+

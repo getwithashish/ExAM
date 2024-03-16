@@ -4,7 +4,7 @@ import { useState, type FC, useContext } from "react";
 import NavbarSidebarLayout from "../layouts/navbar-sidebar";
 import AddAsset from "../components/AddAsset/AddAsset";
 import AssetTable from '../components/AssetTable/AssetTable'
-import { Statistics } from "../components/charts/Statistics";
+import { Statistics } from "../components/Charts/Statistics";
 import SideDrawerComponent from "../components/SideDrawerComponent/SideDrawerComponent";
 import { SidebarHandler } from "../components/Sidebar/SidebarHandler";
 import AssignmentDrawer from "../components/Assign/AssignmentDrawer";
