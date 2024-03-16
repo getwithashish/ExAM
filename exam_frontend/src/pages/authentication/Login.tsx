@@ -75,7 +75,11 @@ export default function Login() {
       // Redirect to dashboard after successful login
       navigate("/exam/dashboard");
     } catch (error) {
-      console.log("Error:", error);
+      if (axios.isAxiosError(error) && error.response && error.response.status === 401) {
+        setUsernameError("Invalid username or password");
+      } else {
+        console.log("Error:", error);
+      }
     }
   };
 
