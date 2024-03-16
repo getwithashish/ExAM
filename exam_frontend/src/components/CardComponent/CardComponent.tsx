@@ -10,6 +10,7 @@ import {
   Row,
   Col,
   message,
+  message,
 } from "antd";
 import "./CardComponent.css";
 import { DataType } from "../AssetTable/types/index";

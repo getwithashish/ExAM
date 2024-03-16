@@ -1,10 +1,8 @@
-import React, { useState } from 'react'
-import AssetTableOne from '../components/AssetTable/AssetTableOne'
-import AssignmentDrawer from '../components/Assign/AssignmentDrawer'
-import { RecordProps } from './index/types'
-import { Assignment } from '../components/Assign/Assignment'
-import { DataType } from '../components/AssetTable/types'
-
+import  { useState } from 'react'
+import AssetTableOne from '../../components/AssetTable/AssetTableOne'
+import AssignmentDrawer from '../../components/Assign/AssignmentDrawer'
+import { Assignment } from '../../components/Assign/Assignment'
+import { DataType } from '../../components/AssetTable/types'
 const assignableasset = () => {
   const [isAssign,setIsAssign] = useState(false)
   const [record,setRecord] = useState<DataType>()
@@ -27,7 +25,7 @@ setIsAssign(false)
 
 
       <AssignmentDrawer isAssign={isAssign} closeAssignDrawer={closeAssignDrawer} >
-          <Assignment record={record} />
+         {record && <Assignment record={record} />} 
           <div></div>
         </AssignmentDrawer>
     </div>
