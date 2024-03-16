@@ -218,6 +218,10 @@ const SidebarComponentNew = ({ children }) => {
              <Menu.Item icon={<CarryOutOutlined />}>
                 <Link to="/exam/updatable_assets">Updatable Assets</Link>
               </Menu.Item>
+              <Menu.Item icon={<CarryOutOutlined />}>
+                <Link to="/exam/rejected_assets">My Rejected Assets</Link>
+              </Menu.Item>
+
             <Menu.Item onClick={() => handleLogout()} icon={<LogoutOutlined />}>
               Logout
             </Menu.Item>

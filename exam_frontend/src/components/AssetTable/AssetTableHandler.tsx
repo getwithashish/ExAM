@@ -413,7 +413,6 @@ const AssetTableHandler = () => {
       title: "Custodian",
       dataIndex: "custodian",
       responsive: ["md"],
-      fixed: "right",
       width: 180,
       filterIcon: <SearchOutlined />,
       filterDropdown: ({
@@ -470,7 +469,7 @@ const AssetTableHandler = () => {
       title: "Asset Type",
       dataIndex: "asset_type",
       responsive: ["md"],
-
+      fixed: "right",
       filters: assetTypeFilters,
       onFilter: (
         value: string | number | boolean | React.ReactText[] | Key,

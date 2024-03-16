@@ -9,7 +9,7 @@ const DrawerComponent:React.FC<DrawerProps> = ({ visible, onClose,drawerTitle ,c
     
       title={drawerTitle}
       placement="bottom"
-      width={200}
+      width={100}
       height={500}
       onClose={onClose}
       visible={visible}
@@ -21,7 +21,9 @@ const DrawerComponent:React.FC<DrawerProps> = ({ visible, onClose,drawerTitle ,c
       borderTopRightRadius: "8%",
      }}
     >
+      <div className='fixed-header'>
       <h1><b>Asset Details</b></h1>
+      </div>
       {children}
 
     </Drawer>
