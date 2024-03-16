@@ -4,9 +4,10 @@ import styles from './Assignment.module.css';
 import { ApiResponse, EmployeeDetails } from './types';
 import { useState } from 'react';
 import { RecordProps } from '../../pages/index/types';
+import { DataType } from '../AssetTable/types';
 
 interface AssignmentProps {
-  record: RecordProps|undefined;
+  record: DataType;
 }
 
 export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
@@ -16,7 +17,7 @@ export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
   const [employeeId, setEmployeeId] = useState<number>();
   
 
-  const { data, isLoading,isError } = useQuery<ApiResponse>({
+  const { data, isLoading, isError } = useQuery<ApiResponse>({
     queryKey: ['Assign'],
     enabled: fetchData && query.trim().length > 0,
     queryFn: (): Promise<ApiResponse> => axiosInstance.get(`/asset/employee?name=${query}`).then((res) => {
@@ -88,7 +89,7 @@ export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
 
       <input type='text' name={"employee"} className={styles['search-input']} placeholder='employee id' onChange={handleInputChange } value={value} />
       <div className={value ? styles['info'] : styles['result']}>
-        {isLoading ? <div>Loading...</div> : data && data.data.map((employee: EmployeeDetails) => (
+        {isLoading ? <div>Loading...</div>: isError ? <div>Error Fetching data </div> : data && data.data.map((employee: EmployeeDetails) => (
           <div key={employee.id} onClick={() => handleNameClick(employee.employee_name, employee.id)}>{employee.employee_name}</div>
         ))}
       </div>

@@ -14,7 +14,7 @@ import {
 import SidebarComponentNew from "./components/sidebar/SidebarComponentNew";
 import DashboardPage from "./pages";
 import Login from "./pages/authentication/Login";
-import Assignableasset from "./pages/assignableasset";
+import Assignableasset from "./pages/AssignAsset/assignableasset";
 import AssignPage from "./pages/RequestPage/AssignRequest";
 import RequestPage from "./pages/RequestPage/AssetRequest";
 import { useAuth } from "./pages/authentication/AuthContext";
