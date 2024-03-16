@@ -126,6 +126,8 @@ const [showUpload, setShowUpload] = useState(false);
  
         {selectedRow && (
           <CardComponent
+            selectedAssetId={ selectedAssetId}
+
             data={selectedRow}
             statusOptions={statusOptions}
             businessUnitOptions={businessUnitOptions}

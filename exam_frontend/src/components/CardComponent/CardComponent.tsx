@@ -9,6 +9,7 @@ import {
   ConfigProvider,
   Row,
   Col,
+  message,
 } from "antd";
 import "./CardComponent.css";
 import { DataType } from "../AssetTable/types/index";
@@ -16,11 +17,13 @@ import { CardType } from "./types/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axiosInstance from "../../config/AxiosConfig";
 
+
 interface UpdateData {
   asset_uuid: string;
   data: Partial<DataType>; // Partial to allow updating only specific fields
 }
 const CardComponent: React.FC<CardType> = ({
+  asset_uuid,
   data,
   onUpdate,
   statusOptions,
@@ -45,6 +48,42 @@ const CardComponent: React.FC<CardType> = ({
     
   };
 
+  const [updatedData, setUpdatedData] = useState<Partial<DataType>>({});
+  const handleUpdate = async () => {
+    console.log("Asset UUID:", data.key);
+    
+    try {
+      const updatePayload = {
+        asset_uuid: data.key,
+        data: updatedData,
+      };
+  
+      const response = await axiosInstance.patch("/asset/update", updatePayload, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+  
+      console.log("Updated data:", response.data);
+      message.success('Asset Details successfully updated');
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500); 
+    } catch (error) {
+      console.error("Error updating data:", error);
+    }
+  };
+  
+
+  const handleUpdateChange = (field: string, value: any) => {
+    setUpdatedData((prevData) => ({
+      ...prevData,
+      [field]: value,
+    }));
+  };
+
+
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,7 +92,6 @@ const CardComponent: React.FC<CardType> = ({
 
   
   const formItems = [
-    
   
     {
       label: "Asset Category",
@@ -66,7 +104,7 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <Input
             defaultValue={data.asset_category}
-            onChange={(e) => handleChange("assetCategory", e.target.value)}
+            onChange={(e) => handleUpdateChange("assetCategory", e.target.value)}
             style={inputStyle}
           />{" "}
         </Form.Item>
@@ -84,8 +122,8 @@ const CardComponent: React.FC<CardType> = ({
           <Select
             variant="filled"
             defaultValue={data.asset_type}
-            style={{ boxShadow: "none", border: "none", width: "180px",height:"40px" }}
-            onChange={(value) => handleChange("asset_type", value)}
+            style={{ boxShadow: "none", border: "0.5px solid #d3d3d3", width: "180px",height:"40px" }}
+            onChange={(value) => handleUpdateChange("asset_type", value)}
           >
             {uniqueAssetTypeOptions.map((asset_type, index) => (
               <Select.Option key={index} value={asset_type.id}>
@@ -106,7 +144,7 @@ const CardComponent: React.FC<CardType> = ({
       {" "}
       <Input
         defaultValue={data.version}
-        onChange={(e) => handleChange("version", e.target.value)}
+        onChange={(e) => handleUpdateChange("version", e.target.value)}
         style={inputStyle}
       />{" "}
     </Form.Item> 
@@ -123,8 +161,8 @@ const CardComponent: React.FC<CardType> = ({
       <Select
          variant="filled"
         defaultValue={uniqueStatusOptions[0]}
-        style={{ boxShadow: "none", border: "none", width: "180px",height:"40px" }}
-        onChange={(value) => handleChange("status", value)} // Pass only the value
+        style={{ boxShadow: "none", border: "0.5px solid #d3d3d3", width: "180px",height:"40px" }}
+        onChange={(value) => handleUpdateChange("status", value)} // Pass only the value
       >
         {uniqueStatusOptions.map((status, index) => (
           <Select.Option key={index} value={status}>
@@ -143,8 +181,8 @@ const CardComponent: React.FC<CardType> = ({
     <Select
       variant="filled"
       defaultValue={data.location}
-      style={{ boxShadow: "none", border: "none", width: "180px",height:"40px" }}
-      onChange={(value) => handleChange("location", value)}
+      style={{ boxShadow: "none", border: "0.5px solid #d3d3d3", width: "180px",height:"40px" }}
+      onChange={(value) => handleUpdateChange("location", value)}
     >
       {uniqueLocationoptions.map((location, index) => (
         <Select.Option key={index} value={location.id}>
@@ -163,8 +201,8 @@ const CardComponent: React.FC<CardType> = ({
       <Select
         variant="filled"
         defaultValue={data.invoice_location}
-        style={{ boxShadow: "none", border: "none", width: "180px",height:"40px" }}
-        onChange={(value) => handleChange("invoice_location", value)} // Pass only the value
+        style={{ boxShadow: "none", border: "0.5px solid #d3d3d3", width: "180px",height:"40px" }}
+        onChange={(value) => handleUpdateChange("invoice_location", value)} // Pass only the value
       >
         {uniqueLocationoptions.map((location, index) => (
           <Select.Option key={index} value={location.id}>
@@ -181,7 +219,7 @@ const CardComponent: React.FC<CardType> = ({
       {" "}
       <Input
         defaultValue={data.os}
-        onChange={(e) => handleChange("os", e.target.value)}
+        onChange={(e) => handleUpdateChange("os", e.target.value)}
         style={inputStyle}
       />{" "}
     </Form.Item> },
@@ -192,7 +230,7 @@ const CardComponent: React.FC<CardType> = ({
       {" "}
       <Input
         defaultValue={data.os_version}
-        onChange={(e) => handleChange("os version", e.target.value)}
+        onChange={(e) => handleUpdateChange("os version", e.target.value)}
         style={inputStyle}
       />{" "}
     </Form.Item> },
@@ -203,7 +241,7 @@ const CardComponent: React.FC<CardType> = ({
       {" "}
       <Input
         defaultValue={data.mobile_os}
-        onChange={(e) => handleChange("mobile os", e.target.value)}
+        onChange={(e) => handleUpdateChange("mobile os", e.target.value)}
         style={inputStyle}
       />{" "}
     </Form.Item> },
@@ -214,7 +252,7 @@ const CardComponent: React.FC<CardType> = ({
           {" "}
           <Input
             defaultValue={data.processor}
-            onChange={(e) => handleChange("processor", e.target.value)}
+            onChange={(e) => handleUpdateChange("processor", e.target.value)}
             style={inputStyle}
           />{" "}
         </Form.Item> },
@@ -225,7 +263,7 @@ const CardComponent: React.FC<CardType> = ({
       {" "}
       <Input
         defaultValue={data.Generation}
-        onChange={(e) => handleChange("generation", e.target.value)}
+        onChange={(e) => handleUpdateChange("generation", e.target.value)}
         style={inputStyle}
       />{" "}
     </Form.Item>  },
@@ -237,7 +275,7 @@ const CardComponent: React.FC<CardType> = ({
       {" "}
       <Input
         defaultValue={data.accessories}
-        onChange={(e) => handleChange("accessories", e.target.value)}
+        onChange={(e) => handleUpdateChange("accessories", e.target.value)}
         style={inputStyle}
       />{" "}
     </Form.Item> },
@@ -249,7 +287,7 @@ const CardComponent: React.FC<CardType> = ({
       <Input
         defaultValue={formatDate(data.date_of_purchase.toString())}
         onChange={(e) =>
-          handleChange("date of purchase", e.target.value)
+          handleUpdateChange("date of purchase", e.target.value)
         }
         style={inputStyle}
       />{" "}
@@ -262,7 +300,7 @@ const CardComponent: React.FC<CardType> = ({
       <Input
         defaultValue={data.warranty_period}
         onChange={(e) =>
-          handleChange("warranty period", e.target.value)
+          handleUpdateChange("warranty period", e.target.value)
         }
         style={inputStyle}
       />{" "}
@@ -275,7 +313,7 @@ const CardComponent: React.FC<CardType> = ({
     <Input
       defaultValue={data.approval_status}
       onChange={(e) =>
-        handleChange("serail number", e.target.value)
+        handleUpdateChange("serail number", e.target.value)
       }
       style={inputStyle}
     />{" "}
@@ -291,7 +329,7 @@ const CardComponent: React.FC<CardType> = ({
     <Input
       defaultValue={data.conceder}
       onChange={(e) =>
-        handleChange("serail number", e.target.value)
+        handleUpdateChange("serail number", e.target.value)
       }
       style={inputStyle}
     />{" "}
@@ -305,7 +343,7 @@ const CardComponent: React.FC<CardType> = ({
     <Input
       defaultValue={data.serial_number}
       onChange={(e) =>
-        handleChange("serail number", e.target.value)
+        handleUpdateChange("serail number", e.target.value)
       }
       style={inputStyle}
     />{" "}
@@ -318,7 +356,7 @@ const CardComponent: React.FC<CardType> = ({
   {" "}
   <Input
     defaultValue={data.model_number}
-    onChange={(e) => handleChange("model number", e.target.value)}
+    onChange={(e) => handleUpdateChange("model number", e.target.value)}
     style={inputStyle}
   />{" "}
 </Form.Item> },
@@ -329,7 +367,7 @@ const CardComponent: React.FC<CardType> = ({
     {" "}
   <Input
     defaultValue={data.custodian}
-    onChange={(e) => handleChange("model number", e.target.value)}
+    onChange={(e) => handleUpdateChange("model number", e.target.value)}
     style={inputStyle}
   />{" "}
 </Form.Item> },
@@ -340,7 +378,7 @@ const CardComponent: React.FC<CardType> = ({
   {" "}
   <Input
     defaultValue={data.owner}
-    onChange={(e) => handleChange("owner", e.target.value)}
+    onChange={(e) => handleUpdateChange("owner", e.target.value)}
     style={inputStyle}
   />{" "}
 </Form.Item> },
@@ -352,7 +390,7 @@ const CardComponent: React.FC<CardType> = ({
   {" "}
   <Input
     defaultValue={data.requester}
-    onChange={(e) => handleChange("requester", e.target.value)}
+    onChange={(e) => handleUpdateChange("requester", e.target.value)}
     style={inputStyle}
   />{" "}
 </Form.Item> },
@@ -363,7 +401,7 @@ const CardComponent: React.FC<CardType> = ({
   {" "}
   <Input
     defaultValue={data.notes}
-    onChange={(e) => handleChange("comments", e.target.value)}
+    onChange={(e) => handleUpdateChange("comments", e.target.value)}
     style={inputStyle}
   />{" "}
 </Form.Item> },
@@ -374,7 +412,7 @@ const CardComponent: React.FC<CardType> = ({
   {" "}
   <Input
     defaultValue={data.product_name}
-    onChange={(e) => handleChange("product name", e.target.value)}
+    onChange={(e) => handleUpdateChange("product name", e.target.value)}
     style={inputStyle}
   />{" "}
 </Form.Item> },
@@ -390,8 +428,8 @@ const CardComponent: React.FC<CardType> = ({
   <Select
     variant="filled"
     defaultValue={uniqueBusinessOptions[0]}
-    style={{ boxShadow: "none", border: "none", width: "180px" ,height:"40px"}}
-    onChange={(value) => handleChange("business_unit", value)} // Pass only the value
+    style={{ boxShadow: "none", border: "0.5px solid #d3d3d3", width: "180px" ,height:"40px"}}
+    onChange={(value) => handleUpdateChange("business_unit", value)} // Pass only the value
   >
     {uniqueBusinessOptions.map((business_unit, index) => (
       <Select.Option key={index} value={business_unit} style={{  background:" #f0f0fa",}}>
@@ -412,8 +450,8 @@ style={{ boxShadow: "none", border: "none" }}
 <Select
   variant="filled"
   defaultValue={data.memory}
-  style={{ boxShadow: "none", border: "none", width: "180px",height:"40px" }}
-  onChange={(value) => handleChange("memory", value)} // Pass only the value
+  style={{ boxShadow: "none", border: "0.5px solid #d3d3d3", width: "180px",height:"40px" }}
+  onChange={(value) => handleUpdateChange("memory", value)} // Pass only the value
 >
   {uniqueMemoryOptions.map((memory, index) => (
     <Select.Option key={index} value={memory.id}>
@@ -430,7 +468,7 @@ style={{ boxShadow: "none", border: "none" }}
   {" "}
   <Input
     defaultValue={data.storage}
-    onChange={(e) => handleChange("storage", e.target.value)}
+    onChange={(e) => handleUpdateChange("storage", e.target.value)}
     style={inputStyle}
   />{" "}
 </Form.Item> },
@@ -443,7 +481,7 @@ style={{ boxShadow: "none", border: "none" }}
   <Input
     defaultValue={data.configuration}
     onChange={(e) =>
-      handleChange("configuration", e.target.value)
+      handleUpdateChange("configuration", e.target.value)
     }
     style={inputStyle}
   />{" "}
@@ -485,11 +523,7 @@ style={{ boxShadow: "none", border: "none" }}
   //   }));
   // };
 
-  const [editedData, setEditedData] = useState({ ...data });
-
-  useEffect(() => {
-    setEditedData({ ...data });
-  }, [data]);
+  
 
   // const handleChange = (name, value) => {
   //   setEditedData((prevData) => ({
@@ -498,43 +532,7 @@ style={{ boxShadow: "none", border: "none" }}
   //   }));
   // };
 
-  const handleUpdate = async () => {
-    try {
-      const response = await axiosInstance.patch(
-        "/asset/update",
-        {
-          asset_id: data.asset_id,
-          data: editedData,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      // Check if the response contains a message indicating success
-      if (
-        response.data &&
-        response.data.message === "Asset details successfully updated."
-      ) {
-        // Check if the response contains the updated asset data
-        if (response.data && response.data.data) {
-          // Update the data state with the received updated data
-          onUpdate(response.data.data);
-        }
-        alert("Data updated successfully!");
-      } else {
-        // Handle the case where the asset could not be found
-        alert(
-          "The requested asset could not be found. Please review the details and try again."
-        );
-      }
-    } catch (error) {
-      console.error("Error updating data:", error);
-      alert("Error updating data");
-    }
-  };
+  
 
   const mainCardStyle = {
    
