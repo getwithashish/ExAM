@@ -45,8 +45,10 @@ interface ExpandedDataType {
   name: string;
   upgradeNum: string;
 }
-
-const AssetTableHandler = () => {
+interface AssetTableHandlerProps {
+  isRejectedPage: boolean; 
+}
+const AssetTableHandler = ({isRejectedPage}) => {
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null); // State to store the selected asset ID
 
   const {
@@ -245,7 +247,7 @@ const AssetTableHandler = () => {
       title: "Product Name",
       dataIndex: "product_name",
       fixed: "left",
-      width: 180,
+      width: 190,
       filterIcon: <SearchOutlined />,
       filterDropdown: ({
         setSelectedKeys,
@@ -303,7 +305,7 @@ const AssetTableHandler = () => {
       title: "Serial Number",
       dataIndex: "serial_number",
       responsive: ["md"],
-      width: 180,
+      width: 190,
       filterIcon: <SearchOutlined />,
       filterDropdown: ({
         setSelectedKeys,
@@ -362,7 +364,7 @@ const AssetTableHandler = () => {
       title: "Location",
       dataIndex: "location",
       responsive: ["md"],
-      width: 180,
+      width: 190,
       filters: locationFilters,
       onFilter: (
         value: string | number | boolean | React.ReactText[] | Key,
@@ -387,7 +389,7 @@ const AssetTableHandler = () => {
       title: "Invoice Location",
       dataIndex: "invoice_location",
       responsive: ["md"],
-      width: 180,
+      width: 190,
       filters: locationFilters,
       onFilter: (
         value: string | number | boolean | React.ReactText[] | Key,
@@ -408,12 +410,11 @@ const AssetTableHandler = () => {
         </div>
       ),
     },
-
     {
       title: "Custodian",
       dataIndex: "custodian",
       responsive: ["md"],
-      width: 180,
+      width: 190,
       filterIcon: <SearchOutlined />,
       filterDropdown: ({
         setSelectedKeys,
@@ -450,10 +451,14 @@ const AssetTableHandler = () => {
         </div>
       ),
       onFilter: (value, record) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.custodian);
+        // Check if record.custodian is defined before accessing it
+        if (record.custodian) {
+          if (Array.isArray(value)) {
+            return value.includes(record.custodian);
+          }
+          return record.custodian.indexOf(value.toString()) === 0;
         }
-        return record.custodian.indexOf(value.toString()) === 0;
+        return false; // Return false if custodian is undefined
       },
       render: (_, record) => (
         <div
@@ -470,6 +475,7 @@ const AssetTableHandler = () => {
       dataIndex: "asset_type",
       responsive: ["md"],
       fixed: "right",
+      width: 190,
       filters: assetTypeFilters,
       onFilter: (
         value: string | number | boolean | React.ReactText[] | Key,
@@ -490,6 +496,36 @@ const AssetTableHandler = () => {
         </div>
       ),
     },
+    ...(isRejectedPage
+      ? [
+          {
+            title: "Reject Type",
+            dataIndex: "asset_type",
+            responsive: ["md"],
+            fixed: "right",
+            width: 190,
+            filters: assetTypeFilters,
+            onFilter: (
+              value: string | number | boolean | React.ReactText[] | Key,
+              record: DataType
+            ) => {
+              if (Array.isArray(value)) {
+                return value.includes(record.asset_detail_status);
+              }
+              return record.asset_detail_status.indexOf(value.toString()) === 0;
+            },
+            render: (_, record) => (
+              <div
+                data-column-name="Asset Type"
+                onClick={() => handleColumnClick(record, "Asset Type")}
+                style={{ cursor: "pointer" }}
+              >
+                {record.asset_detail_status}
+              </div>
+            ),
+          },
+        ]
+      : []),
   
   ];
 
@@ -522,7 +558,8 @@ const AssetTableHandler = () => {
     accessories: result.accessories,
     date_of_purchase: result.date_of_purchase,
     warranty_period: result.warranty_period,
-    approval_status: result.approval_status,
+    asset_detail_status:result.asset_detail_status,
+    assign_status:result.assign_status,
     conceder: result.conceder?.username,
     model_number: result.model_number,
     serial_number: result.serial_number,
@@ -572,7 +609,7 @@ const AssetTableHandler = () => {
       handleUpdateData={function (updatedData: { key: any }): void {
         throw new Error("Function not implemented.");
       }}
-      drawerTitle={""}
+      // drawerTitle={""}
     />
   );
 };

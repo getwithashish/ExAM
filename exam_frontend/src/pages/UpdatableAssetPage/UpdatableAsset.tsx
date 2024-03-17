@@ -4,7 +4,7 @@ import AssetTableHandler from '../../components/AssetTable/AssetTableHandler'
 const UpdatableAsset = () => {
   return (
     <div>
-      <AssetTableHandler />
+      <AssetTableHandler isRejectedPage={false} />
     </div>
   )
 }

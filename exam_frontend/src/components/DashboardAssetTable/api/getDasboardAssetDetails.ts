@@ -4,7 +4,7 @@ import { AssetResult } from "../types";
 
 const getAssetDetails = async () => {
   try {
-    const res = await axiosInstance.get("/asset/?limit=10");
+    const res = await axiosInstance.get("/asset/?limit=8");
     console.log("Returned Data: ", res.data.data.results);
     return res.data.data.results;
   } catch (error) {

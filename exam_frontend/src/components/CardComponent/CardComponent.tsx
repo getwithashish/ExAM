@@ -45,8 +45,9 @@ const CardComponent: React.FC<CardType> = ({
     width: "180px",
     boxShadow: "none",
     textAlign: "left",
-    background:" #f5f5fb",
-    borderRadius: "5px"
+    background:" #f0f0f0",
+    borderRadius: "5px",
+    color:"black"
     
   };
 
@@ -329,6 +330,7 @@ const CardComponent: React.FC<CardType> = ({
      <br></br>
      {" "}
     <Input
+    disabled
       defaultValue={data.conceder}
       onChange={(e) =>
         handleUpdateChange("serail number", e.target.value)
@@ -368,6 +370,7 @@ const CardComponent: React.FC<CardType> = ({
     <br></br>
     {" "}
   <Input
+  disabled
     defaultValue={data.custodian}
     onChange={(e) => handleUpdateChange("model number", e.target.value)}
     style={inputStyle}
@@ -391,6 +394,7 @@ const CardComponent: React.FC<CardType> = ({
     <br></br>
   {" "}
   <Input
+  disabled
     defaultValue={data.requester}
     onChange={(e) => handleUpdateChange("requester", e.target.value)}
     style={inputStyle}
@@ -424,7 +428,7 @@ const CardComponent: React.FC<CardType> = ({
     onChange={(value) => handleUpdateChange("business_unit", value)} // Pass only the value
   >
     {uniqueBusinessOptions.map((business_unit, index) => (
-      <Select.Option key={index} value={business_unit} style={{  background:" #f0f0fa",}}>
+      <Select.Option key={index} value={business_unit} style={{  background:"#f0f0f0",}}>
         {business_unit}
       </Select.Option>
     ))}
@@ -483,6 +487,7 @@ style={{ boxShadow: "none", border: "none" }}
 <br></br>
     <br></br>
   <Input
+    disabled
     defaultValue={formatDate(data.created_at)}
     style={inputStyle}
   />
@@ -492,6 +497,7 @@ style={{ boxShadow: "none", border: "none" }}
 <br></br>
     <br></br>
   <Input
+  disabled
     defaultValue={formatDate(data.updated_at)}
     style={inputStyle}
   />
@@ -504,7 +510,7 @@ style={{ boxShadow: "none", border: "none" }}
   <Input
     defaultValue={data.notes}
     onChange={(e) => handleUpdateChange("comments", e.target.value)}
-    style={{width:"387px",height:"100px",  background:" #f5f5fb",
+    style={{width:"387px",height:"100px",  background:"#f0f0f0",
     borderRadius: "5px",   border: "0.5px solid #d3d3d3",}}
   />{" "}
 </Form.Item> },
@@ -518,26 +524,7 @@ style={{ boxShadow: "none", border: "none" }}
         item.value.toLowerCase().includes(searchQuery))
   );
 
-  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const {name,value}=e.target;
-  //   setEditedData((prevData) => ({
-  //     ...prevData,
-  //     propertyName: newValue,
-  //     [name]: value,
-  //   }));
-  // };
-
   
-
-  // const handleChange = (name, value) => {
-  //   setEditedData((prevData) => ({
-  //     ...prevData,
-  //     [name]: value,
-  //   }));
-  // };
-
-  
-
   const mainCardStyle = {
    
     width: "90%",
@@ -575,17 +562,17 @@ style={{ boxShadow: "none", border: "none" }}
     if (isNaN(date.getTime())) {
       return "";
     }
-    return date.toLocaleString();
+    return date.toLocaleDateString();
   }
 
   return (
     <div>
       <div className="fixed-header">
       <Input
-        placeholder="Search..."
+        placeholder="Search fields"
         onChange={handleChange}
         style={{    border: "0.5px solid #d3d3d3",
-        marginTop:"0px" ,marginBottom: "30px",width:"300px" ,height:"30px", borderRadius: "5px",    background:" #f5f5fb",marginLeft:"75px",padding:"20px"}}
+        marginTop:"0px" ,marginBottom: "30px",width:"300px" ,height:"30px", borderRadius: "5px",    background:"#f0f0f0",marginLeft:"75px",padding:"20px"}}
       />
 
 <Button

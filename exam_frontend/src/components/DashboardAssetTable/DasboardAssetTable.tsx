@@ -15,23 +15,14 @@ import { useInfiniteQuery } from 'react-query';
  
 import { DownOutlined } from '@ant-design/icons';
 import ExportButton from "../Export/Export";
-import { getAssetLog } from "./api/getAssetLog";
+
 import { AxiosError } from "axios";
 import TableNavbar from "../TableNavBar/TableNavbar";
 import SideDrawerComponent from "../SideDrawerComponent/SideDrawerComponent";
 import UploadComponent from "../Upload/UploadComponent";
 import DashBoardCardComponent from "../DashBoardCardComponent/DashBoardCardComponent";
  
-interface ExpandedDataType {
-  key: React.Key;
-  date: string;
-  name: string;
-  upgradeNum: string;
-}
-const items = [
-  { key: '1', label: 'Action 1' },
-  { key: '2', label: 'Action 2' },
-];
+
  
  
  
@@ -72,8 +63,8 @@ const [showUpload, setShowUpload] = useState(false);
  
   return (
     <>
-      <div className="mainHeading">
-        <h1>Asset Details</h1>
+      <div className="mainHeading" font-medium font-display>
+        <h6>Asset Details</h6>
       </div>
      
       <div>
@@ -90,21 +81,20 @@ const [showUpload, setShowUpload] = useState(false);
           <UploadComponent />
         </SideDrawerComponent>
   <Table
-   
     columns={columns}
-    scroll={{ y: 300 }} 
     dataSource={assetData}
-    // scroll={{ x: "max-content" }}
-    className="mainTable"
+    className="mainTable" font-display
     pagination={false}
-    // bordered={false}
+    bordered={false}
     handleRowClick={handleRowClick}
     style={{
-      borderRadius: 10,
       padding: 20,
       fontSize: "50px",
+      borderColor:"white",
+      scrollbarWidth: "thin"
+      
     }}
- 
+    scroll={{ x: 'max-content', y: 300 }}
    
   rowKey={(record:DataType)=>record.key}
     expandable={{

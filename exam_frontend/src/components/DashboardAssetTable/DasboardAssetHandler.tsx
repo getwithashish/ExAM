@@ -65,7 +65,7 @@ import DasboardAssetTable from "./DasboardAssetTable";
   
     const expandedRowRender = useCallback(
       (assetId: string) => {
-        let logsDataExpanded = [];
+        let logsDataExpanded: readonly any[] | undefined = [];
         const columnsLog: TableColumnsType<ExpandedDataType> = [
           { title: "timestamp", dataIndex: "timestamp", key: "timestamp" },
           {
@@ -101,6 +101,14 @@ import DasboardAssetTable from "./DasboardAssetTable";
             key: "model_number",
           },
           { title: "updated_at", dataIndex: "updated_at", key: "updated_at" },
+          { title: "custodian", dataIndex: "custodian", key: "custodian" },
+          { title: "asset_type", dataIndex: "asset_type", key: "asset_type" },
+
+          { title: "location", dataIndex: "location", key: "location" },
+          { title: "invoice_location", dataIndex: "invoice_location", key: "invoice_location" },
+
+
+
         ];
   
         console.log("logsdata", logsData);
@@ -134,6 +142,10 @@ import DasboardAssetTable from "./DasboardAssetTable";
                 updated_at: formattedUpdatedAt,
                 date_of_purchase: asset_log.date_of_purchase,
                 date: asset_log.date_of_purchase,
+                custodian:asset_log.custodian.employee_name,
+                asset_type:asset_log.asset_type.asset_type_name,
+                location:asset_log.location.location_name,
+                invoice_location:asset_log.invoice_location.invoice_location_name,
                 name: asset_log.product_name,
                 upgradeNum: asset_log.assign_status,
               },
@@ -409,12 +421,11 @@ import DasboardAssetTable from "./DasboardAssetTable";
           </div>
         ),
       },
-  
       {
         title: "Custodian",
         dataIndex: "custodian",
         responsive: ["md"],
-        width: 160,
+        width: 190,
         filterIcon: <SearchOutlined />,
         filterDropdown: ({
           setSelectedKeys,
@@ -451,10 +462,14 @@ import DasboardAssetTable from "./DasboardAssetTable";
           </div>
         ),
         onFilter: (value, record) => {
-          if (Array.isArray(value)) {
-            return value.includes(record.custodian);
+          // Check if record.custodian is defined before accessing it
+          if (record.custodian) {
+            if (Array.isArray(value)) {
+              return value.includes(record.custodian);
+            }
+            return record.custodian.indexOf(value.toString()) === 0;
           }
-          return record.custodian.indexOf(value.toString()) === 0;
+          return false; // Return false if custodian is undefined
         },
         render: (_, record) => (
           <div
@@ -492,6 +507,8 @@ import DasboardAssetTable from "./DasboardAssetTable";
           </div>
         ),
       },
+      
+
     
     ];
   
@@ -524,7 +541,8 @@ import DasboardAssetTable from "./DasboardAssetTable";
       accessories: result.accessories,
       date_of_purchase: result.date_of_purchase,
       warranty_period: result.warranty_period,
-      approval_status: result.approval_status,
+      asset_detail_status:result.asset_detail_status,
+      assign_status:result.assign_status,
       conceder: result.conceder?.username,
       model_number: result.model_number,
       serial_number: result.serial_number,
@@ -575,6 +593,8 @@ import DasboardAssetTable from "./DasboardAssetTable";
         handleUpdateData={function (updatedData: { key: any }): void {
           throw new Error("Function not implemented.");
         }}
+        
+
         drawerTitle={""}
       />
     );

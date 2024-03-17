@@ -27,10 +27,7 @@ interface ExpandedDataType {
   name: string;
   upgradeNum: string;
 }
-const items = [
-  { key: '1', label: 'Action 1' },
-  { key: '2', label: 'Action 2' },
-];
+
  
  
  
@@ -59,7 +56,7 @@ const AssetTable = ({
 ) => {
  
  
-const rowRender=(record, expanded)=>{if(isSuccess){ if(expanded && selectedAssetId && expandedRowRender)return expandedRowRender(record.key);else return;} else return <>not loaded</>}  
+const rowRender=(record: { key: string; }, expanded: any)=>{if(isSuccess){ if(expanded && selectedAssetId && expandedRowRender)return expandedRowRender(record.key);else return;} else return <>not loaded</>}  
 const memoizedRowRender=useMemo(()=>rowRender,[isSuccess])
 
 const [showUpload, setShowUpload] = useState(false);
@@ -70,7 +67,7 @@ const [showUpload, setShowUpload] = useState(false);
   return (
     <>
       <div className="mainHeading">
-        <h1>Asset Details</h1>
+        <h1 >Asset Details</h1>
       </div>
      
       
@@ -81,7 +78,8 @@ const [showUpload, setShowUpload] = useState(false);
    
     columns={columns}
     dataSource={assetData}
-    scroll={{ x: "max-content" }}
+    
+    scroll={{ y: 300 }}
     className="mainTable"
     pagination={false}
     // bordered={false}

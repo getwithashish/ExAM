@@ -1,9 +1,10 @@
 import React from 'react'
+import AssetTableHandler from '../../components/AssetTable/AssetTableHandler'
 
 const RejectedAsset = () => {
   return (
     <div>
-    <h1>Hi</h1>
+    <AssetTableHandler isRejectedPage={true} />
     </div>
   )
 }
