@@ -263,7 +263,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                 />
             </div>
             <div>
-            <h2 className='text-right text-md font-bold font-display text-gray-600 dark:text-white-600 rtl:text-left'>
+            <h2 className='text-right text-xs font-medium font-display text-gray-600 dark:text-white-600 rtl:text-right'>
                     Total Assets : {assetData?.total_assets ?? 0}
                 </h2>
                 <PieChart
@@ -278,13 +278,13 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                             startAngle: -110,
                             endAngle: 110,
                             cx:155,
-                            cy: 140,
+                            cy: 145,
                             highlightScope: { faded: 'global', highlighted: 'item' },
                             faded: { innerRadius: 75, additionalRadius: -40, color: 'grey' },
                         },
                     ]}
                     width={300}
-                    height={217}
+                    height={222}
                     slotProps={{
                         legend: {
                             direction: 'row',
