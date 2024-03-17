@@ -1,4 +1,4 @@
-import { PieChartGraph } from './PieChartGraph';
+import ChartHandlers from './chartHandlers/ChartHandlers';
 
 export const Statistics = () => {
   return (
@@ -26,7 +26,7 @@ export const Statistics = () => {
           </div>
         </div>
         <div className="mx-3">
-          <PieChartGraph selectedAssetType='asset_view' type="asset_view"/>
+          <ChartHandlers/>
         </div>        
       </div>
     </div>
