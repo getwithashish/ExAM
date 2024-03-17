@@ -71,7 +71,7 @@ const [showUpload, setShowUpload] = useState(false);
   return (
     <>
       <div className="mainHeading" style={{ background:"white"}}>
-        <h1>Assign An Asset</h1>
+        <h1>Assign an Asset</h1>
       </div>
      
       <div style={{ background:"white"}}>

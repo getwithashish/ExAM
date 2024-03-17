@@ -86,7 +86,7 @@ export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
       <div className={styles['info']}>Asset Model Number: {record.model_number}</div>
       <div className={styles['info']}>Version: {record.version}</div>
 
-      <input type='text' name={"employee"} className={styles['search-input']} placeholder='employee id' onChange={handleInputChange } value={value} />
+      <input type='text' name={"employee"} className={styles['search-input']} placeholder='employee name' onChange={handleInputChange } value={value} />
       <div className={value ? styles['info'] : styles['result']}>
         {isLoading ? <div>Loading...</div>: isError ? <div>Error Fetching data </div> : data && data.data.map((employee: EmployeeDetails) => (
           <div key={employee.id} onClick={() => handleNameClick(employee.employee_name, employee.id)}>{employee.employee_name}</div>
