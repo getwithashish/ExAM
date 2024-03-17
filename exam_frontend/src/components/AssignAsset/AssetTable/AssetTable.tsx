@@ -70,15 +70,15 @@ const [showUpload, setShowUpload] = useState(false);
  
   return (
     <>
-      <div className="mainHeading">
-        <h1>Asset Details</h1>
+      <div className="mainHeading" style={{ background:"white"}}>
+        <h1>Assign An Asset</h1>
       </div>
      
-      <div>
+      <div style={{ background:"white"}}>
         <TableNavbar showUpload={showUpload} setShowUpload={setShowUpload} />
       </div>
 
-      <div style={{ position: "relative", display: "inline-block" }}>
+      <div style={{ position: "relative", display: "inline-block", background:"white"}}>
         <SideDrawerComponent
           displayDrawer={showUpload}
           closeDrawer={closeImportDrawer}

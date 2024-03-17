@@ -20,7 +20,7 @@ setIsAssign(false)
 
 }
   return (
-    <div>
+    <div style={{ background:"white"}}>
       {/* <AssetTableOne showAssignDrawer={showAssignDrawer}/> */}
       <AssetTableHandler showAssignDrawer={showAssignDrawer}/>
 

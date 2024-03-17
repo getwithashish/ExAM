@@ -76,9 +76,12 @@ class AssetView(ListCreateAPIView):
             limit = request.query_params.get("limit")
             offset = request.query_params.get("offset")
 
-            # Apply filters based on query parameters
             if assign_status == "UNASSIGNED":
-                queryset = queryset.filter(assign_status="UNASSIGNED")
+                queryset = queryset.filter(
+                    assign_status="UNASSIGNED", custodian__isnull=True
+                )
+                queryset = queryset.filter(Q(status="IN STORE"))
+
             else:
                 # Default filter for asset_detail_status
                 queryset = queryset.filter(
@@ -86,10 +89,6 @@ class AssetView(ListCreateAPIView):
                     | Q(asset_detail_status="CREATE_REJECTED")
                     | Q(asset_detail_status="UPDATE_REJECTED")
                 )
-
-            # Apply additional filters if provided
-            if asset_detail_status:
-                queryset = queryset.filter(asset_detail_status=asset_detail_status)
 
             # Apply pagination
             page = self.paginate_queryset(queryset)
