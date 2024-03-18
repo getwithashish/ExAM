@@ -4,7 +4,7 @@ import { AssetResult } from "../types";
 
 const getAssetDetails = async () => {
   try {
-    const res = await axiosInstance.get("/asset/?limit=5&status=IN STORE");
+    const res = await axiosInstance.get("/asset/?limit=5&assign_status=UNASSIGNED");
     console.log("Returned Data: ", res.data.data.results);
     return res.data.data.results;
   } catch (error) {
