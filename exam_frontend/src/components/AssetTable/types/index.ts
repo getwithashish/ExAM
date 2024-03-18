@@ -18,7 +18,8 @@ export interface DataType {
   date_of_purchase:Date;
   warranty_period:number;
   WarrantyCountdown:number;
-  approval_status:string;
+  asset_detail_status:string;
+  assign_status:string;
   conceder:string;
   AssignAsset:string;
   model_number:string;
@@ -148,5 +149,6 @@ export interface AssetTableProps {
 }) => void,
   drawerTitle:string
   asset_uuid: string;
+  heading:string
 }
 

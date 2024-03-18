@@ -257,7 +257,7 @@ const SidebarComponentNew = ({ children }) => {
                 <Link to="/exam/updatable_assets">Updatable Assets</Link>
               </Menu.Item>
               <Menu.Item icon={<CarryOutOutlined />}>
-                <Link to="/exam/rejected_assets">My Rejected Assets</Link>
+                <Link to="/exam/rejected_assets">My Rejected Requests</Link>
               </Menu.Item>
 
             <Menu.Item onClick={() => handleLogout()} icon={<LogoutOutlined />}>
