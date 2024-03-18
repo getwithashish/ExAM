@@ -284,7 +284,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                         },
                     ]}
                     width={300}
-                    height={250}
+                    height={265}
                     slotProps={{
                         legend: {
                             direction: 'row',

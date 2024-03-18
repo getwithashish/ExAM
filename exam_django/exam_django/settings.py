@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     "user_auth",
     "asset",
     "drf_yasg",
+    
 ]
 
 MIDDLEWARE = [

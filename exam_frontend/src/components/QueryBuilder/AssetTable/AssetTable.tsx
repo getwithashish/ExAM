@@ -1,9 +1,9 @@
 import React, { Key, SetStateAction, useEffect, useMemo, useState } from "react";
 import { Badge, Button, Dropdown, Input, Space, Table, TableColumnsType } from "antd";
-import DrawerComponent from "../DrawerComponent/DrawerComponent";
+import DrawerComponent from "../../DrawerComponent/DrawerComponent";
 import { SearchOutlined } from "@ant-design/icons";
 import "./AssetTable.css";
-import CardComponent from "../CardComponent/CardComponent"
+import CardComponent from "../../CardComponent/CardComponent";
 import { CloseOutlined } from "@ant-design/icons";
 import axiosInstance from "../../config/AxiosConfig";
 import { isError, useQuery } from "@tanstack/react-query";
@@ -14,12 +14,12 @@ import {FilterDropdownProps} from "../AssetTable/types";
 import { useInfiniteQuery } from 'react-query';
  
 import { DownOutlined } from '@ant-design/icons';
-import ExportButton from "../Export/Export";
+import ExportButton from "../../Export/Export";
 import { getAssetLog } from "./api/getAssetLog";
 import { AxiosError } from "axios";
-import TableNavbar from "../TableNavBar/TableNavbar";
-import SideDrawerComponent from "../SideDrawerComponent/SideDrawerComponent";
-import UploadComponent from "../Upload/UploadComponent";
+import TableNavbar from "../../TableNavBar/TableNavbar";
+import SideDrawerComponent from "../../SideDrawerComponent/SideDrawerComponent";
+import UploadComponent from "../../Upload/UploadComponent";
  
 interface ExpandedDataType {
   key: React.Key;
@@ -27,7 +27,10 @@ interface ExpandedDataType {
   name: string;
   upgradeNum: string;
 }
-
+const items = [
+  { key: '1', label: 'Action 1' },
+  { key: '2', label: 'Action 2' },
+];
  
  
  
@@ -51,13 +54,12 @@ const AssetTable = ({
   locations,
   memoryData,
   assetTypeData,
-  expandedRowRender,
-  heading
+  expandedRowRender
 }:AssetTableProps
 ) => {
  
  
-const rowRender=(record: { key: string; }, expanded: any)=>{if(isSuccess){ if(expanded && selectedAssetId && expandedRowRender)return expandedRowRender(record.key);else return;} else return <>not loaded</>}  
+const rowRender=(record, expanded)=>{if(isSuccess){ if(expanded && selectedAssetId && expandedRowRender)return expandedRowRender(record.key);else return;} else return <>not loaded</>}  
 const memoizedRowRender=useMemo(()=>rowRender,[isSuccess])
 
 const [showUpload, setShowUpload] = useState(false);
@@ -67,19 +69,26 @@ const [showUpload, setShowUpload] = useState(false);
  
   return (
     <>
-     <div className="mainHeading" font-display>
-        <h1>{heading}</h1> {/* Render the heading dynamically */}
+      <div className="mainHeading">
+        <h1>Asset Details</h1>
       </div>
-      
+     
+      <div>
+        <TableNavbar showUpload={showUpload} setShowUpload={setShowUpload} />
+      </div>
 
       <div style={{ position: "relative", display: "inline-block" }}>
-     
+        <SideDrawerComponent
+          displayDrawer={showUpload}
+          closeDrawer={closeImportDrawer}
+        >
+          <UploadComponent />
+        </SideDrawerComponent>
   <Table
    
     columns={columns}
     dataSource={assetData}
-    
-    scroll={{ y: 300 }}
+    scroll={{ x: "max-content" }}
     className="mainTable"
     pagination={false}
     // bordered={false}

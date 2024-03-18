@@ -1,15 +1,10 @@
 .mainHeading {
-  margin-top: 0px;
+  margin-top: 60px;
   margin-left: 40px;
   margin-bottom: 1rem;
   font-size: xx-large;
-  height: max-content;
 }
-/* element {
-  padding: 0px;
-  font-size: 50px;
-  border-color: white;
-} */
+
 .mainDrawer {
   max-width: 100%; /* Adjust the maximum width as needed */
   width: auto;
@@ -20,17 +15,13 @@
 }
 .mainTable {
   width: 93%;
-  padding: 0px;
+  padding: 40px;
   margin-left: 40px;
   margin-right: 10px;
   margin-top: 30px;
   background-color: #f2f2f2;
   font-size: small;
   line-height: 100px;
-  /* border-top: 0ch; */
-  border-color: black;
-  border-radius: 0px;
-  margin-bottom: 20%;
 }
 .mainTable td {
   color: black;

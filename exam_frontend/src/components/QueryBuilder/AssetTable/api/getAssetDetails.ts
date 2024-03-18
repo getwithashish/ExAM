@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import axiosInstance from "../../../config/AxiosConfig";
+import axiosInstance from "../../../../config/AxiosConfig";
 import { AssetResult } from "../types";
 
 const getAssetDetails = async () => {
   try {
-    const res = await axiosInstance.get("/asset/?limit=8");
+    const res = await axiosInstance.get("/asset/?limit=5");
     console.log("Returned Data: ", res.data.data.results);
     return res.data.data.results;
   } catch (error) {
