@@ -42,7 +42,10 @@ const SideDrawerComponent: React.FC<SideDrawerProps> = ({children,displayDrawer,
         size={size}
         onClose={onClose}
         open={open}
-        style={{borderRadius:"10px"}}
+        style={{
+          borderTopLeftRadius: "5px",
+          borderBottomLeftRadius: "5px",
+      }}
       
       >
           {children}

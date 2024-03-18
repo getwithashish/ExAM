@@ -116,15 +116,19 @@ const AddAsset: React.FC = () => {
  
  
   return (
+    <div className = "font-display">
     <div className={styles['container']}>
       <h1 className={styles['heading']}>Add a new asset</h1>
       <Form
         labelCol={{ span: 4 }}
-        wrapperCol={{ span: 14 }}
+        wrapperCol={{ span: 12 }}
         layout="horizontal"
         initialValues={{ size: componentSize }}
         onValuesChange={onFormLayoutChange}
         size={componentSize as SizeType}
+        labelAlign="left" 
+        style={{ padding: '20px', overflowX: "hidden" }} 
+        
         className={styles['formContainer']} // Apply CSS module class
       >
         {/* Form items... */}
@@ -155,6 +159,7 @@ const AddAsset: React.FC = () => {
   <InputNumber
     className={styles['input']}
     placeholder="Enter version number"
+ 
     onChange={(value: number | null) => handleInputChange('version', value)}
   />
 </Form.Item>
@@ -197,7 +202,7 @@ const AddAsset: React.FC = () => {
            </Select>
         </Form.Item>
  
-        <Form.Item label="Enter purchase Date:" className={styles['formItem']}>
+        <Form.Item label="Purchase Date:" className={styles['formItem']}>
     <DatePicker 
         className={styles['input']}  
         placeholder="Enter purchase date"
@@ -207,7 +212,7 @@ const AddAsset: React.FC = () => {
 </Form.Item>
  
  
-        <Form.Item label="Enter warranty Period:" className={styles['formItem']}>
+        <Form.Item label="Warranty Period:" className={styles['formItem']}>
         <InputNumber className={styles['input']}  placeholder="Enter warranty period"
        onChange={(value) => handleInputChange('warranty_period', value)}/>
         </Form.Item>
@@ -360,13 +365,14 @@ const AddAsset: React.FC = () => {
           <Button
             className={styles['button']}
             ghost
-            style={{ background: 'rgb(22, 119, 255)', fontFamily: "Poppins", marginLeft: '300px', marginTop: '30px', width: '120px', height: '40px' }}
+            style={{ background: 'rgb(22, 119, 255)', marginTop: '30px', width: '120px', height: '40px' }}
             onClick={() =>  handleSubmit()} // Example: Log form data on submit
           >
             Submit
           </Button>
         </Form.Item>
       </Form>
+    </div>
     </div>
   );
 };

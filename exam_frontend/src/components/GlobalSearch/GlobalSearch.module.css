@@ -5,7 +5,7 @@
   
   .global-search-input {
     padding: 8px;
-    font-family: "Poppins";
+    /* font-family: "Poppins"; */
     border: 1px solid #ccc;
     border-radius: 4px;
     margin-right: 8px;

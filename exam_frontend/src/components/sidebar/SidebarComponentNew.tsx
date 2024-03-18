@@ -200,6 +200,7 @@ const SidebarComponentNew = ({ children }) => {
             zIndex: 100,
             height: "100vh",
             position: "sticky",
+            fontSize:"600px",
             width:"400px",
             left: 0,
             top: 0,
@@ -207,6 +208,7 @@ const SidebarComponentNew = ({ children }) => {
             paddingTop: 100,
             borderRight:  "1px solid  #e8e8e8"
           }}
+          width="250px"
           breakpoint="lg"
           collapsedWidth="0"
           onBreakpoint={(broken) => {
@@ -223,7 +225,7 @@ const SidebarComponentNew = ({ children }) => {
             defaultSelectedKeys={["4"]}
             items={items}
           /> */}
-          <Menu theme="light" mode="inline">
+          <Menu theme="light" mode="inline" className="text-base">
             <Menu.Item icon={<PieChartOutlined />}>
               <Link to="/exam/dashboard">Dashboard</Link>
             </Menu.Item>
