@@ -27,10 +27,7 @@ interface ExpandedDataType {
   name: string;
   upgradeNum: string;
 }
-const items = [
-  { key: '1', label: 'Action 1' },
-  { key: '2', label: 'Action 2' },
-];
+
  
  
  
@@ -54,12 +51,13 @@ const AssetTable = ({
   locations,
   memoryData,
   assetTypeData,
-  expandedRowRender
+  expandedRowRender,
+  heading
 }:AssetTableProps
 ) => {
  
  
-const rowRender=(record, expanded)=>{if(isSuccess){ if(expanded && selectedAssetId && expandedRowRender)return expandedRowRender(record.key);else return;} else return <>not loaded</>}  
+const rowRender=(record: { key: string; }, expanded: any)=>{if(isSuccess){ if(expanded && selectedAssetId && expandedRowRender)return expandedRowRender(record.key);else return;} else return <>not loaded</>}  
 const memoizedRowRender=useMemo(()=>rowRender,[isSuccess])
 
 const [showUpload, setShowUpload] = useState(false);
@@ -69,26 +67,19 @@ const [showUpload, setShowUpload] = useState(false);
  
   return (
     <>
-      <div className="mainHeading">
-        <h1>Asset Details</h1>
+     <div className="mainHeading" font-display>
+        <h1>{heading}</h1> {/* Render the heading dynamically */}
       </div>
-     
-      <div>
-        <TableNavbar showUpload={showUpload} setShowUpload={setShowUpload} />
-      </div>
+      
 
       <div style={{ position: "relative", display: "inline-block" }}>
-        <SideDrawerComponent
-          displayDrawer={showUpload}
-          closeDrawer={closeImportDrawer}
-        >
-          <UploadComponent />
-        </SideDrawerComponent>
+     
   <Table
    
     columns={columns}
     dataSource={assetData}
-    scroll={{ x: "max-content" }}
+    
+    scroll={{ y: 300 }}
     className="mainTable"
     pagination={false}
     // bordered={false}
@@ -126,6 +117,8 @@ const [showUpload, setShowUpload] = useState(false);
  
         {selectedRow && (
           <CardComponent
+            selectedAssetId={ selectedAssetId}
+
             data={selectedRow}
             statusOptions={statusOptions}
             businessUnitOptions={businessUnitOptions}

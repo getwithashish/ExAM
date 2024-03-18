@@ -1,4 +1,4 @@
-import { Layout, Menu, theme } from "antd";
+import { Layout, Menu, Dropdown} from "antd";
 import {
   AppstoreAddOutlined,
   CarryOutOutlined,
@@ -16,7 +16,7 @@ import React, { useEffect, useState } from "react";
 import ExampleNavbar from "../Navbar/navbar";
 
 import type { FC } from "react";
-import { Button, DarkThemeToggle, Navbar } from "flowbite-react";
+import { Avatar, Button, DarkThemeToggle, Navbar } from "flowbite-react";
 import { FaBell } from "react-icons/fa";
 import styles from "../Navbar/navbar.module.css";
 import AccountMenu from "../notificationMenuItem";
@@ -25,6 +25,7 @@ import SideDrawerComponent from "../SideDrawerComponent/SideDrawerComponent";
 import AddAsset from "../AddAsset/AddAsset";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../pages/authentication/AuthContext";
+import Avatars from "../Avatar/Avatar";
 
 const SidebarComponentNew = ({ children }) => {
   const { userRole, setUserRole, login, logout } = useAuth();
@@ -53,6 +54,7 @@ const SidebarComponentNew = ({ children }) => {
   }));
 
   const [jwtPayload, setJwtPayload] = useState<any>(null);
+  const [showLogout, setShowLogout] = useState(false);
 
   useEffect(() => {
     // Function to decode JWT token
@@ -92,6 +94,10 @@ const SidebarComponentNew = ({ children }) => {
 
   const navigate = useNavigate();
 
+  const toggleLogout = () => {
+    setShowLogout(!showLogout);
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("jwt");
     localStorage.removeItem("refresh_token");
@@ -99,6 +105,16 @@ const SidebarComponentNew = ({ children }) => {
     setUserRole("None");
     navigate("/login", { replace: true });
   };
+  const menu = (
+    <Menu>
+      {/* Use Button component instead of Menu.Item */}
+      <Menu.Item key="logout" onClick={handleLogout}>
+        <Button type="link" icon={<LogoutOutlined />} style={{ color: "white", backgroundColor:"rgb(22, 119, 255)" }}>
+          Logout
+        </Button>
+      </Menu.Item>
+    </Menu>
+  );
 
   return (
     <Layout>
@@ -110,35 +126,44 @@ const SidebarComponentNew = ({ children }) => {
           left: 0,
           top: 0,
           bottom: 0,
+          borderBottom:  "1px solid #e8e8e8"
         }}
       >
         {/* <ExampleNavbar /> */}
 
-        <div className="w-full p-3 lg:px-5 lg:pl-3">
+        <div className="w-full p-2.5 lg:px-5 lg:pl-3">
+          
           <div className="flex items-center justify-between">
+            
             <div className="flex items-center">
-              {/* <Navbar.Brand href="/"> */}
-
-              <span className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white">
+          
+            
+            
                 <img
-                  src="../../public/images/logo.png"
+                  src="../../public/images/xam_logo.png"
                   alt="Logo"
-                  className="mr-3 h-6 sm:h-8"
+                  className="mr-12 -mt-10 -ml-10  md:-mt-10 md:-ml-10 w-30 h-10 sm:w-38 sm:h-16" // Adjust width and height as needed
                 />
-              </span>
+                
+
+                
+            
               {/* </Navbar.Brand> */}
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 -mr-10">
+              
               <div
                 className={`flex items-center gap-3 ${styles["button-components"]}`}
               >
-                <AccountMenu></AccountMenu>
+                 
+                {/* <AccountMenu></AccountMenu> */}
                 {/*             
               <Button>
                 <FaBell />
               </Button> */}
 
                 {/* <DarkThemeToggle /> */}
+               
 
                 {jwtPayload && jwtPayload.username && (
                   <div className={styles["username-container"]}>
@@ -151,8 +176,17 @@ const SidebarComponentNew = ({ children }) => {
                         {jwtPayload.user_scope}
                       </span>
                     )}
+                 
                   </div>
                 )}
+                <div className="flex items-center gap-3 ml-5 -mt-10">
+              <Dropdown overlay={menu} placement="bottomCenter" arrow>
+                <div className="cursor-pointer">
+                  <Avatars />
+                </div>
+              </Dropdown>
+            </div>
+                  
               </div>
             </div>
           </div>
@@ -166,11 +200,15 @@ const SidebarComponentNew = ({ children }) => {
             zIndex: 100,
             height: "100vh",
             position: "sticky",
+            fontSize:"600px",
+            width:"400px",
             left: 0,
             top: 0,
             bottom: 0,
             paddingTop: 100,
+            borderRight:  "1px solid  #e8e8e8"
           }}
+          width="250px"
           breakpoint="lg"
           collapsedWidth="0"
           onBreakpoint={(broken) => {
@@ -187,7 +225,7 @@ const SidebarComponentNew = ({ children }) => {
             defaultSelectedKeys={["4"]}
             items={items}
           /> */}
-          <Menu theme="light" mode="inline">
+          <Menu theme="light" mode="inline" className="text-base">
             <Menu.Item icon={<PieChartOutlined />}>
               <Link to="/exam/dashboard">Dashboard</Link>
             </Menu.Item>
@@ -214,6 +252,14 @@ const SidebarComponentNew = ({ children }) => {
             ) : (
               ""
             )}
+            
+             <Menu.Item icon={<CarryOutOutlined />}>
+                <Link to="/exam/updatable_assets">Updatable Assets</Link>
+              </Menu.Item>
+              <Menu.Item icon={<CarryOutOutlined />}>
+                <Link to="/exam/rejected_assets">My Rejected Requests</Link>
+              </Menu.Item>
+
             <Menu.Item onClick={() => handleLogout()} icon={<LogoutOutlined />}>
               Logout
             </Menu.Item>

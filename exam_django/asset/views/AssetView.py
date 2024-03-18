@@ -9,7 +9,7 @@ from asset.models import AssetLog
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 import json
-
+from django.db.models import Q
 from response import APIResponse
 from messages import (
     ASSET_CREATE_PENDING_SUCCESSFUL,
@@ -71,11 +71,20 @@ class AssetView(ListCreateAPIView):
         try:
             queryset = Asset.objects.all()
 
+            # Get query parameters
+            assign_status = request.query_params.get("assign_status")
+            asset_detail_status = request.query_params.get("asset_detail_status")
+
             limit = request.query_params.get("limit")
             offset = request.query_params.get("offset")
 
             query_params = request.query_params
-            query_params_to_exclude = ["limit", "offset"]
+            query_params_to_exclude = [
+                "limit",
+                "offset",
+                "assign_status",
+                "asset_detail_status",
+            ]
             required_query_params = self.remove_fields_from_dict(
                 query_params, query_params_to_exclude
             )
@@ -85,13 +94,21 @@ class AssetView(ListCreateAPIView):
             if offset:
                 self.pagination_class.default_offset = offset
 
-            if required_query_params:
-                filter_kwargs = {}
-                for field, value in required_query_params.items():
-                    filter_kwargs[f"{field}__icontains"] = value
-                queryset = queryset.filter(**filter_kwargs)
+            if asset_detail_status:
+                statuses = asset_detail_status.split("|")
+                queryset = queryset.filter(asset_detail_status__in=statuses)
 
-            # Applying pagination
+            if assign_status:
+                statuses = assign_status.split("|")
+                queryset = queryset.filter(assign_status__in=statuses)
+
+            filter_kwargs = {}
+            for field, value in required_query_params.items():
+                filter_kwargs[f"{field}__icontains"] = value
+
+            queryset = queryset.filter(**filter_kwargs)
+
+            # Apply pagination
             page = self.paginate_queryset(queryset)
 
             if page is not None:
@@ -103,15 +120,15 @@ class AssetView(ListCreateAPIView):
                     status=status.HTTP_200_OK,
                 )
 
-            serializer = AssetReadSerializer(queryset, many=True)
+            serializer = AssetReadSerializer(queryset, many=True)  # Moved assignment here
             return APIResponse(
                 data=serializer.data,
                 message=ASSET_LIST_SUCCESSFULLY_RETRIEVED,
-                status=status.HTTP_200_CREATED,
+                status=status.HTTP_200_OK,
             )
         except Exception:
             return APIResponse(
-                data=serializer.errors,
+                data={},  # Fixed missing serializer reference here
                 message=ASSET_LIST_RETRIEVAL_UNSUCCESSFUL,
                 status=status.HTTP_400_BAD_REQUEST,
             )

@@ -1,0 +1,24 @@
+.mainCard{
+    font-size: large;
+    padding: 30;
+    background-color: #FAFAFA;
+}
+.rowone{
+    padding: 50px;
+    box-shadow: none;
+}
+.formItem
+{
+    flex: 1;
+   
+}
+.fixed-header {
+    position: sticky;
+    top: -25px;
+    background-color: white;
+    z-index: 1;
+    padding: 20px;
+    padding-bottom: 10px;
+  }
+
+  

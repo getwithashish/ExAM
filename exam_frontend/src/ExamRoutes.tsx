@@ -14,12 +14,14 @@ import {
 import SidebarComponentNew from "./components/sidebar/SidebarComponentNew";
 import DashboardPage from "./pages";
 import Login from "./pages/authentication/Login";
-import Assignableasset from "./pages/assignableasset";
+import Assignableasset from "./pages/AssignAsset/assignableasset";
 import AssignPage from "./pages/RequestPage/AssignRequest";
 import RequestPage from "./pages/RequestPage/AssetRequest";
 import { useAuth } from "./pages/authentication/AuthContext";
 import ProtectedRoute from "./pages/authentication/ProtectedRoute";
 import SSORedirect from "./pages/authentication/SSORedirect";
+import UpdatableAsset from "./pages/UpdatableAssetPage/UpdatableAsset";
+import RejectedAsset from "./pages/RejectedAssetPage/RejectedAsset";
 
 const ExamRoutes = () => {
   const { authenticated, setAuthenticated, userRole } = useAuth();
@@ -70,6 +72,9 @@ const ExamRoutes = () => {
                     element={<Assignableasset />}
                   />
                   <Route path="/assign_requests" element={<AssignPage />} />
+                  <Route path="/updatable_assets" element={<UpdatableAsset/>}/>
+                  <Route path="/rejected_assets" element={<RejectedAsset/>}/>
+
                 </Routes>
               </SidebarComponentNew>
             }

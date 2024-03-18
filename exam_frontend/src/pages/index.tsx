@@ -7,7 +7,7 @@ import AssetTable from "../components/AssetTable/AssetTable";
 import { Statistics } from "../components/charts/Statistics";
 import { RecordProps } from "./types";
 import SideDrawerComponent from "../components/SideDrawerComponent/SideDrawerComponent";
-import { SidebarHandler } from "../components/Sidebar/SidebarHandler";
+
 import AssignmentDrawer from "../components/Assign/AssignmentDrawer";
 import { Assignment } from "../components/Assign/Assignment";
 import TableNavbar from "../components/TableNavBar/TableNavbar";
@@ -15,8 +15,8 @@ import TableNavbar from "../components/TableNavBar/TableNavbar";
 import { Upload } from "antd";
 import { styles } from "../components/SideDrawerComponent/SideDrawerComponent.module.css";
 import UploadComponent from "../components/Upload/UploadComponent";
-import AssetTableHandler from "../components/AssetTable/AssetTableHandler";
-
+import DasboardAssetHandler from '../components/DashboardAssetTable/DasboardAssetHandler'
+import { QueryBuilder, QueryBuilderComponent } from "../components/QueryBuilder/QueryBuilder";
 
 const DashboardPage: FC = function () {
   const [displaydrawer, setDisplayDrawer] = useState(false);
@@ -39,7 +39,7 @@ const DashboardPage: FC = function () {
       {/* <SidebarHandler addAsset={showDefaultDrawer} /> */}
       <Statistics />
 
-      <AssetTableHandler showDrawer={showDefaultDrawer} />
+      <DasboardAssetHandler showDrawer={showDefaultDrawer} />
       {/* <AssetTable showDrawer={showDefaultDrawer} /> */}
 
       {/* <AssignmentDrawer buttonTextDefault="Import" displayDrawer={showUpload} >
@@ -51,6 +51,7 @@ const DashboardPage: FC = function () {
                   <UploadComponent />
                   </div>
                   </SideDrawerComponent>  */}
+                  {/* <QueryBuilderComponent /> */}
 
       <div></div>
     </div>

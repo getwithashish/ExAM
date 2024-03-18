@@ -15,7 +15,7 @@
 }
 
 .username {
-  font-size: small;
+  font-size: large;
   font-family: "Poppins", sans-serif;
   text-transform: capitalize;
   padding: 0;
@@ -28,7 +28,12 @@
   font-family: "Poppins", sans-serif;
   text-transform: capitalize;
   padding: 0;
-  padding-top: 2px;
+  padding-top: 7px;
   /* height: 5px; */
   /* margin-top: 5px; */
+}
+.button-content
+{
+  font-size: "Poppins";
+  font-size: medium;
 }

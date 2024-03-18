@@ -75,62 +75,90 @@ export default function Login() {
       // Redirect to dashboard after successful login
       navigate("/exam/dashboard");
     } catch (error) {
-      console.log("Error:", error);
+      if (axios.isAxiosError(error) && error.response && error.response.status === 401) {
+        setUsernameError("Invalid username or password");
+      } else {
+        console.log("Error:", error);
+      }
     }
   };
 
   return (
     <Fragment>
-      <div className="flex flex-col items-center justify-center px-6 lg:h-screen lg:gap-y-12">
-        <div className="my-6 flex items-center gap-x-1 lg:my-0">
-          <span className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white">
-            Experion Asset Management
-          </span>
-        </div>
-        <Card
-          horizontal
-          imgAlt=""
-          className="w-full md:max-w-screen-sm [&>img]:hidden md:[&>img]:w-96 md:[&>img]:p-0 md:[&>*]:w-full md:[&>*]:p-16 lg:[&>img]:block"
-        >
-          <h1 className="mb-3 text-2xl font-bold dark:text-white md:text-3xl">
-            Login
-          </h1>
-          <form onSubmit={handleSubmit}>
-            <div className="mb-4 flex flex-col gap-y-3">
-              <Label htmlFor="username">Your username</Label>
-              <TextInput
-                id="username"
-                name="username"
-                placeholder="Your username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-              {usernameError && <p className="text-red-500">{usernameError}</p>}
-            </div>
-            <div className="mb-6 flex flex-col gap-y-3">
-              <Label htmlFor="password">Your password</Label>
-              <TextInput
-                id="password"
-                name="password"
-                placeholder="••••••••"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              {passwordError && <p className="text-red-500">{passwordError}</p>}
-            </div>
-            <div className="mb-6">
-              <Button
-                type="submit"
-                className="w-full lg:w-auto bg-blue-500 text-white hover:bg-blue-700"
-              >
-                Login
-              </Button>
-            </div>
-          </form>
-        </Card>
+        <div className="flex flex-col lg:flex-row items-center justify-center lg:h-screen lg:gap-y-12">
+  <div className="lg:w-full h-full relative">
+    <div
+      className="absolute inset-2 bg-cover bg-bottom rounded-lg"
+      style={{
+        backgroundImage: `url('../../../public/images/Experion.jfif')`,
+      }}
+    ></div>
+  </div>
+
+  <Card
+    horizontal
+    className="w-full lg:w-full md:max-w-screen-sm md:[&>*]:w-full md:[&>*]:p-16"
+  >
+    <div className="flex lg:my-0 text-sm">
+      <span className="font-light item-center dark:text-white md:text-3xl text-center">
+        Experion Asset Management
+      </span>
+    </div>
+    <h1 className="font-display font-semi-bold dark:text-white md:text-3xl my-6 text-center">
+      Login
+    </h1>
+    <form onSubmit={handleSubmit}>
+      <div className="mb-8 font-display">
+        <Label htmlFor="username">Username:</Label>
+        <TextInput
+          id="username"
+          name="username"
+          placeholder="username"
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        {usernameError && <p className="text-red-500">{usernameError}</p>}
       </div>
+      <div className="mb-8">
+        <Label htmlFor="password">Password:</Label>
+        <TextInput
+          id="password"
+          name="password"
+          placeholder="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        {passwordError && <p className="text-red-500">{passwordError}</p>}
+      </div>
+      <div className="mb-6">
+        <Button
+          type="submit"
+          className="w-full bg-blue-500 text-white hover:bg-blue-700 font-display"
+        >
+          Login
+        </Button>
+        <div className="my-5 text-center">
+          <hr></hr>
+        </div>
+        <div className="flex items-center justify-center">
+          <Button
+            type="submit"
+            className="w-full bg-blue-500 text-white hover:bg-blue-700 font-display"
+          >
+            <img
+              src="../../../public/images/Microsoft logo.png"
+              alt="Microsoft logo"
+              className="w-30 h-6 ml-2 mx-3" // Adjust width and height as needed
+            />
+            Sign in with Microsoft
+          </Button>
+        </div>
+      </div>
+    </form>
+  </Card>
+</div>
     </Fragment>
   );
 }
