@@ -147,7 +147,7 @@ export default function Login() {
               </div>
               <div className="flex items-center justify-center">
                 <Button
-                  type="submit"
+                  type="button"
                   className="w-full bg-blue-500 text-white hover:bg-blue-700 font-display"
                   onClick={() => window.location.href = "http://localhost:8000/auth/sign_in"}
                 >
