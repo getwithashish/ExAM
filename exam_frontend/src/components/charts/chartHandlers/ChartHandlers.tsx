@@ -1,13 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import Stack from "@mui/material/Stack";
-import { PieChart } from "@mui/x-charts/PieChart";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import axiosInstance from '../../config/AxiosConfig';
-import { AssetData, ChartData, PieChartGraphProps, AssetDetailData } from './types/ChartTypes';
+import { PieChart } from "@mui/x-charts/PieChart";
+import Stack from "@mui/material/Stack";
+import { fetchAssetData } from '../api/ChartApi';
+import { AssetData, AssetDetailData, ChartData, PieChartGraphProps } from '../types/ChartTypes';
+import axiosInstance from '../../../config/AxiosConfig';
 
-export const PieChartGraph: React.FC<PieChartGraphProps> = () => {
+
+const statusColors: { [key: string]: string } = {
+    'IN STORE': '#FFB92A',
+    'IN REPAIR': '#FEEB51',
+    'IN USE': '#9BCA3E',
+    'DISPOSED': '#3ABBC9',
+    'EXPIRED': '#CC0000',
+
+    'UNASSIGNED': '#E6E6E6',
+    'ASSIGN_PENDING': '#FFB92A',
+    'ASSIGNED': '#9BCA3E',
+    'REJECTED': '#CC0000',
+
+    'CREATE_PENDING': '#FD6A02',
+    'UPDATE_PENDING': '#FEEB51',
+    'CREATED': '#9BCA3E',
+    'UPDATED': '#3ABBC9',
+    'CREATE_REJECTED': '#CC0000',
+    'UPDATE_REJECTED': '#E6E6E6',
+}
+
+const statusMapping: { [key: string]: string } = {
+    UNASSIGNED: 'UNASSIGNED',
+    ASSIGN_PENDING: 'ASSIGNMENT PENDING',
+    ASSIGNED: 'ASSIGNED',
+    REJECTED: 'REJECTED',
+    CREATE_PENDING: 'CREATION PENDING',
+    UPDATE_PENDING: 'UPDATE PENDING',
+    CREATED: 'CREATED',
+    UPDATED: 'UPDATED',
+    CREATE_REJECTED: 'CREATION REJECTED',
+    UPDATE_REJECTED: 'UPDATION REJECTED',
+}
+
+const ChartHandlers: React.FC<PieChartGraphProps> = () => {
+     // State variables to store data and manage loading/error states
     const [assetTypeData, setAssetTypeData] = useState<AssetDetailData[]>([]);
     const [selectedType, setSelectedType] = useState<string>('');
     const [assetChartData, setAssetChartData] = useState<ChartData[]>([]);
@@ -17,38 +53,15 @@ export const PieChartGraph: React.FC<PieChartGraphProps> = () => {
     const [assignChartData, setAssignChartData] = useState<ChartData[]>([])
     const [assignFilteredChartData, setAssignFilteredChartData] = useState<ChartData[]>([]);
 
+    // UseQuery hook to fetch asset data from the server
     const { data: assetData, isLoading: assetLoading, isError: assetError } = useQuery<AssetData>({
         queryKey: ['assetData'],
-        queryFn: (): Promise<AssetData> => axiosInstance.get('/asset/asset_count').then((res) => {
-            console.log(res);
-            return res.data.data;
-        }),
+        queryFn: fetchAssetData,
     })
 
-    const statusColors: { [key: string]: string } = {
-        'IN STORE': '#FFB92A',
-        'IN REPAIR': '#FEEB51',
-        'IN USE': '#9BCA3E',
-        'DISPOSED': '#3ABBC9',
-        'EXPIRED': '#CC0000',
-
-        'UNASSIGNED': '#E6E6E6',
-        'ASSIGN_PENDING': '#FFB92A',
-        'ASSIGNED': '#9BCA3E',
-        'REJECTED': '#CC0000',
-
-        'CREATE_PENDING': '#FD6A02',
-        'UPDATE_PENDING': '#FEEB51',
-        'CREATED': '#9BCA3E',
-        'UPDATED': '#3ABBC9',
-        'CREATE_REJECTED': '#CC0000',
-        'UPDATE_REJECTED': '#E6E6E6',
-    }
-
-    useEffect(() => {
+    useEffect(() => { // Effect to fetch asset type data when component mounts
         axiosInstance.get('/asset/asset_type')
             .then((res) => {
-                console.log(res.data.data);
                 setAssetTypeData(res.data.data);
             })
             .catch(error => {
@@ -56,11 +69,10 @@ export const PieChartGraph: React.FC<PieChartGraphProps> = () => {
             });
     }, []);
 
-    useEffect(() => {
+    useEffect(() => { // Effects to fetch asset count, detail, and assign data when component mounts
         axiosInstance.get(`/asset/asset_count`)
             .then((res) => {
                 const assetCountData = res.data.data;
-                console.log("hi", assetCountData)
                 const assetTypeData = Object.entries(assetCountData?.status_counts ?? {}).map(([label, value]) => ({
                     label,
                     value: value as number,
@@ -68,7 +80,6 @@ export const PieChartGraph: React.FC<PieChartGraphProps> = () => {
                 }));
                 setAssetChartData(assetTypeData);
                 setAssetFilteredChartData(assetTypeData);
-                console.log("hi",assetTypeData);
             })
             .catch(error => {
                 console.error("Error fetching asset count data:", error);
@@ -81,7 +92,7 @@ export const PieChartGraph: React.FC<PieChartGraphProps> = () => {
             .then((res) => {
                 const assetDetailData = res.data.data;
                 const assetDetailStatusData = Object.entries(assetDetailData?.asset_detail_status ?? {}).map(([label, value]) => ({
-                    label,
+                    label: statusMapping[label] ?? label,
                     value: value as number,
                     color: statusColors[label],
                 }));
@@ -99,7 +110,7 @@ export const PieChartGraph: React.FC<PieChartGraphProps> = () => {
             .then((res) => {
                 const assetAssignData = res.data.data;
                 const assetAssignStatusData = Object.entries(assetAssignData?.assign_status ?? {}).map(([label, value]) => ({
-                    label,
+                    label: statusMapping[label] ?? label,
                     value: value as number,
                     color: statusColors[label],
                 }));
@@ -107,12 +118,12 @@ export const PieChartGraph: React.FC<PieChartGraphProps> = () => {
                 setAssignFilteredChartData(assetAssignStatusData);
             })
             .catch(error => {
-                console.log("Error fetching assign details data:", error);
+                console.error("Error fetching assign details data:", error);
                 setAssignFilteredChartData([]);
             })
     }, []);
 
-    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => { // Handler function for select change event
         const assetTypeValue = parseInt(e.target.value);
         setSelectedType(assetTypeValue.toString());
     
@@ -139,14 +150,14 @@ export const PieChartGraph: React.FC<PieChartGraphProps> = () => {
                 setAssetFilteredChartData(assetFilteredData);
 
                 const detailFilteredData = Object.entries(detailCountData?.asset_detail_status ?? {}).map(([label, value]) => ({
-                    label,
+                    label: statusMapping[label] ?? label,
                     value: value as number,
                     color: statusColors[label],
                 }));
                 setDetailFilteredChartData(detailFilteredData);
 
                 const assignFilteredData = Object.entries(assignCountData?.assign_status ?? {}).map(([label, value]) => ({
-                    label,
+                    label: statusMapping[label] ?? label,
                     value: value as number,
                     color: statusColors[label],
                 }));
@@ -168,10 +179,10 @@ export const PieChartGraph: React.FC<PieChartGraphProps> = () => {
 
     if (assetError) return <div>Error fetching data</div>;
 
-    return (
+    return ( // Render the PieChart components with filtered data
         <Stack direction="row">
             <div>
-                <select className="block py-3 px-3 w-full font-display text-black-500 border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer" onChange={handleSelectChange}>
+                <select className="block py-3 px-3 mx-4 w-full font-display text-black-500 border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer" onChange={handleSelectChange}>
                     <option value="0" className="text-black font-display">All</option>
                     {assetTypeData.map((assetType) => (
                         <option key={assetType.id} value={assetType.id} className="text-black font-display">{assetType.asset_type_name}</option>
@@ -187,7 +198,7 @@ export const PieChartGraph: React.FC<PieChartGraphProps> = () => {
                             data: assetFilteredChartData,
                             innerRadius: 50,
                             outerRadius: 120,
-                            paddingAngle: 5,
+                            paddingAngle: 2,
                             cornerRadius: 10,
                             startAngle: -110,
                             endAngle: 110,
@@ -198,19 +209,19 @@ export const PieChartGraph: React.FC<PieChartGraphProps> = () => {
                         },
                     ]}
                     width={300}
-                    height={240}
+                    height={280}
                     slotProps={{
                         legend: {
                             direction: 'row',
                             position: { vertical: 'bottom', horizontal: 'left' },
                             hidden: false,
                             labelStyle: {
-                                fontSize: 8,
+                                fontSize: 10,
                             },
                             itemMarkWidth: 5,
                             itemMarkHeight: 5,
-                            markGap: 3,
-                            itemGap: 4,
+                            markGap: 2,
+                            itemGap: 8,
                         }
                     }}
                 />
@@ -223,7 +234,7 @@ export const PieChartGraph: React.FC<PieChartGraphProps> = () => {
                             data: detailFilteredChartData,
                             innerRadius: 50,
                             outerRadius: 120,
-                            paddingAngle: 5,
+                            paddingAngle: 2,
                             cornerRadius: 10,
                             startAngle: -110,
                             endAngle: 110,
@@ -233,26 +244,26 @@ export const PieChartGraph: React.FC<PieChartGraphProps> = () => {
                             faded: { innerRadius: 75, additionalRadius: -40, color: 'grey' },
                         },
                     ]}
-                    width={300}
-                    height={250}
+                    width={312}
+                    height={280}
                     slotProps={{
                         legend: {
                             direction: 'row',
-                            position: { vertical: 'bottom', horizontal: 'left' },
+                            position: { vertical: 'bottom', horizontal: 'middle' },
                             hidden: false,
                             labelStyle: {
-                                fontSize: 8,
+                                fontSize: 10,
                             },
                             itemMarkWidth: 5,
                             itemMarkHeight: 5,
-                            markGap: 5,
-                            itemGap: 4,
+                            markGap: 2,
+                            itemGap: 8,
                         }
                     }}
                 />
             </div>
             <div>
-            <h2 className='text-right text-md font-bold font-display text-gray-600 dark:text-white-600 rtl:text-left'>
+            <h2 className='text-right text-xs font-medium font-display text-gray-600 dark:text-white-600 rtl:text-right'>
                     Total Assets : {assetData?.total_assets ?? 0}
                 </h2>
                 <PieChart
@@ -262,34 +273,36 @@ export const PieChartGraph: React.FC<PieChartGraphProps> = () => {
                             data: assignFilteredChartData,
                             innerRadius: 50,
                             outerRadius: 120,
-                            paddingAngle: 5,
+                            paddingAngle: 2,
                             cornerRadius: 10,
                             startAngle: -110,
                             endAngle: 110,
                             cx:155,
-                            cy: 140,
+                            cy: 145,
                             highlightScope: { faded: 'global', highlighted: 'item' },
                             faded: { innerRadius: 75, additionalRadius: -40, color: 'grey' },
                         },
                     ]}
                     width={300}
-                    height={217}
+                    height={265}
                     slotProps={{
                         legend: {
                             direction: 'row',
                             position: { vertical: 'bottom', horizontal: 'middle' },
                             hidden: false,
                             labelStyle: {
-                                fontSize: 8,
+                                fontSize: 10,
                             },
                             itemMarkWidth: 5,
                             itemMarkHeight: 5,
-                            markGap: 3,
-                            itemGap: 5,
+                            markGap: 2,
+                            itemGap: 8,
                         }
                     }}
                 />
-            </div>
+            </div>            
         </Stack>
     );
 }
+
+export default ChartHandlers;

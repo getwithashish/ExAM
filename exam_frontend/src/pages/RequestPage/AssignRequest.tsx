@@ -16,6 +16,7 @@ const AssignPage: FC = function () {
   const [assignRequests, setAssignRequests] = useState<any[]>([]);
   const [selectedAssignRequest, setSelectedAssignRequest] = useState<any | null >(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
     fetchAssignRequests();
@@ -78,74 +79,84 @@ const AssignPage: FC = function () {
     }
   }
 
+  const filteredAssigns = assignRequests.filter((assignRequest) => 
+  assignRequest.product_name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <React.Fragment>
-      <div className="block items-center justify-between border-b border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 sm:flex">
-        <div className="mb-1 w-full">
-          <div className="mb-4">
+       <div className="bg-white">
           <nav className="flex mb-4" aria-label="Breadcrumb">
-            <ol className="inline-flex font-display items-center space-x-1 md:space-x-3 rtl:space-x-reverse">
-              <li className="inline-flex items-center">
+            <ol className="inline-flex items-center space-x-1 md:space-x-3 rtl:space-x-reverse">
+              <li className="inline-flex items-center font-display">
                 <a href="#" className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
                   <svg className="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                     <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
                   </svg>
-                  Dashboard
-                </a>
-              </li>
-              <li>
-                <div className="flex items-center">
-                  <svg className="w-3 h-3 text-gray-400 mx-1 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
-                  </svg>
-                  <a href="#" className="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Pending Assign Requests</a>
+                    Dashboard
+                  </a>
+                </li>
+                <li>
+              <div className="flex items-center">
+                <svg className="w-3 h-3 text-gray-400 mx-1 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                </svg>
+                  <a href="#" className="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white font-display">Pending Asset Requests</a>
                 </div>
               </li>
             </ol>
           </nav>
-            <h1 className="text-xl font-semibold font-display text-gray-900 dark:text-white sm:text-2xl">
-              Pending Assign Requests
-            </h1>
-          </div>
-          <div className="block items-center sm:flex">
-            <SearchRequests />
-          </div>
-        </div>
-      </div>
-      <div className="flex flex-col">
-        <div className="overflow-x-auto">
-          {loading ? (
-            <div className="flex justify-center items-center h-full">
-              <p>Loading...</p>
-            </div>
-          ) : (
-            <div className="inline-block min-w-full align-middle">
-              <div className="overflow-hidden shadow">
-                <AssignRequestTable 
-                  assignRequests={assignRequests} 
-                  setSelectedAssignRequest={setSelectedAssignRequest} 
-                />
+          <div className="block items-center justify-between border-b border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 sm:flex mx-2 my-2">
+            <div className="mb-1 w-full">
+              <div className="mb-4">              
+                <h1 className="text-xl font-display font-semibold text-gray-900 dark:text-white sm:text-2xl">
+                  Pending Assign Requests
+                </h1>
+              </div>
+              <div className="block items-center sm:flex">
+                <SearchRequests setSearchQuery={setSearchQuery} />
               </div>
             </div>
-          )}
+          </div>
+          <div className="flex flex-col">
+            <div className="overflow-x-auto">
+              {loading ? (
+                <div className="flex justify-center items-center h-full">
+                  <p>Loading...</p>
+                </div>
+              ) : (
+                <div className="inline-block w-full align-middle">
+                  <div className="overflow-hidden shadow-2xl">
+                  <AssignRequestTable 
+                    assignRequests={filteredAssigns} 
+                    setSelectedAssignRequest={setSelectedAssignRequest} 
+                  />
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-      {selectedAssignRequest && (
-        <ViewRequestModal
-          assignRequest={selectedAssignRequest}
-          handleApprove={handleApprove} 
-          handleReject={handleReject} 
-          onClose={() => setSelectedAssignRequest(null)} 
-        />
-      )}
+        {selectedAssignRequest && (
+          <ViewRequestModal
+            assignRequest={selectedAssignRequest}
+            handleApprove={handleApprove} 
+            handleReject={handleReject} 
+            onClose={() => setSelectedAssignRequest(null)} 
+          />
+        )}
+        </div>
       </React.Fragment>
   );
 };
 
-const SearchRequests: FC = function () {
+const SearchRequests: FC<{ setSearchQuery: React.Dispatch<React.SetStateAction<string>> }> = function ({ setSearchQuery }) {
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
   return (
     <form className="mb-4 sm:mb-0 sm:pr-3" action="#" method="GET">
-      <Label htmlFor="search-request" className="sr-only">
+      <Label htmlFor="search-request" className="sr-only font-display">
         Search
       </Label>
       <div className="relative mt-1 lg:w-64 xl:w-96">
@@ -153,12 +164,12 @@ const SearchRequests: FC = function () {
           id="search-request"
           name="search-request"
           placeholder="Search for requests"
+          onChange={handleSearchChange}
         />
       </div>
     </form>
   );
 };
-
 const AssignRequestTable: FC<{ assignRequests: any[], setSelectedAssignRequest: (assignRequest: any | null)=>void }> = function ({ assignRequests, setSelectedAssignRequest }) {  
   return (
     <Table className="min-w-full divide-y font-display divide-gray-200 dark:divide-gray-600 mx-2 my-2 rounded-lg">
@@ -173,7 +184,7 @@ const AssignRequestTable: FC<{ assignRequests: any[], setSelectedAssignRequest: 
         {assignRequests.map(assignRequest => (
           <Table.Row key={assignRequest.asset_uuid} className="hover:bg-gray-100 dark:hover:bg-gray-700">
             <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
-              <div className="text-base font-semibold text-gray-900 dark:text-white">
+              <div className="text-base font-normal text-gray-900 dark:text-white">
                 {assignRequest.asset_type.asset_type_name}
               </div>
               <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
@@ -215,211 +226,169 @@ const ViewRequestModal: FC<{ assignRequest: any, handleApprove: () => void, hand
     setModalOpen(!modalOpen);
   };
 
+  const assignRequestFields = [
+    {
+      id: "assetId",
+      label: "ASSET ID",
+      name: "assetId",
+      value: assignRequest.asset_id,
+      disabled: true
+    },
+    {
+      id: "version",
+      label: "VERSION",
+      name: "version",
+      value: assignRequest.version,
+      disabled: true
+    },
+    {
+      id: "assetCategory",
+      label: "CATEGORY",
+      name: "assetCategory",
+      value: assignRequest.asset_category,
+      disabled: true
+    },
+    {
+      id: "modelNumber",
+      label: "MODEL NUMBER",
+      name: "modelNumber",
+      value: assignRequest.model_number,
+      disabled: true
+    },
+    {
+      id: "serialNumber",
+      label: "SERIAL NUMBER",
+      name: "serialNumber",
+      value: assignRequest.serial_number,
+      disabled: true
+    },
+    {
+      id: "owner",
+      label: "OWNER",
+      name: "owner",
+      value: assignRequest.owner,
+      disabled: true
+    },
+    {
+      id: "dop",
+      label: "D.O.P",
+      name: "dop",
+      value: assignRequest.date_of_purchase,
+      disabled: true
+    },
+    {
+      id: "warranty_period",
+      label: "WARRANTY",
+      name: "warranty_period",
+      value: assignRequest.warranty_period,
+      disabled: true
+    },
+    {
+      id: "os",
+      label: "OS",
+      name: "os",
+      value: assignRequest.os,
+      disabled: true
+    },
+    {
+      id: "os_version",
+      label: "OS VERSION",
+      name: "os_version",
+      value: assignRequest.os_version,
+      disabled: true
+    },
+    {
+      id: "mobile_os",
+      label: "MOBILE OS",
+      name: "mobile_os",
+      value: assignRequest.mobile_os,
+      disabled: true
+    },
+    {
+      id: "processor",
+      label: "PROCESSOR",
+      name: "processor",
+      value: assignRequest.processor,
+      disabled: true
+    },
+    {
+      id: "storage",
+      label: "STORAGE",
+      name: "storage",
+      value: assignRequest.storage,
+      disabled: true
+    },
+    {
+      id: "configuration",
+      label: "CONFIGURATION",
+      name: "configuration",
+      value: assignRequest.configuration,
+      disabled: true
+    },
+    {
+      id: "accessories",
+      label: "ACCESSORIES",
+      name: "accessories",
+      value: assignRequest.accessories,
+      disabled: true
+    },
+    {
+      id: "location",
+      label: "LOCATION",
+      name: "location",
+      value: assignRequest.location.location_name,
+      disabled: true
+    },
+    {
+      id: "invoice_location",
+      label: "INV.LOCATION",
+      name: "invoice_location",
+      value: assignRequest.location.location_name,
+      disabled: true
+    },
+    {
+      id: "business_unit",
+      label: "BUSINESS UNIT",
+      name: "business_unit",
+      value: assignRequest.business_unit.business_unit_name,
+      disabled: true
+    },
+    {
+      id: "assignee",
+      label: "ASSIGNEE",
+      name: "assignee",
+      value: assignRequest.custodian?.employee_name,
+      disabled: true
+    },
+  ];
+
   return (
     <DrawerViewRequest title="Assign Details" onClose={onClose} visible={true}>
       <div>
       <form>
-        <div className="grid grid-cols-4 gap-1 lg:grid-cols-5 text-sm">
-          <div>
-            <Label htmlFor="assetId">ASSET ID</Label>
-            <TextInput
-              id="assetId"
-              name="assetId"
-              value={assignRequest.asset_id}
-              disabled
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="version">VERSION</Label>
-            <TextInput
-              id="version"
-              name="version"
-              value={assignRequest.version}
-              disabled
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="assetCategory">CATEGORY</Label>
-            <TextInput
-              id="assetCategory"
-              name="assetCategory"
-              value={assignRequest.asset_category}
-              disabled
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="modelNumber">MODEL NUMBER</Label>
-            <TextInput
-              id="modelNumber"
-              name="modelNumber"
-              value={assignRequest.model_number}
-              disabled
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="serialNumber">SERIAL NUMBER</Label>
-            <TextInput
-              id="serialNumber"
-              name="serialNumber"
-              value={assignRequest.serial_number}
-              disabled
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="owner">OWNER</Label>
-            <TextInput
-              id="owner"
-              name="owner"
-              value={assignRequest.owner}
-              disabled
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="dop">D.O.P</Label>
-            <TextInput
-              id="dop"
-              name="dop"
-              value={assignRequest.date_of_purchase}
-              disabled
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="warranty_period">WARRANTY</Label>
-            <TextInput
-              id="warranty_period"
-              name="warranty_period"
-              value={assignRequest.warranty_period}
-              disabled
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="os">OS</Label>
-            <TextInput
-              id="os"
-              name="os"
-              value={assignRequest.os}
-              disabled
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="os_version">OS VERSION</Label>
-            <TextInput
-              id="os_version"
-              name="os_version"
-              value={assignRequest.os_version}
-              disabled
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="mobile_os">MOBILE OS</Label>
-            <TextInput
-              id="mobile_os"
-              name="mobile_os"
-              value={assignRequest.mobile_os}
-              disabled
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="processor">PROCESSOR</Label>
-            <TextInput
-              id="processor"
-              name="processor"
-              value={assignRequest.mobile_os}
-              disabled
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="storage">STORAGE</Label>
-            <TextInput
-              id="storage"
-              name="storage"
-              value={assignRequest.storage}
-              disabled
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="configuration">CONFIGURATION</Label>
-            <TextInput
-              id="configuration"
-              name="configuration"
-              value={assignRequest.configuration}
-              disabled
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="accessories">ACCESSORIES</Label>
-            <TextInput
-              id="accessories"
-              name="accessories"
-              value={assignRequest.accessories}
-              disabled
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="location">LOCATION</Label>
-            <TextInput
-              id="location"
-              name="location"
-              value={assignRequest.location.location_name}
-              disabled
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="invoice_location">INV.LOCATION</Label>
-            <TextInput
-              id="invoice_location"
-              name="invoice_location"
-              value={assignRequest.location.location_name}
-              disabled
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="business_unit">BUSINESS UNIT</Label>
-            <TextInput
-              id="business_unit"
-              name="business_unit"
-              value={assignRequest.business_unit.business_unit_name}
-              disabled
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="assignee">ASSIGNEE</Label>
-            <TextInput
-              id="assignee"
-              name="assignee"
-              value={assignRequest.custodian?.employee_name}
-              disabled
-              className="mt-1"
-            />
-          </div>
-          <div className="lg:col-span-5">
-              <Label htmlFor="notes">NOTES</Label>
-              <Textarea
-                id="notes"
-                name="notes"
-                rows={1}
-                value={assignRequest.notes}
-                className="mt-1"
+        <div className="grid font-display grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">
+          {assignRequestFields.map((field, index) => (
+            <div key={index}>
+              <Label htmlFor={field.id}>{field.label}</Label>
+              <TextInput
+                id={field.id}
+                name={field.name}
+                value={field.value}
+                disabled={field.disabled}
+                className="mt-1 font-display"
               />
             </div>
+          ))}
+          <div className="lg:col-span-5">
+            <Label htmlFor="notes">NOTES</Label>
+            <Textarea
+              id="notes"
+              name="notes"
+              rows={1}
+              value={assignRequest.notes}
+              className="mt-1"
+            />
+          </div>
           <div className="lg:col-span-5">
             <Label htmlFor="approverNotes">APPROVER NOTES</Label>
             <Textarea
@@ -443,7 +412,7 @@ const ViewRequestModal: FC<{ assignRequest: any, handleApprove: () => void, hand
       </button>
 
       <button
-        className="block  font-display text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-6 py-3 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+        className="block font-display text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-6 py-3 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
         onClick={() => toggleModal("reject")}
       >
         Reject
