@@ -1,3 +1,8 @@
+import jwt
+import secrets
+import string
+from django.shortcuts import redirect
+from django.http import JsonResponse
 from rest_framework import generics, status
 from rest_framework.response import Response
 from user_auth.models import User
@@ -7,6 +12,8 @@ from user_auth.serializers import (
     UserSerializer,
 )
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from response import APIResponse
 from messages import (
     USER_NOT_FOUND_ERROR,
@@ -56,6 +63,7 @@ class UserRegistrationView(generics.GenericAPIView):
         return Response(serializer.data)  # Return queryset as a response
 
     def post(self, request):
+        # TODO can use create_user_service here. Contains the same logic
         try:
             serializer = self.get_serializer(data=request.data)
             if serializer.is_valid(raise_exception=True):
@@ -70,7 +78,7 @@ class UserRegistrationView(generics.GenericAPIView):
                 err_data = str(serializer.errors)
                 res_data = {
                     "success": False,
-                    "message": "Something weBnt wrong",
+                    "message": "Something went wrong",
                     "data": {"error": err_data},
                 }
                 return Response(res_data, status=status.HTTP_400_BAD_REQUEST)
@@ -86,3 +94,91 @@ class UserRegistrationView(generics.GenericAPIView):
 
 class UsernameAndUserscopeTokenObtainPairView(TokenObtainPairView):
     serializer_class = UsernameAndUserscopeTokenObtainPairSerializer
+
+
+class SSOCreateRetrieveView(generics.GenericAPIView):
+
+    def get(self, request):
+        # TODO Check whether jwt is valid
+        payload = jwt.decode(
+            request.identity_context_data._access_token,
+            options={"verify_signature": False},
+            algorithms=["RS256"],
+        )
+
+        # TODO username in User model is now unique and necessary. Need to change that
+        # TODO Need to rethink this flow and logic
+
+        upn = payload["upn"]
+        username = upn.split("@")[0]
+        user_scope = username.split(".")[2]
+
+        if (
+            user_scope.upper() == "SYSADMIN"
+            or user_scope.upper() == "SENIORADMINISTRATOR"
+        ):
+            user_scope = "SYSTEM_ADMIN"
+        elif user_scope.upper() == "LEAD" or user_scope.upper() == "SENIORLEAD":
+            user_scope = "LEAD"
+        elif user_scope.upper() == "MANAGER":
+            user_scope = "MANAGER"
+        else:
+            print("Some other user scope encountered !!!!")
+            return
+
+        try:
+            user = User.objects.get(email=upn)
+            tokens = obtain_tokens(user)
+
+        except User.DoesNotExist:
+            randPass = generate_random_password()
+            user_data = {
+                "username": username,
+                "password": randPass,
+                "email": upn,
+                "user_scope": user_scope,
+            }
+            user = create_user_service(user_data)
+            if user:
+                tokens = obtain_tokens(user)
+            else:
+                print("Something happened")
+                return
+
+        redirect_url = f"http://localhost:5173/sso/flow?refresh_token={tokens['refresh']}&access_token={tokens['access']}"
+        return redirect(redirect_url)
+
+
+def generate_random_password(length=12):
+    characters = string.ascii_letters + string.digits + string.punctuation
+
+    password = "".join(secrets.choice(characters) for _ in range(length))
+
+    return password
+
+
+def obtain_tokens(user):
+    tokens = UsernameAndUserscopeTokenObtainPairSerializer.get_token(user)
+    refresh_token = str(tokens)
+    access_token = str(tokens.access_token)
+
+    return {
+        "refresh": str(refresh_token),
+        "access": str(access_token),
+    }
+
+
+def create_user_service(user_data):
+    try:
+        serializer = UserSerializer(data=user_data)
+        if serializer.is_valid(raise_exception=True):
+            user = serializer.save()
+            return user
+        else:
+            err_data = str(serializer.errors)
+            print(err_data)
+            return None
+
+    except Exception as ex:
+        print(ex)
+        return None

@@ -5,6 +5,7 @@ from rest_framework_simplejwt.views import (
 )
 
 from user_auth.views import (
+    SSOCreateRetrieveView,
     UserRegistrationView,
     UserRetrievalView,
     UsernameAndUserscopeTokenObtainPairView,
@@ -19,4 +20,5 @@ urlpatterns = [
     ),
     path("token/refresh", TokenRefreshView.as_view(), name="jwt_refresh"),
     path("register", UserRegistrationView.as_view(), name="jwt_signup"),
+    path("auth/sso/flow", SSOCreateRetrieveView.as_view(), name="index")
 ]

@@ -7,6 +7,14 @@ from supertokens_python import init, InputAppInfo, SupertokensConfig
 from supertokens_python.recipe import emailpassword, session
 from supertokens_python import get_all_cors_headers
 
+from ms_identity_web.configuration import AADConfig
+from ms_identity_web import IdentityWebPython
+
+AAD_CONFIG = AADConfig.parse_json(file_path="aad.config.json")
+MS_IDENTITY_WEB = IdentityWebPython(AAD_CONFIG)
+# ERROR_TEMPLATE = 'auth/{}.html' # for rendering 401 or other errors from msal_middleware
+# MIDDLEWARE.append('ms_identity_web.django.middleware.MsalMiddleware')
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -83,6 +91,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "supertokens_python.framework.django.django_middleware.middleware",
+    "ms_identity_web.django.middleware.MsalMiddleware",
 ]
 
 ROOT_URLCONF = "exam_django.urls"
