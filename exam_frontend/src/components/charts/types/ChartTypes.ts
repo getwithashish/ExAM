@@ -12,8 +12,8 @@ export interface AssetData{
 }
 
 export interface PieChartGraphProps {
-  selectedAssetType: string;
-  type: string;
+  selectedAssetType?: string;
+  type?: string;
 }
 
 export interface AssetDetailData{

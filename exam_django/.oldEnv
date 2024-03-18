@@ -1,6 +1,0 @@
-DB_NAME=demo_exam_db_v1
-DB_USER=root
-DB_PASSWORD=experion@123
-DB_HOST=localhost
-DB_PORT=3306
-SUPERTOKENS_URL=http://18.234.92.168:3567
