@@ -1,96 +1,60 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useState, type FC } from "react";
+import { useState, type FC, useContext } from "react";
 import NavbarSidebarLayout from "../layouts/navbar-sidebar";
 import AddAsset from "../components/AddAsset/AddAsset";
-import AssetTable from '../components/AssetTable/AssetTable'
-import { Statistics } from "../components/Charts/Statistics";
+import AssetTable from "../components/AssetTable/AssetTable";
+import { Statistics } from "../components/charts/Statistics";
 import { RecordProps } from "./types";
 import SideDrawerComponent from "../components/SideDrawerComponent/SideDrawerComponent";
-import { SidebarHandler } from "../components/sidebar/SidebarHandler";
+
 import AssignmentDrawer from "../components/Assign/AssignmentDrawer";
 import { Assignment } from "../components/Assign/Assignment";
 import TableNavbar from "../components/TableNavBar/TableNavbar";
 // import Upload from "antd/es/upload/Upload";
 import { Upload } from "antd";
-import {styles} from '../components/SideDrawerComponent/SideDrawerComponent.module.css'
+import { styles } from "../components/SideDrawerComponent/SideDrawerComponent.module.css";
 import UploadComponent from "../components/Upload/UploadComponent";
-
+import DasboardAssetHandler from '../components/DashboardAssetTable/DasboardAssetHandler'
+import { QueryBuilder, QueryBuilderComponent } from "../components/QueryBuilder/QueryBuilder";
 
 const DashboardPage: FC = function () {
-  const [displaydrawer,setDisplayDrawer] = useState(false)
-  const [isAssign,setIsAssign] = useState(false)
-  const [record,setRecord] = useState<RecordProps>()
-  
-    const showDefaultDrawer =()=>{
-      setDisplayDrawer(true)
-      console.log("displaydrawer value is ",displaydrawer)
-    }
-   const closeDrawer = ()=> {
-    setDisplayDrawer(false)
-    console.log("displaydrwer value is " ,displaydrawer)
-   }
-  
-   const showAssignDrawer =(record:RecordProps)=>{
-    console.log("uuid",record)
-    setRecord(record)
-    setIsAssign(true)
-    console.log("displaydrawer value is ",displaydrawer)
-  }
-  const closeAssignDrawer = ()=> {
-  setIsAssign(false)
-  console.log("displaydrwer value is " ,displaydrawer)
- }
+  const [displaydrawer, setDisplayDrawer] = useState(false);
 
- const toggleDrawer = () => {
-  setDisplayDrawer(!displaydrawer);
-};
+  const showDefaultDrawer = () => {
+    setDisplayDrawer(true);
+    console.log("displaydrawer value is ", displaydrawer);
+  };
+  const closeDrawer = () => {
+    setDisplayDrawer(false);
+    console.log("displaydrwer value is ", displaydrawer);
+  };
 
-const [showUpload, setShowUpload] = useState(false);
-const closeImportDrawer = ()=> {
-  setShowUpload(false)
-  console.log("Import drwer value is " ,showUploaddrawer)
- }
-
+  const toggleDrawer = () => {
+    setDisplayDrawer(!displaydrawer);
+  };
 
   return (
-   
-      <NavbarSidebarLayout>
-        <div>
-          <SidebarHandler addAsset={showDefaultDrawer} />
-            <Statistics />        
-            <TableNavbar showUpload={showUpload} setShowUpload={setShowUpload}/>
-          
-        <AssignmentDrawer buttonTextDefault="Assign" displayDrawer={displaydrawer} >
-          <Assignment />
-        </AssignmentDrawer>
+    <div>
+      {/* <SidebarHandler addAsset={showDefaultDrawer} /> */}
+      <Statistics />
 
+      <DasboardAssetHandler showDrawer={showDefaultDrawer} />
+      {/* <AssetTable showDrawer={showDefaultDrawer} /> */}
 
-                    <AssetTable showDrawer={showDefaultDrawer} />
-
-                  <SideDrawerComponent  displayDrawer={displaydrawer} closeDrawer={closeDrawer}>
-                    <AddAsset/>
-                  </SideDrawerComponent>   
-
-                  <SideDrawerComponent  displayDrawer={showUpload} closeDrawer={closeImportDrawer}>
-                  <UploadComponent/>
-                  </SideDrawerComponent>   
-
-                  {/* <AssignmentDrawer buttonTextDefault="Import" displayDrawer={showUpload} >
+      {/* <AssignmentDrawer buttonTextDefault="Import" displayDrawer={showUpload} >
                     <UploadComponent/>
                   </AssignmentDrawer> */}
 
-                  {/* <SideDrawerComponent  displayDrawer={displaydrawer} closeDrawer={toggleDrawer}>
+      {/* <SideDrawerComponent  displayDrawer={displaydrawer} closeDrawer={toggleDrawer}>
                   <div className="{styles.small-upload}">
                   <UploadComponent />
                   </div>
                   </SideDrawerComponent>  */}
+                  {/* <QueryBuilderComponent /> */}
 
-            <div>      
-          </div>
-        </div>
-      </NavbarSidebarLayout>
-    
+      <div></div>
+    </div>
   );
 };
 

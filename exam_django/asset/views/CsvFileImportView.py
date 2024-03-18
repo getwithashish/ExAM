@@ -10,8 +10,9 @@ from asset.models import (
 from user_auth.models import User
 
 
-def parse_and_add_assets(file_content):
+def parse_and_add_assets(file_content, user):
     # Split the file content into lines and decode it as UTF-8
+    print(user)
     csv_reader = csv.DictReader(file_content.decode("utf-8").splitlines())
 
     # Get existing asset IDs and serial numbers from the database
@@ -35,23 +36,23 @@ def parse_and_add_assets(file_content):
 
         # Look up related objects (users, asset types, business units, etc.) from the database
         conceder_user = User.objects.filter(
-            first_name=row["conceder_id"], last_name=""
+            first_name=row["conceder"], last_name=""
         ).first()
         requester_user = User.objects.filter(
-            first_name=row["requester_id"], last_name=""
+            first_name=row["requester"], last_name=""
         ).first()
         asset_type = AssetType.objects.filter(
-            asset_type_name=row["asset_type_id"]
+            asset_type_name=row["asset_type"]
         ).first()
         business_unit = BusinessUnit.objects.filter(
-            business_unit_name=row["business_unit_id"]
+            business_unit_name=row["business_unit"]
         ).first()
-        custodian = Employee.objects.filter(employee_name=row["custodian_id"]).first()
-        location = Location.objects.filter(location_name=row["location_id"]).first()
+        custodian = Employee.objects.filter(employee_name=row["custodian"]).first()
+        location = Location.objects.filter(location_name=row["location"]).first()
         invoice_location = Location.objects.filter(
-            location_name=row["invoice_location_id"]
+            location_name=row["invoice_location"]
         ).first()
-        memory = Memory.objects.filter(memory_space=row["memory_id"]).first()
+        memory = Memory.objects.filter(memory_space=row["memory"]).first()
 
         # Create a new Asset object with the data from the CSV row
         Asset.objects.create(
@@ -79,8 +80,8 @@ def parse_and_add_assets(file_content):
             created_at=row["created_at"],
             updated_at=row["updated_at"],
             is_deleted=row["is_deleted"],
-            conceder_id=conceder_user.id if conceder_user else None,
-            requester_id=requester_user.id if requester_user else None,
+            approved_by=user,  # Assign the User object obtained from the JWT payload
+            requester_id=user.id,  # Assign the User ID obtained from the JWT payload
             asset_type_id=asset_type.id if asset_type else None,
             business_unit_id=business_unit.id if business_unit else None,
             custodian_id=custodian.id if custodian else None,

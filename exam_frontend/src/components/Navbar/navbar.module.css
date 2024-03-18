@@ -1,6 +1,39 @@
-.button-components{
-    display: flex;
-    justify-content: space-around;
-    gap: 10px;
-    /* background-color: yellow; */
-  }
+.button-components {
+  display: flex;
+  justify-content: space-around;
+  gap: 10px;
+  /* background-color: yellow; */
+}
+
+.username-container {
+  display: flex; /* Use flexbox to align items */
+  flex-direction: column;
+  position: relative;
+  top: -15px;
+  align-items: center;
+  height: fit-content;
+}
+
+.username {
+  font-size: large;
+  font-family: "Poppins", sans-serif;
+  text-transform: capitalize;
+  padding: 0;
+  height: 10px;
+  margin: 0;
+}
+
+.userscope {
+  font-size: x-small;
+  font-family: "Poppins", sans-serif;
+  text-transform: capitalize;
+  padding: 0;
+  padding-top: 7px;
+  /* height: 5px; */
+  /* margin-top: 5px; */
+}
+.button-content
+{
+  font-size: "Poppins";
+  font-size: medium;
+}

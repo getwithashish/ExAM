@@ -42,6 +42,7 @@ ASSET_PARAM_EXCEPTION_ERROR = (
 INVALID_ASSET_DATA = (
     "The provided asset data is invalid. Please correct the information and try again."
 )
+ASSET_REJECTED_SUCCESSFUL = "Asset has been successfully rejected."
 ASSET_CREATED_UNSUCCESSFUL = "Error while creating an asset. Please try again later."
 ASSET_UPDATION_UNSUCCESSFUL = "Error while updating asset details. Please try again."
 ASSET_ASSIGNMENT_FAILED = "Failed to assign asset. Please try again."
@@ -85,10 +86,14 @@ APPROVAL_TYPE_NOT_FOUND = (
     "Specified approval type is not valid. Try with correct value."
 )
 CANNOT_APPROVE_ACKNOWLEDGED_ASSET = "Cannot Approve already acknowledged asset."
+CANNOT_REJECT_ACKNOWLEDGED_ASSET = "Cannot Reject already acknowledged asset."
 CANNOT_ASSIGN_UNAPPROVED_ASSET = "Cannot assign asset which is not approved."
+
+CANNOT_UNASSIGN_ASSET_NOT_IN_PENDING = "Cannot unassign asset whic"
 
 # Approval Success Messages
 
+ASSIGN_ASSET_REJECT_SUCCESSFUL = "Successfully rejected asset assignment request."
 
 # Asset Type Exception Messages
 INVALID_ASSET_TYPE = "The given asset type is invalid."

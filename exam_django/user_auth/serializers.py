@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.exceptions import ValidationError
+from django.contrib.auth import authenticate
 
 from user_auth.models import User
 
@@ -21,7 +22,7 @@ class UserSerializer(serializers.ModelSerializer):
             "username": {"required": True},
             "password": {"write_only": True, "required": True},
             "email": {"required": True},
-            "mobile": {"required": True},
+            # "mobile": {"required": True},
             "user_scope": {"required": True},
         }
 
@@ -42,3 +43,34 @@ class UsernameAndUserscopeTokenObtainPairSerializer(TokenObtainPairSerializer):
         token["user_scope"] = user.user_scope
 
         return token
+
+class SSOTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Add custom claims to the token payload
+        token["user_id"] = user.id
+        token["username"] = user.username
+        token["user_scope"] = user.user_scope
+
+        return token
+    
+    def validate(self, attrs):
+        email = attrs.get("email")
+
+        if email:
+            user = authenticate(request=self.context.get('request'), email=email)
+        else:
+            raise serializers.ValidationError("Must include 'email'.")
+
+        if not user:
+            raise serializers.ValidationError("Unable to log in with provided credentials.")
+
+        refresh = self.get_token(user)
+
+        data = {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }
+
+        return data

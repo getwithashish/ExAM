@@ -1,64 +1,763 @@
-import React, { useState } from "react";
-import { Card, Form, Space, Input, Button, Select, ConfigProvider } from "antd";
+import React, { useEffect, useState } from "react";
+import {
+  Card,
+  Form,
+  Space,
+  Input,
+  Button,
+  Select,
+  ConfigProvider,
+  Row,
+  Col,
+  message,
+} from "antd";
 import "./CardComponent.css";
 import { DataType } from "../AssetTable/types/index";
 import { CardType } from "./types/index";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import axiosInstance from "../../config/AxiosConfig";
+import { CommentOutlined } from "@ant-design/icons";
 
+interface UpdateData {
+  asset_uuid: string;
+  data: Partial<DataType>; // Partial to allow updating only specific fields
+}
 const CardComponent: React.FC<CardType> = ({
+  asset_uuid,
   data,
   onUpdate,
   statusOptions,
   businessUnitOptions,
-  locationData,
+  locations,
   memoryData,
-  assetTypeData
+  assetTypeData,
 }) => {
   const uniqueStatusOptions = Array.from(new Set(statusOptions));
   const uniqueBusinessOptions = Array.from(new Set(businessUnitOptions));
-  const uniqueLocationoptions = Array.from(new Set(locationData));
+  const uniqueLocationoptions = Array.from(new Set(locations));
   const uniqueMemoryOptions = Array.from(new Set(memoryData));
   const uniqueAssetTypeOptions = Array.from(new Set(assetTypeData));
-  const [editedData, setEditedData] = useState(data);
 
-  const handleChange = (newValue: string) => {
-    // Assuming you want to update some state with the new value
-    setEditedData((prevData) => ({
+  const inputStyle: React.CSSProperties = {
+    border: "0.5px solid #d3d3d3",
+    width: "180px",
+    boxShadow: "none",
+    textAlign: "left",
+    background: " #f0f0f0",
+    borderRadius: "5px",
+    color: "black",
+  };
+
+  const [updatedData, setUpdatedData] = useState<Partial<DataType>>({});
+  const handleUpdate = async () => {
+    console.log("Asset UUID:", data.key);
+
+    try {
+      const updatePayload = {
+        asset_uuid: data.key,
+        data: updatedData,
+      };
+
+      const response = await axiosInstance.patch(
+        "/asset/update",
+        updatePayload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("Updated data:", response.data);
+      message.success("Asset Details successfully updated");
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+    } catch (error) {
+      console.error("Error updating data:", error);
+    }
+  };
+
+  const handleUpdateChange = (field: string, value: any) => {
+    setUpdatedData((prevData) => ({
       ...prevData,
-      propertyName: newValue, // Replace 'propertyName' with the appropriate property name
+      [field]: value,
     }));
   };
 
-  const handleUpdate = () => {
-    onUpdate(editedData);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value.toLowerCase());
   };
-  const gridStyle: React.CSSProperties = {
-    width: "25%",
-    height: "30%",
-    textAlign: "center",
-  };
+
+  const formItems = [
+    {
+      label: "Asset Category",
+      value: (
+        <Form.Item
+          name="assetCategory"
+          style={{ flex: "1" }}
+          className="formItem"
+        >
+          <b style={{ display: "block" }}>Asset Category: </b> <br></br>
+          <Input
+            defaultValue={data.asset_category}
+            onChange={(e) =>
+              handleUpdateChange("assetCategory", e.target.value)
+            }
+            style={inputStyle}
+          />{" "}
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Asset Type",
+      value: (
+        <Form.Item
+          name="status"
+          style={{ flex: "1", marginLeft: "8px" }}
+          className="formItem"
+        >
+          <b> Asset Type:</b>
+          <br></br>
+          <br></br>
+          <Select
+            variant="filled"
+            defaultValue={data.asset_type}
+            style={{
+              boxShadow: "none",
+              border: "0.5px solid #d3d3d3",
+              width: "170px",
+              height: "40px",
+              borderRadius: "5px",
+              background:"#f0f0f0"
+            }}
+            onChange={(value) => handleUpdateChange("asset_type", value)}
+          >
+            {uniqueAssetTypeOptions.map((asset_type, index) => (
+              <Select.Option key={index} value={asset_type.id}>
+                {asset_type.asset_type_name}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Version",
+      value: (
+        <Form.Item
+          name="version"
+          style={{ flex: "1", marginLeft: "8px", width: "180px" }}
+          className="formItem"
+        >
+          <b>Version: </b>
+          <br></br>
+          <br></br>{" "}
+          <Input
+            defaultValue={data.version}
+            onChange={(e) => handleUpdateChange("version", e.target.value)}
+            style={inputStyle}
+          />{" "}
+        </Form.Item>
+      ),
+    },
+
+    {
+      label: "Asset Status",
+      name: "assetStatus",
+      value: (
+        <Form.Item
+          name="assetStatus"
+          style={{ boxShadow: "none", border: "none" }}
+        >
+          <b> Asset Status:</b>
+          <br></br>
+          <br></br>
+          <Select
+            variant="filled"
+            defaultValue={uniqueStatusOptions[0]}
+            style={{
+              boxShadow: "none",
+              border: "0.5px solid #d3d3d3",
+              width: "180px",
+              height: "40px",
+              borderRadius: "5px",
+              background:"#f0f0f0"
+            }}
+            onChange={(value) => handleUpdateChange("status", value)} // Pass only the value
+          >
+            {uniqueStatusOptions.map((status, index) => (
+              <Select.Option key={index} value={status}>
+                {status}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Location",
+      name: "location",
+      value: (
+        <Form.Item
+          name="location"
+          style={{ boxShadow: "none", border: "none" }}
+        >
+          <b> Asset Location:</b>
+          <br></br>
+          <br></br>
+          <Select
+            variant="filled"
+            defaultValue={data.location}
+            style={{
+              boxShadow: "none",
+              border: "0.5px solid #d3d3d3",
+              width: "170px",
+              height: "40px",
+              borderRadius: "5px",
+              background:"#f0f0f0"
+            }}
+            onChange={(value) => handleUpdateChange("location", value)}
+          >
+            {uniqueLocationoptions.map((location, index) => (
+              <Select.Option key={index} value={location.id}>
+                {location.location_name}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Location",
+      name: "location",
+      value: (
+        <Form.Item
+          name="location"
+          style={{ boxShadow: "none", border: "none" }}
+        >
+          <b>Invoice Location:</b>
+          <br></br>
+          <br></br>
+          <Select
+            variant="filled"
+            defaultValue={data.invoice_location}
+            style={{
+              boxShadow: "none",
+              border: "0.5px solid #d3d3d3",
+              width: "180px",
+              height: "40px",
+              borderRadius: "5px",
+              background:"#f0f0f0"
+            }}
+            onChange={(value) => handleUpdateChange("invoice_location", value)} // Pass only the value
+          >
+            {uniqueLocationoptions.map((location, index) => (
+              <Select.Option key={index} value={location.id}>
+                {location.location_name}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+      ),
+    },
+
+    {
+      label: "OS",
+      name: "os",
+      value: (
+        <Form.Item name="os">
+          <b>OS: </b>
+          <br></br>
+          <br></br>{" "}
+          <Input
+            defaultValue={data.os}
+            onChange={(e) => handleUpdateChange("os", e.target.value)}
+            style={inputStyle}
+          />{" "}
+        </Form.Item>
+      ),
+    },
+    {
+      label: "OS Version",
+      name: "osVersion",
+      value: (
+        <Form.Item name="os version">
+          <b>OS Version:</b>
+          <br></br>
+          <br></br>{" "}
+          <Input
+            defaultValue={data.os_version}
+            onChange={(e) => handleUpdateChange("os version", e.target.value)}
+            style={inputStyle}
+          />{" "}
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Mobile OS",
+      name: "mobileOs",
+      value: (
+        <Form.Item name="mobile os">
+          <b>Mobile OS: </b>
+          <br></br>
+          <br></br>{" "}
+          <Input
+            defaultValue={data.mobile_os}
+            onChange={(e) => handleUpdateChange("mobile os", e.target.value)}
+            style={inputStyle}
+          />{" "}
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Processor",
+      name: "processor",
+      value: (
+        <Form.Item name="processor">
+          <b>Processor: </b>
+          <br></br>
+          <br></br>{" "}
+          <Input
+            defaultValue={data.processor}
+            onChange={(e) => handleUpdateChange("processor", e.target.value)}
+            style={inputStyle}
+          />{" "}
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Generation",
+      name: "generation",
+      value: (
+        <Form.Item name="generation">
+          <b>Generation:</b>
+          <br></br>
+          <br></br>{" "}
+          <Input
+            defaultValue={data.Generation}
+            onChange={(e) => handleUpdateChange("generation", e.target.value)}
+            style={inputStyle}
+          />{" "}
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Accessories",
+      name: "accessories",
+      value: (
+        <Form.Item name="accessories">
+          <b>Accessories:</b> <br></br>
+          <br></br>{" "}
+          <Input
+            defaultValue={data.accessories}
+            onChange={(e) => handleUpdateChange("accessories", e.target.value)}
+            style={inputStyle}
+          />{" "}
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Date of Purchase",
+      name: "dateOfPurchase",
+      value: (
+        <Form.Item name="date of purchase">
+          <b>Date of Purchase:</b> <br></br>
+          <br></br>{" "}
+          <Input
+            defaultValue={formatDate(data.date_of_purchase.toString())}
+            onChange={(e) =>
+              handleUpdateChange("date of purchase", e.target.value)
+            }
+            style={inputStyle}
+          />{" "}
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Warranty Period",
+      name: "warrantyPeriod",
+      value: (
+        <Form.Item name="warranty period">
+          <b>Warranty Period:</b>
+          <br></br>
+          <br></br>{" "}
+          <Input
+            defaultValue={data.warranty_period}
+            onChange={(e) =>
+              handleUpdateChange("warranty period", e.target.value)
+            }
+            style={inputStyle}
+          />{" "}
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Asset detail status",
+      name: "asset_detail_status",
+      value: (
+        <Form.Item name="asset_detail_status">
+          <b>Asset Detail Status </b>
+          <br></br>
+          <br></br>{" "}
+          <Input
+            defaultValue={data.asset_detail_status}
+            onChange={(e) =>
+              handleUpdateChange("asset_detail_status", e.target.value)
+            }
+            style={inputStyle}
+          />{" "}
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Assign status",
+      name: "assign_status",
+      value: (
+        <Form.Item name="assign_status">
+          <b>Assign Status </b>
+          <br></br>
+          <br></br>{" "}
+          <Input
+            defaultValue={data.assign_status}
+            onChange={(e) =>
+              handleUpdateChange("assign_status", e.target.value)
+            }
+            style={inputStyle}
+          />{" "}
+        </Form.Item>
+      ),
+    },
+
+    {
+      label: "Approver",
+      name: "approver",
+      value: (
+        <Form.Item name="date of purchase">
+          <b>Approved By:</b>
+          <br></br>
+          <br></br>{" "}
+          <Input
+            disabled
+            defaultValue={data.conceder}
+            onChange={(e) =>
+              handleUpdateChange("serail number", e.target.value)
+            }
+            style={inputStyle}
+          />{" "}
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Serial Number",
+      name: "serialNumber",
+      value: (
+        <Form.Item name="serial number">
+          <b>Serial Number:</b> <br></br>
+          <br></br>{" "}
+          <Input
+            defaultValue={data.serial_number}
+            onChange={(e) =>
+              handleUpdateChange("serail number", e.target.value)
+            }
+            style={inputStyle}
+          />{" "}
+        </Form.Item>
+      ),
+    },
+
+    {
+      label: "Model Number",
+      name: "modelNumber",
+      value: (
+        <Form.Item name="model number">
+          <b>Model Number:</b> <br></br>
+          <br></br>{" "}
+          <Input
+            defaultValue={data.model_number}
+            onChange={(e) => handleUpdateChange("model number", e.target.value)}
+            style={inputStyle}
+          />{" "}
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Custodian",
+      name: "custodian",
+      value: (
+        <Form.Item name="date of purchase">
+          <b>Custodian:</b>
+          <br></br>
+          <br></br>{" "}
+          <Input
+            disabled
+            defaultValue={data.custodian}
+            onChange={(e) => handleUpdateChange("model number", e.target.value)}
+          style={{border: "0.5px solid #d3d3d3",
+          width: "180px",
+          boxShadow: "none",
+          textAlign: "left",
+          background: " #f0f0f0",
+          borderRadius: "5px",
+          }}
+          />{" "}
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Owner",
+      name: "owner",
+      value: (
+        <Form.Item name="owner">
+          <b>Owner: </b>
+          <br></br>
+          <br></br>{" "}
+          <Input
+            defaultValue={data.owner}
+            onChange={(e) => handleUpdateChange("owner", e.target.value)}
+            style={inputStyle}
+          />{" "}
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Requester",
+      name: "requester",
+      value: (
+        <Form.Item name="requester">
+          <b>Requester: </b>
+          <br></br>
+          <br></br>{" "}
+          <Input
+            disabled
+            defaultValue={data.requester}
+            onChange={(e) => handleUpdateChange("requester", e.target.value)}
+            style={{border: "0.5px solid #d3d3d3",
+            width: "180px",
+            boxShadow: "none",
+            textAlign: "left",
+            background: " #f0f0f0",
+            borderRadius: "5px",}}
+          />{" "}
+        </Form.Item>
+      ),
+    },
+
+    {
+      label: "Product Name",
+      name: "productName",
+      value: (
+        <Form.Item name="product name">
+          <b>Product Name:</b>
+          <br></br>
+          <br></br>{" "}
+          <Input
+            defaultValue={data.product_name}
+            onChange={(e) => handleUpdateChange("product name", e.target.value)}
+            style={inputStyle}
+          />{" "}
+        </Form.Item>
+      ),
+    },
+
+    {
+      label: "Business Unti",
+      name: "businessUnit",
+      value: (
+        <Form.Item
+          name="business_unit"
+          style={{ boxShadow: "none", border: "none" }}
+        >
+          <b>Business Unit:</b>
+          <br></br>
+          <br></br>
+          <Select
+            variant="filled"
+            defaultValue={uniqueBusinessOptions[0]}
+            style={{
+              boxShadow: "none",
+              border: "0.5px solid #d3d3d3",
+              width: "180px",
+              height: "40px",
+              borderRadius: "5px",
+              background:"#f0f0f0"
+            }}
+            onChange={(value) => handleUpdateChange("business_unit", value)} // Pass only the value
+          >
+            {uniqueBusinessOptions.map((business_unit, index) => (
+              <Select.Option
+                key={index}
+                value={business_unit}
+                style={{ background: "#f0f0f0" }}
+              >
+                {business_unit}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+      ),
+    },
+
+    {
+      label: "Memory",
+      name: "memory",
+      value: (
+        <Form.Item
+          name="business_unit"
+          style={{ boxShadow: "none", border: "none" }}
+        >
+          <b>Memory:</b>
+          <br></br>
+          <br></br>
+          <Select
+            variant="filled"
+            defaultValue={data.memory}
+            style={{
+              boxShadow: "none",
+              border: "0.5px solid #d3d3d3",
+              width: "180px",
+              height: "40px",
+              borderRadius: "5px",
+              background:"#f0f0f0"
+            }}
+            onChange={(value) => handleUpdateChange("memory", value)} // Pass only the value
+          >
+            {uniqueMemoryOptions.map((memory, index) => (
+              <Select.Option key={index} value={memory.id}>
+                {memory.memory_space}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Storage",
+      name: "storage",
+      value: (
+        <Form.Item name="storage">
+          <b>Storage: </b>
+          <br></br>
+          <br></br>{" "}
+          <Input
+            defaultValue={data.storage}
+            onChange={(e) => handleUpdateChange("storage", e.target.value)}
+            style={inputStyle}
+          />{" "}
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Configuration",
+      name: "configuration",
+      value: (
+        <Form.Item name="configuration">
+          <b>Configuration: </b>
+          <br></br>
+          <br></br>{" "}
+          <Input
+            defaultValue={data.configuration}
+            onChange={(e) =>
+              handleUpdateChange("configuration", e.target.value)
+            }
+            style={inputStyle}
+          />{" "}
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Created At",
+      name: "createdAt",
+      value: (
+        <Form.Item name="created_at">
+          <b>Created At: </b>
+          <br></br>
+          <br></br>
+          <Input
+            disabled
+            defaultValue={formatDate(data.created_at)}
+            style={{border: "0.5px solid #d3d3d3",
+            width: "180px",
+            boxShadow: "none",
+            textAlign: "left",
+            background: " #f0f0f0",
+            borderRadius: "5px",}}
+          />
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Updated At",
+      name: "updatedAt",
+      value: (
+        <Form.Item name="updated_at">
+          <b>Updated At: </b>
+          <br></br>
+          <br></br>
+          <Input
+            disabled
+            defaultValue={formatDate(data.updated_at)}
+            style={{border: "0.5px solid #d3d3d3",
+            width: "180px",
+            boxShadow: "none",
+            textAlign: "left",
+            background: " #f0f0f0",
+            borderRadius: "5px",
+            }}
+          />
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Comments",
+      name: "comments",
+      value: (
+        <Form.Item name="comments">
+          <b>Comments: </b>
+          <br></br>
+          <br></br>{" "}
+          <Input
+            defaultValue={data.notes}
+            onChange={(e) => handleUpdateChange("comments", e.target.value)}
+            style={{
+              width: "387px",
+              height: "100px",
+              background: "#f0f0f0",
+              borderRadius: "5px",
+              border: "0.5px solid #d3d3d3",
+            }}
+          />{" "}
+        </Form.Item>
+      ),
+    },
+  ];
+
+  // Filter form items based on search query
+  const filteredFormItems = formItems.filter(
+    (item) =>
+      item.label.toLowerCase().includes(searchQuery) ||
+      (typeof item.value === "string" &&
+        item.value.toLowerCase().includes(searchQuery))
+  );
+
   const mainCardStyle = {
-    marginLeft: "10%",
-    width: "80%",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-    borderRadius: "8px",
+    width: "90%",
+    display: "flex",
+    flexWrap: "wrap",
     background: "white",
+    marginLeft: "6%",
+    alignItems: "flex-start",
+    rowGap: "-10px",
+  };
+  const formItemStyle = {
+    flex: "0 0 calc(16.66% - 20px)", // Six items in one row (adjust margin)
+    margin: "10px", // Adjust margin as needed
+    boxSizing: "border-box",
   };
 
-  const [assetCategory, setvalue] = useState();
-  const [orgiginalValue, setOriginalValue] = useState(data.asset_category);
-
-  const handleInputChange = (e: any) => {
-    setvalue(e.target.value);
-  };
-  const handleFormClose = () => {
-    setOriginalValue(orgiginalValue);
-  };
-  const inputStyle: React.CSSProperties = {
-    border: "none",
-    width: "200px",
-    boxShadow: "none",
-    textAlign: "center",
-  };
   <ConfigProvider
     theme={{
       components: {
@@ -72,431 +771,66 @@ const CardComponent: React.FC<CardType> = ({
     ...
   </ConfigProvider>;
   function formatDate(dateString: string | number | Date) {
-    if (!dateString) return ''; 
+    if (!dateString) return "";
     const date = new Date(dateString);
-      if (isNaN(date.getTime())) {
-      return ''; 
+    if (isNaN(date.getTime())) {
+      return "";
     }
-    return date.toLocaleString();
+    return date.toLocaleDateString();
   }
-  
-  
-  function formatDate(dateString: string | number | Date) {
-    if (!dateString) return ''; 
-    const date = new Date(dateString);
-      if (isNaN(date.getTime())) {
-      return ''; 
-    }
-    return date.toLocaleString();
-  }
-  
-  
+
   return (
-    <Card
-      key={data.asset_id}
-      className="mainCard"
-      title=""
-      style={mainCardStyle}
-    >
-      <Card.Grid style={gridStyle}>
-        <b>Asset Category: </b>
-        <Form.Item name="version">
-          {" "}
-          <Input
-            defaultValue={data.asset_category}
-            onChange={handleInputChange}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
-        <b> Asset Type:</b>
-        <Form.Item
-          name="status"
-          style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
+    <div>
+      <div className="fixed-header">
+        <Input
+          placeholder="Search fields"
+          onChange={handleChange}
+          style={{
+            border: "0.5px solid #d3d3d3",
+            marginTop: "0px",
+            marginBottom: "30px",
+            width: "300px",
+            height: "30px",
+            borderRadius: "5px",
+            background: "#f0f0f0",
+            marginLeft: "64px",
+            padding: "20px",
+          }}
+        />
+        <Button
+          style={{
+            marginBottom: "0px",
+            marginTop:"0px",
+            color: "white",
+            border: "none",
+            background: "blue",
+            marginLeft: "603px",
+           
+          }}
+          onClick={handleUpdate}
         >
-          <Select
-            defaultValue={data.asset_type}
-            style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
-            onChange={(value) => handleChange(value)} // Adjusted to accept only one argument
-          >
-            {uniqueAssetTypeOptions.map((asset_type, index) => (
-              <Select.Option key={index} value={asset_type.id}>
-                {asset_type.asset_type_name}
-              </Select.Option>
-            ))}
-          </Select>
-        </Form.Item>
-      </Card.Grid>
-
-      <Card.Grid style={gridStyle}>
-        <b>Version: </b>
-        <Form.Item name="version">
-          {" "}
-          <Input
-            defaultValue={data.version}
-            onChange={handleInputChange}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
-        <b> Asset Status:</b>
-        <Form.Item
-          name="status"
-          style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
+          Update
+        </Button>
+      </div>
+      <div className="scrollable-content">
+        <Form
+          key={data.asset_id}
+          className="mainCard"
+          title=""
+          style={mainCardStyle}
         >
-          <Select
-            defaultValue={uniqueStatusOptions[0]}
-            style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
-            onChange={(value) => handleChange(value)} // Pass only the value
-          >
-            {uniqueStatusOptions.map((status, index) => (
-              <Select.Option key={index} value={status}>
-                {status}
-              </Select.Option>
-            ))}
-          </Select>
-        </Form.Item>
-      </Card.Grid>
+          {filteredFormItems.map((item, index) => (
+            <Form.Item key={index}>
+              <div key={index} style={formItemStyle}>
+                {item.value}
+              </div>
+            </Form.Item>
+          ))}
 
-      <Card.Grid style={gridStyle}>
-        <b> Asset Location:</b>
-        <Form.Item
-          name="location"
-          style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
-        >
-          <Select
-            defaultValue={data.location}
-            style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
-            onChange={(value) => handleChange(value)} // Pass only the value
-          >
-            {uniqueLocationoptions.map((location, index) => (
-              <Select.Option key={index} value={location.id}>
-                {location.location_name}
-              </Select.Option>
-            ))}
-          </Select>
-        </Form.Item>
-      </Card.Grid>
-
-      <Card.Grid style={gridStyle}>
-        <b>Invoice Location:</b>
-        <Form.Item
-          name="location"
-          style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
-        >
-          <Select
-            defaultValue={data.invoice_location}
-            style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
-            onChange={(value) => handleChange(value)} // Pass only the value
-          >
-            {uniqueLocationoptions.map((location, index) => (
-              <Select.Option key={index} value={location}>
-                {location}
-              </Select.Option>
-            ))}
-          </Select>
-        </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
-        <b>Business Unit:</b>
-        <Form.Item
-          name="business_unit"
-          style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
-        >
-          <Select
-            defaultValue={uniqueBusinessOptions[0]}
-            style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
-            onChange={(value) => handleChange(value)} // Pass only the value
-          >
-            {uniqueBusinessOptions.map((business_unit, index) => (
-              <Select.Option key={index} value={business_unit}>
-                {business_unit}
-              </Select.Option>
-            ))}
-          </Select>
-        </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
-        <b>OS: </b>
-        <Form.Item name="os">
-          {" "}
-          <Input
-            defaultValue={data.os}
-            onChange={handleInputChange}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
-        <b>OS Version:</b>
-        <Form.Item name="os version">
-          {" "}
-          <Input
-            defaultValue={data.os_version}
-            onChange={handleInputChange}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
-        <b>Mobile OS: </b>
-        <Form.Item name="mobile os">
-          {" "}
-          <Input
-            defaultValue={data.mobile_os}
-            onChange={handleInputChange}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
-        <b>Processor: </b>
-        <Form.Item name="processor">
-          {" "}
-          <Input
-            defaultValue={data.processor}
-            onChange={handleInputChange}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
-        <b>Generation:</b>
-        <Form.Item name="generation">
-          {" "}
-          <Input
-            defaultValue={data.Generation}
-            onChange={handleInputChange}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
-        <b>Accessories:</b>{" "}
-        <Form.Item name="accessories">
-          {" "}
-          <Input
-            defaultValue={data.accessories}
-            onChange={handleInputChange}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
-        <b>Date of Purchase:</b>{" "}
-        <Form.Item name="date of purchase">
-          {" "}
-          <Input
-            defaultValue={formatDate(data.date_of_purchase.toString())}
-            onChange={handleInputChange}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
-        <b>Warranty Period:</b>
-        <Form.Item name="warranty period">
-          {" "}
-          <Input
-            defaultValue={data.warranty_period}
-            onChange={handleInputChange}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
-        <b>Approval Status: </b>
-        <Form.Item name="date of purchase" style={inputStyle}>
-          {data.approval_status}{" "}
-        </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
-        <b>Approver:</b>{" "}
-        <Form.Item name="date of purchase">{data.conceder} </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
-        <b>Serial Number:</b>{" "}
-        <Form.Item name="serial number">
-          {" "}
-          <Input
-            defaultValue={data.serial_number}
-            onChange={handleInputChange}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
-        <b>Model Number:</b>{" "}
-        <Form.Item name="serial number">
-          {" "}
-          <Input
-            defaultValue={data.model_number}
-            onChange={handleInputChange}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
-        <b>Custodian:</b>
-        <Form.Item name="date of purchase" style={inputStyle}>
-          {data.custodian}{" "}
-        </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
-        <b>Product Name:</b>
-        <Form.Item name="product name">
-          {" "}
-          <Input
-            defaultValue={data.product_name}
-            onChange={handleInputChange}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
-        <b>Memory:</b>
-        <Form.Item
-          name="business_unit"
-          style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
-        >
-          <Select
-            defaultValue={data.memory}
-            style={{ background: "#FAFAFA", boxShadow: "none", border: "none" }}
-            onChange={(value) => handleChange(value)} // Pass only the value
-          >
-            {uniqueMemoryOptions.map((memory, index) => (
-              <Select.Option key={index} value={memory.id}>
-                {memory.memory_space}
-              </Select.Option>
-            ))}
-          </Select>
-        </Form.Item>
-      </Card.Grid>
-
-      <Card.Grid style={gridStyle}>
-        <b>Storage: </b>
-        <Form.Item name="storage">
-          {" "}
-          <Input
-            defaultValue={data.storage}
-            onChange={handleInputChange}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
-        <b>Configuration: </b>
-        <Form.Item name="configuration">
-          {" "}
-          <Input
-            defaultValue={data.configuration}
-            onChange={handleInputChange}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
-        <b>Owner: </b>
-        <Form.Item name="configuration">
-          {" "}
-          <Input
-            defaultValue={data.owner}
-            onChange={handleInputChange}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
-        <b>Requester: </b>
-        <Form.Item name="configuration">
-          {" "}
-          <Input
-            defaultValue={data.requester}
-            onChange={handleInputChange}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
-        <b>Comments: </b>
-        <Form.Item name="configuration">
-          {" "}
-          <Input
-            defaultValue={data.notes}
-            onChange={handleInputChange}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      </Card.Grid>
-
-      <Card.Grid style={gridStyle}>
-  <b>Created At: </b>
-  <Form.Item name="configuration">
-    {" "}
-    <Input
-      defaultValue={formatDate(data.created_at)}
-      onChange={handleInputChange}
-      style={inputStyle}
-    />{" "}
-  </Form.Item>
-</Card.Grid>
-<Card.Grid style={gridStyle}>
-  <b>Updated At: </b>
-  <Form.Item name="configuration">
-    {" "}
-    <Input
-      defaultValue={formatDate(data.updated_at)}
-      onChange={handleInputChange}
-      style={inputStyle}
-    />{" "}
-  </Form.Item>
-</Card.Grid>
-
-
-      {/* <Card.Grid style={gridStyle}>
-        <b>Created At: </b>
-        <Form.Item name="configuration">
-          {" "}
-          <Input
-            defaultValue={data.created_at.toLocaleString()}
-            onChange={handleInputChange}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      </Card.Grid>
-      <Card.Grid style={gridStyle}>
-        <b>Updated At: </b>
-        <Form.Item name="configuration">
-          {" "}
-          <Input
-            defaultValue={data.updated_at.toLocaleString()}
-            onChange={handleInputChange}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      </Card.Grid> */}
-
-      {/* Add more card details as needed */}
-      <Button
-        style={{
-          marginLeft: "1020px",
-          marginBottom: "40px",
-          color: "black",
-          border: "none",
-          background: "lightblue",
-        }}
-        onClick={handleUpdate}
-      >
-        Update
-      </Button>
-    </Card>
+          <div className="rowone"></div>
+        </Form>
+      </div>
+    </div>
   );
 };
 export default CardComponent;
-
-
-
-
-

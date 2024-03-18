@@ -22,6 +22,9 @@ from rest_framework.documentation import include_docs_urls
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
+from django.conf import settings
+from ms_identity_web.django.msal_views_and_urls import MsalViews
+
 
 router = routers.DefaultRouter()
 # Register your DRF viewsets or views with the router
@@ -29,7 +32,7 @@ router = routers.DefaultRouter()
 schema_view = get_schema_view(
     openapi.Info(
         title="Your API Title",
-        default_version='v1',
+        default_version="v1",
         description="Your API Description",
         terms_of_service="https://www.example.com/terms/",
         contact=openapi.Contact(email="contact@example.com"),
@@ -38,12 +41,19 @@ schema_view = get_schema_view(
     public=True,
 )
 
+msal_urls = MsalViews(settings.MS_IDENTITY_WEB).url_patterns()
+
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/v1/asset/", include("asset.urls")),
     path("api/v1/user/", include("user_auth.urls")),
-
-    path('docs/', include_docs_urls(title='API documentation')),
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path("docs/", include_docs_urls(title="API documentation")),
+    path(
+        "swagger/",
+        schema_view.with_ui("swagger", cache_timeout=0),
+        name="schema-swagger-ui",
+    ),
+    path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
+    path(f"{settings.AAD_CONFIG.django.auth_endpoints.prefix}/", include(msal_urls)),
 ]
