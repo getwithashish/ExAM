@@ -31,15 +31,15 @@ const statusColors: { [key: string]: string } = {
 
 const statusMapping: { [key: string]: string } = {
     UNASSIGNED: 'UNASSIGNED',
-    ASSIGN_PENDING: 'ASSIGNMENT PENDING',
+    ASSIGN_PENDING: 'ASSIGN PENDING',
     ASSIGNED: 'ASSIGNED',
     REJECTED: 'REJECTED',
-    CREATE_PENDING: 'CREATION PENDING',
-    UPDATE_PENDING: 'UPDATE PENDING',
+    CREATE_PENDING: 'PENDING(creation)',
+    UPDATE_PENDING: 'PENDING(updation)',
     CREATED: 'CREATED',
     UPDATED: 'UPDATED',
-    CREATE_REJECTED: 'CREATION REJECTED',
-    UPDATE_REJECTED: 'UPDATION REJECTED',
+    CREATE_REJECTED: 'REJECTED(creation)',
+    UPDATE_REJECTED: 'REJECTED(updation)',
 }
 
 const ChartHandlers: React.FC<PieChartGraphProps> = () => {
@@ -180,19 +180,31 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
     if (assetError) return <div>Error fetching data</div>;
 
     return ( // Render the PieChart components with filtered data
-        <Stack direction="row">
+        <Stack>
+            <div className='flex'>
+                <div className='flex-1'>
+                    <select className="block py-2 px-2 mx-4 font-display text-black-500 border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer" onChange={handleSelectChange}>
+                        <option value="0" className="text-black font-display">All</option>
+                        {assetTypeData.map((assetType) => (
+                            <option key={assetType.id} value={assetType.id} className="text-black font-display">{assetType.asset_type_name}</option>
+                        ))}
+                    </select>
+                </div>
+                <div className='flex-1 mx-6 font-display'>
+                    <h2 className='text-right text-sm font-semibold font-display text-gray-600 dark:text-white-600 rtl:text-right'>
+                        Total Assets : {assetData?.total_assets ?? 0}
+                    </h2>
+                </div>                
+            </div> 
+            <Stack direction="row">
             <div>
-                <select className="block py-3 px-3 mx-4 w-full font-display text-black-500 border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer" onChange={handleSelectChange}>
-                    <option value="0" className="text-black font-display">All</option>
-                    {assetTypeData.map((assetType) => (
-                        <option key={assetType.id} value={assetType.id} className="text-black font-display">{assetType.asset_type_name}</option>
-                    ))}
-                </select>
-            </div>  
-                    
-            <div>   
+                <div className='h-5 my-8 mx-20'>
+                    <span className="font-semibold font-display mx-4 underline leading-none text-gray-900 dark:text-white text-lg">
+                        Status of Assets
+                    </span>
+                </div> 
                 <PieChart
-                    margin={{ top: 0, bottom: 10, left: 0, right:0}}
+                    margin={{ top: -40, bottom: 0, left: 30, right:0}}
                     series={[
                         {
                             data: assetFilteredChartData,
@@ -200,35 +212,40 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                             outerRadius: 120,
                             paddingAngle: 2,
                             cornerRadius: 10,
-                            startAngle: -110,
-                            endAngle: 110,
+                            startAngle: 0,
+                            endAngle: 360,
                             cx:130,
                             cy: 160,
                             highlightScope: { faded: 'global', highlighted: 'item' },
                             faded: { innerRadius: 75, additionalRadius: -40, color: 'grey' },
                         },
                     ]}
-                    width={300}
-                    height={280}
+                    width={340}
+                    height={300}
                     slotProps={{
                         legend: {
                             direction: 'row',
                             position: { vertical: 'bottom', horizontal: 'left' },
                             hidden: false,
                             labelStyle: {
-                                fontSize: 10,
+                                fontSize: 11,
                             },
-                            itemMarkWidth: 5,
-                            itemMarkHeight: 5,
+                            itemMarkWidth: 8,
+                            itemMarkHeight: 10,
                             markGap: 2,
-                            itemGap: 8,
+                            itemGap: 4,
                         }
                     }}
                 />
             </div>
             <div>
-            <PieChart
-                    margin={{ top: 0, bottom: 10, left: 0, right:0}}
+                <div className='h-5 my-8 mx-20'>
+                    <span className="font-semibold font-display mx-4 underline leading-none text-gray-900 dark:text-white text-lg">
+                        Status of Assets
+                    </span>
+                </div> 
+                <PieChart
+                    margin={{ top: -40, bottom: 0, left: 40, right:0}}
                     series={[
                         {
                             data: detailFilteredChartData,
@@ -236,38 +253,40 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                             outerRadius: 120,
                             paddingAngle: 2,
                             cornerRadius: 10,
-                            startAngle: -110,
-                            endAngle: 110,
-                            cx:150,
+                            startAngle: 0,
+                            endAngle: 360,
+                            cx:130,
                             cy: 160,
                             highlightScope: { faded: 'global', highlighted: 'item' },
                             faded: { innerRadius: 75, additionalRadius: -40, color: 'grey' },
                         },
                     ]}
-                    width={312}
-                    height={280}
+                    width={340}
+                    height={300}
                     slotProps={{
                         legend: {
                             direction: 'row',
                             position: { vertical: 'bottom', horizontal: 'middle' },
                             hidden: false,
                             labelStyle: {
-                                fontSize: 10,
+                                fontSize: 11,
                             },
-                            itemMarkWidth: 5,
-                            itemMarkHeight: 5,
+                            itemMarkWidth: 8,
+                            itemMarkHeight: 10,
                             markGap: 2,
-                            itemGap: 8,
+                            itemGap: 4,
                         }
                     }}
                 />
             </div>
             <div>
-            <h2 className='text-right text-xs font-medium font-display text-gray-600 dark:text-white-600 rtl:text-right'>
-                    Total Assets : {assetData?.total_assets ?? 0}
-                </h2>
+                <div className='h-5 my-8 mx-20'>
+                    <span className="font-semibold font-display mx-4 underline leading-none text-gray-900 dark:text-white text-lg">
+                        Assign Status Count
+                    </span>
+                </div> 
                 <PieChart
-                    margin={{ top: 0, bottom: 10, left: 0, right:0}}
+                    margin={{ top: -40, bottom: 0, left: 40, right:0}}
                     series={[
                         {
                             data: assignFilteredChartData,
@@ -275,32 +294,36 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                             outerRadius: 120,
                             paddingAngle: 2,
                             cornerRadius: 10,
-                            startAngle: -110,
-                            endAngle: 110,
-                            cx:155,
-                            cy: 145,
+                            startAngle: 0,
+                            endAngle: 360,
+                            cx:130,
+                            cy: 160,
                             highlightScope: { faded: 'global', highlighted: 'item' },
                             faded: { innerRadius: 75, additionalRadius: -40, color: 'grey' },
                         },
                     ]}
-                    width={300}
-                    height={265}
+                    width={340}
+                    height={300}
                     slotProps={{
                         legend: {
                             direction: 'row',
                             position: { vertical: 'bottom', horizontal: 'middle' },
                             hidden: false,
                             labelStyle: {
-                                fontSize: 10,
+                                fontSize: 11,
                             },
-                            itemMarkWidth: 5,
-                            itemMarkHeight: 5,
+                            itemMarkWidth: 8,
+                            itemMarkHeight: 10,
                             markGap: 2,
-                            itemGap: 8,
+                            itemGap: 4,
                         }
                     }}
                 />
-            </div>            
+            </div>
+            </Stack>
+            <Stack direction="row">
+                
+            </Stack>                      
         </Stack>
     );
 }
