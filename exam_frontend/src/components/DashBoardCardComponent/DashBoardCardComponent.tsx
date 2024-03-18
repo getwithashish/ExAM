@@ -127,6 +127,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>
           <Select
+            font-display
             variant="filled"
             defaultValue={data.asset_type}
             style={{
@@ -163,6 +164,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+            font-display
             defaultValue={data.version}
             onChange={(e) => handleUpdateChange("version", e.target.value)}
             style={inputStyle}
@@ -176,11 +178,12 @@ const DashBoardCardComponent: React.FC<CardType> = ({
       label: "Asset Status",
       name: "assetStatus",
       value: (
-        <Form.Item name="status" style={{ boxShadow: "none", border: "none" }}>
+        <Form.Item font-display name="status" style={{ boxShadow: "none", border: "none" }}>
           <b> Asset Status:</b>
           <br></br>
           <br></br>
           <Select
+          font-display 
             variant="filled"
             defaultValue={uniqueStatusOptions[0]}
             style={{
@@ -210,11 +213,13 @@ const DashBoardCardComponent: React.FC<CardType> = ({
         <Form.Item
           name="location"
           style={{ boxShadow: "none", border: "none" }}
+          font-display 
         >
           <b> Asset Location:</b>
           <br></br>
           <br></br>
           <Select
+          font-display 
             variant="filled"
             defaultValue={data.location}
             style={{
@@ -243,11 +248,13 @@ const DashBoardCardComponent: React.FC<CardType> = ({
         <Form.Item
           name="location"
           style={{ boxShadow: "none", border: "none" }}
+          font-display 
         >
           <b>Invoice Location:</b>
           <br></br>
           <br></br>
           <Select
+          font-display 
             variant="filled"
             defaultValue={data.invoice_location}
             style={{
@@ -747,11 +754,11 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     background: "white",
     marginLeft: "6%",
     alignItems: "flex-start",
-    gap: "-400px", // Use gap instead of rowGap
+    gap: "-400px", 
   };
   const formItemStyle = {
-    flex: "0 0 calc(16.66% - 20px)", // Six items in one row (adjust margin)
-    margin: "10px", // Adjust margin as needed
+    flex: "0 0 calc(16.66% - 20px)", 
+    margin: "10px", 
     boxSizing: "border-box",
   };
 
@@ -797,6 +804,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
       </div>
       <div className="scrollable-content" font-display>
         <Form
+          font-display 
           key={data.asset_id}
           className="mainCard"
           title=""

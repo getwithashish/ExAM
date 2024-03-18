@@ -101,7 +101,7 @@ import DasboardAssetTable from "./DasboardAssetTable";
             key: "model_number",
           },
           { title: "updated_at", dataIndex: "updated_at", key: "updated_at" },
-          { title: "custodian", dataIndex: "custodian", key: "custodian" },
+          // { title: "custodian", dataIndex: "custodian", key: "custodian" },
           { title: "asset_type", dataIndex: "asset_type", key: "asset_type" },
 
           { title: "location", dataIndex: "location", key: "location" },
@@ -142,7 +142,7 @@ import DasboardAssetTable from "./DasboardAssetTable";
                 updated_at: formattedUpdatedAt,
                 date_of_purchase: asset_log.date_of_purchase,
                 date: asset_log.date_of_purchase,
-                custodian:asset_log.custodian.employee_name,
+                // custodian:asset_log.custodian.employee_name,
                 asset_type:asset_log.asset_type.asset_type_name,
                 location:asset_log.location.location_name,
                 invoice_location:asset_log.invoice_location.invoice_location_name,

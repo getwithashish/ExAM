@@ -51,7 +51,7 @@ const DasboardAssetTable = ({
 ) => {
  
  
-const rowRender=(record, expanded)=>{if(isSuccess){ if(expanded && selectedAssetId && expandedRowRender)return expandedRowRender(record.key);else return;} else return <>not loaded</>}  
+const rowRender=(record: { key: string; }, expanded: any)=>{if(isSuccess){ if(expanded && selectedAssetId && expandedRowRender)return expandedRowRender(record.key);else return;} else return <>not loaded</>}  
 const memoizedRowRender=useMemo(()=>rowRender,[isSuccess])
 const [showUpload, setShowUpload] = useState(false);
   const closeImportDrawer = () => {

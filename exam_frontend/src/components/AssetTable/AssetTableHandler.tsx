@@ -46,9 +46,9 @@ interface ExpandedDataType {
   upgradeNum: string;
 }
 interface AssetTableHandlerProps {
-  isRejectedPage: boolean; 
+  isRejectedPage: boolean;
 }
-const AssetTableHandler = ({isRejectedPage}) => {
+const AssetTableHandler = ({ isRejectedPage }) => {
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null); // State to store the selected asset ID
 
   const {
@@ -66,7 +66,7 @@ const AssetTableHandler = ({isRejectedPage}) => {
 
   const expandedRowRender = useCallback(
     (assetId: string) => {
-      let logsDataExpanded = [];
+      let logsDataExpanded: readonly any[] | undefined = [];
       const columnsLog: TableColumnsType<ExpandedDataType> = [
         { title: "timestamp", dataIndex: "timestamp", key: "timestamp" },
         {
@@ -160,20 +160,15 @@ const AssetTableHandler = ({isRejectedPage}) => {
     [selectedAssetId, isSuccess, logsData]
   );
 
-  const nestedcolumns: TableColumnsType<DataType> = [];
+  // const nestedcolumns: TableColumnsType<DataType> = [];
 
-  const nesteddata: DataType[] = [];
-  for (let i = 0; i < 1; ++i) {
-    nesteddata.push({
-      key: i.toString(),
-      name: "Screen",
-      platform: "iOS",
-      version: "10.3.4.5654",
-      upgradeNum: 500,
-      creator: "Jack",
-      createdAt: "2014-12-24 23:12:00",
-    });
-  }
+  // const nesteddata: DataType[] = [];
+  // for (let i = 0; i < 1; ++i) {
+  //   nesteddata.push({
+  //     key: i.toString(),
+
+  //   });
+  // }
 
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -197,7 +192,7 @@ const AssetTableHandler = ({isRejectedPage}) => {
 
   const locations = locationResults ? locationResults : [];
 
-  const locationFilters = locations.map((location) => ({
+  const locationFilters = locations.map((location: { location_name: any }) => ({
     text: location.location_name,
     value: location.location_name,
   }));
@@ -212,7 +207,7 @@ const AssetTableHandler = ({isRejectedPage}) => {
     queryFn: () => getAssetTypeOptions(),
   });
   const assetTypeFilters =
-    assetTypeData?.map((assetType) => ({
+    assetTypeData?.map((assetType: { asset_type_name: any }) => ({
       text: assetType.asset_type_name,
       value: assetType.asset_type_name,
     })) ?? [];
@@ -254,6 +249,11 @@ const AssetTableHandler = ({isRejectedPage}) => {
         selectedKeys,
         confirm,
         clearFilters,
+      }: {
+        setSelectedKeys: (keys: React.ReactText[]) => void;
+        selectedKeys: React.ReactText[];
+        confirm: () => void;
+        clearFilters: () => void;
       }) => (
         <div style={{ padding: 8 }}>
           <Input
@@ -283,15 +283,19 @@ const AssetTableHandler = ({isRejectedPage}) => {
           </Space>
         </div>
       ),
-      onFilter: (value, record) => {
+      onFilter: (
+        value: string | any[],
+        record: { product_name: string | any[] }
+      ) => {
         if (Array.isArray(value)) {
           return value.includes(record.product_name);
         }
         return record.product_name.indexOf(value.toString()) === 0;
       },
-      sorter: (a, b) => a.product_name.localeCompare(b.product_name),
+      sorter: (a: { product_name: string }, b: { product_name: any }) =>
+        a.product_name.localeCompare(b.product_name),
       sortDirections: ["ascend", "descend"],
-      render: (_, record) => (
+      render: (_: any, record: string[]) => (
         <div
           data-column-name="Product Name"
           onClick={() => handleColumnClick(record, "Product Name")}
@@ -312,6 +316,11 @@ const AssetTableHandler = ({isRejectedPage}) => {
         selectedKeys,
         confirm,
         clearFilters,
+      }: {
+        setSelectedKeys: (keys: React.ReactText[]) => void;
+        selectedKeys: React.ReactText[];
+        confirm: () => void;
+        clearFilters: () => void;
       }) => (
         <div style={{ padding: 8 }}>
           <Input
@@ -341,15 +350,19 @@ const AssetTableHandler = ({isRejectedPage}) => {
           </Space>
         </div>
       ),
-      onFilter: (value, record) => {
+      onFilter: (
+        value: string | any[],
+        record: { serial_number: string | any[] }
+      ) => {
         if (Array.isArray(value)) {
           return value.includes(record.serial_number);
         }
         return record.serial_number.indexOf(value.toString()) === 0;
       },
-      sorter: (a, b) => a.serial_number.localeCompare(b.serial_number),
+      sorter: (a: { serial_number: string }, b: { serial_number: any }) =>
+        a.serial_number.localeCompare(b.serial_number),
       sortDirections: ["ascend", "descend"],
-      render: (_, record) => (
+      render: (_: any, record: string[]) => (
         <div
           data-column-name="Serial Number"
           onClick={() => handleColumnClick(record, "Serial Number")}
@@ -359,7 +372,6 @@ const AssetTableHandler = ({isRejectedPage}) => {
         </div>
       ),
     },
-
     {
       title: "Location",
       dataIndex: "location",
@@ -375,7 +387,7 @@ const AssetTableHandler = ({isRejectedPage}) => {
         }
         return record.location.indexOf(value.toString()) === 0;
       },
-      render: (_, record) => (
+      render: (_: any, record: string[]) => (
         <div
           data-column-name="Location"
           onClick={() => handleColumnClick(record, "Location")}
@@ -400,7 +412,7 @@ const AssetTableHandler = ({isRejectedPage}) => {
         }
         return record.location.indexOf(value.toString()) === 0;
       },
-      render: (_, record) => (
+      render: (_: any, record: string[]) => (
         <div
           data-column-name="Invoice Location"
           onClick={() => handleColumnClick(record, "Invoice Location")}
@@ -421,6 +433,11 @@ const AssetTableHandler = ({isRejectedPage}) => {
         selectedKeys,
         confirm,
         clearFilters,
+      }: {
+        setSelectedKeys: (keys: React.ReactText[]) => void;
+        selectedKeys: React.ReactText[];
+        confirm: () => void;
+        clearFilters: () => void;
       }) => (
         <div style={{ padding: 8 }}>
           <Input
@@ -450,7 +467,10 @@ const AssetTableHandler = ({isRejectedPage}) => {
           </Space>
         </div>
       ),
-      onFilter: (value, record) => {
+      onFilter: (
+        value: string | any[],
+        record: { custodian: string | any[] }
+      ) => {
         // Check if record.custodian is defined before accessing it
         if (record.custodian) {
           if (Array.isArray(value)) {
@@ -460,7 +480,7 @@ const AssetTableHandler = ({isRejectedPage}) => {
         }
         return false; // Return false if custodian is undefined
       },
-      render: (_, record) => (
+      render: (_: any, record: string[]) => (
         <div
           data-column-name="Custodian"
           onClick={() => handleColumnClick(record, "Custodian")}
@@ -486,7 +506,7 @@ const AssetTableHandler = ({isRejectedPage}) => {
         }
         return record.asset_type.indexOf(value.toString()) === 0;
       },
-      render: (_, record) => (
+      render: (_: any, record: string[]) => (
         <div
           data-column-name="Asset Type"
           onClick={() => handleColumnClick(record, "Asset Type")}
@@ -514,7 +534,7 @@ const AssetTableHandler = ({isRejectedPage}) => {
               }
               return record.asset_detail_status.indexOf(value.toString()) === 0;
             },
-            render: (_, record) => (
+            render: (_: any, record: string[]) => (
               <div
                 data-column-name="Asset Type"
                 onClick={() => handleColumnClick(record, "Asset Type")}
@@ -526,7 +546,6 @@ const AssetTableHandler = ({isRejectedPage}) => {
           },
         ]
       : []),
-  
   ];
 
   const handleColumnClick = (record: string[], columnName: string) => {
@@ -540,40 +559,74 @@ const AssetTableHandler = ({isRejectedPage}) => {
     setDrawerVisible(true);
   };
 
-  const data = assetData?.map((result) => ({
-    key: result.asset_uuid,
-    asset_id: result.asset_id,
-    asset_category: result.asset_category,
-    asset_type: result.asset_type.asset_type_name,
-    version: result.version,
-    status: result.status,
-    location: result.location.location_name,
-    invoice_location: result.invoice_location.location_name,
-    business_unit: result.business_unit.business_unit_name,
-    os: result.os,
-    os_version: result.os_version,
-    mobile_os: result.mobile_os,
-    processor: result.processor,
-    Generation: result.processor_gen,
-    accessories: result.accessories,
-    date_of_purchase: result.date_of_purchase,
-    warranty_period: result.warranty_period,
-    asset_detail_status:result.asset_detail_status,
-    assign_status:result.assign_status,
-    conceder: result.conceder?.username,
-    model_number: result.model_number,
-    serial_number: result.serial_number,
-    memory: result.memory?.memory_space,
-    storage: result.storage,
-    configuration: result.configuration,
-    custodian: result.custodian?.employee_name,
-    product_name: result.product_name,
-    owner: result.owner,
-    requester: result.requester?.username,
-    AssignAsset: "assign",
-    created_at: result.created_at,
-    updated_at: result.updated_at,
-  }));
+  const data = assetData?.map(
+    (result: {
+      asset_uuid: any;
+      asset_id: any;
+      asset_category: any;
+      asset_type: { asset_type_name: any };
+      version: any;
+      status: any;
+      location: { location_name: any };
+      invoice_location: { location_name: any };
+      business_unit: { business_unit_name: any };
+      os: any;
+      os_version: any;
+      mobile_os: any;
+      processor: any;
+      processor_gen: any;
+      accessories: any;
+      date_of_purchase: any;
+      warranty_period: any;
+      asset_detail_status: any;
+      assign_status: any;
+      conceder: { username: any };
+      model_number: any;
+      serial_number: any;
+      memory: { memory_space: any };
+      storage: any;
+      configuration: any;
+      custodian: { employee_name: any };
+      product_name: any;
+      owner: any;
+      requester: { username: any };
+      created_at: any;
+      updated_at: any;
+    }) => ({
+      key: result.asset_uuid,
+      asset_id: result.asset_id,
+      asset_category: result.asset_category,
+      asset_type: result.asset_type.asset_type_name,
+      version: result.version,
+      status: result.status,
+      location: result.location.location_name,
+      invoice_location: result.invoice_location.location_name,
+      business_unit: result.business_unit.business_unit_name,
+      os: result.os,
+      os_version: result.os_version,
+      mobile_os: result.mobile_os,
+      processor: result.processor,
+      Generation: result.processor_gen,
+      accessories: result.accessories,
+      date_of_purchase: result.date_of_purchase,
+      warranty_period: result.warranty_period,
+      asset_detail_status: result.asset_detail_status,
+      assign_status: result.assign_status,
+      conceder: result.conceder?.username,
+      model_number: result.model_number,
+      serial_number: result.serial_number,
+      memory: result.memory?.memory_space,
+      storage: result.storage,
+      configuration: result.configuration,
+      custodian: result.custodian?.employee_name,
+      product_name: result.product_name,
+      owner: result.owner,
+      requester: result.requester?.username,
+      AssignAsset: "assign",
+      created_at: result.created_at,
+      updated_at: result.updated_at,
+    })
+  );
 
   const drawerTitle = "Asset Details";
 
