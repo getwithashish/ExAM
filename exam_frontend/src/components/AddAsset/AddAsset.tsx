@@ -117,7 +117,7 @@ const AddAsset: React.FC = () => {
  
   return (
     <div className={styles['container']}>
-      <h1 className={styles['heading']}>Add an asset</h1>
+      <h1 className={styles['heading']}>Add a new asset</h1>
       <Form
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 14 }}
@@ -197,11 +197,14 @@ const AddAsset: React.FC = () => {
            </Select>
         </Form.Item>
  
-     <Form.Item label="Enter purchase Date:" className={styles['formItem']}
-    >
-           <DatePicker className={styles['input']}  placeholder="Enter purchase date"
-            onChange={(date) => handleInputChange('date_of_purchase', "2000-06-09")}/>
-       </Form.Item>
+        <Form.Item label="Enter purchase Date:" className={styles['formItem']}>
+    <DatePicker 
+        className={styles['input']}  
+        placeholder="Enter purchase date"
+        format="YYYY-MM-DD"  // Set the format to YYYY-MM-DD
+        onChange={(_date, dateString) => handleInputChange('date_of_purchase', dateString)}  // Use dateString to get the formatted date
+    />
+</Form.Item>
  
  
         <Form.Item label="Enter warranty Period:" className={styles['formItem']}>
@@ -282,8 +285,8 @@ const AddAsset: React.FC = () => {
         </Form.Item>
  
  
-        <Form.Item label="Processor Generartion" className={styles['formItem']}>
-         <Input placeholder="Enter processor"className={styles['input']}
+        <Form.Item label="Processor Gen:" className={styles['formItem']}>
+         <Input placeholder="Enter processor generation"className={styles['input']}
  onChange={(e) => handleInputChange('processor_gen', e.target.value)}/>
         </Form.Item>
  
@@ -294,7 +297,7 @@ const AddAsset: React.FC = () => {
  
  
  
-        <Form.Item label="Memory" className={styles['formItem']}>
+        <Form.Item label="Memory:" className={styles['formItem']}>
           <Select className={styles['input']} placeholder="Select memory space">
            {memory_space.map((item: any) => (
               <Option key={item.id}>{item.memory_space}</Option>
@@ -306,7 +309,7 @@ const AddAsset: React.FC = () => {
        
        
  
-         <Form.Item label="Storage" className={styles['formItem']}>
+         <Form.Item label="Storage:" className={styles['formItem']}>
          <Input placeholder="Enter Storage"className={styles['input']}
  onChange={(e) => handleInputChange('storage', e.target.value)}/>
         </Form.Item>
@@ -314,7 +317,7 @@ const AddAsset: React.FC = () => {
  
        
        
-         <Form.Item label="Configuration" className={styles['formItem']}>
+         <Form.Item label="Configuration:" className={styles['formItem']}>
          <Input placeholder="Enter configuration"className={styles['input']}
              onChange={(e) => handleInputChange('configuration', e.target.value)}/>
         </Form.Item>
@@ -323,7 +326,7 @@ const AddAsset: React.FC = () => {
  
  
          
-         <Form.Item label="Accessory/s" className={styles['formItem']}>
+         <Form.Item label="Accessory/s:" className={styles['formItem']}>
          <Input placeholder="Enter Accessory"className={styles['input']}
              onChange={(e) => handleInputChange('accessories', e.target.value)}/>
          </Form.Item>
@@ -341,7 +344,7 @@ const AddAsset: React.FC = () => {
    
  
  
-        <Form.Item label="Remark/s" className={styles['formItem']}>
+        <Form.Item label="Asset Remark/s:" className={styles['formItem']}>
            <TextArea rows={4}  className={styles['input']}  placeholder="Enter any remarks/s"
                   onChange={(e) => handleInputChange('remark', e.target.value)}/>
          </Form.Item>
@@ -349,7 +352,7 @@ const AddAsset: React.FC = () => {
        
  
  
-        <Form.Item label="Message" className={styles['formItem']}>
+        <Form.Item label="Reason of creation:" className={styles['formItem']}>
         <Input placeholder="Enter message"className={styles['input']}
           onChange={(e) => handleInputChange('message', e.target.value)}/>
         </Form.Item>
@@ -357,7 +360,7 @@ const AddAsset: React.FC = () => {
           <Button
             className={styles['button']}
             ghost
-            style={{ background: 'blue', marginLeft: '300px', marginTop: '30px', width: '120px', height: '40px' }}
+            style={{ background: 'rgb(22, 119, 255)', fontFamily: "Poppins", marginLeft: '300px', marginTop: '30px', width: '120px', height: '40px' }}
             onClick={() =>  handleSubmit()} // Example: Log form data on submit
           >
             Submit

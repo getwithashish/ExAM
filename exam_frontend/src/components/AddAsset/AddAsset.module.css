@@ -15,17 +15,15 @@
 .heading {
   font-size: 24px;
   margin-bottom: 20px;
-  color: #0b4a85; 
+  color: black; 
 }
 
 .formContainer {
-  /* background-color: #f6f7f9;  */
   padding: 5px;
   border-radius: 8px;
   align-items: center;
-  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  */
-  
   font-family: 'Poppins';
+  
 
   
 }
@@ -45,15 +43,15 @@
   border-radius: 8px; 
   font-size: small;
   font-family: 'Poppins' !important;
+
 }
 label{
   font-family: 'Poppins';
-  text-align: right;
-
- 
+  text-align: center;
 }
 button{
-  background-color: rgb(3, 3, 255);
+  background-color: rgb(22, 119, 255);
+  font-family: "Poppins";
 }
 
 
@@ -72,3 +70,6 @@ button{
   }
 }
  
+.ant-input-number-input::placeholder {
+  font-family: 'Poppins';
+}

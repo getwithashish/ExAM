@@ -1,66 +1,81 @@
-import React, { useState } from "react";
-import AssignmentDrawer from "../Assign/AssignmentDrawer";
-
-import UploadComponent from "../Upload/UploadComponent";
-import styles from "./TableNavbar.module.css"; // Import CSS module for styling
-import axiosInstance from "../../config/AxiosConfig";
-import {
-  DownloadOutlined,
-  SearchOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
+import React from 'react';
+import { DownloadOutlined, UploadOutlined, CloudDownloadOutlined} from '@ant-design/icons';
+import axiosInstance from '../../config/AxiosConfig';
+import GlobalSearch from '../GlobalSearch/GlobalSearch';
+import styles from './TableNavbar.module.css';
+import DropDown from '../DropDown/DropDown';
 
 const TableNavbar = ({ showUpload, setShowUpload }) => {
-  // const [showUpload, setShowUpload] = useState(false); // State to control rendering of C1 component
-
   // Function to handle import button click
   const handleImportClick = () => {
-    console.log("Hello");
     setShowUpload(true);
-    // <AssignmentDrawer buttonTextDefault="Import" displayDrawer={setShowUpload} >
-    //        <UploadComponent/>
-    //     </AssignmentDrawer>
   };
 
+  // Function to handle export button click
   const handleExport = () => {
     axiosInstance
-      .get("http://localhost:8000/api/v1/asset/export")
+      .get('http://localhost:8000/api/v1/asset/export')
       .then((response) => {
-        // Create a Blob object from the CSV data
-        const blob = new Blob([response.data], { type: "text/csv" });
-
-        // Create a temporary URL to the Blob
+        const blob = new Blob([response.data], { type: 'text/csv' });
         const url = window.URL.createObjectURL(blob);
-
-        // Create a link element to trigger the download
-        const link = document.createElement("a");
+        const link = document.createElement('a');
         link.href = url;
-        link.setAttribute("download", "assets.csv");
+        link.setAttribute('download', 'assets.csv');
         document.body.appendChild(link);
-
-        // Trigger the download
         link.click();
-
-        // Cleanup
         window.URL.revokeObjectURL(url);
         document.body.removeChild(link);
       })
       .catch((error) => {
-        console.error("Error exporting assets:", error);
+        console.error('Error exporting assets:', error);
       });
   };
 
-  return (
-    <nav className={styles["navbar"]}>
-      {/* Import button */}
-      <button onClick={handleImportClick} className={styles["button"]}>
-        <UploadOutlined /> Import
-      </button>
-      <button onClick={handleExport} className={styles["button"]}>
-        <DownloadOutlined /> Export
-      </button>
+  // Function to handle template download button click
+  const handleTemplateDownload = () => {
+    // Use the direct URL of the static file
+    const filePath = '/static/sample_asset_download_template.csv';
+   
+    // Create a new link element to trigger the download
+    const link = document.createElement('a');
+    link.href = filePath;
+    link.setAttribute('download', 'sample_asset_download_template.csv');
+    document.body.appendChild(link);
+   
+    // Trigger the download
+    link.click();
+   
+    // Cleanup
+    document.body.removeChild(link);
+  };
 
-      {/* {showUpload && < UploadComponent/>} */}
+  // Function to handle dropdown item selection
+  const handleDropDownSelect = (key: string) => {
+    if (key === 'import') {
+      handleImportClick();
+    } else if (key === 'downloadTemplate') {
+      handleTemplateDownload();
+    }
+  };
+
+  // Define the items for the dropdown with icons
+  const items = [
+    { label: 'Import Files', key: 'import', icon: <DownloadOutlined /> },
+    { label: 'Download Template', key: 'downloadTemplate', icon:<CloudDownloadOutlined /> },
+  ];
+
+  function handleSearch(_searchTerm: string): void {
+    throw new Error('Function not implemented.');
+  }
+
+  return (
+    <nav className={styles['navbar']}>
+     
+      <DropDown onSelect={handleDropDownSelect} items={items} buttonLabel="Import" />
+      <GlobalSearch onSearch={handleSearch} />
+      <button onClick={handleExport} className={styles['button']}>
+        <UploadOutlined /> Export
+      </button>
     </nav>
   );
 };
