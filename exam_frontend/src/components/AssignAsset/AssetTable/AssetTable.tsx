@@ -71,7 +71,7 @@ const [showUpload, setShowUpload] = useState(false);
   return (
     <>
       <div className="mainHeading" style={{ background:"white"}}>
-        <div className="mt-[-70px] font-display">Assign an Asset</div>
+        <div className=" font-display">Assign an Asset</div>
       </div>
      
       <div style={{ background:"white"}}>
