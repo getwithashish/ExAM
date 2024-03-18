@@ -8,8 +8,7 @@ import SidebarComponentNew from "../../components/sidebar/SidebarComponentNew";
 import { useAuth } from "./AuthContext";
 
 export default function Login() {
-
-  const {setAuthenticated, setUserRole} = useAuth();
+  const { setAuthenticated, setUserRole } = useAuth();
 
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
@@ -70,12 +69,16 @@ export default function Login() {
       // ] = `Bearer ${response.data.access}`;
 
       setAuthenticated(true);
-      setUserRole(payload.user_scope)
+      setUserRole(payload.user_scope);
 
       // Redirect to dashboard after successful login
       navigate("/exam/dashboard");
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response && error.response.status === 401) {
+      if (
+        axios.isAxiosError(error) &&
+        error.response &&
+        error.response.status === 401
+      ) {
         setUsernameError("Invalid username or password");
       } else {
         console.log("Error:", error);
@@ -85,80 +88,81 @@ export default function Login() {
 
   return (
     <Fragment>
-        <div className="flex flex-col lg:flex-row items-center justify-center lg:h-screen lg:gap-y-12">
-  <div className="lg:w-full h-full relative">
-    <div
-      className="absolute inset-2 bg-cover bg-bottom rounded-lg"
-      style={{
-        backgroundImage: `url('../../../public/images/Experion.jfif')`,
-      }}
-    ></div>
-  </div>
+      <div className="flex flex-col lg:flex-row items-center justify-center lg:h-screen lg:gap-y-12">
+        <div className="lg:w-full h-full relative">
+          <div
+            className="absolute inset-2 bg-cover bg-bottom rounded-lg"
+            style={{
+              backgroundImage: `url('../../../public/images/Experion.jfif')`,
+            }}
+          ></div>
+        </div>
 
-  <Card
-    horizontal
-    className="w-full lg:w-full md:max-w-screen-sm md:[&>*]:w-full md:[&>*]:p-16"
-  >
-    <div className="flex lg:my-0 text-sm">
-      <span className="font-light item-center dark:text-white md:text-3xl text-center">
-        Experion Asset Management
-      </span>
-    </div>
-    <h1 className="font-display font-semi-bold dark:text-white md:text-3xl my-6 text-center">
-      Login
-    </h1>
-    <form onSubmit={handleSubmit}>
-      <div className="mb-8 font-display">
-        <Label htmlFor="username">Username:</Label>
-        <TextInput
-          id="username"
-          name="username"
-          placeholder="username"
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        {usernameError && <p className="text-red-500">{usernameError}</p>}
-      </div>
-      <div className="mb-8">
-        <Label htmlFor="password">Password:</Label>
-        <TextInput
-          id="password"
-          name="password"
-          placeholder="password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        {passwordError && <p className="text-red-500">{passwordError}</p>}
-      </div>
-      <div className="mb-6">
-        <Button
-          type="submit"
-          className="w-full bg-blue-500 text-white hover:bg-blue-700 font-display"
+        <Card
+          horizontal
+          className="w-full lg:w-full md:max-w-screen-sm md:[&>*]:w-full md:[&>*]:p-16"
         >
-          Login
-        </Button>
-        <div className="my-5 text-center">
-          <hr></hr>
-        </div>
-        <div className="flex items-center justify-center">
-          <Button
-            type="submit"
-            className="w-full bg-blue-500 text-white hover:bg-blue-700 font-display"
-          >
-            <img
-              src="../../../public/images/Microsoft logo.png"
-              alt="Microsoft logo"
-              className="w-30 h-6 ml-2 mx-3" // Adjust width and height as needed
-            />
-            Sign in with Microsoft
-          </Button>
-        </div>
+          <div className="flex lg:my-0 text-sm">
+            <span className="font-light item-center dark:text-white md:text-3xl text-center">
+              Experion Asset Management
+            </span>
+          </div>
+          <h1 className="font-display font-semi-bold dark:text-white md:text-3xl my-6 text-center">
+            Login
+          </h1>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-8 font-display">
+              <Label htmlFor="username">Username:</Label>
+              <TextInput
+                id="username"
+                name="username"
+                placeholder="username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+              {usernameError && <p className="text-red-500">{usernameError}</p>}
+            </div>
+            <div className="mb-8">
+              <Label htmlFor="password">Password:</Label>
+              <TextInput
+                id="password"
+                name="password"
+                placeholder="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              {passwordError && <p className="text-red-500">{passwordError}</p>}
+            </div>
+            <div className="mb-6">
+              <Button
+                type="submit"
+                className="w-full bg-blue-500 text-white hover:bg-blue-700 font-display"
+              >
+                Login
+              </Button>
+              <div className="my-5 text-center">
+                <hr></hr>
+              </div>
+              <div className="flex items-center justify-center">
+                <Button
+                  type="submit"
+                  className="w-full bg-blue-500 text-white hover:bg-blue-700 font-display"
+                  onClick={() => window.location.href = "http://localhost:8000/auth/sign_in"}
+                >
+                  <img
+                    src="../../../public/images/Microsoft logo.png"
+                    alt="Microsoft logo"
+                    className="w-30 h-6 ml-2 mx-3" // Adjust width and height as needed
+                  />
+                  Sign in with Microsoft
+                </Button>
+              </div>
+            </div>
+          </form>
+        </Card>
       </div>
-    </form>
-  </Card>
-</div>
     </Fragment>
   );
 }
