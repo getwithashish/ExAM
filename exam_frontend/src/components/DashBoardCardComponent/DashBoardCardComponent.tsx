@@ -139,6 +139,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
               fontWeight: "bold",
               opacity: "2",
               pointerEvents: "none",
+              background:"#f0f0f0"
             }}
             onChange={(value) => handleUpdateChange("asset_type", value)}
           >
@@ -189,11 +190,12 @@ const DashBoardCardComponent: React.FC<CardType> = ({
             style={{
               boxShadow: "none",
               border: "0.5px solid #d3d3d3",
-              width: "177px",
+              width: "170px",
               height: "40px",
               color: "black",
               opacity: "2",
               pointerEvents: "none",
+              background:"#f0f0f0"
             }}
             onChange={(value) => handleUpdateChange("status", value)} // Pass only the value
           >
@@ -225,10 +227,11 @@ const DashBoardCardComponent: React.FC<CardType> = ({
             style={{
               boxShadow: "none",
               border: "0.5px solid #d3d3d3",
-              width: "180px",
+              width: "170px",
               height: "40px",
               opacity: "2",
               pointerEvents: "none",
+              background:"#f0f0f0"
             }}
             onChange={(value) => handleUpdateChange("location", value)}
           >
@@ -264,6 +267,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
               height: "40px",
               opacity: "2",
               pointerEvents: "none",
+              background:"#f0f0f0"
             }}
             onChange={(value) => handleUpdateChange("invoice_location", value)} // Pass only the value
           >
@@ -424,6 +428,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+          disabled
             defaultValue={data.asset_detail_status}
             onChange={(e) =>
               handleUpdateChange("serail number", e.target.value)
@@ -442,6 +447,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+          disabled
             defaultValue={data.assign_status}
             onChange={(e) =>
               handleUpdateChange("serail number", e.target.value)
@@ -596,6 +602,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
               height: "40px",
               opacity: "2",
               pointerEvents: "none",
+              background:"#f0f0f0"
             }}
             onChange={(value) => handleUpdateChange("business_unit", value)} // Pass only the value
           >
@@ -634,6 +641,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
               height: "40px",
               opacity: "2",
               pointerEvents: "none",
+              background:"#f0f0f0"
             }}
             onChange={(value) => handleUpdateChange("memory", value)} // Pass only the value
           >

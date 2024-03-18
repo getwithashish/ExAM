@@ -14,11 +14,11 @@
 }
 .fixed-header {
     position: sticky;
-    top: 0;
+    top: -25px;
     background-color: white;
     z-index: 1;
     padding: 20px;
-
+    padding-bottom: 10px;
   }
 
   

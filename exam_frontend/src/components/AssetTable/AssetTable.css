@@ -1,8 +1,9 @@
 .mainHeading {
-  margin-top: 60px;
+  margin-top: 0px;
   margin-left: 40px;
   margin-bottom: 1rem;
   font-size: xx-large;
+  height: max-content;
 }
 /* element {
   padding: 0px;
@@ -29,6 +30,7 @@
   /* border-top: 0ch; */
   border-color: black;
   border-radius: 0px;
+  margin-bottom: 20%;
 }
 .mainTable td {
   color: black;

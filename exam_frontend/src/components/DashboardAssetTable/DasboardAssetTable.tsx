@@ -63,7 +63,7 @@ const [showUpload, setShowUpload] = useState(false);
  
   return (
     <>
-      <div className="mainHeading" font-medium font-display>
+      <div className="mainHeading font-medium font-display">
         <h6>Asset Details</h6>
       </div>
      
@@ -83,7 +83,7 @@ const [showUpload, setShowUpload] = useState(false);
   <Table
     columns={columns}
     dataSource={assetData}
-    className="mainTable" font-display
+    className="mainTable"
     pagination={false}
     bordered={false}
     handleRowClick={handleRowClick}

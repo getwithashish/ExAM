@@ -149,5 +149,6 @@ export interface AssetTableProps {
 }) => void,
   drawerTitle:string
   asset_uuid: string;
+  heading:string
 }
 

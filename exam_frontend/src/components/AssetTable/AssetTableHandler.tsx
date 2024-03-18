@@ -48,7 +48,7 @@ interface ExpandedDataType {
 interface AssetTableHandlerProps {
   isRejectedPage: boolean;
 }
-const AssetTableHandler = ({ isRejectedPage }) => {
+const AssetTableHandler = ({ isRejectedPage, queryParamProp,heading }) => {
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null); // State to store the selected asset ID
 
   const {
@@ -175,7 +175,7 @@ const AssetTableHandler = ({ isRejectedPage }) => {
 
   const { data: assetData } = useQuery({
     queryKey: ["assetList"],
-    queryFn: () => getAssetDetails(),
+    queryFn: () => getAssetDetails(queryParamProp),
   });
 
   const statusOptions =
@@ -242,7 +242,8 @@ const AssetTableHandler = ({ isRejectedPage }) => {
       title: "Product Name",
       dataIndex: "product_name",
       fixed: "left",
-      width: 190,
+      // width: 160,
+      responsive: ['md'],
       filterIcon: <SearchOutlined />,
       filterDropdown: ({
         setSelectedKeys,
@@ -309,7 +310,7 @@ const AssetTableHandler = ({ isRejectedPage }) => {
       title: "Serial Number",
       dataIndex: "serial_number",
       responsive: ["md"],
-      width: 190,
+      // width: 160,
       filterIcon: <SearchOutlined />,
       filterDropdown: ({
         setSelectedKeys,
@@ -376,7 +377,7 @@ const AssetTableHandler = ({ isRejectedPage }) => {
       title: "Location",
       dataIndex: "location",
       responsive: ["md"],
-      width: 190,
+      // width: 160,
       filters: locationFilters,
       onFilter: (
         value: string | number | boolean | React.ReactText[] | Key,
@@ -401,7 +402,7 @@ const AssetTableHandler = ({ isRejectedPage }) => {
       title: "Invoice Location",
       dataIndex: "invoice_location",
       responsive: ["md"],
-      width: 190,
+      // width: 160,
       filters: locationFilters,
       onFilter: (
         value: string | number | boolean | React.ReactText[] | Key,
@@ -426,7 +427,7 @@ const AssetTableHandler = ({ isRejectedPage }) => {
       title: "Custodian",
       dataIndex: "custodian",
       responsive: ["md"],
-      width: 190,
+      // width: 160,
       filterIcon: <SearchOutlined />,
       filterDropdown: ({
         setSelectedKeys,
@@ -494,8 +495,7 @@ const AssetTableHandler = ({ isRejectedPage }) => {
       title: "Asset Type",
       dataIndex: "asset_type",
       responsive: ["md"],
-      fixed: "right",
-      width: 190,
+      // width: 160,
       filters: assetTypeFilters,
       onFilter: (
         value: string | number | boolean | React.ReactText[] | Key,
@@ -523,7 +523,7 @@ const AssetTableHandler = ({ isRejectedPage }) => {
             dataIndex: "asset_type",
             responsive: ["md"],
             fixed: "right",
-            width: 190,
+            width: 160,
             filters: assetTypeFilters,
             onFilter: (
               value: string | number | boolean | React.ReactText[] | Key,
@@ -640,7 +640,8 @@ const AssetTableHandler = ({ isRejectedPage }) => {
 
   return (
     <AssetTable
-      drawerTitle={drawerTitle}
+     heading={heading}
+      // drawerTitle={drawerTitle}
       logsData={logsData}
       isLoading={isLoading}
       isSuccess={isSuccess}

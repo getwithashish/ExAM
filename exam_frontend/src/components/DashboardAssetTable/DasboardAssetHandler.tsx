@@ -259,6 +259,7 @@ import DasboardAssetTable from "./DasboardAssetTable";
         dataIndex: "product_name",
         fixed: "left",
         width: 160,
+        responsive: ['md'],
         filterIcon: <SearchOutlined />,
         filterDropdown: ({
           setSelectedKeys,
@@ -425,7 +426,7 @@ import DasboardAssetTable from "./DasboardAssetTable";
         title: "Custodian",
         dataIndex: "custodian",
         responsive: ["md"],
-        width: 190,
+        width: 160,
         filterIcon: <SearchOutlined />,
         filterDropdown: ({
           setSelectedKeys,

@@ -51,7 +51,8 @@ const AssetTable = ({
   locations,
   memoryData,
   assetTypeData,
-  expandedRowRender
+  expandedRowRender,
+  heading
 }:AssetTableProps
 ) => {
  
@@ -66,10 +67,9 @@ const [showUpload, setShowUpload] = useState(false);
  
   return (
     <>
-      <div className="mainHeading">
-        <h1 >Asset Details</h1>
+     <div className="mainHeading" font-display>
+        <h1>{heading}</h1> {/* Render the heading dynamically */}
       </div>
-     
       
 
       <div style={{ position: "relative", display: "inline-block" }}>

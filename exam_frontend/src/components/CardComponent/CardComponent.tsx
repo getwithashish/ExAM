@@ -129,9 +129,10 @@ const CardComponent: React.FC<CardType> = ({
             style={{
               boxShadow: "none",
               border: "0.5px solid #d3d3d3",
-              width: "180px",
+              width: "170px",
               height: "40px",
               borderRadius: "5px",
+              background:"#f0f0f0"
             }}
             onChange={(value) => handleUpdateChange("asset_type", value)}
           >
@@ -184,6 +185,7 @@ const CardComponent: React.FC<CardType> = ({
               width: "180px",
               height: "40px",
               borderRadius: "5px",
+              background:"#f0f0f0"
             }}
             onChange={(value) => handleUpdateChange("status", value)} // Pass only the value
           >
@@ -213,9 +215,10 @@ const CardComponent: React.FC<CardType> = ({
             style={{
               boxShadow: "none",
               border: "0.5px solid #d3d3d3",
-              width: "180px",
+              width: "170px",
               height: "40px",
               borderRadius: "5px",
+              background:"#f0f0f0"
             }}
             onChange={(value) => handleUpdateChange("location", value)}
           >
@@ -245,9 +248,10 @@ const CardComponent: React.FC<CardType> = ({
             style={{
               boxShadow: "none",
               border: "0.5px solid #d3d3d3",
-              width: "160px",
+              width: "180px",
               height: "40px",
               borderRadius: "5px",
+              background:"#f0f0f0"
             }}
             onChange={(value) => handleUpdateChange("invoice_location", value)} // Pass only the value
           >
@@ -492,7 +496,13 @@ const CardComponent: React.FC<CardType> = ({
             disabled
             defaultValue={data.custodian}
             onChange={(e) => handleUpdateChange("model number", e.target.value)}
-            style={inputStyle}
+          style={{border: "0.5px solid #d3d3d3",
+          width: "180px",
+          boxShadow: "none",
+          textAlign: "left",
+          background: " #f0f0f0",
+          borderRadius: "5px",
+          }}
           />{" "}
         </Form.Item>
       ),
@@ -525,7 +535,12 @@ const CardComponent: React.FC<CardType> = ({
             disabled
             defaultValue={data.requester}
             onChange={(e) => handleUpdateChange("requester", e.target.value)}
-            style={inputStyle}
+            style={{border: "0.5px solid #d3d3d3",
+            width: "180px",
+            boxShadow: "none",
+            textAlign: "left",
+            background: " #f0f0f0",
+            borderRadius: "5px",}}
           />{" "}
         </Form.Item>
       ),
@@ -568,6 +583,7 @@ const CardComponent: React.FC<CardType> = ({
               width: "180px",
               height: "40px",
               borderRadius: "5px",
+              background:"#f0f0f0"
             }}
             onChange={(value) => handleUpdateChange("business_unit", value)} // Pass only the value
           >
@@ -605,6 +621,7 @@ const CardComponent: React.FC<CardType> = ({
               width: "180px",
               height: "40px",
               borderRadius: "5px",
+              background:"#f0f0f0"
             }}
             onChange={(value) => handleUpdateChange("memory", value)} // Pass only the value
           >
@@ -662,7 +679,12 @@ const CardComponent: React.FC<CardType> = ({
           <Input
             disabled
             defaultValue={formatDate(data.created_at)}
-            style={inputStyle}
+            style={{border: "0.5px solid #d3d3d3",
+            width: "180px",
+            boxShadow: "none",
+            textAlign: "left",
+            background: " #f0f0f0",
+            borderRadius: "5px",}}
           />
         </Form.Item>
       ),
@@ -678,7 +700,13 @@ const CardComponent: React.FC<CardType> = ({
           <Input
             disabled
             defaultValue={formatDate(data.updated_at)}
-            style={inputStyle}
+            style={{border: "0.5px solid #d3d3d3",
+            width: "180px",
+            boxShadow: "none",
+            textAlign: "left",
+            background: " #f0f0f0",
+            borderRadius: "5px",
+            }}
           />
         </Form.Item>
       ),
@@ -765,18 +793,19 @@ const CardComponent: React.FC<CardType> = ({
             height: "30px",
             borderRadius: "5px",
             background: "#f0f0f0",
-            marginLeft: "75px",
+            marginLeft: "64px",
             padding: "20px",
           }}
         />
-
         <Button
           style={{
-            marginBottom: "40px",
+            marginBottom: "0px",
+            marginTop:"0px",
             color: "white",
             border: "none",
             background: "blue",
-            marginLeft: "800px",
+            marginLeft: "603px",
+           
           }}
           onClick={handleUpdate}
         >
