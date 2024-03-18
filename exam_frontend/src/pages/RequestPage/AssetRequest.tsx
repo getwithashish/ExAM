@@ -91,8 +91,8 @@ const RequestPage: FC = function () {
 );
   return (
     <React.Fragment>
-      <div className="bg-white">
-        <nav className="flex mb-4" aria-label="Breadcrumb">
+      <div className="bg-white py-2">
+        <nav className="flex mb-4 mx-4 py-4" aria-label="Breadcrumb">
           <ol className="inline-flex items-center space-x-1 md:space-x-3 rtl:space-x-reverse">
             <li className="inline-flex items-center font-display">
               <a href="#" className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
@@ -112,10 +112,10 @@ const RequestPage: FC = function () {
             </li>
           </ol>
         </nav>
-        <div className="block items-center justify-between border-b border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 sm:flex mx-2 my-2">
+        <div className="block items-center justify-between border-b border-gray-200 bg-white px-2 dark:border-gray-700 dark:bg-gray-800 sm:flex mx-2 my-2">
           <div className="mb-1 w-full">
             <div className="mb-4">              
-              <h1 className="text-xl font-display font-semibold text-gray-900 dark:text-white sm:text-2xl">
+              <h1 className="font-medium font-display mx-3 leading-none text-gray-900 dark:text-white text-3xl">
                 Pending Asset Requests
               </h1>
             </div>

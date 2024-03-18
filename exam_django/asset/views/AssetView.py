@@ -105,7 +105,6 @@ class AssetView(ListCreateAPIView):
             filter_kwargs = {}
             for field, value in required_query_params.items():
                 filter_kwargs[f"{field}__icontains"] = value
-
             queryset = queryset.filter(**filter_kwargs)
 
             # Apply pagination

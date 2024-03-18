@@ -260,9 +260,9 @@ const SidebarComponentNew = ({ children }) => {
                 <Link to="/exam/rejected_assets">My Rejected Requests</Link>
               </Menu.Item>
 
-            <Menu.Item onClick={() => handleLogout()} icon={<LogoutOutlined />}>
-              Logout
-            </Menu.Item>
+            {/* <Menu.Item onClick={() => handleLogout()} icon={<LogoutOutlined />}>
+              Logoutf
+            </Menu.Item> */}
           </Menu>
         </Sider>
         <Content>
