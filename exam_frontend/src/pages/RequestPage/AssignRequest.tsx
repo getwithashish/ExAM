@@ -16,6 +16,7 @@ const AssignPage: FC = function () {
   const [assignRequests, setAssignRequests] = useState<any[]>([]);
   const [selectedAssignRequest, setSelectedAssignRequest] = useState<any | null >(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
     fetchAssignRequests();
@@ -78,6 +79,10 @@ const AssignPage: FC = function () {
     }
   }
 
+  const filteredAssigns = assignRequests.filter((assignRequest) => 
+  assignRequest.product_name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <React.Fragment>
        <div className="bg-white">
@@ -105,11 +110,11 @@ const AssignPage: FC = function () {
             <div className="mb-1 w-full">
               <div className="mb-4">              
                 <h1 className="text-xl font-display font-semibold text-gray-900 dark:text-white sm:text-2xl">
-                  Pending Asset Requests
+                  Pending Assign Requests
                 </h1>
               </div>
               <div className="block items-center sm:flex">
-                <SearchRequests />
+                <SearchRequests setSearchQuery={setSearchQuery} />
               </div>
             </div>
           </div>
@@ -123,7 +128,7 @@ const AssignPage: FC = function () {
                 <div className="inline-block w-full align-middle">
                   <div className="overflow-hidden shadow-2xl">
                   <AssignRequestTable 
-                    assignRequests={assignRequests} 
+                    assignRequests={filteredAssigns} 
                     setSelectedAssignRequest={setSelectedAssignRequest} 
                   />
                 </div>
@@ -144,10 +149,14 @@ const AssignPage: FC = function () {
   );
 };
 
-const SearchRequests: FC = function () {
+const SearchRequests: FC<{ setSearchQuery: React.Dispatch<React.SetStateAction<string>> }> = function ({ setSearchQuery }) {
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
   return (
     <form className="mb-4 sm:mb-0 sm:pr-3" action="#" method="GET">
-      <Label htmlFor="search-request" className="sr-only">
+      <Label htmlFor="search-request" className="sr-only font-display">
         Search
       </Label>
       <div className="relative mt-1 lg:w-64 xl:w-96">
@@ -155,12 +164,12 @@ const SearchRequests: FC = function () {
           id="search-request"
           name="search-request"
           placeholder="Search for requests"
+          onChange={handleSearchChange}
         />
       </div>
     </form>
   );
 };
-
 const AssignRequestTable: FC<{ assignRequests: any[], setSelectedAssignRequest: (assignRequest: any | null)=>void }> = function ({ assignRequests, setSelectedAssignRequest }) {  
   return (
     <Table className="min-w-full divide-y font-display divide-gray-200 dark:divide-gray-600 mx-2 my-2 rounded-lg">

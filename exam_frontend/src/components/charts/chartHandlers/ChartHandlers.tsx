@@ -182,7 +182,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
     return ( // Render the PieChart components with filtered data
         <Stack direction="row">
             <div>
-                <select className="block py-3 px-3 w-full font-display text-black-500 border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer" onChange={handleSelectChange}>
+                <select className="block py-3 px-3 mx-4 w-full font-display text-black-500 border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer" onChange={handleSelectChange}>
                     <option value="0" className="text-black font-display">All</option>
                     {assetTypeData.map((assetType) => (
                         <option key={assetType.id} value={assetType.id} className="text-black font-display">{assetType.asset_type_name}</option>

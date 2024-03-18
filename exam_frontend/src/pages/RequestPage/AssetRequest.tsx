@@ -16,6 +16,7 @@ const RequestPage: FC = function () {
   const [assets, setAssets] = useState<any[]>([]);
   const [selectedAsset, setSelectedAsset] = useState<any | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
     fetchAssets();
@@ -29,6 +30,7 @@ const RequestPage: FC = function () {
     ])
       .then((responses) => {
         const createPendingAssets = responses[0].data.data.results;
+        console.log("createPendingAssets",createPendingAssets)
         const updatePendingAssets = responses[1].data.data.results;
 
         const mergedAssets = [...createPendingAssets, ...updatePendingAssets];
@@ -83,7 +85,10 @@ const RequestPage: FC = function () {
         });
     }
   };
-  
+
+  const filteredAssets = assets.filter((asset) =>
+  asset.asset_type.asset_type_name.toLowerCase().includes(searchQuery.toLowerCase())
+);
   return (
     <React.Fragment>
       <div className="bg-white">
@@ -115,7 +120,7 @@ const RequestPage: FC = function () {
               </h1>
             </div>
             <div className="block items-center sm:flex">
-              <SearchRequests />
+              <SearchRequests setSearchQuery={setSearchQuery} />
             </div>
           </div>
         </div>
@@ -129,7 +134,7 @@ const RequestPage: FC = function () {
               <div className="inline-block w-full align-middle mx-2">
                 <div className="overflow-hidden">
                   <RequestTable
-                    assets={assets}
+                    assets={filteredAssets}
                     setSelectedAsset={setSelectedAsset}
                   />
                 </div>
@@ -150,7 +155,11 @@ const RequestPage: FC = function () {
   );
 };
 
-const SearchRequests: FC = function () {
+const SearchRequests: FC<{ setSearchQuery: React.Dispatch<React.SetStateAction<string>> }> = function ({ setSearchQuery }) {
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
   return (
     <form className="mb-4 sm:mb-0 sm:pr-3" action="#" method="GET">
       <Label htmlFor="search-request" className="sr-only font-display">
@@ -161,6 +170,7 @@ const SearchRequests: FC = function () {
           id="search-request"
           name="search-request"
           placeholder="Search for requests"
+          onChange={handleSearchChange}
         />
       </div>
     </form>
