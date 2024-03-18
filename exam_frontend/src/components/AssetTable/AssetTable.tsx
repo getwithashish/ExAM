@@ -68,7 +68,7 @@ const [showUpload, setShowUpload] = useState(false);
   return (
     <>
      <div className="mainHeading" font-display>
-        <h1>{heading}</h1> {/* Render the heading dynamically */}
+        <h1>{heading}</h1> 
       </div>
       
 
@@ -78,11 +78,10 @@ const [showUpload, setShowUpload] = useState(false);
    
     columns={columns}
     dataSource={assetData}
-    
     scroll={{ y: 300 }}
     className="mainTable"
     pagination={false}
-    // bordered={false}
+    bordered={false}
     handleRowClick={handleRowClick}
     style={{
       borderRadius: 10,
