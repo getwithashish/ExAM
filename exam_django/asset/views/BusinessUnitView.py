@@ -3,7 +3,6 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from asset.serializers import BusinessUnitSerializer
 from asset.models import BusinessUnit
-from notification.service.EmailService import EmailService
 from response import APIResponse
 from messages import (
     BUSINESS_UNIT_SUCCESSFULLY_CREATED,
@@ -59,8 +58,6 @@ class BusinessUnitView(ListCreateAPIView):
                 )
 
             serializer = BusinessUnitSerializer(business_units, many=True)
-            email_service = EmailService()
-            email_service.send_email("Testing", "Good Email Body", ["astg4527@gmail.com"])
             return APIResponse(
                 data=serializer.data,
                 message=BUSINESS_UNIT_SUCCESSFULLY_RETRIEVED,

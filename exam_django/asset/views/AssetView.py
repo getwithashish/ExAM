@@ -1,6 +1,7 @@
 from rest_framework.generics import ListCreateAPIView
 from rest_framework import status
 from asset.serializers import AssetReadSerializer, AssetWriteSerializer
+from rest_framework.renderers import JSONRenderer
 from asset.models import Asset
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
@@ -9,6 +10,7 @@ from asset.models import AssetLog
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 import json
+from notification.service.EmailService import EmailService
 
 from response import APIResponse
 from messages import (
@@ -33,6 +35,7 @@ class AssetView(ListCreateAPIView):
         return self.serializer_class
 
     def post(self, request):
+        email_service = EmailService()
         serializer = AssetWriteSerializer(data=request.data)
 
         if serializer.is_valid():
@@ -41,11 +44,13 @@ class AssetView(ListCreateAPIView):
             if user_scope == "SYSTEM_ADMIN":
                 serializer.validated_data["asset_detail_status"] = "CREATE_PENDING"
                 message = ASSET_CREATE_PENDING_SUCCESSFUL
+                email_subject = "ASSET CREATION REQUEST SENT"
 
             elif user_scope == "LEAD":
                 serializer.validated_data["approved_by"] = request.user
                 serializer.validated_data["asset_detail_status"] = "CREATED"
                 message = ASSET_SUCCESSFULLY_CREATED
+                email_subject = "ASSET CREATION SUCCESSFUL"
 
             else:
                 return APIResponse(
@@ -56,6 +61,13 @@ class AssetView(ListCreateAPIView):
 
             serializer.validated_data["requester"] = request.user
             serializer.save()
+            json_string = JSONRenderer().render(serializer.data).decode("utf-8")
+            email_service.send_email(
+                email_subject,
+                "Serializer Data: {}".format(json_string),
+                ["astg7542@gmail.com"],
+            )
+
             return APIResponse(
                 data=serializer.data,
                 message=message,
