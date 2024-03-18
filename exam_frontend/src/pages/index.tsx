@@ -51,7 +51,7 @@ const DashboardPage: FC = function () {
                   <UploadComponent />
                   </div>
                   </SideDrawerComponent>  */}
-                  <QueryBuilderComponent />
+                  {/* <QueryBuilderComponent /> */}
 
       <div></div>
     </div>
