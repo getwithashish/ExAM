@@ -5,7 +5,7 @@ from faker import Faker
 fake = Faker()
 
 # Define the number of rows to generate
-num_rows = 3000
+num_rows = 1000
 
 # Open a file in write mode
 file_path = r"c:\Users\aidrin.varghese\Downloads\sample_data.csv"
@@ -34,7 +34,7 @@ with open(file_path, mode="w", newline="") as file:
             "configuration",
             "accessories",
             "notes",
-            "approval_status",
+            "asset_detail_status",
             "approval_status_message",
             "created_at",
             "updated_at",
@@ -56,45 +56,43 @@ with open(file_path, mode="w", newline="") as file:
             [
                 fake.uuid4(),  # asset_id
                 fake.random_int(min=0, max=10),  # version
+                "HARDWARE",  # asset_category
                 fake.random_element(
-                    elements=("HARDWARE", "SOFTWARE")
-                ),  # asset_category
-                fake.word(),  # product_name
+                    elements=("ACER V227Q", "SAMSUNG S3422", "MSI PRO MP241X")
+                ),  # product_name
                 fake.word(),  # model_number
                 fake.uuid4(),  # serial_number
-                fake.word(),  # owner
+                fake.random_element(elements=("EXPERION")),  # owner
                 fake.date(),  # date_of_purchase
+                "IN STORE",  # status
+                fake.random_element(elements=(12, 24)),  # warranty_period
+                "",  # os
+                "",  # os_version
+                "",  # mobile_os
+                "",  # processor
+                "",  # processor_gen
+                "",  # storage
+                "",  # configuration
                 fake.random_element(
-                    elements=("IN USE", "IN STORE", "IN REPAIR", "EXPIRED", "DISPOSED")
-                ),  # status
-                fake.random_int(min=0, max=10),  # warranty_period
-                fake.random_element(elements=("WINDOWS", "LINUX", "MAC")),  # os
-                fake.random_element(
-                    elements=("Windows 10", "Ubuntu", "MacOS")
-                ),  # os_version
-                fake.word(),  # mobile_os
-                fake.word(),  # processor
-                fake.word(),  # processor_gen
-                fake.random_element(elements=("16GB", "32GB", "64GB")),  # storage
-                fake.word(),  # configuration
-                fake.word(),  # accessories
+                    elements=("HDMI cable", "extension cable")
+                ),  # accessories
                 fake.text(),  # notes
                 fake.random_element(
-                    elements=("APPROVED", "REJECTED")
-                ),  # approval_status
+                    elements=("UPDATED", "UPDATE_PENDING", "CREATED", "CREATE_PENDING")
+                ),  # asset_detail_status
                 fake.sentence(),  # approval_status_message
                 fake.date_time_this_year(),  # created_at
                 fake.date_time_this_year(),  # updated_at
-                fake.random_element(elements=("ashish.sysadmin")),  # requester_id
-                fake.boolean(),  # is_deleted
-                fake.random_element(elements=("aidrin")),  # conceder_id
-                fake.random_element(elements=("Laptop", "Monitor", "Kaspersky")),  # asset_type_id
-                fake.random_element(elements=("DU1")),  # business_unit_id
-                fake.random_element(elements=("lakshmi")),  # custodian
+                fake.random_element(elements=("Aidrin", "Ashish")),  # requester_id
+                False,  # is_deleted
+                fake.random_element(elements=("Ananthan", "Asima")),  # conceder_id
+                "Laptop",  # asset_type_id
+                fake.random_element(elements=("DU1", "DU2")),  # business_unit_id
+                "",  # custodian
                 fake.random_element(
                     elements=("Trivandrum", "Kochi")
                 ),  # invoice_location
                 fake.random_element(elements=("Trivandrum", "Kochi")),  # location
-                fake.random_int(),  # memory_id
+                0,  # memory_id
             ]
         )
