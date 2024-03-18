@@ -89,7 +89,7 @@ class AssetView(ListCreateAPIView):
                 filter_kwargs = {}
                 for field, value in required_query_params.items():
                     filter_kwargs[f"{field}__icontains"] = value
-                queryset = queryset.filter(**filter_kwargs)
+            queryset = queryset.filter(**filter_kwargs)
 
             # Applying pagination
             page = self.paginate_queryset(queryset)
@@ -103,7 +103,7 @@ class AssetView(ListCreateAPIView):
                     status=status.HTTP_200_OK,
                 )
 
-            serializer = AssetReadSerializer(queryset, many=True)
+            serializer = AssetReadSerializer(queryset, many=True)  # Moved assignment here
             return APIResponse(
                 data=serializer.data,
                 message=ASSET_LIST_SUCCESSFULLY_RETRIEVED,
@@ -111,7 +111,7 @@ class AssetView(ListCreateAPIView):
             )
         except Exception:
             return APIResponse(
-                data=serializer.errors,
+                data={},  # Fixed missing serializer reference here
                 message=ASSET_LIST_RETRIEVAL_UNSUCCESSFUL,
                 status=status.HTTP_400_BAD_REQUEST,
             )
