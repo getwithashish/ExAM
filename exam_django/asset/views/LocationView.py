@@ -27,7 +27,7 @@ class LocationView(ListCreateAPIView):
                 return APIResponse(
                     data=request.data,
                     message=LOCATION_CREATED_SUCCESSFULLY,
-                    status=status.HTTP_200_OK,
+                    status=status.HTTP_201_CREATED,
                 )
             return APIResponse(
                 message=LOCATION_CREATION_FAILED,
