@@ -18,7 +18,7 @@ export const Statistics = () => {
       <div className="rounded-lg bg-white shadow-xl dark:bg-gray-800 xl:p-5 mx-10 my-2">
         <div className="mb-3 flex items-center justify-between">
           <div className="shrink-0 my-3 mx-1">
-            <span className="font-semibold font-display mx-3 leading-none text-gray-900 dark:text-white text-2xl">
+            <span className="font-medium font-display mx-3 leading-none text-gray-900 dark:text-white text-3xl">
               Asset Status Overview
             </span>
           </div>
