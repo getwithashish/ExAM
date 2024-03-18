@@ -1,0 +1,29 @@
+.global-search-form {
+    display: flex;
+    align-items: center;
+  }
+  
+  .global-search-input {
+    padding: 8px;
+    /* font-family: "Poppins"; */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 8px;
+    border-radius: 6px;
+    width: 500px;
+  }
+  
+  .global-search-button {
+    background-color: #007bff; /* Blue color for the button */
+    color: white;
+    border: none;
+    height: 40px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .global-search-button:hover {
+    background-color: #0056b3; /* Darker shade of blue on hover */
+  }
+  

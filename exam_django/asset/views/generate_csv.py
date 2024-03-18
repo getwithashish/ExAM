@@ -8,7 +8,7 @@ fake = Faker()
 num_rows = 1000
 
 # Open a file in write mode
-file_path = r"c:\Users\ananthakrishnan.cj\Downloads\sample_data.csv"
+file_path = r"c:\Users\aidrin.varghese\Downloads\sample_data.csv"
 with open(file_path, mode="w", newline="") as file:
     writer = csv.writer(file)
 
