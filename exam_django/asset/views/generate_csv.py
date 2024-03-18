@@ -8,7 +8,7 @@ fake = Faker()
 num_rows = 3000
 
 # Open a file in write mode
-file_path = r"c:\Users\ananthakrishnan.cj\Downloads\sample_data.csv"
+file_path = r"c:\Users\aidrin.varghese\Downloads\sample_data.csv"
 with open(file_path, mode="w", newline="") as file:
     writer = csv.writer(file)
 
@@ -85,12 +85,12 @@ with open(file_path, mode="w", newline="") as file:
                 fake.sentence(),  # approval_status_message
                 fake.date_time_this_year(),  # created_at
                 fake.date_time_this_year(),  # updated_at
-                fake.random_element(elements=("Ananthan", "Pavithra")),  # requester_id
+                fake.random_element(elements=("ashish.sysadmin")),  # requester_id
                 fake.boolean(),  # is_deleted
-                fake.random_element(elements=("Ananthan", "Pavithra")),  # conceder_id
-                fake.random_element(elements=("Laptop", "Monitor")),  # asset_type_id
-                fake.random_element(elements=("DU1", "DU2")),  # business_unit_id
-                fake.random_element(elements=("Mahesh", "Suresh")),  # custodian
+                fake.random_element(elements=("aidrin")),  # conceder_id
+                fake.random_element(elements=("Laptop", "Monitor", "Kaspersky")),  # asset_type_id
+                fake.random_element(elements=("DU1")),  # business_unit_id
+                fake.random_element(elements=("lakshmi")),  # custodian
                 fake.random_element(
                     elements=("Trivandrum", "Kochi")
                 ),  # invoice_location
