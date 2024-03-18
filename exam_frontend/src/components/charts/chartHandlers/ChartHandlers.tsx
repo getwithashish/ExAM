@@ -198,7 +198,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                             data: assetFilteredChartData,
                             innerRadius: 50,
                             outerRadius: 120,
-                            paddingAngle: 5,
+                            paddingAngle: 2,
                             cornerRadius: 10,
                             startAngle: -110,
                             endAngle: 110,
@@ -209,19 +209,19 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                         },
                     ]}
                     width={300}
-                    height={240}
+                    height={280}
                     slotProps={{
                         legend: {
                             direction: 'row',
                             position: { vertical: 'bottom', horizontal: 'left' },
                             hidden: false,
                             labelStyle: {
-                                fontSize: 8,
+                                fontSize: 10,
                             },
                             itemMarkWidth: 5,
                             itemMarkHeight: 5,
                             markGap: 2,
-                            itemGap: 4,
+                            itemGap: 8,
                         }
                     }}
                 />
@@ -234,7 +234,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                             data: detailFilteredChartData,
                             innerRadius: 50,
                             outerRadius: 120,
-                            paddingAngle: 5,
+                            paddingAngle: 2,
                             cornerRadius: 10,
                             startAngle: -110,
                             endAngle: 110,
@@ -245,19 +245,19 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                         },
                     ]}
                     width={312}
-                    height={250}
+                    height={280}
                     slotProps={{
                         legend: {
                             direction: 'row',
-                            position: { vertical: 'bottom', horizontal: 'left' },
+                            position: { vertical: 'bottom', horizontal: 'middle' },
                             hidden: false,
                             labelStyle: {
-                                fontSize: 8,
+                                fontSize: 10,
                             },
                             itemMarkWidth: 5,
                             itemMarkHeight: 5,
                             markGap: 2,
-                            itemGap: 4,
+                            itemGap: 8,
                         }
                     }}
                 />
@@ -273,7 +273,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                             data: assignFilteredChartData,
                             innerRadius: 50,
                             outerRadius: 120,
-                            paddingAngle: 5,
+                            paddingAngle: 2,
                             cornerRadius: 10,
                             startAngle: -110,
                             endAngle: 110,
@@ -284,19 +284,19 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                         },
                     ]}
                     width={300}
-                    height={222}
+                    height={250}
                     slotProps={{
                         legend: {
                             direction: 'row',
                             position: { vertical: 'bottom', horizontal: 'middle' },
                             hidden: false,
                             labelStyle: {
-                                fontSize: 8,
+                                fontSize: 10,
                             },
                             itemMarkWidth: 5,
                             itemMarkHeight: 5,
                             markGap: 2,
-                            itemGap: 4,
+                            itemGap: 8,
                         }
                     }}
                 />

@@ -2,8 +2,8 @@ import ChartHandlers from './chartHandlers/ChartHandlers';
 
 export const Statistics = () => {
   return (
-    <div>
-      <nav className="flex mb-4 mx-4 my-4" aria-label="Breadcrumb">
+    <div className='bg-white'>
+      <nav className="flex mb-4 mx-4 " aria-label="Breadcrumb">
         <ol className="inline-flex items-center space-x-1 md:space-x-3 rtl:space-x-reverse">
           <li className="inline-flex items-center font-display">
             <a href="#" className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
@@ -15,7 +15,7 @@ export const Statistics = () => {
           </li>
         </ol>
       </nav>
-      <div className="rounded-lg bg-white shadow-sm dark:bg-gray-800 xl:p-5 mx-2 my-2">
+      <div className="rounded-lg bg-white shadow-xl dark:bg-gray-800">
         <div className="mb-3 flex items-center justify-between">
           <div className="shrink-0 my-3 mx-1">
             <span className="font-semibold font-display mx-3 leading-none text-gray-900 dark:text-white text-2xl">
