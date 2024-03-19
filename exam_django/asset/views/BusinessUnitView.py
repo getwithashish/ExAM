@@ -63,7 +63,8 @@ class BusinessUnitView(ListCreateAPIView):
                 message=BUSINESS_UNIT_SUCCESSFULLY_RETRIEVED,
                 status=status.HTTP_200_OK,
             )
-        except Exception:
+        except Exception as e:
+            print(e)
             return APIResponse(
                 message=GLOBAL_500_EXCEPTION_ERROR,
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,

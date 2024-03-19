@@ -53,7 +53,7 @@ export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
     setQuery(inputValue);
     setValue(inputValue);
     if (inputValue.trim().length > 0) {
-      console.log("input value > 0")
+      console.log("input value > 0",inputValue)
       setFetchData(true);
     }
   };
@@ -73,7 +73,7 @@ export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
       console.log(requestBody);
       mutation.mutate(requestBody);
     } else {
-      alert("Cannot assign since there is a custodian");
+      alert("Please select an employee");
     }
   };
 
@@ -82,15 +82,16 @@ export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
       <div className={styles['info']}>Asset Name: {record.product_name}</div>
       <div className={styles['info']}>Asset Type: {record.asset_type}</div>
       <div className={styles['info']}>Configuration: {record.configuration}</div>
+      <div className={styles['info']}>Location:{record.location}</div>
       <div className={styles['info']}>Asset Serial Number: {record.serial_number}</div>
       <div className={styles['info']}>Asset Model Number: {record.model_number}</div>
       <div className={styles['info']}>Version: {record.version}</div>
 
       <input type='text' name={"employee"} className={styles['search-input']} placeholder='employee name' onChange={handleInputChange } value={value} />
       <div className={value ? styles['info'] : styles['result']}>
-        {isLoading ? <div>Loading...</div>: isError ? <div>Error Fetching data </div> : data && data.data.map((employee: EmployeeDetails) => (
-          <div key={employee.id} onClick={() => handleNameClick(employee.employee_name, employee.id)}>{employee.employee_name}</div>
-        ))}
+        { data?.data.length?data.data.map((employee: EmployeeDetails) => (
+          <div key={employee.id} onClick={() => handleNameClick(employee.employee_name, employee.id)}>{employee?employee.employee_name:"sorry no employee not found"}</div>
+        )):<div>{"No employee available"}</div>}
       </div>
       <button className={styles['assign-button']} onClick={handleAssign}>
         Assign
