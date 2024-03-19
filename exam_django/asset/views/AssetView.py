@@ -90,12 +90,17 @@ class AssetView(ListCreateAPIView):
             limit = request.query_params.get("limit")
             offset = request.query_params.get("offset")
 
+            requester_id = request.query_params.get("requester_id")
+            approved_by_id = request.query_params.get("approved_by_id")
+
             query_params = request.query_params
             query_params_to_exclude = [
                 "limit",
                 "offset",
                 "assign_status",
                 "asset_detail_status",
+                "requester_id",
+                "approved_by_id"
             ]
             required_query_params = self.remove_fields_from_dict(
                 query_params, query_params_to_exclude
@@ -117,6 +122,11 @@ class AssetView(ListCreateAPIView):
             filter_kwargs = {}
             for field, value in required_query_params.items():
                 filter_kwargs[f"{field}__icontains"] = value
+            
+            if requester_id:
+                filter_kwargs["requester_id"] = requester_id
+            if approved_by_id:
+                filter_kwargs["approved_by_id"] = approved_by_id
             queryset = queryset.filter(**filter_kwargs)
 
             # Apply pagination
@@ -137,7 +147,8 @@ class AssetView(ListCreateAPIView):
                 message=ASSET_LIST_SUCCESSFULLY_RETRIEVED,
                 status=status.HTTP_200_OK,
             )
-        except Exception:
+        except Exception as e:
+            print("Error: ", e)
             return APIResponse(
                 data={},  # Fixed missing serializer reference here
                 message=ASSET_LIST_RETRIEVAL_UNSUCCESSFUL,

@@ -259,15 +259,17 @@ const SidebarComponentNew = ({ children }) => {
 
             {userRole === "LEAD" ? (
               <Menu.Item icon={<MailOutlined />}>
-                <Link to="/exam/rejected_assets">My Requests</Link>
+                {/* For lead */}
+                <Link to="/exam/my_approvals">My Requests</Link>
               </Menu.Item>
             ) : userRole === "SYSTEM_ADMIN" ? (
               <SubMenu key="sub1" icon={<MailOutlined />} title="My Requests">
                 <Menu.Item icon={<CheckCircleOutlined />}>
-                  <Link to="/exam/requests">Approved</Link>
+                  {/* For sysadmin */}
+                  <Link to="/exam/approved_requests">Approved</Link>
                 </Menu.Item>
                 <Menu.Item icon={<WarningOutlined />}>
-                  <Link to="/exam/requests">Rejected</Link>
+                  <Link to="/exam/rejected_assets">Rejected</Link>
                 </Menu.Item>
               </SubMenu>
             ) : (

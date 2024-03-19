@@ -1,7 +1,7 @@
-import React from 'react'
-import AssetTableHandler from '../../components/AssetTable/AssetTableHandler'
+import React from "react";
+import AssetTableHandler from "../../components/AssetTable/AssetTableHandler";
 
-const RejectedAsset = () => {
+const ApprovedRequestPage = () => {
   const decodeJWT = (token: string) => {
     try {
       const base64Url = token.split(".")[1];
@@ -31,7 +31,7 @@ const RejectedAsset = () => {
   };
 
   let queryParamProp =
-    `&asset_detail_status=CREATE_REJECTED|UPDATE_REJECTED&assign_status=REJECTED&requester_id=${getUserId()}`;
+    `&asset_detail_status=CREATED|UPDATED&assign_status=ASSIGNED|UNASSIGNED&requester_id=${getUserId()}`;
   let heading = "My approved Request";
 
   return (
@@ -45,4 +45,4 @@ const RejectedAsset = () => {
   );
 };
 
-export default RejectedAsset
+export default ApprovedRequestPage;

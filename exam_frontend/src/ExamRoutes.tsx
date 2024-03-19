@@ -22,6 +22,8 @@ import ProtectedRoute from "./pages/authentication/ProtectedRoute";
 import SSORedirect from "./pages/authentication/SSORedirect";
 import UpdatableAsset from "./pages/UpdatableAssetPage/UpdatableAsset";
 import RejectedAsset from "./pages/RejectedAssetPage/RejectedAsset";
+import ApprovedRequestPage from "./pages/ApprovedRequest/ApprovedRequestPage";
+import MyApprovalPage from "./pages/MyApprovals/MyApprovalPage";
 
 const ExamRoutes = () => {
   const { authenticated, setAuthenticated, userRole } = useAuth();
@@ -74,7 +76,8 @@ const ExamRoutes = () => {
                   <Route path="/assign_requests" element={<AssignPage />} />
                   <Route path="/updatable_assets" element={<UpdatableAsset/>}/>
                   <Route path="/rejected_assets" element={<RejectedAsset/>}/>
-
+                  <Route  path="/approved_requests" element={<ApprovedRequestPage />}/>
+                  <Route path="/my_approvals" element={<MyApprovalPage />}/>
                 </Routes>
               </SidebarComponentNew>
             }

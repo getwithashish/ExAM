@@ -77,7 +77,7 @@ class AssetApproveView(APIView):
                 if asset.asset_detail_status in ["CREATED", "UPDATED"]:
                     if asset.assign_status == "ASSIGN_PENDING":
                         if asset.custodian:
-                            asset.assign_status == "ASSIGNED"
+                            asset.assign_status = "ASSIGNED"
                             asset.status = "IN USE"
                             message = ASSET_SUCCESSFULLY_ASSIGNED
                             email_subject = "ASSET ASSIGNMENT SUCCESSFUL"
