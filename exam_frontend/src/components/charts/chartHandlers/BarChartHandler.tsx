@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axiosInstance from '../../../config/AxiosConfig'; // Import your axios instance here
 import { BarChart } from '@mui/x-charts';
+import { AxiosError } from 'axios';
 
 export default function BarAnimation() {
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<AxiosError | null>(null);
   const [assetData, setAssetData] = useState<{ name: string; count: number }[]>([]);
 
   useEffect(() => {
@@ -35,7 +36,6 @@ export default function BarAnimation() {
     return <div>Error: {error}</div>;
   }
 
-  // Prepare data for the BarChart
   const xAxis = [{ scaleType: 'band', data: assetData.map(asset => asset.name) }];
   const series = [{ data: assetData.map(asset => asset.count) }];
 

@@ -50,34 +50,34 @@ const AssetCountComponent = () => {
         return (
             <div className='flex flex-wrap'>
                 <div className='flex-1'>
-                    <div className='flex-1 bg-gradient-to-r from-purple-500 to-purple-500 hover:from-purple-600 hover:to-purple-700 ... rounded-lg scale-90 bg-white hover:scale-100 py-2' style={{boxShadow:'0 0 20px rgba(0, 0, 0, 0.2)'}}>
-                        <div className="font-bold text-white font-display mx-8 mt-6 text-grey-900 dark:text-white text-xl ">                
-                            Total Assets
-                            <div className="font-bold font-display mx-8 mt-6 pb-8 text-7xl">
+                    <div className='flex-1 bg-gradient-to-r from-purple-500 to-purple-500 hover:from-purple-600 hover:to-purple-700 ... rounded-3xl scale-90 bg-white hover:scale-100 py-2' style={{boxShadow:'0 0 20px rgba(0, 0, 0, 0.2)'}}>
+                        <div className="font-bold text-white font-display mx-8 mt-6 text-grey-900 dark:text-white text-2xl ">                
+                            Total asset count:
+                            <div className="font-bold font-display ml-24 mt-6 pb-8 text-7xl">
                                 {totalAssets}
                             </div>
                         </div>
                     </div>
-                    <div className='flex-1 bg-gradient-to-r from-blue-500 to-blue-500 hover:from-blue-600 hover:to-indigo-500 ... rounded-lg scale-90 bg-white hover:scale-100 py-2' style={{boxShadow:'0 0 20px rgba(0, 0, 0, 0.2)'}}>
-                        <div className="font-bold text-white font-display mx-8 mt-6 text-grey-900 dark:text-white text-xl ">                
-                            Asset Types:
-                            <div className="font-bold font-display mx-8 mt-6 pb-8 text-7xl">
-                                {totalAssetTypes}
+                    <div className='flex-1 bg-gradient-to-r from-blue-500 to-blue-500 hover:from-blue-600 hover:to-indigo-500 ... rounded-3xl scale-90 bg-white hover:scale-100 py-2' style={{boxShadow:'0 0 20px rgba(0, 0, 0, 0.2)'}}>
+                        <div className="font-bold text-white font-display mx-8 mt-6 text-grey-900 dark:text-white text-2xl ">                
+                        Asset Distribution:
+                            <div className="font-bold font-display ml-14 mt-6 pb-8 text-7xl">
+                                <span className='text-2xl'>Types: </span>{totalAssetTypes}
                             </div>
                         </div>
                     </div>
                 </div>
                 <div className='flex-1'>
-                <div className='flex-1 bg-gradient-to-r from-green-500 to-green-500 hover:from-green-600 hover:to-green-700 ... rounded-lg scale-90 bg-white hover:scale-100 py-2' style={{boxShadow:'0 0 20px rgba(0, 0, 0, 0.2)'}}>
-                        <div className="font-bold text-white font-display mx-8 mt-6 text-grey-900 dark:text-white text-xl ">                
-                            Available asset types:
+                <div className='flex-1 bg-gradient-to-r from-green-400 to-green-400 hover:from-green-500 hover:to-green-500 ... rounded-3xl scale-90 bg-white hover:scale-100 py-2' style={{boxShadow:'0 0 20px rgba(0, 0, 0, 0.2)'}}>
+                        <div className="font-bold text-white font-display mx-8 mt-6 text-grey-900 dark:text-white text-2xl ">                
+                            Asset Inventory:
                             <div className="font-bold font-display my-11 mx-4 text-4xl">
                                 {assetTypes[currentAssetIndex]}
                             </div>
                         </div>
                     </div>
-                    <div className='flex-1 bg-gradient-to-r from-orange-500 to-orange-500 hover:from-orange-600 hover:to-orange-600 ... rounded-lg scale-90 bg-white hover:scale-100 py-2' style={{boxShadow:'0 0 20px rgba(0, 0, 0, 0.2)'}}>
-                        <div className="font-bold text-white font-display mx-8 mt-6 text-grey-900 dark:text-white text-xl ">                
+                    <div className='flex-1 bg-gradient-to-r from-orange-400 to-orange-400 hover:from-orange-500 hover:to-orange-500 ... rounded-3xl scale-90 bg-white hover:scale-100 py-2' style={{boxShadow:'0 0 20px rgba(0, 0, 0, 0.2)'}}>
+                        <div className="font-bold text-white font-display mx-8 mt-6 text-grey-900 dark:text-white text-2xl ">                
                             Pending approvals:
                             <div className="font-bold font-display mx-14 mt-3 pb-4 text-3xl">
                                 Assets : {pendingAssetsCount}
