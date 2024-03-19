@@ -1,4 +1,4 @@
-import { Layout, Menu, Dropdown} from "antd";
+import { Layout, Menu, Dropdown } from "antd";
 import {
   AppstoreAddOutlined,
   CarryOutOutlined,
@@ -11,6 +11,9 @@ import {
   UserOutlined,
   UserSwitchOutlined,
   VideoCameraOutlined,
+  ExclamationOutlined,
+  CheckCircleOutlined,
+  CheckSquareOutlined
 } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import ExampleNavbar from "../Navbar/navbar";
@@ -26,6 +29,8 @@ import AddAsset from "../AddAsset/AddAsset";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../pages/authentication/AuthContext";
 import Avatars from "../Avatar/Avatar";
+import SubMenu from "antd/es/menu/SubMenu";
+import { CheckOutlined, EditOutlined, WarningOutlined } from "@mui/icons-material";
 
 const SidebarComponentNew = ({ children }) => {
   const { userRole, setUserRole, login, logout } = useAuth();
@@ -109,7 +114,11 @@ const SidebarComponentNew = ({ children }) => {
     <Menu>
       {/* Use Button component instead of Menu.Item */}
       <Menu.Item key="logout" onClick={handleLogout}>
-        <Button type="link" icon={<LogoutOutlined />} style={{ color: "white", backgroundColor:"rgb(22, 119, 255)" }}>
+        <Button
+          type="link"
+          icon={<LogoutOutlined />}
+          style={{ color: "white", backgroundColor: "rgb(22, 119, 255)" }}
+        >
           Logout
         </Button>
       </Menu.Item>
@@ -126,36 +135,26 @@ const SidebarComponentNew = ({ children }) => {
           left: 0,
           top: 0,
           bottom: 0,
-          borderBottom:  "1px solid #e8e8e8"
+          borderBottom: "1px solid #e8e8e8",
         }}
       >
         {/* <ExampleNavbar /> */}
 
         <div className="w-full p-2.5 lg:px-5 lg:pl-3">
-          
           <div className="flex items-center justify-between">
-            
             <div className="flex items-center">
-          
-            
-            
-                <img
-                  src="../../public/images/xam_logo.png"
-                  alt="Logo"
-                  className="mr-12 -mt-10 -ml-10  md:-mt-10 md:-ml-10 w-30 h-10 sm:w-38 sm:h-16" // Adjust width and height as needed
-                />
-                
+              <img
+                src="../../public/images/xam_logo.png"
+                alt="Logo"
+                className="mr-12 -mt-10 -ml-10  md:-mt-10 md:-ml-10 w-30 h-10 sm:w-38 sm:h-16" // Adjust width and height as needed
+              />
 
-                
-            
               {/* </Navbar.Brand> */}
             </div>
             <div className="flex items-center gap-3 -mr-10">
-              
               <div
                 className={`flex items-center gap-3 ${styles["button-components"]}`}
               >
-                 
                 {/* <AccountMenu></AccountMenu> */}
                 {/*             
               <Button>
@@ -163,7 +162,6 @@ const SidebarComponentNew = ({ children }) => {
               </Button> */}
 
                 {/* <DarkThemeToggle /> */}
-               
 
                 {jwtPayload && jwtPayload.username && (
                   <div className={styles["username-container"]}>
@@ -176,17 +174,15 @@ const SidebarComponentNew = ({ children }) => {
                         {jwtPayload.user_scope}
                       </span>
                     )}
-                 
                   </div>
                 )}
                 <div className="flex items-center gap-3 ml-5 -mt-10">
-              <Dropdown overlay={menu} placement="bottomCenter" arrow>
-                <div className="cursor-pointer">
-                  <Avatars />
+                  <Dropdown overlay={menu} placement="bottomCenter" arrow>
+                    <div className="cursor-pointer">
+                      <Avatars />
+                    </div>
+                  </Dropdown>
                 </div>
-              </Dropdown>
-            </div>
-                  
               </div>
             </div>
           </div>
@@ -200,13 +196,13 @@ const SidebarComponentNew = ({ children }) => {
             zIndex: 100,
             height: "100vh",
             position: "sticky",
-            fontSize:"600px",
-            width:"400px",
+            fontSize: "600px",
+            width: "400px",
             left: 0,
             top: 0,
             bottom: 0,
             paddingTop: 100,
-            borderRight:  "1px solid  #e8e8e8"
+            borderRight: "1px solid  #e8e8e8",
           }}
           width="250px"
           breakpoint="lg"
@@ -233,36 +229,54 @@ const SidebarComponentNew = ({ children }) => {
               onClick={() => showDefaultDrawer()}
               icon={<AppstoreAddOutlined />}
             >
-              Add An Asset
+              Create Assets
+            </Menu.Item>
+            <Menu.Item icon={<EditOutlined />}>
+              <Link to="/exam/updatable_assets">Modify Assets</Link>
             </Menu.Item>
             <Menu.Item icon={<UserSwitchOutlined />}>
-              <Link to="/exam/assignable_asset">Assign an Asset</Link>
+              <Link to="/exam/assignable_asset">Allocate Assets</Link>
             </Menu.Item>
             {userRole === "LEAD" ? (
-              <Menu.Item icon={<CarryOutOutlined />}>
-                <Link to="/exam/requests">Pending(Assets)</Link>
-              </Menu.Item>
+              <SubMenu
+                key="sub1"
+                icon={<CheckSquareOutlined />}
+                title="Approve Assets"
+              >
+                <Menu.Item icon={<CarryOutOutlined />}>
+                  <Link to="/exam/requests">In Creation</Link>
+                </Menu.Item>
+                <Menu.Item icon={<CarryOutOutlined />}>
+                  <Link to="/exam/requests">In Modification</Link>
+                </Menu.Item>
+                <Menu.Item icon={<CarryOutOutlined />}>
+                  <Link to="/exam/assign_requests">In Allocation</Link>
+                </Menu.Item>
+              </SubMenu>
             ) : (
               ""
             )}
-            {userRole === "LEAD" ? (
-              <Menu.Item icon={<CarryOutOutlined />}>
-                <Link to="/exam/assign_requests">Pending(Assign)</Link>
-              </Menu.Item>
-            ) : (
-              ""
-            )}
-            
-             <Menu.Item icon={<CarryOutOutlined />}>
-                <Link to="/exam/updatable_assets">Updatable Assets</Link>
-              </Menu.Item>
-              <Menu.Item icon={<CarryOutOutlined />}>
-                <Link to="/exam/rejected_assets">My Rejected Requests</Link>
-              </Menu.Item>
 
-            <Menu.Item onClick={() => handleLogout()} icon={<LogoutOutlined />}>
-              Logout
-            </Menu.Item>
+            {userRole === "LEAD" ? (
+              <Menu.Item icon={<MailOutlined />}>
+                <Link to="/exam/rejected_assets">My Requests</Link>
+              </Menu.Item>
+            ) : userRole === "SYSTEM_ADMIN" ? (
+              <SubMenu key="sub1" icon={<MailOutlined />} title="My Requests">
+                <Menu.Item icon={<CheckCircleOutlined />}>
+                  <Link to="/exam/requests">Approved</Link>
+                </Menu.Item>
+                <Menu.Item icon={<WarningOutlined />}>
+                  <Link to="/exam/requests">Rejected</Link>
+                </Menu.Item>
+              </SubMenu>
+            ) : (
+              ""
+            )}
+
+            {/* <Menu.Item onClick={() => handleLogout()} icon={<LogoutOutlined />}>
+              Logoutf
+            </Menu.Item> */}
           </Menu>
         </Sider>
         <Content>

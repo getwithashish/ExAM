@@ -22,17 +22,18 @@ class UserRetrievalViewTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Add more assertions as needed
 
+class UserRegistrationViewTests(APITestCase):
+    def test_register_user(self):
+        url = reverse("jwt_signup")
+        data = {"username": "newuser", "password": "test123", "first_name": "New", "last_name": "User"}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # Add more assertions as needed
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+class UsernameAndUserscopeTokenObtainPairViewTests(APITestCase):
+    def test_obtain_token(self):
+        url = reverse("jwt_signin")
+        data = {"username": "testuser", "password": "12345"}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Add more assertions as needed

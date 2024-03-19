@@ -46,7 +46,8 @@ const DasboardAssetTable = ({
   locations,
   memoryData,
   assetTypeData,
-  expandedRowRender
+  expandedRowRender,
+  assetDataRefetch
 }:AssetTableProps
 ) => {
  
@@ -62,13 +63,13 @@ const [showUpload, setShowUpload] = useState(false);
   
  
   return (
-    <>
+    <div className="bg-white py-4">
       <div className="mainHeading font-medium font-display">
         <h6>Asset Details</h6>
       </div>
      
       <div>
-        <TableNavbar showUpload={showUpload} setShowUpload={setShowUpload} />
+        <TableNavbar showUpload={showUpload} setShowUpload={setShowUpload} assetDataRefetch={assetDataRefetch} />
       </div>
 
     
@@ -136,7 +137,7 @@ const [showUpload, setShowUpload] = useState(false);
         )}
      
       </DrawerComponent>
-    </>
+    </div>
   );
 };
  

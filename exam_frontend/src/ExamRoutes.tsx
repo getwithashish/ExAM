@@ -19,6 +19,7 @@ import AssignPage from "./pages/RequestPage/AssignRequest";
 import RequestPage from "./pages/RequestPage/AssetRequest";
 import { useAuth } from "./pages/authentication/AuthContext";
 import ProtectedRoute from "./pages/authentication/ProtectedRoute";
+import SSORedirect from "./pages/authentication/SSORedirect";
 import UpdatableAsset from "./pages/UpdatableAssetPage/UpdatableAsset";
 import RejectedAsset from "./pages/RejectedAssetPage/RejectedAsset";
 
@@ -80,6 +81,7 @@ const ExamRoutes = () => {
           />
         </Route>
         <Route path="/login" element={<Login />} />
+        <Route path="/sso/flow" element={<SSORedirect />} />
       </Routes>
     </BrowserRouter>
   );

@@ -1,3 +1,6 @@
+### Sensitive files ###
+aad.config.json
+
 ### Django ###
 *.log
 *.pot

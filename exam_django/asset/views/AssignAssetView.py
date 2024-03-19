@@ -3,6 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from asset.models import Asset, Employee
 from asset.serializers import AssignAssetSerializer
+from rest_framework.renderers import JSONRenderer
+from notification.service.EmailService import EmailService
 
 from response import APIResponse
 from messages import (
@@ -21,6 +23,7 @@ class AssignAssetView(APIView):
             return super().get_permissions()
 
     def post(self, request):
+        email_service = EmailService()
         serializer = AssignAssetSerializer(data=request.data)
         if serializer.is_valid():
             requester = request.user
@@ -79,8 +82,11 @@ class AssignAssetView(APIView):
             if requester_role == "LEAD":
                 asset.assign_status = "ASSIGNED"
                 asset.status = "IN USE"
+                email_subject = "ASSET ASSIGNMENT SUCCESSFUL"
+
             else:
                 asset.assign_status = "ASSIGN_PENDING"
+                email_subject = "ASSET ASSIGNMENT REQUEST SENT"
 
             asset.custodian = employee
             asset.requester = requester
@@ -88,6 +94,14 @@ class AssignAssetView(APIView):
 
             # Serialize the assigned asset using the custom serializer
             assigned_asset_serializer = AssignAssetSerializer(asset)
+
+            json_string = JSONRenderer().render(assigned_asset_serializer.data).decode("utf-8")
+            email_service.send_email(
+                email_subject,
+                "Serializer Data: {}".format(json_string),
+                ["astg7542@gmail.com"],
+            )
+
             return APIResponse(
                 data=assigned_asset_serializer.data,
                 message=ASSET_SUCCESSFULLY_ASSIGNED,
