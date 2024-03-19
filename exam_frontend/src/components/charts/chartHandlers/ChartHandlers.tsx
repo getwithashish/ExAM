@@ -7,7 +7,6 @@ import Stack from "@mui/material/Stack";
 import { fetchAssetData } from '../api/ChartApi';
 import { AssetData, AssetDetailData, ChartData, PieChartGraphProps } from '../types/ChartTypes';
 import axiosInstance from '../../../config/AxiosConfig';
-import { BarChart } from '@mui/x-charts';
 
 
 const statusColors: { [key: string]: string } = {
@@ -16,32 +15,32 @@ const statusColors: { [key: string]: string } = {
     'IN USE': '#9BCA3E',
     'DISPOSED': '#3ABBC9',
     'EXPIRED': '#CC0000',
-
     'UNASSIGNED': '#E6E6E6',
     'ASSIGN_PENDING': '#FFB92A',
     'ASSIGNED': '#9BCA3E',
     'REJECTED': '#CC0000',
-
-    'CREATE_PENDING': '#FD6A02',
-    'UPDATE_PENDING': '#FEEB51',
+    'CREATE_PENDING': '#FD6A02', // Consider using the same color for both 'CREATE_PENDING' and 'UPDATE_PENDING'
+    'UPDATE_PENDING': '#FD6A02', // Consider using the same color for both 'CREATE_PENDING' and 'UPDATE_PENDING'
     'CREATED': '#9BCA3E',
     'UPDATED': '#3ABBC9',
     'CREATE_REJECTED': '#CC0000',
-    'UPDATE_REJECTED': '#E6E6E6',
-}
+    'UPDATE_REJECTED': '#CC0000',
+};
+
 
 const statusMapping: { [key: string]: string } = {
     UNASSIGNED: 'UNASSIGNED',
-    ASSIGN_PENDING: 'ASSIGN PENDING',
+    ASSIGN_PENDING: 'PENDING',
     ASSIGNED: 'ASSIGNED',
     REJECTED: 'REJECTED',
-    CREATE_PENDING: 'PENDING(creation)',
-    UPDATE_PENDING: 'PENDING(updation)',
+    CREATE_PENDING: 'PENDING', // Combine both 'CREATE_PENDING' and 'UPDATE_PENDING' into 'PENDING'
+    UPDATE_PENDING: 'PENDING', // Combine both 'CREATE_PENDING' and 'UPDATE_PENDING' into 'PENDING'
     CREATED: 'CREATED',
     UPDATED: 'UPDATED',
-    CREATE_REJECTED: 'REJECTED(creation)',
-    UPDATE_REJECTED: 'REJECTED(updation)',
-}
+    CREATE_REJECTED: 'REJECTED',
+    UPDATE_REJECTED: 'REJECTED',
+};
+
 
 const ChartHandlers: React.FC<PieChartGraphProps> = () => {
      // State variables to store data and manage loading/error states
@@ -49,12 +48,13 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
     const [selectedType, setSelectedType] = useState<string>('');
     const [assetChartData, setAssetChartData] = useState<ChartData[]>([]);
     const [assetFilteredChartData, setAssetFilteredChartData] = useState<ChartData[]>([]);
-    const [detailChartData, setDetailChartData] = useState<ChartData[]>([]);
-    const [detailFilteredChartData, setDetailFilteredChartData] = useState<ChartData[]>([]);
     const [assignChartData, setAssignChartData] = useState<ChartData[]>([])
     const [assignFilteredChartData, setAssignFilteredChartData] = useState<ChartData[]>([]);
-    const [typeName, setTypeName] = useState([]);
-    const [typeCount, setTypeCount] = useState([]);
+    const [detailChartData, setDetailChartData] = useState<ChartData[]>([]);
+    const [detailFilteredChartData, setDetailFilteredChartData] = useState<ChartData[]>([]);
+    
+
+
 
     // UseQuery hook to fetch asset data from the server
     const { data: assetData, isLoading: assetLoading, isError: assetError } = useQuery<AssetData>({
@@ -62,20 +62,22 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
         queryFn: fetchAssetData,
     })
 
-    useEffect(() => { // Effect to fetch asset type data when component mounts
+    useEffect(() => {
         axiosInstance.get('/asset/asset_type')
-            .then((res) => {
-                setAssetTypeData(res.data.data);
-            })
-            .catch(error => {
-                console.error("Error fetching asset data:", error)
-            });
-    }, []);
+          .then((res) => {
+            setAssetTypeData(res.data.data);
+          })
+          .catch(error => {
+            console.error("Error fetching asset data:", error);
+          });
+      }, []);
 
-    useEffect(() => { // Effects to fetch asset count, detail, and assign data when component mounts
+
+      useEffect(() => {
         axiosInstance.get(`/asset/asset_count`)
             .then((res) => {
                 const assetCountData = res.data.data;
+                console.log("assetCountData", assetCountData);
                 const assetTypeData = Object.entries(assetCountData?.status_counts ?? {}).map(([label, value]) => ({
                     label,
                     value: value as number,
@@ -87,36 +89,79 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
             .catch(error => {
                 console.error("Error fetching asset count data:", error);
                 setAssetFilteredChartData([]);
-            })
+            });
+        return () => {};
     }, []);
+
 
     useEffect(() => {
         axiosInstance.get(`/asset/asset_count`)
             .then((res) => {
                 const assetDetailData = res.data.data;
-                const assetDetailStatusData = Object.entries(assetDetailData?.asset_detail_status ?? {}).map(([label, value]) => ({
-                    label: statusMapping[label] ?? label,
-                    value: value as number,
-                    color: statusColors[label],
-                }));
-                setDetailChartData(assetDetailStatusData);
-                setDetailFilteredChartData(assetDetailStatusData);
+                const assetDetailStatusData = Object.entries(assetDetailData?.asset_detail_status ?? {}).reduce((acc, [label, value]) => {
+                    const mappedLabel = statusMapping[label] ?? label;
+                    if (mappedLabel === 'CREATE_REJECTED' || mappedLabel === 'UPDATE_REJECTED') {
+                        acc['REJECTED'] = (acc['REJECTED'] as number || 0) + (value as number);
+                    } else {
+                        if (acc[mappedLabel]) {
+                            acc[mappedLabel].value += value as number;
+                        } else {
+                            acc[mappedLabel] = {
+                                label: mappedLabel,
+                                value: value as number,
+                                color: statusColors[label],
+                            };
+                        }
+                    }
+                    return acc;
+                }, {} as { [key: string]: ChartData });
+    
+                const assetDetailStatusArray: ChartData[] = Object.values(assetDetailStatusData);
+    
+                setDetailChartData(assetDetailStatusArray);
+                setDetailFilteredChartData(assetDetailStatusArray);
             })
             .catch(error => {
                 console.error("Error fetching asset details data:", error);
                 setDetailFilteredChartData([]);
             })
     }, []);
-
+    
+    
+    
     useEffect(() => {
         axiosInstance.get(`/asset/asset_count`)
             .then((res) => {
                 const assetAssignData = res.data.data;
-                const assetAssignStatusData = Object.entries(assetAssignData?.assign_status ?? {}).map(([label, value]) => ({
-                    label: statusMapping[label] ?? label,
-                    value: value as number,
-                    color: statusColors[label],
-                }));
+                const assetAssignStatusData = Object.entries(assetAssignData?.assign_status ?? {}).map(([label, value]) => {
+                    const mappedLabel = statusMapping[label] ?? label;
+                    if (mappedLabel === 'UPDATE_PENDING' || mappedLabel === 'CREATE_PENDING') {
+                        return {
+                            label: 'PENDING',
+                            value: value as number,
+                            color: statusColors[mappedLabel], // Use 'mappedLabel' to get the color
+                        };
+                    } else {
+                        return {
+                            label: mappedLabel,
+                            value: value as number,
+                            color: statusColors[label],
+                        };
+                    }
+                });
+                // Calculate the sum for 'PENDING' status
+                const pendingSum = assetAssignStatusData.reduce((acc, curr) => {
+                    if (curr.label === 'PENDING') {
+                        acc += curr.value;
+                    }
+                    return acc;
+                }, 0);
+                // Find the index of 'PENDING' status
+                const pendingIndex = assetAssignStatusData.findIndex(status => status.label === 'PENDING');
+                // If 'PENDING' status exists, update its value with the sum
+                if (pendingIndex !== -1) {
+                    assetAssignStatusData[pendingIndex].value = pendingSum;
+                }
                 setAssignChartData(assetAssignStatusData);
                 setAssignFilteredChartData(assetAssignStatusData);
             })
@@ -125,27 +170,8 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                 setAssignFilteredChartData([]);
             })
     }, []);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axiosInstance.get('/asset/asset_count');
-                const { data } = response.data;
-                console.log("data",{ data });
-                // Extract asset type names and counts from response data
-                const assetTypeNames = Object.keys(data.asset_type_counts).map(id => `${id}`);
-                const assetTypeCounts = Object.values(data.asset_type_counts);
-
-                // Set state with fetched data
-                setTypeName(assetTypeNames);
-                setTypeCount(assetTypeCounts);
-            } catch (error) {
-                console.error('Error fetching asset count:', error);
-            }
-        };
-
-        fetchData();
-    }, []);
+    
+    
 
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => { // Handler function for select change event
         const assetTypeValue = parseInt(e.target.value);
@@ -203,174 +229,155 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
 
     if (assetError) return <div>Error fetching data</div>;
 
+    
+
     return ( // Render the PieChart components with filtered data
-        <Stack>
-            <div className='flex'>
-                <div className='flex-1'>
-                    <select className="block py-2 px-2 mx-4 font-display text-black-500 border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer" onChange={handleSelectChange}>
-                        <option value="0" className="text-black font-display">All</option>
-                        {assetTypeData.map((assetType) => (
-                            <option key={assetType.id} value={assetType.id} className="text-black font-display">{assetType.asset_type_name}</option>
-                        ))}
-                    </select>
-                </div>
-                <div className='flex-1 mx-6 font-display'>
-                    <h2 className='text-right text-sm font-semibold font-display text-gray-600 dark:text-white-600 rtl:text-right'>
-                        Total Assets : {assetData?.total_assets ?? 0}
-                    </h2>
-                </div>                
-            </div> 
-            <Stack direction="row">
-            <div>
-                <div className='h-5 my-8 mx-20'>
-                    <span className="font-semibold font-display mx-4 underline leading-none text-gray-900 dark:text-white text-lg">
-                        Status of Assets
-                    </span>
-                </div> 
-                <PieChart
-                    margin={{ top: -40, bottom: 0, left: 30, right:0}}
-                    series={[
-                        {
-                            data: assetFilteredChartData,
-                            innerRadius: 50,
-                            outerRadius: 120,
-                            paddingAngle: 2,
-                            cornerRadius: 10,
-                            startAngle: 0,
-                            endAngle: 360,
-                            cx:130,
-                            cy: 160,
-                            highlightScope: { faded: 'global', highlighted: 'item' },
-                            faded: { innerRadius: 75, additionalRadius: -40, color: 'grey' },
-                        },
-                    ]}
-                    width={340}
-                    height={300}
-                    slotProps={{
-                        legend: {
-                            direction: 'row',
-                            position: { vertical: 'bottom', horizontal: 'left' },
-                            hidden: false,
-                            labelStyle: {
-                                fontSize: 11,
-                            },
-                            itemMarkWidth: 8,
-                            itemMarkHeight: 10,
-                            markGap: 2,
-                            itemGap: 4,
-                        }
-                    }}
-                />
-            </div>
-            <div>
-                <div className='h-5 my-8 mx-20'>
-                    <span className="font-semibold font-display mx-4 underline leading-none text-gray-900 dark:text-white text-lg">
-                        Status of Assets
-                    </span>
-                </div> 
-                <PieChart
-                    margin={{ top: -40, bottom: 0, left: 40, right:0}}
-                    series={[
-                        {
-                            data: detailFilteredChartData,
-                            innerRadius: 50,
-                            outerRadius: 120,
-                            paddingAngle: 2,
-                            cornerRadius: 10,
-                            startAngle: 0,
-                            endAngle: 360,
-                            cx:130,
-                            cy: 160,
-                            highlightScope: { faded: 'global', highlighted: 'item' },
-                            faded: { innerRadius: 75, additionalRadius: -40, color: 'grey' },
-                        },
-                    ]}
-                    width={340}
-                    height={300}
-                    slotProps={{
-                        legend: {
-                            direction: 'row',
-                            position: { vertical: 'bottom', horizontal: 'middle' },
-                            hidden: false,
-                            labelStyle: {
-                                fontSize: 11,
-                            },
-                            itemMarkWidth: 8,
-                            itemMarkHeight: 10,
-                            markGap: 2,
-                            itemGap: 4,
-                        }
-                    }}
-                />
-            </div>
-            <div>
-                <div className='h-5 my-8 mx-20'>
-                    <span className="font-semibold font-display mx-4 underline leading-none text-gray-900 dark:text-white text-lg">
-                        Assign Status Count
-                    </span>
-                </div> 
-                <PieChart
-                    margin={{ top: -40, bottom: 0, left: 40, right:0}}
-                    series={[
-                        {
-                            data: assignFilteredChartData,
-                            innerRadius: 50,
-                            outerRadius: 120,
-                            paddingAngle: 2,
-                            cornerRadius: 10,
-                            startAngle: 0,
-                            endAngle: 360,
-                            cx:130,
-                            cy: 160,
-                            highlightScope: { faded: 'global', highlighted: 'item' },
-                            faded: { innerRadius: 75, additionalRadius: -40, color: 'grey' },
-                        },
-                    ]}
-                    width={340}
-                    height={300}
-                    slotProps={{
-                        legend: {
-                            direction: 'row',
-                            position: { vertical: 'bottom', horizontal: 'middle' },
-                            hidden: false,
-                            labelStyle: {
-                                fontSize: 11,
-                            },
-                            itemMarkWidth: 8,
-                            itemMarkHeight: 10,
-                            markGap: 2,
-                            itemGap: 4,
-                        }
-                    }}
-                />
-            </div>
-            </Stack>
-            <Stack>
-            <span className="font-semibold font-display leading-none text-gray-900 dark:text-white text-lg my-12 underline text-center">
-                        Individual Asset Counts
-                    </span>
-            <div style={{ position: "relative" }}>
-            <BarChart
-                width={1000}
-                height={300}
-                series={[{ data: typeCount, id: "assetTypeCountId" }]}
-                xAxis={[{ data: typeName, scaleType: "band" }]}
-            />
-            <div
-                style={{
-                    position: "absolute",
-                    bottom: "0",
-                    left: "50%",
-                    transform: "translateX(-70%) rotate(0deg)",
-                    textAlign: "center",
-                }}
-            >
-            </div>
+    <Stack>
+    <div className='flex'>
+        <div className='flex-1'>
+            <select className="block bg-transparent ml-6 font-display text-black-500 border-0 border-b-2 appearance-none dark:text-gray-400 dark:border-gray-200 focus:outline-none focus:ring-0 focus:border-gray-200 peer" onChange={handleSelectChange}>
+                <option value="0" className="text-black font-display bg-white">Overall</option>
+                {assetTypeData.map((assetType) => (
+                    <option key={assetType.id} value={assetType.id} className="text-black border-0 border-b-2 bg-white font-display">{assetType.asset_type_name}</option>
+                ))}
+            </select>
         </div>
-                
-            </Stack>                      
-        </Stack>
-    );
+        <div className='flex-1 mx-6 font-display'>
+            <h2 className='text-right text-sm font-semibold font-display text-gray-600 dark:text-white-600 rtl:text-right'>
+                Total Assets : {assetData?.total_assets ?? 0}
+            </h2>
+        </div>                
+    </div> 
+    <Stack direction="row">
+    <div>
+        <div className='h-5 my-8 mx-20'>
+            <span className="font-semibold font-display ml-10 leading-none text-gray-900 dark:text-white text-md">
+                Asset Status
+            </span>
+        </div> 
+        <PieChart
+            margin={{ top: -40, bottom: 0, left: 30, right:0}}
+            series={[
+                {
+                    data: assetFilteredChartData,
+                    innerRadius: 50,
+                    outerRadius: 120,
+                    paddingAngle: 2,
+                    cornerRadius: 10,
+                    startAngle: -110,
+                    endAngle: 110,
+                    cx:130,
+                    cy: 160,
+                    highlightScope: { faded: 'global', highlighted: 'item' },
+                    faded: { innerRadius: 75, additionalRadius: -40, color: 'grey' },
+                },
+            ]}
+            width={340}
+            height={220}
+            slotProps={{
+                legend: {
+                    direction: 'row',
+                    position: { vertical: 'bottom', horizontal: 'middle' },
+                    hidden: false,
+                    labelStyle: {
+                        fontSize: 11,
+                    },
+                    itemMarkWidth: 8,
+                    itemMarkHeight: 12  ,
+                    markGap: 2,
+                    itemGap: 8,
+                }
+            }}
+        />
+    </div>
+    <div>
+        <div className='h-5 my-8 mx-20'>
+            <span className="font-semibold font-display ml-10 leading-none text-gray-900 dark:text-white text-md">
+                Approval Status
+            </span>
+        </div> 
+        <PieChart
+            margin={{ top: -40, bottom: 0, left: 40, right:0}}
+            series={[
+                {
+                    data: detailFilteredChartData,
+                    innerRadius: 50,
+                    outerRadius: 120,
+                    paddingAngle: 2,
+                    cornerRadius: 10,
+                    startAngle: -110,
+                    endAngle: 110,
+                    cx:130,
+                    cy: 160,
+                    highlightScope: { faded: 'global', highlighted: 'item' },
+                    faded: { innerRadius: 75, additionalRadius: -40, color: 'grey' },
+                },
+            ]}
+            width={340}
+            height={220}
+            slotProps={{
+                legend: {
+                    direction: 'row',
+                    position: { vertical: 'bottom', horizontal: 'middle' },
+                    hidden: false,
+                    labelStyle: {
+                        fontSize: 12,
+                    },
+                    itemMarkWidth: 8,
+                    itemMarkHeight: 12,
+                    markGap: 2,
+                    itemGap: 8,
+                }
+            }}
+        />
+    </div>
+    <div>
+        <div className='h-5 my-8 mx-20'>
+            <span className="font-semibold font-display ml-8 leading-none text-gray-900 dark:text-white text-md">
+                Allocation Status
+            </span>
+        </div> 
+        <PieChart
+            margin={{ top: -40, bottom: 0, left: 35, right:0}}
+            series={[
+                {
+                    data: assignFilteredChartData,
+                    innerRadius: 50,
+                    outerRadius: 120,
+                    paddingAngle: 2,
+                    cornerRadius: 10,
+                    startAngle: -110,
+                    endAngle: 110,
+                    cx:130,
+                    cy: 160,
+                    highlightScope: { faded: 'global', highlighted: 'item' },
+                    faded: { innerRadius: 75, additionalRadius: -40, color: 'grey' },
+                },
+            ]}
+            width={340}
+            height={220}
+            slotProps={{
+                legend: {
+                    direction: 'row',
+                    position: { vertical: 'bottom', horizontal: 'middle' },
+                    hidden: false,
+                    labelStyle: {
+                        fontSize: 12,
+                    },
+                    itemMarkWidth: 8,
+                    itemMarkHeight: 12,
+                    markGap: 2,
+                    itemGap: 8,
+                }
+            }}
+        />
+    </div>
+    </Stack>
+    <Stack direction="row"> 
+    </Stack>                      
+</Stack>
+);
 }
 
 export default ChartHandlers;
+
