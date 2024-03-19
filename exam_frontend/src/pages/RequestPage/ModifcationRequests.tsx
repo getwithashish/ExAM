@@ -12,7 +12,7 @@ import React from "react";
 import DrawerViewRequest from "./DrawerViewRequest";
 
 
-const RequestPage: FC = function () {
+const ModificationRequests: FC = function () {
   const [assets, setAssets] = useState<any[]>([]);
   const [selectedAsset, setSelectedAsset] = useState<any | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -25,16 +25,14 @@ const RequestPage: FC = function () {
   const fetchAssets = () => {
     setLoading(true);
     Promise.all([
-      axiosInstance.get("/asset/?limit=10&asset_detail_status=CREATE_PENDING"),
+     
       axiosInstance.get("/asset/?limit=10&asset_detail_status=UPDATE_PENDING")
     ])
       .then((responses) => {
-        const createPendingAssets = responses[0].data.data.results;
-        console.log("createPendingAssets",createPendingAssets)
-        const updatePendingAssets = responses[1].data.data.results;
-
-        const mergedAssets = [...createPendingAssets, ...updatePendingAssets];
-        setAssets(mergedAssets);
+       
+        const updatePendingAssets = responses[0].data.data.results;
+        setAssets(updatePendingAssets);
+        console.log("update pending assets",updatePendingAssets)
       })
       .catch((error) => {
         console.error("Error fetching assets:", error);
@@ -107,7 +105,15 @@ const RequestPage: FC = function () {
               <svg className="w-3 h-3 text-gray-400 mx-1 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
               </svg>
-                <a href="#" className="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white font-display">Asset Approval Requests</a>
+                <a href="#" className="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white font-display">Approve Assets</a>
+              </div>
+            </li>
+            <li>
+            <div className="flex items-center">
+              <svg className="w-3 h-3 text-gray-400 mx-1 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+              </svg>
+                <a href="#" className="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white font-display">In Modification</a>
               </div>
             </li>
           </ol>
@@ -116,7 +122,7 @@ const RequestPage: FC = function () {
           <div className="mb-1 w-full">
             <div className="mb-4">              
               <h1 className="font-medium font-display mx-3 leading-none text-gray-900 dark:text-white text-3xl">
-                Asset Approval Requests
+                Asset Modification Requests
               </h1>
             </div>
             <div className="block items-center sm:flex">
@@ -169,7 +175,7 @@ const SearchRequests: FC<{ setSearchQuery: React.Dispatch<React.SetStateAction<s
         <TextInput
           id="search-request"
           name="search-request"
-          placeholder="Search by asset type.. eg.Laptop"
+          placeholder="Search for requests"
           onChange={handleSearchChange}
         />
       </div>
@@ -179,9 +185,9 @@ const SearchRequests: FC<{ setSearchQuery: React.Dispatch<React.SetStateAction<s
 
 const RequestTable: FC<{ assets: any[]; setSelectedAsset: (asset: any | null) => void;}> = function ({ assets, setSelectedAsset }) {
   return (
-    <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600 rounded-md">
+    <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600 rounded-md mx-10 ">
       <Table.Head className="bg-gray-100 dark:bg-gray-700 font-display">
-        <Table.HeadCell>Request type</Table.HeadCell>
+       
         <Table.HeadCell>Requester</Table.HeadCell>
         <Table.HeadCell>Request Date</Table.HeadCell>
         <Table.HeadCell>Actions</Table.HeadCell>
@@ -192,18 +198,7 @@ const RequestTable: FC<{ assets: any[]; setSelectedAsset: (asset: any | null) =>
             key={asset.asset_uuid}
             className="hover:bg-gray-100 dark:hover:bg-gray-700"
           >
-            <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
-              <div className="text-base font-medium text-gray-900 dark:text-white">
-                {asset.asset_detail_status === "CREATE_PENDING"
-                  ? "Creation Approval"
-                  : asset.asset_detail_status === "UPDATE_PENDING"
-                  ? "Updation Approval"
-                  : asset.asset_detail_status}
-              </div>
-              <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                {asset.asset_type.asset_type_name}
-              </div>
-            </Table.Cell>
+            
             <Table.Cell className="whitespace-nowrap p-4 text-base font-display font-md text-left text-gray-900 dark:text-white">
               {asset.requester.username}
             </Table.Cell>
@@ -488,6 +483,6 @@ const ViewRequestModal: FC<{ asset: any; handleApprove: () => void; handleReject
   );
 };
 
-export default RequestPage;
+export default ModificationRequests;
 
 

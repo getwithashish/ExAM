@@ -16,12 +16,16 @@ import DashboardPage from "./pages";
 import Login from "./pages/authentication/Login";
 import Assignableasset from "./pages/AssignAsset/assignableasset";
 import AssignPage from "./pages/RequestPage/AssignRequest";
-import RequestPage from "./pages/RequestPage/AssetRequest";
+import RequestPage from "./pages/RequestPage/ModifcationRequests";
 import { useAuth } from "./pages/authentication/AuthContext";
 import ProtectedRoute from "./pages/authentication/ProtectedRoute";
 import SSORedirect from "./pages/authentication/SSORedirect";
 import UpdatableAsset from "./pages/UpdatableAssetPage/UpdatableAsset";
 import RejectedAsset from "./pages/RejectedAssetPage/RejectedAsset";
+import ModificationRequests from "./pages/RequestPage/ModifcationRequests";
+import CreateRequestPage from "./pages/RequestPage/CreateRequest";
+import ApprovedRequestPage from "./pages/ApprovedRequest/ApprovedRequestPage";
+import MyApprovalPage from "./pages/MyApprovals/MyApprovalPage";
 
 const ExamRoutes = () => {
   const { authenticated, setAuthenticated, userRole } = useAuth();
@@ -66,15 +70,17 @@ const ExamRoutes = () => {
               <SidebarComponentNew>
                 <Routes>
                   <Route path="/dashboard" element={<DashboardPage />} />
-                  <Route path="/requests" element={<RequestPage />} />
+                  <Route path="/updatable_assets" element={<UpdatableAsset/>}/>
                   <Route
                     path="/assignable_asset"
                     element={<Assignableasset />}
                   />
+                  <Route path="/creation_requests" element={<CreateRequestPage />} />
+                  <Route path="/updation_requests" element={<ModificationRequests />} />
                   <Route path="/assign_requests" element={<AssignPage />} />
-                  <Route path="/updatable_assets" element={<UpdatableAsset/>}/>
                   <Route path="/rejected_assets" element={<RejectedAsset/>}/>
-
+                  <Route  path="/approved_requests" element={<ApprovedRequestPage />}/>
+                  <Route path="/my_approvals" element={<MyApprovalPage />}/>
                 </Routes>
               </SidebarComponentNew>
             }
