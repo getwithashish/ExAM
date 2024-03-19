@@ -21,44 +21,44 @@ from messages import (
     ASSET_SUCCESSFULLY_CREATED,
     USER_UNAUTHORIZED,
 )
-
-
+ 
+ 
 class AssetView(ListCreateAPIView):
-
+ 
     pagination_class = LimitOffsetPagination
     permission_classes = (IsAuthenticated,)
     serializer_class = AssetWriteSerializer
-
+ 
     def get_serializer_class(self):
         if self.request.method == "GET":
             return AssetReadSerializer  # For read operation
         return self.serializer_class
-
+ 
     def post(self, request):
         email_service = EmailService()
         serializer = AssetWriteSerializer(data=request.data)
-
+ 
         if serializer.is_valid():
             user_scope = request.user.user_scope
-
+ 
             if user_scope == "SYSTEM_ADMIN":
                 serializer.validated_data["asset_detail_status"] = "CREATE_PENDING"
                 message = ASSET_CREATE_PENDING_SUCCESSFUL
                 email_subject = "ASSET CREATION REQUEST SENT"
-
+ 
             elif user_scope == "LEAD":
                 serializer.validated_data["approved_by"] = request.user
                 serializer.validated_data["asset_detail_status"] = "CREATED"
                 message = ASSET_SUCCESSFULLY_CREATED
                 email_subject = "ASSET CREATION SUCCESSFUL"
-
+ 
             else:
                 return APIResponse(
                     data={},
                     message=USER_UNAUTHORIZED,
                     status=status.HTTP_401_UNAUTHORIZED,
                 )
-
+ 
             serializer.validated_data["requester"] = request.user
             serializer.save()
             json_string = JSONRenderer().render(serializer.data).decode("utf-8")
@@ -67,7 +67,7 @@ class AssetView(ListCreateAPIView):
                 "Serializer Data: {}".format(json_string),
                 ["astg7542@gmail.com"],
             )
-
+ 
             return APIResponse(
                 data=serializer.data,
                 message=message,
@@ -78,14 +78,14 @@ class AssetView(ListCreateAPIView):
             message=ASSET_CREATED_UNSUCCESSFUL,
             status=status.HTTP_400_BAD_REQUEST,
         )
-
+ 
     def list(self, request, *args, **kwargs):
         try:
             queryset = Asset.objects.all()
-
+ 
             # Get query parameters
             global_search = request.query_params.get("global_search")
-
+ 
             if global_search:
                 query = Q()
                 for field in [
@@ -116,19 +116,19 @@ class AssetView(ListCreateAPIView):
                     "updated_at",
                 ]:
                     query |= Q(**{f"{field}__icontains": global_search})
-
+ 
                 queryset = queryset.filter(query)
-
+ 
             else:
                 assign_status = request.query_params.get("assign_status")
                 asset_detail_status = request.query_params.get("asset_detail_status")
-
+ 
                 limit = request.query_params.get("limit")
                 offset = request.query_params.get("offset")
-
+ 
                 requester_id = request.query_params.get("requester_id")
                 approved_by_id = request.query_params.get("approved_by_id")
-
+ 
                 query_params = request.query_params
                 query_params_to_exclude = [
                     "limit",
@@ -141,33 +141,33 @@ class AssetView(ListCreateAPIView):
                 required_query_params = self.remove_fields_from_dict(
                     query_params, query_params_to_exclude
                 )
-
-            if limit:
+ 
+                if limit:
                     self.pagination_class.default_limit = limit
-            if offset:
+                if offset:
                     self.pagination_class.default_offset = offset
-
-            if asset_detail_status:
+ 
+                if asset_detail_status:
                     statuses = asset_detail_status.split("|")
                     queryset = queryset.filter(asset_detail_status__in=statuses)
-
-            if assign_status:
+ 
+                if assign_status:
                     statuses = assign_status.split("|")
                     queryset = queryset.filter(assign_status__in=statuses)
-
-            filter_kwargs = {}
-            for field, value in required_query_params.items():
+ 
+                filter_kwargs = {}
+                for field, value in required_query_params.items():
                     filter_kwargs[f"{field}__icontains"] = value
-
-            if requester_id:
+ 
+                if requester_id:
                     filter_kwargs["requester_id"] = requester_id
-            if approved_by_id:
+                if approved_by_id:
                     filter_kwargs["approved_by_id"] = approved_by_id
-            queryset = queryset.filter(**filter_kwargs)
-
+                queryset = queryset.filter(**filter_kwargs)
+ 
             # Apply pagination
             page = self.paginate_queryset(queryset)
-
+ 
             if page is not None:
                 serializer = AssetReadSerializer(page, many=True)
                 paginated_data = self.get_paginated_response(serializer.data)
@@ -176,7 +176,7 @@ class AssetView(ListCreateAPIView):
                     message=ASSET_LIST_SUCCESSFULLY_RETRIEVED,
                     status=status.HTTP_200_OK,
                 )
-
+ 
             serializer = AssetReadSerializer(
                 queryset, many=True
             )  # Moved assignment here
@@ -192,15 +192,15 @@ class AssetView(ListCreateAPIView):
                 message=ASSET_LIST_RETRIEVAL_UNSUCCESSFUL,
                 status=status.HTTP_400_BAD_REQUEST,
             )
-
+ 
     def remove_fields_from_dict(self, input_dict, fields_to_remove):
         return {
             key: value
             for key, value in input_dict.items()
             if key not in fields_to_remove
         }
-
-
+ 
+ 
 @receiver(pre_save, sender=Asset)
 def log_asset_changes(sender, instance, **kwargs):
     old_instance = Asset.objects.filter(pk=instance.pk).values().first()
@@ -216,7 +216,7 @@ def log_asset_changes(sender, instance, **kwargs):
             if field != "asset_uuid"
         }
         asset_log_data = json.dumps(changes, indent=4, sort_keys=True, default=str)
-
+ 
         if changes:
             with transaction.atomic():
                 asset_instance = Asset.objects.select_for_update().get(pk=instance.pk)
