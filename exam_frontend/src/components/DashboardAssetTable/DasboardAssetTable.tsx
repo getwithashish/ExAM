@@ -79,6 +79,11 @@ const [showUpload, setShowUpload] = useState(false);
         >
           <UploadComponent />
         </SideDrawerComponent>
+        <div className="rounded-lg bg-gray-50 shadow-md dark:bg-gray-800 mx-10" style={{
+boxShadow
+:
+'0 0 10px rgba(0, 0, 0, 0.2)'
+}}>
   <Table
     columns={columns}
     dataSource={assetData}

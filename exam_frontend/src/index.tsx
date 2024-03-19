@@ -9,7 +9,7 @@ import { BrowserRouter } from "react-router-dom";
 import DashboardPage from "./pages";
 import Login from "./pages/authentication/Login";
 import Logout from "./pages/authentication/Logout";
-import RequestPage from "./pages/RequestPage/AssetRequest";
+import RequestPage from "./pages/RequestPage/ModifcationRequests";
 import AssignPage from "./pages/RequestPage/AssignRequest";
 import ExamRoutes from "./ExamRoutes";
 import Assignableasset from "./pages/AssignAsset/assignableasset";
