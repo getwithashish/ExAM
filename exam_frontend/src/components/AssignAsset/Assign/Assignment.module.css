@@ -1,11 +1,12 @@
 .square-box {
     width: 300px;
-    
+    background-color:white;
     padding: 20px;
   }
 
 .square-box:hover{
   box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.1);
+
 }
   
   .search-input {
@@ -30,13 +31,27 @@
     background-color: #0056b3;
   }
   
-  .info{
+  /* .info{
     margin: 10px;
-    box-shadow: 5px 0 5px 0 rgba(0, 0, 0, 0.1);
+    
     padding: 10px;
 
-  }
+  } */
 
   .result{
     display: none;
+  }
+
+  .info {
+    margin: 10px;
+    padding: 10px;
+    background-color:white; /* Light gray background */
+    border-radius: 5px; /* Rounded corners */
+    
+  }
+  
+  /* Hover effect */
+  .info:hover {
+    background-color: #e0e0e0; /* Lighter gray on hover */
+   
   }
