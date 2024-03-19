@@ -92,6 +92,7 @@ boxShadow
     className="mainTable"
     pagination={false}
     bordered={false}
+    scroll={{ y: 600 }}
     handleRowClick={handleRowClick}
     style={{
       
@@ -100,7 +101,7 @@ boxShadow
       scrollbarWidth: "thin"
       
     }}
-    scroll={{ x: 'max-content', y: 300 }}
+    
    
   rowKey={(record:DataType)=>record.key}
     expandable={{

@@ -145,7 +145,7 @@ const SidebarComponentNew = ({ children }) => {
         <div className="w-full p-2.5 lg:px-5 lg:pl-3">
           <div className="flex items-center justify-between ">
             <div className="text-left  font-display text-lg p-0 mb-10">
-              Asset Management System
+              <b>Asset Management System</b>
             </div>
 
               {/* </Navbar.Brand> */}
