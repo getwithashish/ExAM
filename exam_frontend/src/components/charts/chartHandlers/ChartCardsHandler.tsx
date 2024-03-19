@@ -41,7 +41,7 @@ const AssetCountComponent = () => {
     useEffect(() => {
         const intervalId = setInterval(() => {
             setCurrentAssetIndex(prevIndex => (prevIndex + 1) % totalAssetTypes);
-        }, 3000); 
+        }, 2000); 
         return () => {
             clearInterval(intervalId); 
         };
