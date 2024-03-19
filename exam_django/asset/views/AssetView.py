@@ -155,15 +155,15 @@ class AssetView(ListCreateAPIView):
                     statuses = assign_status.split("|")
                     queryset = queryset.filter(assign_status__in=statuses)
 
-                filter_kwargs = {}
-                for field, value in required_query_params.items():
+            filter_kwargs = {}
+            for field, value in required_query_params.items():
                     filter_kwargs[f"{field}__icontains"] = value
 
-                if requester_id:
+            if requester_id:
                     filter_kwargs["requester_id"] = requester_id
-                if approved_by_id:
+            if approved_by_id:
                     filter_kwargs["approved_by_id"] = approved_by_id
-                queryset = queryset.filter(**filter_kwargs)
+            queryset = queryset.filter(**filter_kwargs)
 
             # Apply pagination
             page = self.paginate_queryset(queryset)
