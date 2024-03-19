@@ -140,32 +140,24 @@ const SidebarComponentNew = ({ children }) => {
       >
         {/* <ExampleNavbar /> */}
 
-        <div className="w-full p-2.5 lg:px-5 lg:pl-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <img
-                src="../../public/images/xam_logo.png"
-                alt="Logo"
-                className="mr-12 -mt-10 -ml-10  md:-mt-10 md:-ml-10 w-30 h-10 sm:w-38 sm:h-16" // Adjust width and height as needed
-              />
+        <div className="w-full p-2.5 lg:px-5 lg:pl-3 p=0">
+          <div className="flex items-center justify-between p-0">
+            <div className="text-left  font-display text-lg p-0">
+              Asset Management System
+            </div>
 
               {/* </Navbar.Brand> */}
-            </div>
+            
             <div className="flex items-center gap-3 -mr-10">
               <div
                 className={`flex items-center gap-3 ${styles["button-components"]}`}
               >
-                {/* <AccountMenu></AccountMenu> */}
-                {/*             
-              <Button>
-                <FaBell />
-              </Button> */}
-
-                {/* <DarkThemeToggle /> */}
+               
+               
 
                 {jwtPayload && jwtPayload.username && (
                   <div className={styles["username-container"]}>
-                    {/* <MenuListComposition /> */}
+                 
                     <span className={styles["username"]}>
                       Hi, {jwtPayload.username}
                     </span>
@@ -215,12 +207,7 @@ const SidebarComponentNew = ({ children }) => {
           }}
         >
           <div className="demo-logo-vertical" />
-          {/* <Menu
-            theme="light"
-            mode="inline"
-            defaultSelectedKeys={["4"]}
-            items={items}
-          /> */}
+          
           <Menu theme="light" mode="inline" className="text-base">
             <Menu.Item icon={<PieChartOutlined />}>
               <Link to="/exam/dashboard">Dashboard</Link>
@@ -244,10 +231,10 @@ const SidebarComponentNew = ({ children }) => {
                 title="Approve Assets"
               >
                 <Menu.Item icon={<CarryOutOutlined />}>
-                  <Link to="/exam/requests">In Creation</Link>
+                  <Link to="/exam/creation_requests">In Creation</Link>
                 </Menu.Item>
                 <Menu.Item icon={<CarryOutOutlined />}>
-                  <Link to="/exam/requests">In Modification</Link>
+                  <Link to="/exam/updation_requests">In Modification</Link>
                 </Menu.Item>
                 <Menu.Item icon={<CarryOutOutlined />}>
                   <Link to="/exam/assign_requests">In Allocation</Link>
@@ -274,9 +261,7 @@ const SidebarComponentNew = ({ children }) => {
               ""
             )}
 
-            {/* <Menu.Item onClick={() => handleLogout()} icon={<LogoutOutlined />}>
-              Logoutf
-            </Menu.Item> */}
+           
           </Menu>
         </Sider>
         <Content>

@@ -3,7 +3,7 @@ import { Badge, Button, Dropdown, Input, Space, Table, TableColumnsType } from "
 import DrawerComponent from "../../DrawerComponent/DrawerComponent";
 import { SearchOutlined } from "@ant-design/icons";
 import "./AssetTable.css";
-import CardComponent from "../../CardComponent/CardComponent";
+import CardComponent from "./CardComponent/CardComponent";
 import { CloseOutlined } from "@ant-design/icons";
 import axiosInstance from "../../config/AxiosConfig";
 import { isError, useQuery } from "@tanstack/react-query";
@@ -71,12 +71,9 @@ const [showUpload, setShowUpload] = useState(false);
   return (
     <>
       <div className="mainHeading" style={{ background:"white"}}>
-        <div className=" font-display">Assign an Asset</div>
+        <div className=" font-display">Allocate Assets</div>
       </div>
-     
-      <div style={{ background:"white"}}>
-        <TableNavbar showUpload={showUpload} setShowUpload={setShowUpload} />
-      </div>
+    
 
       <div style={{ position: "relative", display: "inline-block", background:"white"}}>
         <SideDrawerComponent

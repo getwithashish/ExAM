@@ -1,5 +1,5 @@
-import { FC, useEffect, useState } from 'react';
-import {   
+import { FC, useEffect, useState } from "react";
+import {
   Button,
   Label,
   Table,
@@ -7,31 +7,35 @@ import {
   TextInput,
 } from "flowbite-react";
 import { HiPencilAlt } from "react-icons/hi";
-import axiosInstance from '../../config/AxiosConfig';
-import React from 'react';
+import axiosInstance from "../../config/AxiosConfig";
+import React from "react";
 import DrawerViewRequest from "./DrawerViewRequest";
 
 
-const AssignPage: FC = function () {
-  const [assignRequests, setAssignRequests] = useState<any[]>([]);
-  const [selectedAssignRequest, setSelectedAssignRequest] = useState<any | null >(null);
+const ModificationRequests: FC = function () {
+  const [assets, setAssets] = useState<any[]>([]);
+  const [selectedAsset, setSelectedAsset] = useState<any | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
-    fetchAssignRequests();
+    fetchAssets();
   }, []);
 
-  const fetchAssignRequests = () => {
+  const fetchAssets = () => {
     setLoading(true);
-    axiosInstance.get('/asset/?limit=10&assign_status=ASSIGN_PENDING')
-      .then(response => {
-        console.log("hi")
-        setAssignRequests(response.data.data.results);
-        console.log(response.data.data.results);
+    Promise.all([
+     
+      axiosInstance.get("/asset/?limit=10&asset_detail_status=UPDATE_PENDING")
+    ])
+      .then((responses) => {
+       
+        const updatePendingAssets = responses[0].data.data.results;
+        setAssets(updatePendingAssets);
+        console.log("update pending assets",updatePendingAssets)
       })
-      .catch(error => {
-        console.error('Error fetching assign requests:', error);
+      .catch((error) => {
+        console.error("Error fetching assets:", error);
       })
       .finally(() => {
         setLoading(false);
@@ -39,54 +43,54 @@ const AssignPage: FC = function () {
   };
 
   const handleApprove = () => {
-    if (selectedAssignRequest) {
+    if (selectedAsset) {
       const approvalData = {
-        approval_type: 'ASSIGN_STATUS',
-        asset_uuid: selectedAssignRequest.asset_uuid,
-        comments: selectedAssignRequest.approverNotes,
-      }
-
-      axiosInstance.post('/asset/approve_asset', approvalData)
-        .then(() => {
-          fetchAssignRequests();
-          setSelectedAssignRequest(null)
-        })
-        .catch(error => {
-          console.error('Error assigning asset:', error); 
-        })
-    }
-  }
-  
-  const handleReject = () => {
-    if (selectedAssignRequest){
-      const rejectedData = {
-        data:{
-          approval_type: 'ASSIGN_STATUS',
-          asset_uuid: selectedAssignRequest.asset_uuid,
-          comments: selectedAssignRequest.approverNotes,
-      }
-    }
+        approval_type: "ASSET_DETAIL_STATUS",
+        asset_uuid: selectedAsset.asset_uuid,
+        comments: selectedAsset.approverNotes,
+      };
 
       axiosInstance
-      .delete('/asset/approve_asset', rejectedData)
-      .then(()=>{
-        fetchAssignRequests();
-        setSelectedAssignRequest(null)
-      })
-      .catch((error) =>{
-        console.error('Error rejecting assigning asset:', error);
-      })
+        .post("/asset/approve_asset", approvalData)
+        .then(() => {
+          fetchAssets();
+          setSelectedAsset(null);
+        })
+        .catch((error) => {
+          console.error("Error approving asset:", error);
+        });
     }
-  }
+  };
 
-  const filteredAssigns = assignRequests.filter((assignRequest) => 
-  assignRequest.product_name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const handleReject = () => {
+    if (selectedAsset) {
+      const rejectedData = {
+        data: {
+          approval_type: "ASSET_DETAIL_STATUS",
+          asset_uuid: selectedAsset.asset_uuid,
+          comments: selectedAsset.approverNotes,
+        }
+      };
+  
+      axiosInstance
+        .delete("/asset/approve_asset", rejectedData)
+        .then(() => {
+          fetchAssets();
+          setSelectedAsset(null);
+        })
+        .catch((error) => {
+          console.error("Error rejecting asset:", error);
+        });
+    }
+  };
 
+  const filteredAssets = assets.filter((asset) =>
+  asset.asset_type.asset_type_name.toLowerCase().includes(searchQuery.toLowerCase())
+);
   return (
     <React.Fragment>
-       <div className="bg-white py-2">
-       <nav className="flex mb-4 mx-4 py-4" aria-label="Breadcrumb">
+      <div className="bg-white py-2">
+        <nav className="flex mb-4 mx-4 py-4" aria-label="Breadcrumb">
           <ol className="inline-flex items-center space-x-1 md:space-x-3 rtl:space-x-reverse">
             <li className="inline-flex items-center font-display">
               <a href="#" className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
@@ -109,51 +113,51 @@ const AssignPage: FC = function () {
               <svg className="w-3 h-3 text-gray-400 mx-1 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
               </svg>
-                <a href="#" className="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white font-display">In Allocation</a>
+                <a href="#" className="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white font-display">In Modification</a>
               </div>
             </li>
           </ol>
         </nav>
-          <div className="block items-center justify-between border-b border-gray-200 bg-white px-2 dark:border-gray-700 dark:bg-gray-800 sm:flex mx-2 my-2">
-            <div className="mb-1 w-full">
-              <div className="mb-4">              
-                <h1 className="font-medium font-display mx-3 leading-none text-gray-900 dark:text-white text-3xl">
-                  Allocation Requests
-                </h1>
-              </div>
-              <div className="block items-center sm:flex">
-                <SearchRequests setSearchQuery={setSearchQuery} />
-              </div>
+        <div className="block items-center justify-between border-b border-gray-200 bg-white px-2 dark:border-gray-700 dark:bg-gray-800 sm:flex mx-2 my-2">
+          <div className="mb-1 w-full">
+            <div className="mb-4">              
+              <h1 className="font-medium font-display mx-3 leading-none text-gray-900 dark:text-white text-3xl">
+                Asset Modification Requests
+              </h1>
+            </div>
+            <div className="block items-center sm:flex">
+              <SearchRequests setSearchQuery={setSearchQuery} />
             </div>
           </div>
-          <div className="flex flex-col">
-            <div className="overflow-x-auto">
-              {loading ? (
-                <div className="flex justify-center items-center h-full">
-                  <p>Loading...</p>
-                </div>
-              ) : (
-                <div className="inline-block w-full align-middle">
-                  <div className="overflow-hidden shadow-2xl">
-                  <AssignRequestTable 
-                    assignRequests={filteredAssigns} 
-                    setSelectedAssignRequest={setSelectedAssignRequest} 
+        </div>
+        <div className="flex flex-col">
+          <div className="overflow-x-auto">
+            {loading ? (
+              <div className="flex justify-center items-center h-full">
+                <p>Loading...</p>
+              </div>
+            ) : (
+              <div className="inline-block w-full align-middle mx-2">
+                <div className="overflow-hidden">
+                  <RequestTable
+                    assets={filteredAssets}
+                    setSelectedAsset={setSelectedAsset}
                   />
                 </div>
               </div>
             )}
           </div>
         </div>
-        {selectedAssignRequest && (
+        {selectedAsset && (
           <ViewRequestModal
-            assignRequest={selectedAssignRequest}
-            handleApprove={handleApprove} 
-            handleReject={handleReject} 
-            onClose={() => setSelectedAssignRequest(null)} 
+            asset={selectedAsset}
+            handleApprove={handleApprove}
+            handleReject={handleReject}
+            onClose={() => setSelectedAsset(null)}
           />
         )}
-        </div>
-      </React.Fragment>
+      </div>      
+    </React.Fragment>
   );
 };
 
@@ -178,41 +182,34 @@ const SearchRequests: FC<{ setSearchQuery: React.Dispatch<React.SetStateAction<s
     </form>
   );
 };
-const AssignRequestTable: FC<{ assignRequests: any[], setSelectedAssignRequest: (assignRequest: any | null)=>void }> = function ({ assignRequests, setSelectedAssignRequest }) {  
+
+const RequestTable: FC<{ assets: any[]; setSelectedAsset: (asset: any | null) => void;}> = function ({ assets, setSelectedAsset }) {
   return (
-    <Table className="min-w-full divide-y font-display divide-gray-200 dark:divide-gray-600 mx-2 my-2 rounded-lg">
-      <Table.Head className="bg-gray-100 dark:bg-gray-700">
-        <Table.HeadCell>Asset</Table.HeadCell>
+    <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600 rounded-md mx-10">
+      <Table.Head className="bg-gray-100 dark:bg-gray-700 font-display">
+       
         <Table.HeadCell>Requester</Table.HeadCell>
-        <Table.HeadCell>Assignee</Table.HeadCell>
         <Table.HeadCell>Request Date</Table.HeadCell>
         <Table.HeadCell>Actions</Table.HeadCell>
       </Table.Head>
-      <Table.Body className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
-        {assignRequests.map(assignRequest => (
-          <Table.Row key={assignRequest.asset_uuid} className="hover:bg-gray-100 dark:hover:bg-gray-700">
-            <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
-              <div className="text-base font-normal text-gray-900 dark:text-white">
-                {assignRequest.asset_type.asset_type_name}
-              </div>
-              <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                {assignRequest.product_name}
-              </div>
+      <Table.Body className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800 font-display">
+        {assets.map((asset) => (
+          <Table.Row
+            key={asset.asset_uuid}
+            className="hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            
+            <Table.Cell className="whitespace-nowrap p-4 text-base font-display font-md text-left text-gray-900 dark:text-white">
+              {asset.requester.username}
             </Table.Cell>
-            <Table.Cell className="whitespace-nowrap p-4 text-base font-md text-gray-900 dark:text-white">
-              {assignRequest.requester.username}
-            </Table.Cell>
-            <Table.Cell className="whitespace-nowrap p-4 text-base font-sm text-gray-900 dark:text-white">
-              {assignRequest.custodian?.employee_name}
-            </Table.Cell>
-            <Table.Cell className="whitespace-nowrap p-4 text-base font-sm text-gray-900 dark:text-white">
-              {new Date(assignRequest.created_at).toLocaleDateString()}
+            <Table.Cell className="whitespace-nowrap p-4 text-base font-display font-xs text-gray-900 dark:text-white">
+              {new Date(asset.created_at).toLocaleDateString()}
             </Table.Cell>
             <Table.Cell className="space-x-2 whitespace-nowrap p-4">
               <div className="flex items-center gap-x-3">
-                <Button color="primary" onClick={() => setSelectedAssignRequest(assignRequest)}>
+                <Button color="primary" onClick={() => setSelectedAsset(asset)}>
                   <HiPencilAlt className="mr-2 text-lg font-display" />
-                  View
+                  View 
                 </Button>
               </div>
             </Table.Cell>
@@ -223,8 +220,8 @@ const AssignRequestTable: FC<{ assignRequests: any[], setSelectedAssignRequest: 
   );
 };
 
-const ViewRequestModal: FC<{ assignRequest: any, handleApprove: () => void, handleReject: () => void, onClose: () => void }> = function ({ assignRequest, handleApprove, handleReject, onClose }) {
-   
+const ViewRequestModal: FC<{ asset: any; handleApprove: () => void; handleReject: () => void; onClose: () => void;}> = function ({ asset, handleApprove, handleReject, onClose }) {
+
   const [comments, setComments] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [actionType, setActionType] = useState("");
@@ -234,169 +231,155 @@ const ViewRequestModal: FC<{ assignRequest: any, handleApprove: () => void, hand
     setModalOpen(!modalOpen);
   };
 
-  const assignRequestFields = [
+  const formFields = [
     {
       id: "assetId",
       label: "ASSET ID",
       name: "assetId",
-      value: assignRequest.asset_id,
+      value: asset.asset_id,
       disabled: true
     },
     {
       id: "version",
       label: "VERSION",
       name: "version",
-      value: assignRequest.version,
+      value: asset.version,
       disabled: true
     },
     {
       id: "assetCategory",
       label: "CATEGORY",
       name: "assetCategory",
-      value: assignRequest.asset_category,
+      value: asset.asset_category,
+      disabled: true
+    },
+    {
+      id: "productName",
+      label: "PRODUCT NAME",
+      name: "productName",
+      value: asset.product_name,
       disabled: true
     },
     {
       id: "modelNumber",
       label: "MODEL NUMBER",
       name: "modelNumber",
-      value: assignRequest.model_number,
+      value: asset.model_number,
       disabled: true
     },
     {
       id: "serialNumber",
       label: "SERIAL NUMBER",
       name: "serialNumber",
-      value: assignRequest.serial_number,
+      value: asset.serial_number,
       disabled: true
     },
     {
       id: "owner",
       label: "OWNER",
       name: "owner",
-      value: assignRequest.owner,
+      value: asset.owner,
       disabled: true
     },
     {
       id: "dop",
       label: "D.O.P",
       name: "dop",
-      value: assignRequest.date_of_purchase,
+      value: asset.date_of_purchase,
       disabled: true
     },
     {
       id: "warranty_period",
       label: "WARRANTY",
       name: "warranty_period",
-      value: assignRequest.warranty_period,
+      value: asset.warranty_period,
       disabled: true
     },
     {
       id: "os",
       label: "OS",
       name: "os",
-      value: assignRequest.os,
+      value: asset.os,
       disabled: true
     },
     {
       id: "os_version",
       label: "OS VERSION",
       name: "os_version",
-      value: assignRequest.os_version,
+      value: asset.os_version,
       disabled: true
     },
     {
       id: "mobile_os",
       label: "MOBILE OS",
       name: "mobile_os",
-      value: assignRequest.mobile_os,
+      value: asset.mobile_os,
       disabled: true
     },
     {
       id: "processor",
       label: "PROCESSOR",
       name: "processor",
-      value: assignRequest.processor,
+      value: asset.processor,
+      disabled: true
+    },
+    {
+      id: "p_gen",
+      label: "PROCESSOR GEN",
+      name: "p_gen",
+      value: asset.processor_gen,
       disabled: true
     },
     {
       id: "storage",
       label: "STORAGE",
       name: "storage",
-      value: assignRequest.storage,
+      value: asset.storage,
       disabled: true
     },
     {
       id: "configuration",
       label: "CONFIGURATION",
       name: "configuration",
-      value: assignRequest.configuration,
+      value: asset.configuration,
       disabled: true
     },
     {
       id: "accessories",
       label: "ACCESSORIES",
       name: "accessories",
-      value: assignRequest.accessories,
+      value: asset.accessories,
       disabled: true
     },
     {
       id: "location",
       label: "LOCATION",
       name: "location",
-      value: assignRequest.location.location_name,
+      value: asset.location.location_name,
       disabled: true
     },
     {
       id: "invoice_location",
       label: "INV.LOCATION",
       name: "invoice_location",
-      value: assignRequest.location.location_name,
+      value: asset.location.location_name,
       disabled: true
     },
     {
       id: "business_unit",
       label: "BUSINESS UNIT",
       name: "business_unit",
-      value: assignRequest.business_unit.business_unit_name,
-      disabled: true
-    },
-    {
-      id: "assignee",
-      label: "ASSIGNEE",
-      name: "assignee",
-      value: assignRequest.custodian?.employee_name,
+      value: asset.business_unit.business_unit_name,
       disabled: true
     },
   ];
 
   return (
-    <div>
-      <nav className="flex mb-4 mx-4 my-0 py-4" aria-label="Breadcrumb">
-        <ol className="inline-flex items-center space-x-1 md:space-x-3 rtl:space-x-reverse">
-          <li className="inline-flex items-center font-display">
-            <a href="#" className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
-              <svg className="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
-              </svg>
-                Dashboard
-              </a>
-            </li>
-            <li>
-          <div className="flex items-center">
-            <svg className="w-3 h-3 text-gray-400 mx-1 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
-            </svg>
-              <a href="#" className="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white font-display">Approve Assets</a>
-            </div>
-          </li>
-        </ol>
-      </nav>
-    <DrawerViewRequest title="Assign Details" onClose={onClose} visible={true}>
+    <DrawerViewRequest title="Request Details" onClose={onClose} visible={true}>
       <div>
       <form>
         <div className="grid font-display grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">
-          {assignRequestFields.map((field, index) => (
+          {formFields.map((field, index) => (
             <div key={index}>
               <Label htmlFor={field.id}>{field.label}</Label>
               <TextInput
@@ -414,7 +397,7 @@ const ViewRequestModal: FC<{ assignRequest: any, handleApprove: () => void, hand
               id="notes"
               name="notes"
               rows={1}
-              value={assignRequest.notes}
+              value={asset.notes}
               className="mt-1"
             />
           </div>
@@ -424,7 +407,7 @@ const ViewRequestModal: FC<{ assignRequest: any, handleApprove: () => void, hand
               id="approverNotes"
               name="approverNotes"
               rows={1}
-              value={assignRequest.approval_status_message}
+              value={asset.approval_status_message}
               onChange={(e) => setComments(e.target.value)}
               className="mt-1"
             />
@@ -445,7 +428,8 @@ const ViewRequestModal: FC<{ assignRequest: any, handleApprove: () => void, hand
         onClick={() => toggleModal("reject")}
       >
         Reject
-      </button>  
+      </button>
+
       {modalOpen && (
   <div
     id="popup-modal"
@@ -467,27 +451,27 @@ const ViewRequestModal: FC<{ assignRequest: any, handleApprove: () => void, hand
           d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
         />
       </svg>
-      <h3 className="mb-5 text-lg font-display font-normal text-gray-500 dark:text-gray-400">
+      <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
         Are you sure you want to {actionType}?
       </h3>
       {actionType === "approve" ? (
         <button
           onClick={handleApprove}
-          className="text-white font-display bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+          className="text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
         >
           Yes, I'm sure
         </button>
       ) : (
         <button
           onClick={handleReject}
-          className="text-white bg-red-600 font-display hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+          className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
         >
           Yes, I'm sure
         </button>
       )}
       <button
         onClick={() => setModalOpen(false)}
-        className="py-2.5 px-5 ms-3 text-sm font-display font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+        className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
       >
         Cancel
       </button>
@@ -495,10 +479,10 @@ const ViewRequestModal: FC<{ assignRequest: any, handleApprove: () => void, hand
   </div>
 )}
       </div>
-    </DrawerViewRequest>,
-    </div>
+    </DrawerViewRequest>
   );
 };
 
+export default ModificationRequests;
 
-export default AssignPage;
+
