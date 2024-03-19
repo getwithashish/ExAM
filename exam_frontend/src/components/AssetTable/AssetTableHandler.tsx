@@ -103,6 +103,49 @@ const AssetTableHandler = ({ isRejectedPage, queryParamProp,heading }) => {
           key: "model_number",
         },
         { title: "updated_at", dataIndex: "updated_at", key: "updated_at" },
+        { title: "Asset Type", dataIndex: "asset_type", key: "asset_type" },
+
+        { title: "Location", dataIndex: "location", key: "location" },
+        {
+          title: "Invoice Location",
+          dataIndex: "invoice_location",
+          key: "invoice_location",
+        },
+        {
+          title: "Warranty Period",
+          dataIndex: "warranty_period",
+          key: "warranty_period",
+        },
+        {
+          title: "Version",
+          dataIndex: "version",
+          key: "version",
+        },
+        {
+          title: "Configuration",
+          dataIndex: "configuration",
+          key: "configuration",
+        },
+        {
+          title: "Storage",
+          dataIndex: "storage",
+          key: "storage",
+        },
+        {
+          title: "Os",
+          dataIndex: "os",
+          key: "os",
+        },
+        {
+          title: "Owner",
+          dataIndex: "owner",
+          key: "owner",
+        },
+        {
+          title: "Notes",
+          dataIndex: "notes",
+          key: "notes",
+        },
       ];
 
       console.log("logsdata", logsData);
@@ -136,6 +179,17 @@ const AssetTableHandler = ({ isRejectedPage, queryParamProp,heading }) => {
               updated_at: formattedUpdatedAt,
               date_of_purchase: asset_log.date_of_purchase,
               date: asset_log.date_of_purchase,
+              asset_type: asset_log.asset_type.asset_type_name,
+              location: asset_log.location.location_name,
+              invoice_location:
+                asset_log.invoice_location.invoice_location_name,
+                warranty_period:asset_log.warranty_period,
+                version:asset_log.version,
+                configuration:asset_log.configuration,
+                storage:asset_log.storage,
+                os:asset_log.os,
+                owner:asset_log.owner,
+                notes:asset_log.notes,
               name: asset_log.product_name,
               upgradeNum: asset_log.assign_status,
             },
