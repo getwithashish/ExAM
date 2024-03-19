@@ -136,29 +136,29 @@ class AssetView(ListCreateAPIView):
                 "assign_status",
                 "asset_detail_status",
                 "requester_id",
-                "approved_by_id"
+                "approved_by_id",
             ]
             required_query_params = self.remove_fields_from_dict(
                 query_params, query_params_to_exclude
             )
 
-                if limit:
-                    self.pagination_class.default_limit = limit
-                if offset:
-                    self.pagination_class.default_offset = offset
+            if limit:
+                self.pagination_class.default_limit = limit
+            if offset:
+                self.pagination_class.default_offset = offset
 
-                if asset_detail_status:
-                    statuses = asset_detail_status.split("|")
-                    queryset = queryset.filter(asset_detail_status__in=statuses)
+            if asset_detail_status:
+                statuses = asset_detail_status.split("|")
+                queryset = queryset.filter(asset_detail_status__in=statuses)
 
-                if assign_status:
-                    statuses = assign_status.split("|")
-                    queryset = queryset.filter(assign_status__in=statuses)
+            if assign_status:
+                statuses = assign_status.split("|")
+                queryset = queryset.filter(assign_status__in=statuses)
 
             filter_kwargs = {}
             for field, value in required_query_params.items():
                 filter_kwargs[f"{field}__icontains"] = value
-            
+
             if requester_id:
                 filter_kwargs["requester_id"] = requester_id
             if approved_by_id:
