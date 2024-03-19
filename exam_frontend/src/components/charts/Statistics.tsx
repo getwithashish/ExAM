@@ -1,4 +1,5 @@
 import BarAnimation from './chartHandlers/BarChartHandler';
+import AssetCountComponent from './chartHandlers/ChartCardsHandler';
 import ChartHandlers from './chartHandlers/ChartHandlers';
 
 export const Statistics = () => {
@@ -18,28 +19,29 @@ export const Statistics = () => {
               </ol>
           </nav>
       </div> 
-      <div className="rounded-lg bg-gray-50 shadow-md dark:bg-gray-800 xl:p-4 mx-10 py-2">
-        <div className="mb-3 flex items-center justify-between">
-          <div className="shrink-0 my-4 mx-4">
-            <span className="font-semibold font-display mx-3 text-grey-900 dark:text-white text-3xl">
-              Asset Overview
-            </span>
+      <div className="shrink-0 my-4 mx-4 mt-10">
+          <span className="font-semibold font-display mx-6 text-grey-900 dark:text-white text-3xl">
+            Asset Overview
+          </span>
+      </div>
+      <div className="rounded-lg bg-gray-50 shadow-md dark:bg-gray-800 xl:p-4 mx-10 py-2" style={{boxShadow:'0 0 20px rgba(0, 0, 0, 0.2)'}}>
+        <div className="mx-4 flex">
+          <div className='flex-1'>
+            <AssetCountComponent/>            
           </div>
-        </div>
-        <div className="mx-4">
-          <ChartHandlers/>
+          <div className='flex-2'>
+            <ChartHandlers/>
+          </div>          
         </div>        
       </div>
-      <div className="rounded-lg bg-gray-50 shadow-md dark:bg-gray-800 xl:p-4 mx-10 py-2 mt-8">
-        <div className="mb-3 flex items-center justify-between">
-          <div className="shrink-0 my-4 mx-4">
-            <span className="font-semibold font-display mx-3 text-grey-900 dark:text-white text-3xl">
-              Individual Asset Count
-            </span>
-          </div>
-        </div>
+      <div className="shrink-0 my-4 mx-4 mt-10">
+          <span className="font-semibold font-display mx-6 text-grey-900 dark:text-white text-3xl" >
+            Individual Asset Count
+          </span>
+      </div>
+      <div className="rounded-lg bg-gray-50 shadow-md dark:bg-gray-800 xl:p-4 mx-10 py-2 mt-8" style={{boxShadow:'0 0 20px rgba(0, 0, 0, 0.2)'}}>
         <div className="mx-4">
-          <BarAnimation/>
+          <BarAnimation/>          
         </div>        
       </div>
     </div>

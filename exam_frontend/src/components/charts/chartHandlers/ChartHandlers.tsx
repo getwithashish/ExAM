@@ -234,19 +234,14 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
     return ( // Render the PieChart components with filtered data
     <Stack>
     <div className='flex'>
-        <div className='flex-1'>
-            <select className="block bg-transparent ml-6 font-display text-black-500 border-0 border-b-2 appearance-none dark:text-gray-400 dark:border-gray-200 focus:outline-none focus:ring-0 focus:border-gray-200 peer" onChange={handleSelectChange}>
-                <option value="0" className="text-black font-display bg-white">Overall</option>
-                {assetTypeData.map((assetType) => (
-                    <option key={assetType.id} value={assetType.id} className="text-black border-0 border-b-2 bg-white font-display">{assetType.asset_type_name}</option>
-                ))}
-            </select>
-        </div>
-        <div className='flex-1 mx-6 font-display'>
-            <h2 className='text-right text-sm font-semibold font-display text-gray-600 dark:text-white-600 rtl:text-right'>
-                Total Assets : {assetData?.total_assets ?? 0}
-            </h2>
-        </div>                
+    <div className='flex-1 flex justify-end'> {/* Add 'justify-end' to align the dropdown to the right */}
+        <select className="block bg-transparent mr-6 font-display text-black-500 border-0 border-b-2 appearance-none dark:text-gray-400 dark:border-gray-200 focus:outline-none focus:ring-0 focus:border-gray-400 peer" onChange={handleSelectChange}>
+            <option value="0" className="text-black font-display bg-white">Overall</option>
+            {assetTypeData.map((assetType) => (
+                <option key={assetType.id} value={assetType.id} className="text-black border-0 border-b-2 bg-white font-display">{assetType.asset_type_name}</option>
+            ))}
+        </select>
+    </div>              
     </div> 
     <Stack direction="row">
     <div>
@@ -290,7 +285,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
             }}
         />
     </div>
-    <div>
+    {/* <div>
         <div className='h-5 my-8 mx-20'>
             <span className="font-semibold font-display ml-10 leading-none text-gray-900 dark:text-white text-md">
                 Approval Status
@@ -371,7 +366,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                 }
             }}
         />
-    </div>
+    </div> */}
     </Stack>
     <Stack direction="row"> 
     </Stack>                      
