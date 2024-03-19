@@ -171,7 +171,7 @@ const SearchRequests: FC<{ setSearchQuery: React.Dispatch<React.SetStateAction<s
         <TextInput
           id="search-request"
           name="search-request"
-          placeholder="Search for requests"
+          placeholder="Search by product name..."
           onChange={handleSearchChange}
         />
       </div>

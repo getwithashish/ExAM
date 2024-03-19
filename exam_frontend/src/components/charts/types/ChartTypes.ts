@@ -9,6 +9,7 @@ export interface AssetData{
     assign_status:{
       [key: string]: number;
     };
+    asset_type_counts: Record<string, number>;
 }
 
 export interface PieChartGraphProps {
@@ -26,4 +27,5 @@ export interface AssetDetailData{
 export type ChartData = {
   label: string;
   value: number;
+  color?: string;
 };
