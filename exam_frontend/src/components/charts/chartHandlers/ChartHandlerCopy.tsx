@@ -7,7 +7,7 @@ import Stack from "@mui/material/Stack";
 import { fetchAssetData } from '../api/ChartApi';
 import { AssetData, AssetDetailData, ChartData, PieChartGraphProps } from '../types/ChartTypes';
 import axiosInstance from '../../../config/AxiosConfig';
-import { BarChart } from '@mui/x-charts';
+import { BarChart } from '@mui/x-charts/BarChart';
 
 
 const statusColors: { [key: string]: string } = {
@@ -46,6 +46,8 @@ const statusMapping: { [key: string]: string } = {
 const ChartHandlers: React.FC<PieChartGraphProps> = () => {
      // State variables to store data and manage loading/error states
     const [assetTypeData, setAssetTypeData] = useState<AssetDetailData[]>([]);
+    const [typeName, setTypeName] = useState<string[]>([]);
+    const [typeCount, setTypeCount] = useState<number[]>([]);
     const [selectedType, setSelectedType] = useState<string>('');
     const [assetChartData, setAssetChartData] = useState<ChartData[]>([]);
     const [assetFilteredChartData, setAssetFilteredChartData] = useState<ChartData[]>([]);
@@ -53,8 +55,6 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
     const [detailFilteredChartData, setDetailFilteredChartData] = useState<ChartData[]>([]);
     const [assignChartData, setAssignChartData] = useState<ChartData[]>([])
     const [assignFilteredChartData, setAssignFilteredChartData] = useState<ChartData[]>([]);
-    const [typeName, setTypeName] = useState([]);
-    const [typeCount, setTypeCount] = useState([]);
 
     // UseQuery hook to fetch asset data from the server
     const { data: assetData, isLoading: assetLoading, isError: assetError } = useQuery<AssetData>({
@@ -62,7 +62,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
         queryFn: fetchAssetData,
     })
 
-    useEffect(() => { // Effect to fetch asset type data when component mounts
+    useEffect(() => {
         axiosInstance.get('/asset/asset_type')
             .then((res) => {
                 setAssetTypeData(res.data.data);
@@ -72,10 +72,28 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
             });
     }, []);
 
+    useEffect(() => {
+        axiosInstance.get('/asset/asset_count')
+            .then((res) => {
+                console.log("hi")
+                const TypeCount = res.data.data.asset_type_counts;
+                console.log("count",res.data.data.asset_type_counts)
+                const types: string[] = Object.keys(TypeCount);
+                const counts: number[] = Object.values(TypeCount);
+                setTypeName(types);
+                setTypeCount(counts);
+                console.log("types", types)
+            })
+            .catch(error => {
+                console.error("Error fetching asset type counts:", error)
+            });
+    }, []);
+
     useEffect(() => { // Effects to fetch asset count, detail, and assign data when component mounts
         axiosInstance.get(`/asset/asset_count`)
             .then((res) => {
                 const assetCountData = res.data.data;
+                console.log("hi", assetCountData)
                 const assetTypeData = Object.entries(assetCountData?.status_counts ?? {}).map(([label, value]) => ({
                     label,
                     value: value as number,
@@ -124,27 +142,6 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                 console.error("Error fetching assign details data:", error);
                 setAssignFilteredChartData([]);
             })
-    }, []);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axiosInstance.get('/asset/asset_count');
-                const { data } = response.data;
-                console.log("data",{ data });
-                // Extract asset type names and counts from response data
-                const assetTypeNames = Object.keys(data.asset_type_counts).map(id => `${id}`);
-                const assetTypeCounts = Object.values(data.asset_type_counts);
-
-                // Set state with fetched data
-                setTypeName(assetTypeNames);
-                setTypeCount(assetTypeCounts);
-            } catch (error) {
-                console.error('Error fetching asset count:', error);
-            }
-        };
-
-        fetchData();
     }, []);
 
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => { // Handler function for select change event
@@ -345,29 +342,26 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                 />
             </div>
             </Stack>
-            <Stack>
-            <span className="font-semibold font-display leading-none text-gray-900 dark:text-white text-lg my-12 underline text-center">
-                        Individual Asset Counts
-                    </span>
-            <div style={{ position: "relative" }}>
-            <BarChart
-                width={1000}
-                height={300}
-                series={[{ data: typeCount, id: "assetTypeCountId" }]}
-                xAxis={[{ data: typeName, scaleType: "band" }]}
-            />
-            <div
-                style={{
-                    position: "absolute",
-                    bottom: "0",
-                    left: "50%",
-                    transform: "translateX(-70%) rotate(0deg)",
-                    textAlign: "center",
-                }}
-            >
-            </div>
-        </div>
-                
+            <Stack direction="row">
+                <div style={{ position: "relative" }} className='py-10'>
+                    <BarChart
+                        width={1000}
+                        height={300}
+                        series={[{ data: typeCount, label: "Individual Asset count", id: "assetTypeCountId" }]}
+                        xAxis={[{ data: typeName, scaleType: "band" }]}
+                    />
+                    <div
+                        style={{
+                            position: "absolute",
+                            bottom: "0",
+                            left: "50%",
+                            transform: "translateX(-70%) rotate(0deg)",
+                            textAlign: "center",
+                        }}
+                    >
+                        Asset Types
+                    </div>
+                </div>                
             </Stack>                      
         </Stack>
     );

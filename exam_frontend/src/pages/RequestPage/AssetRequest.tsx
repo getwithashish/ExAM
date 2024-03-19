@@ -107,7 +107,7 @@ const RequestPage: FC = function () {
               <svg className="w-3 h-3 text-gray-400 mx-1 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
               </svg>
-                <a href="#" className="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white font-display">Pending Asset Requests</a>
+                <a href="#" className="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white font-display">Asset Approval Requests</a>
               </div>
             </li>
           </ol>
@@ -116,7 +116,7 @@ const RequestPage: FC = function () {
           <div className="mb-1 w-full">
             <div className="mb-4">              
               <h1 className="font-medium font-display mx-3 leading-none text-gray-900 dark:text-white text-3xl">
-                Pending Asset Requests
+                Asset Approval Requests
               </h1>
             </div>
             <div className="block items-center sm:flex">
@@ -169,7 +169,7 @@ const SearchRequests: FC<{ setSearchQuery: React.Dispatch<React.SetStateAction<s
         <TextInput
           id="search-request"
           name="search-request"
-          placeholder="Search for requests"
+          placeholder="Search by asset type.. eg.Laptop"
           onChange={handleSearchChange}
         />
       </div>
@@ -195,9 +195,9 @@ const RequestTable: FC<{ assets: any[]; setSelectedAsset: (asset: any | null) =>
             <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
               <div className="text-base font-medium text-gray-900 dark:text-white">
                 {asset.asset_detail_status === "CREATE_PENDING"
-                  ? "Asset Approval"
+                  ? "Creation Approval"
                   : asset.asset_detail_status === "UPDATE_PENDING"
-                  ? "Asset Update  Approval"
+                  ? "Updation Approval"
                   : asset.asset_detail_status}
               </div>
               <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
