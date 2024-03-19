@@ -250,7 +250,7 @@ const SidebarComponentNew = ({ children }) => {
                   <Link to="/exam/requests">In Modification</Link>
                 </Menu.Item>
                 <Menu.Item icon={<CarryOutOutlined />}>
-                  <Link to="/exam/assignable_asset">In Allocation</Link>
+                  <Link to="/exam/assign_requests">In Allocation</Link>
                 </Menu.Item>
               </SubMenu>
             ) : (

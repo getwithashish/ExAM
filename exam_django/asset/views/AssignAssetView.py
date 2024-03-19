@@ -95,7 +95,7 @@ class AssignAssetView(APIView):
             # Serialize the assigned asset using the custom serializer
             assigned_asset_serializer = AssignAssetSerializer(asset)
 
-            json_string = JSONRenderer().render(serializer.data).decode("utf-8")
+            json_string = JSONRenderer().render(assigned_asset_serializer.data).decode("utf-8")
             email_service.send_email(
                 email_subject,
                 "Serializer Data: {}".format(json_string),
