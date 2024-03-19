@@ -1,3 +1,5 @@
+import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from "@tanstack/react-query";
+
 export interface DataType {
   asset_uuid: any;
   key: string;
@@ -150,5 +152,6 @@ export interface AssetTableProps {
   drawerTitle:string
   asset_uuid: string;
   heading:string
+  assetDataRefetch: () => void
 }
 
