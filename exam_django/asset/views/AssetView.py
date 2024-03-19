@@ -142,16 +142,16 @@ class AssetView(ListCreateAPIView):
                 query_params, query_params_to_exclude
             )
 
-                if limit:
+            if limit:
                     self.pagination_class.default_limit = limit
-                if offset:
+            if offset:
                     self.pagination_class.default_offset = offset
 
-                if asset_detail_status:
+            if asset_detail_status:
                     statuses = asset_detail_status.split("|")
                     queryset = queryset.filter(asset_detail_status__in=statuses)
 
-                if assign_status:
+            if assign_status:
                     statuses = assign_status.split("|")
                     queryset = queryset.filter(assign_status__in=statuses)
 
