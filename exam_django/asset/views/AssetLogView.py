@@ -9,8 +9,8 @@ from messages import (
     ASSET_NOT_FOUND,
     ASSET_LOG_FOUND,
 )
- 
- 
+
+
 class AssetLogView(APIView):
     def get(self, request, asset_uuid):
         try:
@@ -19,11 +19,11 @@ class AssetLogView(APIView):
                 return JsonResponse(
                     {"message": "Assets not found for the provided UUID"}, status=404
                 )
- 
+
             response_data = {"asset_uuid": asset_uuid, "logs": []}
             for log in asset_logs:
                 asset_log_json = json.loads(log.asset_log)
- 
+
                 # Search location name if it exists
                 location_id = asset_log_json.pop("location_id", None)
                 if location_id:
@@ -33,7 +33,7 @@ class AssetLogView(APIView):
                             "id": location_obj.id,
                             "location_name": location_obj.location_name,
                         }
- 
+
                 # Search business unit name if it exists
                 business_unit_id = asset_log_json.pop("business_unit_id", None)
                 if business_unit_id:
@@ -45,7 +45,7 @@ class AssetLogView(APIView):
                             "id": business_unit_obj.id,
                             "business_unit_name": business_unit_obj.business_unit_name,
                         }
- 
+
                 # Search memory if it exists
                 memory_id = asset_log_json.pop("memory_id", None)
                 if memory_id:
@@ -55,7 +55,7 @@ class AssetLogView(APIView):
                             "id": memory_obj.id,
                             "memory_space": memory_obj.memory_space,
                         }
- 
+
                 # Search asset type name if it exists
                 asset_type_id = asset_log_json.pop("asset_type_id", None)
                 if asset_type_id:
@@ -65,7 +65,7 @@ class AssetLogView(APIView):
                             "id": asset_type_obj.id,
                             "asset_type_name": asset_type_obj.asset_type_name,
                         }
- 
+
                 # Search invoice location name if it exists
                 invoice_location_id = asset_log_json.pop("invoice_location_id", None)
                 if invoice_location_id:
@@ -77,7 +77,7 @@ class AssetLogView(APIView):
                             "id": location_obj.id,
                             "invoice_location_name": location_obj.location_name,
                         }
- 
+
                 # Search conceder name if it exists
                 conceder_id = asset_log_json.pop("conceder_id", None)
                 if conceder_id:
@@ -87,7 +87,7 @@ class AssetLogView(APIView):
                             "id": conceder_obj.id,
                             "conceder_name": f"{conceder_obj.first_name} {conceder_obj.last_name}",
                         }
- 
+
                 # Search custodian name if it exists
                 custodian_id = asset_log_json.pop("custodian_id", None)
                 if custodian_id:
@@ -97,7 +97,7 @@ class AssetLogView(APIView):
                             "id": custodian_obj.id,
                             "employee_name": custodian_obj.employee_name,
                         }
- 
+
                 # Search requester name if it exists
                 requester_id = asset_log_json.pop("requester_id", None)
                 if requester_id:
@@ -107,24 +107,23 @@ class AssetLogView(APIView):
                             "id": requester_obj.id,
                             "requester_name": f"{requester_obj.first_name} {requester_obj.last_name}",
                         }
- 
+
                 log_data = {
                     "id": log.id,
                     "timestamp": log.timestamp,
                     "asset_log": asset_log_json,
                 }
                 response_data["logs"].append(log_data)
- 
+
             return APIResponse(
                 data=response_data,
                 message=ASSET_LOG_FOUND,
                 status=status.HTTP_201_CREATED,
             )
- 
+
         except Exception:
             return APIResponse(
                 data=[],
                 message=ASSET_NOT_FOUND,
                 status=status.HTTP_404_NOT_FOUND,
             )
- 

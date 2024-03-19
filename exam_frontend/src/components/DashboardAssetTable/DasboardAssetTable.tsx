@@ -46,7 +46,8 @@ const DasboardAssetTable = ({
   locations,
   memoryData,
   assetTypeData,
-  expandedRowRender
+  expandedRowRender,
+  assetDataRefetch
 }:AssetTableProps
 ) => {
  
@@ -68,7 +69,7 @@ const [showUpload, setShowUpload] = useState(false);
       </div>
      
       <div>
-        <TableNavbar showUpload={showUpload} setShowUpload={setShowUpload} />
+        <TableNavbar showUpload={showUpload} setShowUpload={setShowUpload} assetDataRefetch={assetDataRefetch} />
       </div>
 
     
