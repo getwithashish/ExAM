@@ -260,7 +260,7 @@ const SidebarComponentNew = ({ children }) => {
             {userRole === "LEAD" ? (
               <Menu.Item icon={<MailOutlined />}>
                 {/* For lead */}
-                <Link to="/exam/my_approvals">My Requests</Link>
+                <Link to="/exam/my_approvals">My Approval History</Link>
               </Menu.Item>
             ) : userRole === "SYSTEM_ADMIN" ? (
               <SubMenu key="sub1" icon={<MailOutlined />} title="My Requests">
@@ -268,9 +268,9 @@ const SidebarComponentNew = ({ children }) => {
                   {/* For sysadmin */}
                   <Link to="/exam/approved_requests">Approved</Link>
                 </Menu.Item>
-                <Menu.Item icon={<WarningOutlined />}>
+                {/* <Menu.Item icon={<WarningOutlined />}>
                   <Link to="/exam/rejected_assets">Rejected</Link>
-                </Menu.Item>
+                </Menu.Item> */}
               </SubMenu>
             ) : (
               ""
