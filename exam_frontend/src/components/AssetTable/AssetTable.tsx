@@ -78,7 +78,7 @@ const [showUpload, setShowUpload] = useState(false);
    
     columns={columns}
     dataSource={assetData}
-    scroll={{ y: 300 }}
+    scroll={{ y: 600 }}
     className="mainTable"
     pagination={false}
     bordered={false}

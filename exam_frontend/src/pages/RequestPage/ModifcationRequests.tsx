@@ -185,7 +185,7 @@ const SearchRequests: FC<{ setSearchQuery: React.Dispatch<React.SetStateAction<s
 
 const RequestTable: FC<{ assets: any[]; setSelectedAsset: (asset: any | null) => void;}> = function ({ assets, setSelectedAsset }) {
   return (
-    <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600 rounded-md mx-10">
+    <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600 rounded-md mx-10 ">
       <Table.Head className="bg-gray-100 dark:bg-gray-700 font-display">
        
         <Table.HeadCell>Requester</Table.HeadCell>

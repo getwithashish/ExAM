@@ -136,19 +136,21 @@ const SidebarComponentNew = ({ children }) => {
           top: 0,
           bottom: 0,
           borderBottom: "1px solid #e8e8e8",
+          padding:0,
+          
         }}
       >
         {/* <ExampleNavbar /> */}
 
-        <div className="w-full p-2.5 lg:px-5 lg:pl-3 p=0">
-          <div className="flex items-center justify-between p-0">
-            <div className="text-left  font-display text-lg p-0">
+        <div className="w-full p-2.5 lg:px-5 lg:pl-3">
+          <div className="flex items-center justify-between ">
+            <div className="text-left  font-display text-lg p-0 mb-10">
               Asset Management System
             </div>
 
               {/* </Navbar.Brand> */}
             
-            <div className="flex items-center gap-3 -mr-10">
+            <div className="flex items-center gap-3">
               <div
                 className={`flex items-center gap-3 ${styles["button-components"]}`}
               >
@@ -168,7 +170,7 @@ const SidebarComponentNew = ({ children }) => {
                     )}
                   </div>
                 )}
-                <div className="flex items-center gap-3 ml-5 -mt-10">
+                <div className="flex items-center gap-3 ml-5  -mt-10">
                   <Dropdown overlay={menu} placement="bottomCenter" arrow>
                     <div className="cursor-pointer">
                       <Avatars />
