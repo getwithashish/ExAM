@@ -188,11 +188,18 @@ import DasboardAssetTable from "./DasboardAssetTable";
   
     const [selectedRow, setSelectedRow] = useState(null);
     const [drawerVisible, setDrawerVisible] = useState(false);
+
+    const [queryParam, setQueryParam] = useState("");
   
-    const { data: assetData } = useQuery({
+    const { data: assetData, refetch: assetDataRefetch } = useQuery({
       queryKey: ["assetList"],
-      queryFn: () => getAssetDetails(),
+      queryFn: () => getAssetDetails(`${queryParam}`),
     });
+
+    const refetchAssetData = (queryParam="") => {
+      setQueryParam(queryParam)
+      assetDataRefetch({ force: true })
+    }
   
     const statusOptions =
       assetData?.map((item: AssetResult) => item.status) || [];
@@ -591,6 +598,7 @@ import DasboardAssetTable from "./DasboardAssetTable";
         asset_uuid={selectedAssetId}
         bordered={false}
         businessUnitOptions={businessUnitOptions}
+        assetDataRefetch={refetchAssetData}
         handleUpdateData={function (updatedData: { key: any }): void {
           throw new Error("Function not implemented.");
         }}
