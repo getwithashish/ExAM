@@ -4,6 +4,7 @@ import styles from './Assignment.module.css';
 import { ApiResponse, EmployeeDetails } from './types';
 import { useState, useEffect} from 'react';
 import { DataType } from '../AssetTable/types';
+import { message } from 'antd';
 
 
 interface AssignmentProps {
@@ -42,10 +43,10 @@ export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
     (requestData: any) => axiosInstance.post('/asset/assign_asset', requestData),
     {
       onSuccess: () => {
-        alert("successfully assigned")
+        message.success("successfully assigned")
       },
       onError: (error) => {
-        alert("unsuccessful, the asset may be already assigned")
+        message.error("unsuccessful, the asset may be already assigned")
         console.log(error)
       }
     }
