@@ -298,7 +298,7 @@ const AssetTableHandler = ({showAssignDrawer}) => {
       title: "Product Name",
       dataIndex: "product_name",
       fixed: "left",
-      width: 180,
+      // width: 150,
       filterIcon: <SearchOutlined />,
       filterDropdown: ({
         setSelectedKeys,
@@ -356,7 +356,7 @@ const AssetTableHandler = ({showAssignDrawer}) => {
       title: "Serial Number",
       dataIndex: "serial_number",
       responsive: ["md"],
-      width: 180,
+      // width: 160,
       filterIcon: <SearchOutlined />,
       filterDropdown: ({
         setSelectedKeys,
@@ -415,7 +415,7 @@ const AssetTableHandler = ({showAssignDrawer}) => {
       title: "Location",
       dataIndex: "location",
       responsive: ["md"],
-      width: 180,
+      // width: 160,
       filters: locationFilters,
       onFilter: (
         value: string | number | boolean | React.ReactText[] | Key,
@@ -440,7 +440,7 @@ const AssetTableHandler = ({showAssignDrawer}) => {
       title: "Invoice Location",
       dataIndex: "invoice_location",
       responsive: ["md"],
-      width: 180,
+      // width: 160,
       filters: locationFilters,
       onFilter: (
         value: string | number | boolean | React.ReactText[] | Key,
@@ -467,7 +467,7 @@ const AssetTableHandler = ({showAssignDrawer}) => {
       dataIndex: "custodian",
       responsive: ["md"],
       fixed: "right",
-      width: 180,
+      // width: 160,
       filterIcon: <SearchOutlined />,
       filterDropdown: ({
         setSelectedKeys,
@@ -523,7 +523,7 @@ const AssetTableHandler = ({showAssignDrawer}) => {
       title: "Asset Type",
       dataIndex: "asset_type",
       responsive: ["md"],
-
+      // width: 160,
       filters: assetTypeFilters,
       onFilter: (
         value: string | number | boolean | React.ReactText[] | Key,
@@ -548,6 +548,7 @@ const AssetTableHandler = ({showAssignDrawer}) => {
       title: "Assign Asset",
       dataIndex: "AssignAsset",
       fixed: "right",
+      // width: 160,
       render: (_data, record) => (
         <Button
           ghost
