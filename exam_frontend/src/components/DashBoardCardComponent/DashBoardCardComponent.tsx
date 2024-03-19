@@ -766,8 +766,9 @@ const DashBoardCardComponent: React.FC<CardType> = ({
   };
   const formItemStyle = {
     flex: "0 0 calc(16.66% - 20px)", 
-    margin: "10px", 
+    margin: "6px", 
     boxSizing: "border-box",
+    gap:"-10px"
   };
 
   <ConfigProvider
@@ -806,7 +807,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
             height: "30px",
             borderRadius: "5px",
             background: "#f0f0f0",
-            marginLeft: "5.4%",
+            marginLeft: "5%",
           }}
         />
       </div>

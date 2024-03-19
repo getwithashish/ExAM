@@ -67,6 +67,7 @@ const [showUpload, setShowUpload] = useState(false);
  
   return (
     <>
+    <div className="rounded-lg bg-white shadow-md dark:bg-gray-800 xl:p-4 mx-10 py-2">
      <div className="mainHeading" font-display>
         <h1>{heading}</h1> 
       </div>
@@ -97,7 +98,7 @@ const [showUpload, setShowUpload] = useState(false);
     }}
  
   />
- 
+ </div>
 </div>
       <DrawerComponent
         visible={drawerVisible}

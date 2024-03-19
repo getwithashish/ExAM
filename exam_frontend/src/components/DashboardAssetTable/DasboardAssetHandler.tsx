@@ -158,6 +158,7 @@ import DasboardAssetTable from "./DasboardAssetTable";
               dataSource={logsDataExpanded}
               pagination={false}
               style={{
+                
                 maxHeight: 300,
                 overflowY: "auto",
                 maxWidth: "100%",

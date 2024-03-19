@@ -63,7 +63,8 @@ const [showUpload, setShowUpload] = useState(false);
   
  
   return (
-    <div className="bg-white py-4">
+    <div className="bg-grey py-4">
+      <div className="rounded-lg bg-grey-100 shadow-md border-10 dark:bg-gray-800 xl:p-4 mx-10 py-2">
       <div className="mainHeading font-medium font-display">
         <h6>Asset Details</h6>
       </div>
@@ -71,9 +72,6 @@ const [showUpload, setShowUpload] = useState(false);
       <div>
         <TableNavbar showUpload={showUpload} setShowUpload={setShowUpload} assetDataRefetch={assetDataRefetch} />
       </div>
-
-    
-
       <div style={{ position: "relative", display: "inline-block" }}>
       <SideDrawerComponent
           displayDrawer={showUpload}
@@ -89,7 +87,7 @@ const [showUpload, setShowUpload] = useState(false);
     bordered={false}
     handleRowClick={handleRowClick}
     style={{
-      padding: 20,
+      // padding: 20,
       fontSize: "50px",
       borderColor:"white",
       scrollbarWidth: "thin"
@@ -104,7 +102,7 @@ const [showUpload, setShowUpload] = useState(false);
     }}
  
   />
- 
+ </div>
 </div>
       <DrawerComponent
         visible={drawerVisible}
@@ -137,7 +135,7 @@ const [showUpload, setShowUpload] = useState(false);
         )}
      
       </DrawerComponent>
-    </div>
+      </div>    
   );
 };
  
