@@ -84,8 +84,44 @@ class AssetView(ListCreateAPIView):
             queryset = Asset.objects.all()
 
             # Get query parameters
-            assign_status = request.query_params.get("assign_status")
-            asset_detail_status = request.query_params.get("asset_detail_status")
+            global_search = request.query_params.get("global_search")
+
+            if global_search:
+                query = Q()
+                for field in [
+                    "asset_uuid",
+                    "asset_id",
+                    "version",
+                    "asset_category",
+                    "product_name",
+                    "model_number",
+                    "serial_number",
+                    "owner",
+                    "date_of_purchase",
+                    "status",
+                    "warranty_period",
+                    "os",
+                    "os_version",
+                    "mobile_os",
+                    "processor",
+                    "processor_gen",
+                    "storage",
+                    "configuration",
+                    "accessories",
+                    "notes",
+                    "asset_detail_status",
+                    "assign_status",
+                    "approval_status_message",
+                    "created_at",
+                    "updated_at",
+                ]:
+                    query |= Q(**{f"{field}__icontains": global_search})
+
+                queryset = queryset.filter(query)
+
+            else:
+                assign_status = request.query_params.get("assign_status")
+                asset_detail_status = request.query_params.get("asset_detail_status")
 
             limit = request.query_params.get("limit")
             offset = request.query_params.get("offset")
@@ -106,18 +142,18 @@ class AssetView(ListCreateAPIView):
                 query_params, query_params_to_exclude
             )
 
-            if limit:
-                self.pagination_class.default_limit = limit
-            if offset:
-                self.pagination_class.default_offset = offset
+                if limit:
+                    self.pagination_class.default_limit = limit
+                if offset:
+                    self.pagination_class.default_offset = offset
 
-            if asset_detail_status:
-                statuses = asset_detail_status.split("|")
-                queryset = queryset.filter(asset_detail_status__in=statuses)
+                if asset_detail_status:
+                    statuses = asset_detail_status.split("|")
+                    queryset = queryset.filter(asset_detail_status__in=statuses)
 
-            if assign_status:
-                statuses = assign_status.split("|")
-                queryset = queryset.filter(assign_status__in=statuses)
+                if assign_status:
+                    statuses = assign_status.split("|")
+                    queryset = queryset.filter(assign_status__in=statuses)
 
             filter_kwargs = {}
             for field, value in required_query_params.items():
@@ -141,7 +177,9 @@ class AssetView(ListCreateAPIView):
                     status=status.HTTP_200_OK,
                 )
 
-            serializer = AssetReadSerializer(queryset, many=True)  # Moved assignment here
+            serializer = AssetReadSerializer(
+                queryset, many=True
+            )  # Moved assignment here
             return APIResponse(
                 data=serializer.data,
                 message=ASSET_LIST_SUCCESSFULLY_RETRIEVED,
