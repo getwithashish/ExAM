@@ -48,6 +48,7 @@ interface ExpandedDataType {
 interface AssetTableHandlerProps {
   isRejectedPage: boolean;
 }
+
 const AssetTableHandler = ({ isRejectedPage, queryParamProp,heading }) => {
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null); // State to store the selected asset ID
 
@@ -235,7 +236,7 @@ const AssetTableHandler = ({ isRejectedPage, queryParamProp,heading }) => {
 
   <div>
     <h1>Asset Overview</h1>
-  </div>;
+  </div>
 
   const columns = [
     {
