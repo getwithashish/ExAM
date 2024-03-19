@@ -83,7 +83,7 @@ class AssignAssetView(APIView):
                 asset.assign_status = "ASSIGNED"
                 asset.status = "IN USE"
                 email_subject = "ASSET ASSIGNMENT SUCCESSFUL"
-                
+
             else:
                 asset.assign_status = "ASSIGN_PENDING"
                 email_subject = "ASSET ASSIGNMENT REQUEST SENT"
