@@ -11,6 +11,9 @@ import {
   UserOutlined,
   UserSwitchOutlined,
   VideoCameraOutlined,
+  ExclamationOutlined,
+  CheckCircleOutlined,
+  CheckSquareOutlined
 } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import ExampleNavbar from "../Navbar/navbar";
@@ -27,6 +30,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../pages/authentication/AuthContext";
 import Avatars from "../Avatar/Avatar";
 import SubMenu from "antd/es/menu/SubMenu";
+import { CheckOutlined, EditOutlined, WarningOutlined } from "@mui/icons-material";
 
 const SidebarComponentNew = ({ children }) => {
   const { userRole, setUserRole, login, logout } = useAuth();
@@ -225,27 +229,27 @@ const SidebarComponentNew = ({ children }) => {
               onClick={() => showDefaultDrawer()}
               icon={<AppstoreAddOutlined />}
             >
-              Add An Asset
+              Create Assets
             </Menu.Item>
-            <Menu.Item icon={<CarryOutOutlined />}>
-              <Link to="/exam/updatable_assets">Update Assets</Link>
+            <Menu.Item icon={<EditOutlined />}>
+              <Link to="/exam/updatable_assets">Modify Assets</Link>
             </Menu.Item>
             <Menu.Item icon={<UserSwitchOutlined />}>
-              <Link to="/exam/assignable_asset">Assign an Asset</Link>
+              <Link to="/exam/assignable_asset">Allocate Assets</Link>
             </Menu.Item>
             {userRole === "LEAD" ? (
               <SubMenu
                 key="sub1"
-                icon={<MailOutlined />}
+                icon={<CheckSquareOutlined />}
                 title="Approve Assets"
               >
-                <Menu.Item icon={<UserSwitchOutlined />}>
+                <Menu.Item icon={<CarryOutOutlined />}>
                   <Link to="/exam/requests">In Creation</Link>
                 </Menu.Item>
-                <Menu.Item icon={<UserSwitchOutlined />}>
-                  <Link to="/exam/requests">In Updation</Link>
+                <Menu.Item icon={<CarryOutOutlined />}>
+                  <Link to="/exam/requests">In Modification</Link>
                 </Menu.Item>
-                <Menu.Item icon={<UserSwitchOutlined />}>
+                <Menu.Item icon={<CarryOutOutlined />}>
                   <Link to="/exam/assignable_asset">In Allocation</Link>
                 </Menu.Item>
               </SubMenu>
@@ -254,30 +258,15 @@ const SidebarComponentNew = ({ children }) => {
             )}
 
             {userRole === "LEAD" ? (
-              <Menu.Item icon={<CarryOutOutlined />}>
-                <Link to="/exam/requests">Pending(Assets)</Link>
-              </Menu.Item>
-            ) : (
-              ""
-            )}
-            {userRole === "LEAD" ? (
-              <Menu.Item icon={<CarryOutOutlined />}>
-                <Link to="/exam/assign_requests">Pending(Assign)</Link>
-              </Menu.Item>
-            ) : (
-              ""
-            )}
-
-            {userRole === "LEAD" ? (
-              <Menu.Item icon={<CarryOutOutlined />}>
+              <Menu.Item icon={<MailOutlined />}>
                 <Link to="/exam/rejected_assets">My Requests</Link>
               </Menu.Item>
             ) : userRole === "SYSTEM_ADMIN" ? (
               <SubMenu key="sub1" icon={<MailOutlined />} title="My Requests">
-                <Menu.Item icon={<UserSwitchOutlined />}>
+                <Menu.Item icon={<CheckCircleOutlined />}>
                   <Link to="/exam/requests">Approved</Link>
                 </Menu.Item>
-                <Menu.Item icon={<UserSwitchOutlined />}>
+                <Menu.Item icon={<WarningOutlined />}>
                   <Link to="/exam/requests">Rejected</Link>
                 </Menu.Item>
               </SubMenu>
