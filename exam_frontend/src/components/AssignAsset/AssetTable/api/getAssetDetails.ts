@@ -13,7 +13,6 @@ const getAssetDetails = async () => {
   }
 };
 
-
 export { getAssetDetails };
 
 const getLocationOptions = () => {
