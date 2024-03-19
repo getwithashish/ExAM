@@ -16,6 +16,9 @@ from messages import (
 )
 from response import APIResponse
 
+from notification.service.EmailService import EmailService
+from rest_framework.renderers import JSONRenderer
+
 
 class AssetUpdateView(APIView):
 
@@ -26,6 +29,7 @@ class AssetUpdateView(APIView):
             return super().get_permissions()
 
     def patch(self, request):
+        email_service = EmailService()
         try:
             user_scope = request.user.user_scope
             asset_uuid = request.data.get("asset_uuid")
@@ -47,6 +51,7 @@ class AssetUpdateView(APIView):
                 if asset.asset_detail_status == "CREATE_REJECTED":
                     serializer.validated_data["asset_detail_status"] = "CREATE_PENDING"
                     message = ASSET_CREATE_PENDING_SUCCESSFUL
+                    email_subject = "ASSET CREATION REQUEST SENT"
 
                 elif asset.asset_detail_status in [
                     "UPDATE_REJECTED",
@@ -55,6 +60,7 @@ class AssetUpdateView(APIView):
                 ]:
                     serializer.validated_data["asset_detail_status"] = "UPDATE_PENDING"
                     message = ASSET_UPDATE_PENDING_SUCCESSFUL
+                    email_subject = "ASSET UPDATION REQUEST SENT"
 
                 elif asset.asset_detail_status in ["CREATE_PENDING", "UPDATE_PENDING"]:
                     return APIResponse(
@@ -67,6 +73,7 @@ class AssetUpdateView(APIView):
                 if asset.asset_detail_status == "CREATE_REJECTED":
                     serializer.validated_data["asset_detail_status"] = "CREATED"
                     message = ASSET_SUCCESSFULLY_CREATED
+                    email_subject = "ASSET CREATION SUCCESSFUL"
 
                 elif asset.asset_detail_status in [
                     "UPDATE_REJECTED",
@@ -75,6 +82,7 @@ class AssetUpdateView(APIView):
                 ]:
                     serializer.validated_data["asset_detail_status"] = "UPDATED"
                     message = ASSET_SUCCESSFULLY_UPDATED
+                    email_subject = "ASSET UPDATION SUCCESSFUL"
 
                     # TODO How about doing this operation in trigger
                     # Increment version of asset if there is a change in values of the defined fields
@@ -121,6 +129,14 @@ class AssetUpdateView(APIView):
 
             serializer.validated_data["requester"] = request.user
             serializer.save()
+
+            json_string = JSONRenderer().render(serializer.data).decode("utf-8")
+            email_service.send_email(
+                email_subject,
+                "Serializer Data: {}".format(json_string),
+                ["astg7542@gmail.com"],
+            )
+
             return APIResponse(
                 data=serializer.data,
                 message=message,

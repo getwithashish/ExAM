@@ -20,6 +20,8 @@ from messages import (
     USER_UNAUTHORIZED,
 )
 from response import APIResponse
+from notification.service.EmailService import EmailService
+from rest_framework.renderers import JSONRenderer
 
 
 class AssetApproveView(APIView):
@@ -33,6 +35,7 @@ class AssetApproveView(APIView):
             return super().get_permissions()
 
     def post(self, request):
+        email_service = EmailService()
         try:
             user_scope = request.user.user_scope
             approval_type = request.data.get("approval_type")
@@ -54,10 +57,12 @@ class AssetApproveView(APIView):
                 if asset.asset_detail_status == "CREATE_PENDING":
                     asset.asset_detail_status = "CREATED"
                     message = ASSET_SUCCESSFULLY_CREATED
+                    email_subject = "ASSET CREATION SUCCESSFUL"
 
                 elif asset.asset_detail_status == "UPDATE_PENDING":
                     asset.asset_detail_status = "UPDATED"
                     message = ASSET_SUCCESSFULLY_UPDATED
+                    email_subject = "ASSET UPDATION SUCCESSFUL"
 
                     # TODO How to increment version here since the changed values are already saved in the database
 
@@ -72,16 +77,17 @@ class AssetApproveView(APIView):
                 if asset.asset_detail_status in ["CREATED", "UPDATED"]:
                     if asset.assign_status == "ASSIGN_PENDING":
                         if asset.custodian:
-                            print("ASSIGNED HERE")
-                            asset.assign_status = "ASSIGNED"
+                            asset.assign_status == "ASSIGNED"
                             asset.status = "IN USE"
                             message = ASSET_SUCCESSFULLY_ASSIGNED
+                            email_subject = "ASSET ASSIGNMENT SUCCESSFUL"
 
                         else:
                             print("UNASSIGNED HERE")
                             asset.assign_status = "UNASSIGNED"
                             asset.status = "IN STORE"
                             message = ASSET_SUCCESSFULLY_UNASSIGNED
+                            email_subject = "ASSET UNASSIGNMENT SUCCESSFUL"
 
                     else:
                         return APIResponse(
@@ -105,7 +111,13 @@ class AssetApproveView(APIView):
                 )
 
             asset.save()
-            serializer = AssetWriteSerializer(asset)
+            serializer = AssetReadSerializer(asset)
+            json_string = JSONRenderer().render(serializer.data).decode("utf-8")
+            email_service.send_email(
+                email_subject,
+                "Serializer Data: {}".format(json_string),
+                ["astg7542@gmail.com"],
+            )
             print(serializer.data)
             return APIResponse(
                 data=serializer.data,
