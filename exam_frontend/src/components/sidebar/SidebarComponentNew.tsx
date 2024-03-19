@@ -136,36 +136,30 @@ const SidebarComponentNew = ({ children }) => {
           top: 0,
           bottom: 0,
           borderBottom: "1px solid #e8e8e8",
+          padding:0,
+          
         }}
       >
         {/* <ExampleNavbar /> */}
 
         <div className="w-full p-2.5 lg:px-5 lg:pl-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <img
-                src="../../public/images/xam_logo.png"
-                alt="Logo"
-                className="mr-12 -mt-10 -ml-10  md:-mt-10 md:-ml-10 w-30 h-10 sm:w-38 sm:h-16" // Adjust width and height as needed
-              />
+          <div className="flex items-center justify-between ">
+            <div className="text-left  font-display text-lg p-0 mb-10">
+              Asset Management System
+            </div>
 
               {/* </Navbar.Brand> */}
-            </div>
-            <div className="flex items-center gap-3 -mr-10">
+            
+            <div className="flex items-center gap-3">
               <div
                 className={`flex items-center gap-3 ${styles["button-components"]}`}
               >
-                {/* <AccountMenu></AccountMenu> */}
-                {/*             
-              <Button>
-                <FaBell />
-              </Button> */}
-
-                {/* <DarkThemeToggle /> */}
+               
+               
 
                 {jwtPayload && jwtPayload.username && (
                   <div className={styles["username-container"]}>
-                    {/* <MenuListComposition /> */}
+                 
                     <span className={styles["username"]}>
                       Hi, {jwtPayload.username}
                     </span>
@@ -176,7 +170,7 @@ const SidebarComponentNew = ({ children }) => {
                     )}
                   </div>
                 )}
-                <div className="flex items-center gap-3 ml-5 -mt-10">
+                <div className="flex items-center gap-3 ml-5  -mt-10">
                   <Dropdown overlay={menu} placement="bottomCenter" arrow>
                     <div className="cursor-pointer">
                       <Avatars />
@@ -215,12 +209,7 @@ const SidebarComponentNew = ({ children }) => {
           }}
         >
           <div className="demo-logo-vertical" />
-          {/* <Menu
-            theme="light"
-            mode="inline"
-            defaultSelectedKeys={["4"]}
-            items={items}
-          /> */}
+          
           <Menu theme="light" mode="inline" className="text-base">
             <Menu.Item icon={<PieChartOutlined />}>
               <Link to="/exam/dashboard">Dashboard</Link>
@@ -244,10 +233,10 @@ const SidebarComponentNew = ({ children }) => {
                 title="Approve Assets"
               >
                 <Menu.Item icon={<CarryOutOutlined />}>
-                  <Link to="/exam/requests">In Creation</Link>
+                  <Link to="/exam/creation_requests">In Creation</Link>
                 </Menu.Item>
                 <Menu.Item icon={<CarryOutOutlined />}>
-                  <Link to="/exam/requests">In Modification</Link>
+                  <Link to="/exam/updation_requests">In Modification</Link>
                 </Menu.Item>
                 <Menu.Item icon={<CarryOutOutlined />}>
                   <Link to="/exam/assign_requests">In Allocation</Link>
@@ -259,24 +248,24 @@ const SidebarComponentNew = ({ children }) => {
 
             {userRole === "LEAD" ? (
               <Menu.Item icon={<MailOutlined />}>
-                <Link to="/exam/rejected_assets">My Requests</Link>
+                {/* For lead */}
+                <Link to="/exam/my_approvals">My Approval History</Link>
               </Menu.Item>
             ) : userRole === "SYSTEM_ADMIN" ? (
               <SubMenu key="sub1" icon={<MailOutlined />} title="My Requests">
                 <Menu.Item icon={<CheckCircleOutlined />}>
-                  <Link to="/exam/requests">Approved</Link>
+                  {/* For sysadmin */}
+                  <Link to="/exam/approved_requests">Approved</Link>
                 </Menu.Item>
-                <Menu.Item icon={<WarningOutlined />}>
-                  <Link to="/exam/requests">Rejected</Link>
-                </Menu.Item>
+                {/* <Menu.Item icon={<WarningOutlined />}>
+                  <Link to="/exam/rejected_assets">Rejected</Link>
+                </Menu.Item> */}
               </SubMenu>
             ) : (
               ""
             )}
 
-            {/* <Menu.Item onClick={() => handleLogout()} icon={<LogoutOutlined />}>
-              Logoutf
-            </Menu.Item> */}
+           
           </Menu>
         </Sider>
         <Content>

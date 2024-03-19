@@ -5,7 +5,7 @@ import GlobalSearch from '../GlobalSearch/GlobalSearch';
 import styles from './TableNavbar.module.css';
 import DropDown from '../DropDown/DropDown';
 
-const TableNavbar = ({ showUpload, setShowUpload }) => {
+const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
   // Function to handle import button click
   const handleImportClick = () => {
     setShowUpload(true);
@@ -65,14 +65,15 @@ const TableNavbar = ({ showUpload, setShowUpload }) => {
   ];
 
   function handleSearch(_searchTerm: string): void {
-    throw new Error('Function not implemented.');
+    console.log("Global Search Term: ", _searchTerm)
+    assetDataRefetch(`&global_search=${_searchTerm}`)
   }
 
   return (
     <nav className={styles['navbar']}>
      
       <DropDown onSelect={handleDropDownSelect} items={items} buttonLabel="Import" />
-      <GlobalSearch onSearch={handleSearch} />
+      <GlobalSearch onSearch={handleSearch} assetDataRefetch={assetDataRefetch} />
       <button onClick={handleExport} className={styles['button']}>
         <UploadOutlined /> Export
       </button>

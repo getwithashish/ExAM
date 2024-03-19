@@ -4,13 +4,15 @@ import styles from './GlobalSearch.module.css';
 
 interface GlobalSearchProps {
   onSearch: (searchTerm: string) => void;
+  assetDataRefetch: (queryParam: string) => void;
 }
 
-const GlobalSearch: React.FC<GlobalSearchProps> = ({ onSearch }) => {
+const GlobalSearch: React.FC<GlobalSearchProps> = ({ onSearch, assetDataRefetch }) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
+    assetDataRefetch(`&global_search=${event.target.value}`)
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
