@@ -58,10 +58,10 @@ with open(file_path, mode="w", newline="") as file:
                 fake.random_int(min=0, max=10),  # version
                 "HARDWARE",  # asset_category
                 fake.random_element(
-                    elements=("ACER V227Q", "SAMSUNG S3422", "MSI PRO MP241X")
+                    elements=("ACER V227Q", "SAMSUNG S3422", "MSI PRO MP241X","Acer Swift 3","Apple MacBook Pro","Google Pixelbook Go","Cisco ISR","D-Link EXO series")
                 ),  # product_name
                 fake.word(),  # model_number
-                fake.uuid4(),  # serial_number
+                fake.random_element("Model: 9310","Model: 13t-aw200","Model: A2483","Model: USW-24","Model: HLL2350DW","Model: TL-SG105"),  # serial_number
                 fake.random_element(elements=("EXPERION")),  # owner
                 fake.date(),  # date_of_purchase
                 "IN STORE",  # status
@@ -74,7 +74,7 @@ with open(file_path, mode="w", newline="") as file:
                 "",  # storage
                 "",  # configuration
                 fake.random_element(
-                    elements=("HDMI cable", "extension cable")
+                    elements=("HDMI cable", "extension cable","Mouse","Screen Protector","Headphones","USB cable")
                 ),  # accessories
                 fake.text(),  # notes
                 fake.random_element(
@@ -83,16 +83,16 @@ with open(file_path, mode="w", newline="") as file:
                 fake.sentence(),  # approval_status_message
                 fake.date_time_this_year(),  # created_at
                 fake.date_time_this_year(),  # updated_at
-                fake.random_element(elements=("Aidrin", "Ashish")),  # requester_id
+                fake.random_element(elements=("Aidrin", "Ashish","Pavithra")),  # requester_id
                 False,  # is_deleted
                 fake.random_element(elements=("Ananthan", "Asima")),  # conceder_id
                 "Laptop",  # asset_type_id
-                fake.random_element(elements=("DU1", "DU2")),  # business_unit_id
+                fake.random_element(elements=("DU1", "DU2","DU3","DU4")),  # business_unit_id
                 "",  # custodian
                 fake.random_element(
-                    elements=("Trivandrum", "Kochi")
+                    elements=("Trivandrum", "Kochi","Banglore","London")
                 ),  # invoice_location
-                fake.random_element(elements=("Trivandrum", "Kochi")),  # location
+                fake.random_element(elements=("Trivandrum", "Kochi","Banglore","London")),  # location
                 0,  # memory_id
             ]
         )
