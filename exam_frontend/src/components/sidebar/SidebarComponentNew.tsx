@@ -13,14 +13,14 @@ import {
   VideoCameraOutlined,
   ExclamationOutlined,
   CheckCircleOutlined,
-  CheckSquareOutlined
+  CheckSquareOutlined,
 } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import ExampleNavbar from "../Navbar/navbar";
 
 import type { FC } from "react";
 import { Avatar, Button, DarkThemeToggle, Navbar } from "flowbite-react";
-import { FaBell } from "react-icons/fa";
+import { FaBell, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 import styles from "../Navbar/navbar.module.css";
 import AccountMenu from "../notificationMenuItem";
 import MenuListComposition from "../menuItem";
@@ -30,8 +30,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../pages/authentication/AuthContext";
 import Avatars from "../Avatar/Avatar";
 import SubMenu from "antd/es/menu/SubMenu";
-import { CheckOutlined, EditOutlined, WarningOutlined } from "@mui/icons-material";
+import {
+  CheckOutlined,
+  EditOutlined,
+  WarningOutlined,
+} from "@mui/icons-material";
 import ToolTip from "../Tooltip/Tooltip";
+
+import { Footer as FlowbiteFooter } from "flowbite-react";
+import { MdFacebook } from "react-icons/md";
 
 const SidebarComponentNew = ({ children }) => {
   const { userRole, setUserRole, login, logout } = useAuth();
@@ -137,36 +144,25 @@ const SidebarComponentNew = ({ children }) => {
           top: 0,
           bottom: 0,
           borderBottom: "1px solid #e8e8e8",
+          padding: 0,
         }}
       >
         {/* <ExampleNavbar /> */}
 
         <div className="w-full p-2.5 lg:px-5 lg:pl-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <img
-                src="../../public/images/xam_logo.png"
-                alt="Logo"
-                className="mr-12 -mt-10 -ml-10  md:-mt-10 md:-ml-10 w-30 h-10 sm:w-38 sm:h-16" // Adjust width and height as needed
-              />
-
-              {/* </Navbar.Brand> */}
+          <div className="flex items-center justify-between ">
+            <div className="text-left  font-display text-lg p-0 mb-10">
+              <b>Asset Management System</b>
             </div>
-            <div className="flex items-center gap-3 -mr-10">
+
+            {/* </Navbar.Brand> */}
+
+            <div className="flex items-center gap-3">
               <div
                 className={`flex items-center gap-3 ${styles["button-components"]}`}
               >
-                {/* <AccountMenu></AccountMenu> */}
-                {/*             
-              <Button>
-                <FaBell />
-              </Button> */}
-
-                {/* <DarkThemeToggle /> */}
-
                 {jwtPayload && jwtPayload.username && (
                   <div className={styles["username-container"]}>
-                    {/* <MenuListComposition /> */}
                     <span className={styles["username"]}>
                       Hi, {jwtPayload.username}
                     </span>
@@ -177,7 +173,7 @@ const SidebarComponentNew = ({ children }) => {
                     )}
                   </div>
                 )}
-                <div className="flex items-center gap-3 ml-5 -mt-10">
+                <div className="flex items-center gap-3 ml-5  -mt-10">
                   <Dropdown overlay={menu} placement="bottomCenter" arrow>
                     <div className="cursor-pointer">
                       <Avatars />
@@ -218,6 +214,7 @@ const SidebarComponentNew = ({ children }) => {
           }}
         >
           <div className="demo-logo-vertical" />
+          
           <Menu theme="light" mode="inline" className="text-base">
             <ToolTip title = "Dashboard">
             <Menu.Item icon={<PieChartOutlined />}>
@@ -250,12 +247,12 @@ const SidebarComponentNew = ({ children }) => {
               >
                  <ToolTip title = "In creation">
                 <Menu.Item icon={<CarryOutOutlined />}>
-                  <Link to="/exam/requests">In Creation</Link>
+                  <Link to="/exam/creation_requests">In Creation</Link>
                 </Menu.Item>
                 </ToolTip>
                 <ToolTip title = "In modification">
                 <Menu.Item icon={<CarryOutOutlined />}>
-                  <Link to="/exam/requests">In Modification</Link>
+                  <Link to="/exam/updation_requests">In Modification</Link>
                 </Menu.Item>
                 </ToolTip>
                 <ToolTip title = "In allocation">
@@ -292,10 +289,6 @@ const SidebarComponentNew = ({ children }) => {
             ) : (
               ""
             )}
-
-            {/* <Menu.Item onClick={() => handleLogout()} icon={<LogoutOutlined />}>
-              Logoutf
-            </Menu.Item> */}
           </Menu>
         </Sider>
         <Content>
@@ -306,6 +299,65 @@ const SidebarComponentNew = ({ children }) => {
           >
             <AddAsset />
           </SideDrawerComponent>
+
+          <Footer className="bg-white">
+            <FlowbiteFooter container>
+              <div className="flex w-full flex-col gap-y-6 lg:flex-row lg:justify-between lg:gap-y-0">
+                <FlowbiteFooter.LinkGroup>
+                  <FlowbiteFooter.Link
+                    href="https://experionglobal.com/terms-of-use/"
+                    className="mr-3 mb-3 lg:mb-0"
+                  >
+                    Terms and conditions
+                  </FlowbiteFooter.Link>
+                  <FlowbiteFooter.Link
+                    href="https://experionglobal.com/privacy-policy/"
+                    className="mr-3 mb-3 lg:mb-0"
+                  >
+                    Privacy Policy
+                  </FlowbiteFooter.Link>
+
+                  <FlowbiteFooter.Link href="https://experionglobal.com/">
+                    Contact
+                  </FlowbiteFooter.Link>
+                </FlowbiteFooter.LinkGroup>
+                <FlowbiteFooter.LinkGroup>
+                  <div className="flex gap-x-1">
+                    <FlowbiteFooter.Link
+                      href="https://www.facebook.com/experiontechnologies/"
+                      className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
+                    >
+                      <MdFacebook className="text-lg" />
+                    </FlowbiteFooter.Link>
+                    <FlowbiteFooter.Link
+                      href="https://www.instagram.com/experion_technologies/?hl=en"
+                      className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
+                    >
+                      <FaInstagram className="text-lg" />
+                    </FlowbiteFooter.Link>
+                    <FlowbiteFooter.Link
+                      href="https://twitter.com/experionglobal"
+                      className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
+                    >
+                      <FaTwitter className="text-lg" />
+                    </FlowbiteFooter.Link>
+                    <FlowbiteFooter.Link
+                      href="https://www.linkedin.com/company/experion-technologies/posts/"
+                      className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
+                    >
+                      <FaLinkedin className="text-lg" />
+                    </FlowbiteFooter.Link>
+                    <FlowbiteFooter.Link
+                      href="https://www.linkedin.com/uas/login?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Fcompany%2Fexperion-technologies%2Fposts"
+                      className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
+                    >
+                      {/* <FaDribbble className="text-lg" /> */}
+                    </FlowbiteFooter.Link>
+                  </div>
+                </FlowbiteFooter.LinkGroup>
+              </div>
+            </FlowbiteFooter>
+          </Footer>
         </Content>
       </Layout>
     </Layout>

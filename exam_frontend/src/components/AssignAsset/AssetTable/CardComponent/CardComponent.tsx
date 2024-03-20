@@ -12,10 +12,10 @@ import {
   message,
 } from "antd";
 import "./CardComponent.css";
-import { DataType } from "../AssetTable/types/index";
+import { DataType } from "../types";
 import { CardType } from "./types/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import axiosInstance from "../../config/AxiosConfig";
+import axiosInstance from "../../../../config/AxiosConfig";
 import { CommentOutlined } from "@ant-design/icons";
 
 interface UpdateData {
@@ -103,6 +103,7 @@ const CardComponent: React.FC<CardType> = ({
         >
           <b style={{ display: "block" }}>Asset Category: </b> <br></br>
           <Input
+          disabled
             defaultValue={data.asset_category}
             onChange={(e) =>
               handleUpdateChange("assetCategory", e.target.value)
@@ -124,6 +125,7 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>
           <Select
+          disabled
             variant="filled"
             defaultValue={data.asset_type}
             style={{
@@ -157,6 +159,7 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+          disabled
             defaultValue={data.version}
             onChange={(e) => handleUpdateChange("version", e.target.value)}
             style={inputStyle}
@@ -177,6 +180,7 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>
           <Select
+          disabled
             variant="filled"
             defaultValue={uniqueStatusOptions[0]}
             style={{
@@ -210,6 +214,7 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>
           <Select
+          disabled
             variant="filled"
             defaultValue={data.location}
             style={{
@@ -243,6 +248,7 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>
           <Select
+          disabled
             variant="filled"
             defaultValue={data.invoice_location}
             style={{
@@ -274,6 +280,8 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+          disabled
+
             defaultValue={data.os}
             onChange={(e) => handleUpdateChange("os", e.target.value)}
             style={inputStyle}
@@ -290,6 +298,8 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+          disabled
+
             defaultValue={data.os_version}
             onChange={(e) => handleUpdateChange("os version", e.target.value)}
             style={inputStyle}
@@ -306,6 +316,7 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+          disabled
             defaultValue={data.mobile_os}
             onChange={(e) => handleUpdateChange("mobile os", e.target.value)}
             style={inputStyle}
@@ -322,6 +333,7 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+          disabled
             defaultValue={data.processor}
             onChange={(e) => handleUpdateChange("processor", e.target.value)}
             style={inputStyle}
@@ -338,6 +350,8 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+          disabled
+
             defaultValue={data.Generation}
             onChange={(e) => handleUpdateChange("generation", e.target.value)}
             style={inputStyle}
@@ -353,6 +367,7 @@ const CardComponent: React.FC<CardType> = ({
           <b>Accessories:</b> <br></br>
           <br></br>{" "}
           <Input
+          disabled
             defaultValue={data.accessories}
             onChange={(e) => handleUpdateChange("accessories", e.target.value)}
             style={inputStyle}
@@ -368,6 +383,7 @@ const CardComponent: React.FC<CardType> = ({
           <b>Date of Purchase:</b> <br></br>
           <br></br>{" "}
           <Input
+          disabled
             defaultValue={formatDate(data.date_of_purchase.toString())}
             onChange={(e) =>
               handleUpdateChange("date of purchase", e.target.value)
@@ -386,6 +402,7 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+          disabled
             defaultValue={data.warranty_period}
             onChange={(e) =>
               handleUpdateChange("warranty period", e.target.value)
@@ -403,7 +420,8 @@ const CardComponent: React.FC<CardType> = ({
           <b>Asset Detail Status </b>
           <br></br>
           <br></br>{" "}
-          <Input
+          <Input 
+          disabled
             defaultValue={data.asset_detail_status}
             onChange={(e) =>
               handleUpdateChange("asset_detail_status", e.target.value)
@@ -422,6 +440,8 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+          disabled
+
             defaultValue={data.assign_status}
             onChange={(e) =>
               handleUpdateChange("assign_status", e.target.value)
@@ -459,6 +479,8 @@ const CardComponent: React.FC<CardType> = ({
           <b>Serial Number:</b> <br></br>
           <br></br>{" "}
           <Input
+          disabled
+
             defaultValue={data.serial_number}
             onChange={(e) =>
               handleUpdateChange("serail number", e.target.value)
@@ -477,6 +499,8 @@ const CardComponent: React.FC<CardType> = ({
           <b>Model Number:</b> <br></br>
           <br></br>{" "}
           <Input
+          disabled
+
             defaultValue={data.model_number}
             onChange={(e) => handleUpdateChange("model number", e.target.value)}
             style={inputStyle}
@@ -516,6 +540,8 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+          disabled
+
             defaultValue={data.owner}
             onChange={(e) => handleUpdateChange("owner", e.target.value)}
             style={inputStyle}
@@ -555,6 +581,8 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+          disabled
+
             defaultValue={data.product_name}
             onChange={(e) => handleUpdateChange("product name", e.target.value)}
             style={inputStyle}
@@ -575,6 +603,8 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>
           <Select
+          disabled
+
             variant="filled"
             defaultValue={uniqueBusinessOptions[0]}
             style={{
@@ -613,6 +643,8 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>
           <Select
+          disabled
+
             variant="filled"
             defaultValue={data.memory}
             style={{
@@ -643,6 +675,8 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+          disabled
+
             defaultValue={data.storage}
             onChange={(e) => handleUpdateChange("storage", e.target.value)}
             style={inputStyle}
@@ -659,6 +693,8 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+          disabled
+
             defaultValue={data.configuration}
             onChange={(e) =>
               handleUpdateChange("configuration", e.target.value)
@@ -720,6 +756,8 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+          disabled
+
             defaultValue={data.notes}
             onChange={(e) => handleUpdateChange("comments", e.target.value)}
             style={{
@@ -793,24 +831,11 @@ const CardComponent: React.FC<CardType> = ({
             height: "30px",
             borderRadius: "5px",
             background: "#f0f0f0",
-            marginLeft: "72px",
+            marginLeft: "64px",
             padding: "20px",
           }}
         />
-        <Button
-          style={{
-            marginBottom: "0px",
-            marginTop:"0px",
-            color: "white",
-            border: "none",
-            background: "blue",
-            marginLeft: "803px",
-           
-          }}
-          onClick={handleUpdate}
-        >
-          Update
-        </Button>
+        
       </div>
       <div className="scrollable-content">
         <Form

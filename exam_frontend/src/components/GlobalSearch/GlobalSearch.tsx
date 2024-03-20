@@ -11,13 +11,19 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ onSearch, assetDataRefetch 
   const [searchTerm, setSearchTerm] = useState<string>('');
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-    assetDataRefetch(`&global_search=${event.target.value}`)
+    if(event.target.value === ""){
+      setSearchTerm(event.target.value);
+      assetDataRefetch(``)
+    }
+    else{
+      setSearchTerm(event.target.value);
+      assetDataRefetch(`&global_search=${event.target.value}`)
+    }
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Prevent default form submission behavior
-    onSearch(searchTerm); // Call the onSearch callback function with the search term
+    // onSearch(searchTerm);
   };
 
   const handleSearchButtonClick = () => {
@@ -33,9 +39,9 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ onSearch, assetDataRefetch 
         onChange={handleChange}
         className={styles['global-search-input']}
       />
-      <button type="button" className={styles['global-search-button']} onClick={handleSearchButtonClick}>
+      {/* <button type="button" className={styles['global-search-button']} onClick={handleSearchButtonClick}>
         <SearchOutlined />
-      </button>
+      </button> */}
     </form>
   );
 };

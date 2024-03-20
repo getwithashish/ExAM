@@ -99,7 +99,49 @@ const AssetTableHandler = ({showAssignDrawer}) => {
           dataIndex: "model_number",
           key: "model_number",
         },
-        { title: "updated_at", dataIndex: "updated_at", key: "updated_at" },
+        { title: "Asset Type", dataIndex: "asset_type", key: "asset_type" },
+
+        { title: "Location", dataIndex: "location", key: "location" },
+        {
+          title: "Invoice Location",
+          dataIndex: "invoice_location",
+          key: "invoice_location",
+        },
+        {
+          title: "Warranty Period",
+          dataIndex: "warranty_period",
+          key: "warranty_period",
+        },
+        {
+          title: "Version",
+          dataIndex: "version",
+          key: "version",
+        },
+        {
+          title: "Configuration",
+          dataIndex: "configuration",
+          key: "configuration",
+        },
+        {
+          title: "Storage",
+          dataIndex: "storage",
+          key: "storage",
+        },
+        {
+          title: "Os",
+          dataIndex: "os",
+          key: "os",
+        },
+        {
+          title: "Owner",
+          dataIndex: "owner",
+          key: "owner",
+        },
+        {
+          title: "Notes",
+          dataIndex: "notes",
+          key: "notes",
+        },
       ];
 
       console.log("logsdata", logsData);
@@ -133,6 +175,17 @@ const AssetTableHandler = ({showAssignDrawer}) => {
               updated_at: formattedUpdatedAt,
               date_of_purchase: asset_log.date_of_purchase,
               date: asset_log.date_of_purchase,
+              asset_type: asset_log.asset_type.asset_type_name,
+              location: asset_log.location.location_name,
+              invoice_location:
+                asset_log.invoice_location.invoice_location_name,
+                warranty_period:asset_log.warranty_period,
+                version:asset_log.version,
+                configuration:asset_log.configuration,
+                storage:asset_log.storage,
+                os:asset_log.os,
+                owner:asset_log.owner,
+                notes:asset_log.notes,
               name: asset_log.product_name,
               upgradeNum: asset_log.assign_status,
             },
@@ -245,7 +298,7 @@ const AssetTableHandler = ({showAssignDrawer}) => {
       title: "Product Name",
       dataIndex: "product_name",
       fixed: "left",
-      width: 180,
+      // width: 150,
       filterIcon: <SearchOutlined />,
       filterDropdown: ({
         setSelectedKeys,
@@ -303,7 +356,7 @@ const AssetTableHandler = ({showAssignDrawer}) => {
       title: "Serial Number",
       dataIndex: "serial_number",
       responsive: ["md"],
-      width: 180,
+      // width: 160,
       filterIcon: <SearchOutlined />,
       filterDropdown: ({
         setSelectedKeys,
@@ -362,7 +415,7 @@ const AssetTableHandler = ({showAssignDrawer}) => {
       title: "Location",
       dataIndex: "location",
       responsive: ["md"],
-      width: 180,
+      // width: 160,
       filters: locationFilters,
       onFilter: (
         value: string | number | boolean | React.ReactText[] | Key,
@@ -387,7 +440,7 @@ const AssetTableHandler = ({showAssignDrawer}) => {
       title: "Invoice Location",
       dataIndex: "invoice_location",
       responsive: ["md"],
-      width: 180,
+      // width: 160,
       filters: locationFilters,
       onFilter: (
         value: string | number | boolean | React.ReactText[] | Key,
@@ -414,7 +467,7 @@ const AssetTableHandler = ({showAssignDrawer}) => {
       dataIndex: "custodian",
       responsive: ["md"],
       fixed: "right",
-      width: 180,
+      // width: 160,
       filterIcon: <SearchOutlined />,
       filterDropdown: ({
         setSelectedKeys,
@@ -470,7 +523,7 @@ const AssetTableHandler = ({showAssignDrawer}) => {
       title: "Asset Type",
       dataIndex: "asset_type",
       responsive: ["md"],
-
+      // width: 160,
       filters: assetTypeFilters,
       onFilter: (
         value: string | number | boolean | React.ReactText[] | Key,
@@ -495,6 +548,7 @@ const AssetTableHandler = ({showAssignDrawer}) => {
       title: "Assign Asset",
       dataIndex: "AssignAsset",
       fixed: "right",
+      // width: 160,
       render: (_data, record) => (
         <Button
           ghost
@@ -548,7 +602,8 @@ const AssetTableHandler = ({showAssignDrawer}) => {
     accessories: result.accessories,
     date_of_purchase: result.date_of_purchase,
     warranty_period: result.warranty_period,
-    approval_status: result.approval_status,
+    asset_detail_status: result.asset_detail_status,
+    assign_status: result.assign_status,
     conceder: result.conceder?.username,
     model_number: result.model_number,
     serial_number: result.serial_number,
