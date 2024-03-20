@@ -88,26 +88,29 @@ export default function Login() {
 
   return (
     <Fragment>
-      <div className="flex flex-col lg:flex-row items-center justify-center lg:h-screen lg:gap-y-12">
-        <div className="lg:w-full h-full relative">
+      <div className="relative flex flex-col lg:flex-row items-center justify-center lg:h-screen lg:gap-y-12">
+        {/* Background image */}
+        <div className="lg:w-full h-full absolute inset-0 z-0">
           <div
-            className="absolute inset-2 bg-cover bg-bottom rounded-lg"
+            className="absolute inset-0 bg-cover bg-bottom rounded-lg"
             style={{
-              backgroundImage: `url('../../../public/images/Experion.jfif')`,
+              backgroundImage: `url('../../../public/images/Experion.jpg')`,
+              filter: 'blur(1px)', // Adjust the blur intensity as needed
             }}
           ></div>
         </div>
 
+        {/* Card */}
         <Card
           horizontal
-          className="w-full lg:w-full md:max-w-screen-sm md:[&>*]:w-full md:[&>*]:p-16"
+          className="w-full lg:w-full md:max-w-screen-sm md:[&>*]:w-full md:[&>*]:p-16 z-10 absolute right-10" // Adjust z-index to position the card above the background image
         >
-          <div className="flex lg:my-0 text-sm">
-            <span className="font-light item-center dark:text-white md:text-3xl text-center">
+          <div className="flex justify-center lg:my-0 text-sm"> {/* Updated class: flex justify-center */}
+            <span className="font-normal dark:text-white md:text-3xl text-center">
               Experion Asset Management
             </span>
           </div>
-          <h1 className="font-display font-semi-bold dark:text-white md:text-3xl my-6 text-center">
+          <h1 className="font-display font-light dark:text-white md:text-3xl my-6 text-center">
             Login
           </h1>
           <form onSubmit={handleSubmit}>
