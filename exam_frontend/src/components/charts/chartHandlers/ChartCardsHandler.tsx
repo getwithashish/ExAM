@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axiosInstance from '../../../config/AxiosConfig';
+import { fetchAssetData } from '../api/ChartApi';
 
 const AssetCountComponent = () => {
     const [totalAssets, setTotalAssets] = useState(0);
@@ -8,11 +8,13 @@ const AssetCountComponent = () => {
     const [currentAssetIndex, setCurrentAssetIndex] = useState(0);
     const [pendingAssetsCount, setPendingAssetsCount] = useState(0);
     const [pendingAssignsCount, setPendingAssignsCount] = useState(0);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     
     useEffect(() => {
-        axiosInstance.get(`/asset/asset_count`)
-            .then((res) => {
-                const assetCountData = res.data.data;
+        const fetchData = async () => {
+            try {
+                const assetCountData = await fetchAssetData();
                 setTotalAssets(assetCountData.total_assets || 0);
                 const types = Object.keys(assetCountData.asset_type_counts || {});
                 setTotalAssetTypes(types.length);
@@ -32,64 +34,58 @@ const AssetCountComponent = () => {
                 }
                 setPendingAssignsCount(pendingAssignsCount);
 
-            })
-            .catch(error => {
-                console.error("Error fetching asset count data:", error);
-            });
+                setLoading(false);
+            } catch (error) {
+                setError("Error fetching asset count data");
+                setLoading(false);
+            }
+        };
+
+        fetchData();
     }, []);
 
     useEffect(() => {
         const intervalId = setInterval(() => {
             setCurrentAssetIndex(prevIndex => (prevIndex + 1) % totalAssetTypes);
         }, 2000); 
-        return () => {
-            clearInterval(intervalId); 
-        };
+
+        return () => clearInterval(intervalId);
     }, [totalAssetTypes]);
-    
-        return (
-            <div className='flex flex-wrap'>
-                <div className='flex-1 my-8'>
-                    <div className='flex-1 bg-gradient-to-r from-purple-500 to-purple-500 hover:from-purple-600 hover:to-purple-700 ... rounded-3xl scale-90 p-4' style={{boxShadow:'0 0 20px rgba(0, 0, 0, 0.2)'}}>
-                        <div className="font-bold text-white font-display mx-8 mt-6 text-grey-900 dark:text-white text-2xl ">                
-                            Asset count:
-                            <div className="font-bold font-display mx-4 mt-4 pb-6 text-4xl">
-                                {totalAssets}
-                            </div>
-                        </div>
-                    </div>
-                    <div className='flex-1 bg-gradient-to-r from-blue-500 to-blue-500 hover:from-blue-600 hover:to-indigo-500 ... rounded-3xl scale-90 p-4' style={{boxShadow:'0 0 20px rgba(0, 0, 0, 0.2)'}}>
-                        <div className="font-bold text-white font-display mx-8 mt-6 text-grey-900 dark:text-white text-2xl ">                
-                        Asset Types:
-                            <div className="font-bold font-display mx-4 mt-4 pb-6 text-4xl">
-                                {totalAssetTypes}
-                            </div>
-                        </div>
-                    </div>
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>{error}</div>;
+    }
+
+    return ( 
+        <div className="grid grid-cols-2 gap-8 py-10 px-4">
+            <div className="bg-gradient-to-r from-purple-600 to-purple-600 hover:from-purple-700 hover:to-purple-700 rounded-3xl p-4 shadow-md" style={{boxShadow:'0 0 5px rgba(0, 0, 0, 0.5)'}}>
+                <div className="text-white text-2xl font-bold mb-6 text-center">Asset count:</div>
+                <div className="text-white text-4xl font-bold m-8 text-center">{totalAssets}</div>
+            </div>
+            <div className="bg-gradient-to-r from-green-400 to-green-400 hover:from-green-500 hover:to-green-500 rounded-3xl p-4 shadow-md" style={{boxShadow:'0 0 5px rgba(0, 0, 0, 0.5)'}}>
+                <div className="text-white text-2xl font-bold mb-10 text-center">Inventory:</div>
+                <div className="text-white text-2xl font-bold mt-2 text-center">{assetTypes[currentAssetIndex]}</div>
+            </div>
+            <div className="bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600 rounded-3xl p-4 shadow-md" style={{boxShadow:'0 0 5px rgba(0, 0, 0, 0.5)'}}>
+                <div className="text-white text-2xl font-bold mb-6 text-center">Asset Types:</div>
+                <div className="text-white text-4xl font-bold mt-8 text-center">{totalAssetTypes}</div>
+            </div>            
+            <div className="bg-gradient-to-r from-blue-500 to-blue-500 hover:from-blue-600 hover:to-indigo-500 rounded-3xl p-4 shadow-md"style={{boxShadow:'0 0 5px rgba(0, 0, 0, 0.5)'}}>
+                <div className="text-white text-2xl font-bold mb-6 text-center">Pending Approvals:</div>
+                <div className="text-white text-lg font-bold mx-4 text-center">
+                    Assets: {pendingAssetsCount}
+                    <br />
+                    Assigns: {pendingAssignsCount}
                 </div>
-                <div className='flex-1 my-8'>
-                <div className='flex-1 bg-gradient-to-r from-green-400 to-green-400 hover:from-green-500 hover:to-green-500 ... rounded-3xl scale-90 p-3' style={{boxShadow:'0 0 20px rgba(0, 0, 0, 0.2)'}}>
-                        <div className="font-bold text-white font-display ml-8 mt-6 text-grey-900 dark:text-white text-2xl ">                
-                            Inventory:
-                            <div className="font-bold font-display  mt-14 pb-9 text-xl">
-                                {assetTypes[currentAssetIndex]}
-                            </div>
-                        </div>
-                    </div>
-                    <div className='flex-1 bg-gradient-to-r from-orange-400 to-orange-400 hover:from-orange-500 hover:to-orange-500 ... rounded-3xl scale-90 p-4' style={{boxShadow:'0 0 20px rgba(0, 0, 0, 0.2)'}}>
-                        <div className="font-bold text-white font-display mx-8 mt-6 text-grey-900 dark:text-white text-2xl ">                
-                            Pending:
-                            <div className="font-bold font-display ml-0 mt-7 pb-1 text-lg">
-                                Assets : {pendingAssetsCount}
-                            </div>
-                            <div className="font-bold font-display ml-0 pb-6 text-lg">
-                                Assigns : {pendingAssignsCount}
-                            </div>
-                        </div>
-                    </div>
-                    </div>                
-                </div>            
-        );
-    };
+            </div>
+        </div> 
+        
+        
+    );
+};
 
 export default AssetCountComponent;
