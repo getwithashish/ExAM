@@ -793,7 +793,7 @@ const CardComponent: React.FC<CardType> = ({
             height: "30px",
             borderRadius: "5px",
             background: "#f0f0f0",
-            marginLeft: "64px",
+            marginLeft: "72px",
             padding: "20px",
           }}
         />
@@ -804,7 +804,7 @@ const CardComponent: React.FC<CardType> = ({
             color: "white",
             border: "none",
             background: "blue",
-            marginLeft: "603px",
+            marginLeft: "803px",
            
           }}
           onClick={handleUpdate}
