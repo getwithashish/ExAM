@@ -216,18 +216,24 @@ const SidebarComponentNew = ({ children }) => {
             <Menu.Item icon={<PieChartOutlined />}>
               <Link to="/exam/dashboard">Dashboard</Link>
             </Menu.Item>
-            <Menu.Item
-              onClick={() => showDefaultDrawer()}
-              icon={<AppstoreAddOutlined />}
-            >
-              Create Assets
-            </Menu.Item>
-            <Menu.Item icon={<EditOutlined />}>
-              <Link to="/exam/updatable_assets">Modify Assets</Link>
-            </Menu.Item>
-            <Menu.Item icon={<UserSwitchOutlined />}>
-              <Link to="/exam/assignable_asset">Allocate Assets</Link>
-            </Menu.Item>
+            {userRole !== "MANAGER" ? (
+              <React.Fragment>
+                <Menu.Item
+                  onClick={() => showDefaultDrawer()}
+                  icon={<AppstoreAddOutlined />}
+                >
+                  Create Assets
+                </Menu.Item>
+                <Menu.Item icon={<EditOutlined />}>
+                  <Link to="/exam/updatable_assets">Modify Assets</Link>
+                </Menu.Item>
+                <Menu.Item icon={<UserSwitchOutlined />}>
+                  <Link to="/exam/assignable_asset">Allocate Assets</Link>
+                </Menu.Item>
+              </React.Fragment>
+            ) : (
+              ""
+            )}
             {userRole === "LEAD" ? (
               <SubMenu
                 key="sub1"
