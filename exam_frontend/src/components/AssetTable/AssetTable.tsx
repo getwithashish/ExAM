@@ -52,6 +52,7 @@ const AssetTable = ({
   memoryData,
   assetTypeData,
   expandedRowRender,
+  isMyApprovalPage,
   heading
 }:AssetTableProps
 ) => {
@@ -121,7 +122,7 @@ boxShadow
         {selectedRow && (
           <CardComponent
             selectedAssetId={ selectedAssetId}
-
+            isMyApprovalPage={isMyApprovalPage}
             data={selectedRow}
             statusOptions={statusOptions}
             businessUnitOptions={businessUnitOptions}

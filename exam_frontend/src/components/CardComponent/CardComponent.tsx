@@ -21,6 +21,7 @@ import { CommentOutlined } from "@ant-design/icons";
 interface UpdateData {
   asset_uuid: string;
   data: Partial<DataType>; // Partial to allow updating only specific fields
+  isMyApprovalPage:boolean
 }
 const CardComponent: React.FC<CardType> = ({
   asset_uuid,
@@ -31,6 +32,7 @@ const CardComponent: React.FC<CardType> = ({
   locations,
   memoryData,
   assetTypeData,
+  isMyApprovalPage
 }) => {
   const uniqueStatusOptions = Array.from(new Set(statusOptions));
   const uniqueBusinessOptions = Array.from(new Set(businessUnitOptions));
@@ -797,20 +799,22 @@ const CardComponent: React.FC<CardType> = ({
             padding: "20px",
           }}
         />
-        <Button
-          style={{
-            marginBottom: "0px",
-            marginTop:"0px",
-            color: "white",
-            border: "none",
-            background: "blue",
-            marginLeft: "803px",
-           
-          }}
-          onClick={handleUpdate}
-        >
-          Update
-        </Button>
+       {isMyApprovalPage && (
+  <Button
+    style={{
+      marginBottom: "0px",
+      marginTop: "0px",
+      color: "white",
+      border: "none",
+      background: "blue",
+      marginLeft: "803px",
+    }}
+    onClick={handleUpdate}
+  >
+    Update
+  </Button>
+)}
+
       </div>
       <div className="scrollable-content">
         <Form
