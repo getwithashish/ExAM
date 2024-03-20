@@ -80,7 +80,6 @@ const DasboardAssetTable = ({
       <div className="mainHeading font-medium font-display font-semibold">
         <h6>Asset Details</h6>
       </div>
-
       <div className="ml-2">
         <TableNavbar
           showUpload={showUpload}
@@ -129,7 +128,7 @@ const DasboardAssetTable = ({
               <Pagination
                 pageSize={20}
                 showTotal={(total, range) =>
-                  `${range[0]}-${range[1]} of ${total} assets`
+                  `${range[0]}-${range[1]} of ${total} assets `
                 }
                 total={totalItemCount}
                 onChange={(page, pageSize) => {
