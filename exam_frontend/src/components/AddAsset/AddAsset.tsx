@@ -118,7 +118,7 @@ const AddAsset: React.FC = () => {
   return (
     <div className = "font-display">
     <div className={styles['container']}>
-      <h1 className={styles['heading']}>Add a new asset</h1>
+      <h1 className={styles['heading']}>Create a new asset</h1>
       <Form
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 12 }}
@@ -350,7 +350,7 @@ const AddAsset: React.FC = () => {
  
  
         <Form.Item label="Asset Remark/s:" className={styles['formItem']}>
-           <TextArea rows={4}  className={styles['input']}  placeholder="Enter any remarks/s"
+           <TextArea rows={4}  className={styles['input']}  placeholder="Enter asset remarks/s"
                   onChange={(e) => handleInputChange('remark', e.target.value)}/>
          </Form.Item>
  
@@ -358,7 +358,7 @@ const AddAsset: React.FC = () => {
  
  
         <Form.Item label="Reason of creation:" className={styles['formItem']}>
-        <Input placeholder="Enter message"className={styles['input']}
+        <Input placeholder="Enter reason for creation"className={styles['input']}
           onChange={(e) => handleInputChange('message', e.target.value)}/>
         </Form.Item>
         <Form.Item>

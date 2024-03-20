@@ -2,11 +2,11 @@
   display: flex;
   justify-content: space-around;
   gap: 10px;
-  /* background-color: yellow; */
+  
 }
 
 .username-container {
-  display: flex; /* Use flexbox to align items */
+  display: flex; 
   flex-direction: column;
   position: relative;
   top: -15px;
@@ -29,8 +29,7 @@
   text-transform: capitalize;
   padding: 0;
   padding-top: 7px;
-  /* height: 5px; */
-  /* margin-top: 5px; */
+  
 }
 .button-content
 {

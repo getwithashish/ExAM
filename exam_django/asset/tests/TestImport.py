@@ -1,12 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse
-from rest_framework import status
 from unittest.mock import patch
 from io import BytesIO
 from user_auth.models import User
-from asset.models import Asset
-from asset.views import DataImportView
-from asset.views.CsvFileImportView import parse_and_add_assets
+
 
 class TestDataImportView(TestCase):
     def setUp(self):
@@ -35,10 +32,14 @@ class TestDataImportView(TestCase):
         csv_file.content_type = "text/csv"
 
         # Mock the parse_and_add_assets function to return a success message
-        mock_parse_and_add_assets.return_value = {"message": "Assets imported successfully."}
+        mock_parse_and_add_assets.return_value = {
+            "message": "Assets imported successfully."
+        }
 
         # Make a POST request to the data import endpoint with the mock CSV file
-        url = reverse("csv_file_import")  # Corrected to match the URL pattern name 'csv_file_import'
+        url = reverse(
+            "csv_file_import"
+        )  # Corrected to match the URL pattern name 'csv_file_import'
         response = self.client.post(url, {"file": csv_file}, format="multipart")
 
         # Assert that the parse_and_add_assets function was called with the correct argum
