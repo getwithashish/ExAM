@@ -243,14 +243,14 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
 
     return (
     <Stack>
-        <div className=''>
+        <div className='ml-24'>
             <div className='mt-4 flex'>
                 <div className='flex-1 ml-8 mt-1 p-1'>
                     <span className="text-black font-display font-semibold text-lg">Select an Asset: </span>
                 </div>
                 <div className='flex-1'>
                     <select className="block bg-transparent font-display text-black-500 appearance-none dark:text-gray-400 dark:border-gray-200 focus:outline-none rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" onChange={handleSelectChange}>
-                        <option value="0" className="text-black font-display bg-white">View all</option>
+                        <option value="0" className="text-black font-display bg-white ">View all</option>
                         {assetTypeData.map((assetType) => (
                             <option key={assetType.id} value={assetType.id} className="text-black border-0 border-b-2 bg-white font-display">{assetType.asset_type_name}</option>
                         ))}
@@ -260,19 +260,19 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
         </div>               
     <Stack direction="row">
         <Carousel>
-        <div className='item pt-6 mt-4 ml-5'>
+        <div className='item pt-6 mt-4 mx-24'>
                 <div className='ml-20'>
                     <span className="font-semibold font-display leading-none text-gray-900 dark:text-white text-lg">
                         Asset Status
                     </span>  
                 </div>  
                 <PieChart
-                    margin={{ top: -10, bottom: 0, left: 10, right:0}}
+                    margin={{ top: 10, bottom: 0, left: 10, right:0}}
                     series={[
                         {
                             data: assetFilteredChartData,
                             innerRadius: 60,
-                            outerRadius: 120,
+                            outerRadius: 140,
                             paddingAngle: 2,
                             cornerRadius: 10,
                             startAngle: -110,
@@ -284,7 +284,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                         },
                     ]}
                     width={300}
-                    height={260}
+                    height={280}
                     slotProps={{
                         legend: {
                             direction: 'row',
@@ -301,19 +301,19 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                     }}
                 />
             </div>
-            <div className='item pt-6 mt-4 ml-5'>
+            <div className='item pt-6 mt-4 mx-24'>
                 <div className='ml-20'>
                     <span className="font-semibold font-display leading-none text-gray-900 dark:text-white text-lg">
                         Approval Status
                     </span>  
-                </div> 
+                </div>
                 <PieChart
-                    margin={{ top: -10, bottom: 0, left: 10, right:0}}
+                    margin={{ top: 10, bottom: 0, left: 10, right:0}}
                     series={[
                         {
                             data: detailFilteredChartData,
                             innerRadius: 60,
-                            outerRadius: 120,
+                            outerRadius: 140,
                             paddingAngle: 2,
                             cornerRadius: 10,
                             startAngle: -110,
@@ -325,7 +325,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                         },
                     ]}
                     width={300}
-                    height={260}
+                    height={280}
                     slotProps={{
                         legend: {
                             direction: 'row',
@@ -342,19 +342,19 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                     }}
                 />
             </div>
-            <div className='item pt-6 mt-4 ml-5'>
+            <div className='item pt-6 mt-4 mx-24'>
                 <div className='ml-20'>
                     <span className="font-semibold font-display leading-none text-gray-900 dark:text-white text-lg">
                         Assign Status
-                    </span>    
+                    </span>  
                 </div>
                 <PieChart
-                    margin={{ top: -10, bottom: 0, left: 10, right:0}}
+                    margin={{ top: 10, bottom: 0, left: 10, right:0}}
                     series={[
                         {
                             data: assignFilteredChartData,
                             innerRadius: 60,
-                            outerRadius: 120,
+                            outerRadius: 140,
                             paddingAngle: 2,
                             cornerRadius: 10,
                             startAngle: -110,
@@ -366,7 +366,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                         },
                     ]}
                     width={300}
-                    height={260}
+                    height={280}
                     slotProps={{
                         legend: {
                             direction: 'row',

@@ -26,10 +26,10 @@ export const Statistics = () => {
       </div>
       <div className="rounded-lg bg-gray-50 shadow-md dark:bg-gray-800 xl:p-4 mx-10 py-2" style={{boxShadow:'0 0 20px rgba(0, 0, 0, 0.2)'}}>
         <div className="mx-4 flex">
-          <div className='flex-1'>
+          <div className='flex-3'>
             <AssetCountComponent/>            
           </div>
-          <div className='flex-2'>
+          <div className='flex-4'>
             <ChartHandlers/>
           </div>          
         </div>        
