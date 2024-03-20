@@ -1,7 +1,6 @@
 import React from 'react'
 import AssetTableHandler from '../../components/AssetTable/AssetTableHandler';
-
-
+import CardComponent from '../../components/CardComponent/CardComponent';
 const MyApprovalPage = () => {
     
     const decodeJWT = (token: string) => {
@@ -64,6 +63,7 @@ const MyApprovalPage = () => {
             isRejectedPage={false}
             queryParamProp={queryParamProp}
             heading={heading}
+            isMyApprovalPage={false}
           />
         </div>
         
