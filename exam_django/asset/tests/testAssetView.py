@@ -1,40 +1,42 @@
 from rest_framework.test import APITestCase, APIClient
 from django.urls import reverse
 from rest_framework import status
-from asset.models import AssetType, BusinessUnit, Location, Memory, Asset
+from asset.models import AssetType, BusinessUnit, Location, Memory
 from user_auth.models import User
 from rest_framework_simplejwt.tokens import AccessToken
 from django.contrib.auth.models import Permission
 
 
 class AssetViewCreateTests(APITestCase):
-    
+
     def setUp(self):
         self.lead_permission, _ = Permission.objects.get_or_create(
-            codename='isLead',
-            name='Can create an asset',
+            codename="isLead",
+            name="Can create an asset",
             content_type_id=1,
         )
         self.lead_user = User.objects.create_user(
-            username='lead', password='password', email='lead@example.com',
-            user_scope='LEAD')        
+            username="lead",
+            password="password",
+            email="lead@example.com",
+            user_scope="LEAD",
+        )
         self.lead_user.user_permissions.add(self.lead_permission)
-        self.lead_client = APIClient()        
-        self.lead_token = str(AccessToken.for_user(self.lead_user))   
-        self.lead_client.credentials(
-            HTTP_AUTHORIZATION='Bearer ' + self.lead_token)                
-        self.asset_type = AssetType.objects.create(
-            asset_type_name='Test Asset Type')
+        self.lead_client = APIClient()
+        self.lead_token = str(AccessToken.for_user(self.lead_user))
+        self.lead_client.credentials(HTTP_AUTHORIZATION="Bearer " + self.lead_token)
+        self.asset_type = AssetType.objects.create(asset_type_name="Test Asset Type")
         self.business_unit = BusinessUnit.objects.create(
-            business_unit_name='Test Business Unit')
-        self.location = Location.objects.create(
-            location_name='Test Location')
+            business_unit_name="Test Business Unit"
+        )
+        self.location = Location.objects.create(location_name="Test Location")
         self.invoice_location = Location.objects.create(
-            location_name='Test Invoice Location')
-        self.memory = Memory.objects.create(
-            memory_space=32)
+            location_name="Test Invoice Location"
+        )
+        self.memory = Memory.objects.create(memory_space=32)
         self.user = User.objects.create_user(
-            username='user', password='password', email='user@example.com')        
+            username="user", password="password", email="user@example.com"
+        )
         self.asset_data = {
             "asset_id": "91023",
             "version": 5,
@@ -69,14 +71,13 @@ class AssetViewCreateTests(APITestCase):
             "memory": self.memory.pk,
             "approved_by": self.user.pk,
             "requester": self.user.pk,
-            }
-        
+        }
+
     def test_lead_create_asset(self):
         url = reverse("asset")
         response = self.lead_client.post(url, self.asset_data, format="json")
-        self.assertEqual(
-            response.status_code, status.HTTP_201_CREATED)
-        
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
     def test_create_asset_invalid_data_format(self):
         url = reverse("asset")
         invalid_data = self.asset_data.copy()
@@ -84,20 +85,17 @@ class AssetViewCreateTests(APITestCase):
         response = self.lead_client.post(url, invalid_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("date_of_purchase", response.data["data"])
-                
+
     def test_lead_create_asset_valid_data(self):
         url = reverse("asset")
         response = self.lead_client.post(url, self.asset_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIn("asset_id", response.data["data"])
         self.assertEqual(response.data["data"]["asset_category"], "HARDWARE")
-        self.assertEqual(response.data["data"]["product_name"], "HP Pavilion Yahoo Smart Glass")
+        self.assertEqual(
+            response.data["data"]["product_name"], "HP Pavilion Yahoo Smart Glass"
+        )
         self.assertIsInstance(response.data["data"]["processor_gen"], str)
         self.assertIsInstance(response.data["data"]["storage"], str)
-        
-            
-    # def test_unauthorized_user_create_asset(self):
-    #     url = reverse("asset")
-    #     response = self.client.post(url, self.asset_data, format="json")
-    #     self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-    
+
+   
