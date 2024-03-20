@@ -31,6 +31,7 @@ import { useAuth } from "../../pages/authentication/AuthContext";
 import Avatars from "../Avatar/Avatar";
 import SubMenu from "antd/es/menu/SubMenu";
 import { CheckOutlined, EditOutlined, WarningOutlined } from "@mui/icons-material";
+import ToolTip from "../Tooltip/Tooltip";
 
 const SidebarComponentNew = ({ children }) => {
   const { userRole, setUserRole, login, logout } = useAuth();
@@ -202,7 +203,9 @@ const SidebarComponentNew = ({ children }) => {
             top: 0,
             bottom: 0,
             paddingTop: 100,
+            paddingLeft: 15,
             borderRight: "1px solid  #e8e8e8",
+            // marginRight:"30px"
           }}
           width="250px"
           breakpoint="lg"
@@ -215,62 +218,76 @@ const SidebarComponentNew = ({ children }) => {
           }}
         >
           <div className="demo-logo-vertical" />
-          {/* <Menu
-            theme="light"
-            mode="inline"
-            defaultSelectedKeys={["4"]}
-            items={items}
-          /> */}
           <Menu theme="light" mode="inline" className="text-base">
+            <ToolTip title = "Dashboard">
             <Menu.Item icon={<PieChartOutlined />}>
               <Link to="/exam/dashboard">Dashboard</Link>
             </Menu.Item>
+            </ToolTip>
+            <ToolTip title = "Create Assets">
             <Menu.Item
               onClick={() => showDefaultDrawer()}
               icon={<AppstoreAddOutlined />}
             >
               Create Assets
             </Menu.Item>
+            </ToolTip>
+            <ToolTip title = "Modify Assets">
             <Menu.Item icon={<EditOutlined />}>
               <Link to="/exam/updatable_assets">Modify Assets</Link>
             </Menu.Item>
+            </ToolTip>
+            <ToolTip title = "Allocate Assets">
             <Menu.Item icon={<UserSwitchOutlined />}>
               <Link to="/exam/assignable_asset">Allocate Assets</Link>
             </Menu.Item>
+            </ToolTip>
             {userRole === "LEAD" ? (
               <SubMenu
                 key="sub1"
                 icon={<CheckSquareOutlined />}
                 title="Approve Assets"
               >
+                 <ToolTip title = "In creation">
                 <Menu.Item icon={<CarryOutOutlined />}>
                   <Link to="/exam/requests">In Creation</Link>
                 </Menu.Item>
+                </ToolTip>
+                <ToolTip title = "In modification">
                 <Menu.Item icon={<CarryOutOutlined />}>
                   <Link to="/exam/requests">In Modification</Link>
                 </Menu.Item>
+                </ToolTip>
+                <ToolTip title = "In allocation">
                 <Menu.Item icon={<CarryOutOutlined />}>
                   <Link to="/exam/assign_requests">In Allocation</Link>
                 </Menu.Item>
+                </ToolTip>
               </SubMenu>
             ) : (
               ""
             )}
 
             {userRole === "LEAD" ? (
+              <ToolTip title = "My Approval History">
               <Menu.Item icon={<MailOutlined />}>
                 {/* For lead */}
+                
                 <Link to="/exam/my_approvals">My Approval History</Link>
               </Menu.Item>
+              </ToolTip>
+           
             ) : userRole === "SYSTEM_ADMIN" ? (
+
+              
               <SubMenu key="sub1" icon={<MailOutlined />} title="My Requests">
+                 <ToolTip title = "Approval">
                 <Menu.Item icon={<CheckCircleOutlined />}>
                   {/* For sysadmin */}
                   <Link to="/exam/approved_requests">Approved</Link>
                 </Menu.Item>
-                {/* <Menu.Item icon={<WarningOutlined />}>
-                  <Link to="/exam/rejected_assets">Rejected</Link>
-                </Menu.Item> */}
+                </ToolTip>
+                
               </SubMenu>
             ) : (
               ""
