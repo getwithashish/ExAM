@@ -67,7 +67,7 @@ const DasboardAssetHandler = () => {
     (assetId: string) => {
       let logsDataExpanded: readonly any[] | undefined = [];
       const columnsLog: TableColumnsType<ExpandedDataType> = [
-        { title: "timestamp", dataIndex: "timestamp", key: "timestamp" },
+        // { title: "timestamp", dataIndex: "timestamp", key: "timestamp" },
         {
           title: "asset_category",
           dataIndex: "asset_category",
@@ -176,7 +176,7 @@ const DasboardAssetHandler = () => {
             {
               ...asset_log,
               key: asset_log.asset_id,
-              timestamp: formattedTimestamp,
+              // timestamp: formattedTimestamp,
               asset_category: asset_log.asset_category,
               asset_detail_status: asset_log.asset_detail_status,
               assign_status: asset_log.assign_status,
@@ -318,7 +318,7 @@ const DasboardAssetHandler = () => {
       fixed: "left",
       width: 160,
       responsive: ["md"],
-      filterIcon: <SearchOutlined />,
+      // filterIcon: <SearchOutlined />,
       filterDropdown: ({
         setSelectedKeys,
         selectedKeys,

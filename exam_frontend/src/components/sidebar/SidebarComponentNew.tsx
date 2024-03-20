@@ -35,6 +35,7 @@ import {
   EditOutlined,
   WarningOutlined,
 } from "@mui/icons-material";
+import ToolTip from "../Tooltip/Tooltip";
 
 import { Footer as FlowbiteFooter } from "flowbite-react";
 import { MdFacebook } from "react-icons/md";
@@ -198,7 +199,9 @@ const SidebarComponentNew = ({ children }) => {
             top: 0,
             bottom: 0,
             paddingTop: 100,
+            paddingLeft: 15,
             borderRight: "1px solid  #e8e8e8",
+            // marginRight:"30px"
           }}
           width="250px"
           breakpoint="lg"
@@ -214,35 +217,53 @@ const SidebarComponentNew = ({ children }) => {
 
           <Menu theme="light" mode="inline" className="text-base">
             <Menu.Item icon={<PieChartOutlined />}>
-              <Link to="/exam/dashboard">Dashboard</Link>
+              <ToolTip title="Dashboard">
+                <Link to="/exam/dashboard">Dashboard</Link>
+              </ToolTip>
             </Menu.Item>
-            <Menu.Item
-              onClick={() => showDefaultDrawer()}
-              icon={<AppstoreAddOutlined />}
-            >
-              Create Assets
-            </Menu.Item>
-            <Menu.Item icon={<EditOutlined />}>
-              <Link to="/exam/updatable_assets">Modify Assets</Link>
-            </Menu.Item>
-            <Menu.Item icon={<UserSwitchOutlined />}>
-              <Link to="/exam/assignable_asset">Allocate Assets</Link>
-            </Menu.Item>
+            {userRole !== "MANAGER" ? (
+              <React.Fragment>
+                <Menu.Item
+                  onClick={() => showDefaultDrawer()}
+                  icon={<AppstoreAddOutlined />}
+                >
+                  <ToolTip title="To create a new Asset">Create Assets</ToolTip>
+                </Menu.Item>
+                <Menu.Item icon={<EditOutlined />}>
+                  <ToolTip title="To modify an Asset">
+                    <Link to="/exam/updatable_assets">Modify Assets</Link>
+                  </ToolTip>
+                </Menu.Item>
+                <Menu.Item icon={<UserSwitchOutlined />}>
+                  <ToolTip title="To allocate an Asset to an employee">
+                    <Link to="/exam/assignable_asset">Allocate Assets</Link>
+                  </ToolTip>
+                </Menu.Item>
+              </React.Fragment>
+            ) : (
+              ""
+            )}
             {userRole === "LEAD" ? (
               <SubMenu
                 key="sub1"
                 icon={<CheckSquareOutlined />}
                 title="Approve Assets"
               >
-                <Menu.Item icon={<CarryOutOutlined />}>
-                  <Link to="/exam/creation_requests">In Creation</Link>
-                </Menu.Item>
-                <Menu.Item icon={<CarryOutOutlined />}>
-                  <Link to="/exam/updation_requests">In Modification</Link>
-                </Menu.Item>
-                <Menu.Item icon={<CarryOutOutlined />}>
-                  <Link to="/exam/assign_requests">In Allocation</Link>
-                </Menu.Item>
+                <ToolTip title="Approve assets that are in creation state">
+                  <Menu.Item icon={<CarryOutOutlined />}>
+                    <Link to="/exam/creation_requests">In Creation</Link>
+                  </Menu.Item>
+                </ToolTip>
+                <ToolTip title="Approve assets that are in modification state">
+                  <Menu.Item icon={<CarryOutOutlined />}>
+                    <Link to="/exam/updation_requests">In Modification</Link>
+                  </Menu.Item>
+                </ToolTip>
+                <ToolTip title="Approve assets that are in allocation state">
+                  <Menu.Item icon={<CarryOutOutlined />}>
+                    <Link to="/exam/assign_requests">In Allocation</Link>
+                  </Menu.Item>
+                </ToolTip>
               </SubMenu>
             ) : (
               ""
@@ -251,17 +272,18 @@ const SidebarComponentNew = ({ children }) => {
             {userRole === "LEAD" ? (
               <Menu.Item icon={<MailOutlined />}>
                 {/* For lead */}
-                <Link to="/exam/my_approvals">My Approval History</Link>
+                <ToolTip title="Requests I approved">
+                  <Link to="/exam/my_approvals">My Approval History</Link>
+                </ToolTip>
               </Menu.Item>
             ) : userRole === "SYSTEM_ADMIN" ? (
               <SubMenu key="sub1" icon={<MailOutlined />} title="My Requests">
-                <Menu.Item icon={<CheckCircleOutlined />}>
-                  {/* For sysadmin */}
-                  <Link to="/exam/approved_requests">Approved</Link>
-                </Menu.Item>
-                {/* <Menu.Item icon={<WarningOutlined />}>
-                  <Link to="/exam/rejected_assets">Rejected</Link>
-                </Menu.Item> */}
+                <ToolTip title="Approved requests">
+                  <Menu.Item icon={<CheckCircleOutlined />}>
+                    {/* For sysadmin */}
+                    <Link to="/exam/approved_requests">Approved</Link>
+                  </Menu.Item>
+                </ToolTip>
               </SubMenu>
             ) : (
               ""
