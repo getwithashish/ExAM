@@ -95,51 +95,37 @@ const DasboardAssetTable = ({
         >
           <UploadComponent />
         </SideDrawerComponent>
-        <div
-          className="rounded-lg bg-gray-50 shadow-md dark:bg-gray-800 mx-10"
-          style={{
-            boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-          }}
-        >
-          <Table
-            columns={columns}
-            dataSource={assetData}
-            className="mainTable"
-            pagination={false}
-            bordered={false}
-            scroll={{ y: 600 }}
-            handleRowClick={handleRowClick}
-            style={{
-              fontSize: "50px",
-              borderColor: "white",
-              scrollbarWidth: "thin",
-            }}
-            rowKey={(record: DataType) => record.key}
-            expandable={{
-              onExpand: (expanded, record) => {
-                if (expanded) return setSelectedAssetId(record.key);
-                else return;
-              },
-              expandedRowRender: (record, index, indent, expanded) => {
-                return memoizedRowRender(record, expanded);
-              },
-            }}
-            footer={() => (
-              <Pagination
-                pageSize={20}
-                showTotal={(total, range) =>
-                  `${range[0]}-${range[1]} of ${total} assets `
-                }
-                total={totalItemCount}
-                onChange={(page, pageSize) => {
-                  assetPageDataFetch(`&offset=${(page - 1) * pageSize}`);
-                }}
-                hideOnSinglePage={true}
-              />
-            )}
-          />
-        </div>
-      </div>
+        <div className="rounded-lg bg-gray-50 shadow-md dark:bg-gray-800 mx-10" style={{
+boxShadow
+:
+'0 0 10px rgba(0, 0, 0, 0.2)'
+}}>
+  <Table
+    columns={columns}
+    dataSource={assetData}
+    className="mainTable"
+    pagination={false}
+    bordered={false}
+    scroll={{ y: 600 }}
+    handleRowClick={handleRowClick}
+    style={{
+      
+      fontSize: "50px",
+      borderColor:"white",
+      scrollbarWidth: "thin"
+      
+    }}
+    
+   
+  rowKey={(record:DataType)=>record.key}
+    expandable={{
+      onExpand:(expanded,record)=>{if(expanded) return setSelectedAssetId(record.key); else return},
+      expandedRowRender: (record, index, indent, expanded) => {return memoizedRowRender(record, expanded);},
+    }}
+ 
+  />
+ </div>
+</div>
       <DrawerComponent
         visible={drawerVisible}
         onClose={onCloseDrawer}
