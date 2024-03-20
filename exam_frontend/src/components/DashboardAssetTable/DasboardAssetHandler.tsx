@@ -615,7 +615,6 @@ const DasboardAssetHandler = () => {
   }));
 
   const drawerTitle = "Asset Details";
-
   const button = <Button type="primary"></Button>;
 
   useEffect(() => {

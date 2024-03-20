@@ -80,7 +80,6 @@ const DasboardAssetTable = ({
       <div className="mainHeading font-medium font-display font-semibold">
         <h6>Asset Details</h6>
       </div>
-
       <div className="ml-2">
         <TableNavbar
           showUpload={showUpload}
