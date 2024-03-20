@@ -8,7 +8,6 @@ import { fetchAssetData } from '../api/ChartApi';
 import { AssetData, AssetDetailData, ChartData, PieChartGraphProps } from '../types/ChartTypes';
 import axiosInstance from '../../../config/AxiosConfig';
 import Carousel from './ChartCarousel';
-import Carousel from './ChartCarousel';
 
 
 const statusColors: { [key: string]: string } = {
