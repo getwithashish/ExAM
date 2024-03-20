@@ -7,6 +7,7 @@ import Stack from "@mui/material/Stack";
 import { fetchAssetData } from '../api/ChartApi';
 import { AssetData, AssetDetailData, ChartData, PieChartGraphProps } from '../types/ChartTypes';
 import axiosInstance from '../../../config/AxiosConfig';
+import Carousel from './ChartCarousel';
 
 
 const statusColors: { [key: string]: string } = {
@@ -132,7 +133,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
     useEffect(() => {
         axiosInstance.get(`/asset/asset_count`)
             .then((res) => {
-                const assetAssignData = res.data.data;
+                const assetAssignData = res.data.data ?? {}; // Provide an empty object as default value
                 const assetAssignStatusData = Object.entries(assetAssignData?.assign_status ?? {}).map(([label, value]) => {
                     const mappedLabel = statusMapping[label] ?? label;
                     if (mappedLabel === 'UPDATE_PENDING' || mappedLabel === 'CREATE_PENDING') {
@@ -157,9 +158,19 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                     return acc;
                 }, 0);
                 // Find the index of 'PENDING' status
-                const pendingIndex = assetAssignStatusData.findIndex(status => status.label === 'PENDING');
+                let pendingIndex = assetAssignStatusData.findIndex(status => status.label === 'PENDING');
                 // If 'PENDING' status exists, update its value with the sum
-                if (pendingIndex !== -1) {
+                if (pendingIndex === -1) {
+                    // If 'PENDING' status does not exist, add it to the array with the computed sum
+                    assetAssignStatusData.push({
+                        label: 'PENDING',
+                        value: pendingSum,
+                        color: statusColors['PENDING'], // Use the color for 'PENDING' status
+                    });
+                    // Set the pendingIndex to the newly added element's index
+                    pendingIndex = assetAssignStatusData.length - 1;
+                } else {
+                    // If 'PENDING' status exists, update its value with the sum
                     assetAssignStatusData[pendingIndex].value = pendingSum;
                 }
                 setAssignChartData(assetAssignStatusData);
@@ -168,9 +179,8 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
             .catch(error => {
                 console.error("Error fetching assign details data:", error);
                 setAssignFilteredChartData([]);
-            })
+            });
     }, []);
-    
     
 
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => { // Handler function for select change event
@@ -231,150 +241,150 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
 
     
 
-    return ( // Render the PieChart components with filtered data
+    return (
     <Stack>
-    <div className='flex'>
-        <div className='flex-1'>
-            <select className="block bg-transparent ml-6 font-display text-black-500 border-0 border-b-2 appearance-none dark:text-gray-400 dark:border-gray-200 focus:outline-none focus:ring-0 focus:border-gray-200 peer" onChange={handleSelectChange}>
-                <option value="0" className="text-black font-display bg-white">Overall</option>
-                {assetTypeData.map((assetType) => (
-                    <option key={assetType.id} value={assetType.id} className="text-black border-0 border-b-2 bg-white font-display">{assetType.asset_type_name}</option>
-                ))}
-            </select>
-        </div>
-        <div className='flex-1 mx-6 font-display'>
-            <h2 className='text-right text-sm font-semibold font-display text-gray-600 dark:text-white-600 rtl:text-right'>
-                Total Assets : {assetData?.total_assets ?? 0}
-            </h2>
-        </div>                
-    </div> 
+        <div className='ml-24'>
+            <div className='mt-4 flex'>
+                <div className='flex-1 ml-8 mt-1 p-1'>
+                    <span className="text-black font-display font-semibold text-lg">Select an Asset: </span>
+                </div>
+                <div className='flex-1'>
+                    <select className="block bg-transparent font-display text-black-500 appearance-none dark:text-gray-400 dark:border-gray-200 focus:outline-none rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" onChange={handleSelectChange}>
+                        <option value="0" className="text-black font-display bg-white ">View all</option>
+                        {assetTypeData.map((assetType) => (
+                            <option key={assetType.id} value={assetType.id} className="text-black border-0 border-b-2 bg-white font-display">{assetType.asset_type_name}</option>
+                        ))}
+                    </select>
+                </div>               
+            </div>        
+        </div>               
     <Stack direction="row">
-    <div>
-        <div className='h-5 my-8 mx-20'>
-            <span className="font-semibold font-display ml-10 leading-none text-gray-900 dark:text-white text-md">
-                Asset Status
-            </span>
-        </div> 
-        <PieChart
-            margin={{ top: -40, bottom: 0, left: 30, right:0}}
-            series={[
-                {
-                    data: assetFilteredChartData,
-                    innerRadius: 50,
-                    outerRadius: 120,
-                    paddingAngle: 2,
-                    cornerRadius: 10,
-                    startAngle: -110,
-                    endAngle: 110,
-                    cx:130,
-                    cy: 160,
-                    highlightScope: { faded: 'global', highlighted: 'item' },
-                    faded: { innerRadius: 75, additionalRadius: -40, color: 'grey' },
-                },
-            ]}
-            width={340}
-            height={220}
-            slotProps={{
-                legend: {
-                    direction: 'row',
-                    position: { vertical: 'bottom', horizontal: 'middle' },
-                    hidden: false,
-                    labelStyle: {
-                        fontSize: 11,
-                    },
-                    itemMarkWidth: 8,
-                    itemMarkHeight: 12  ,
-                    markGap: 2,
-                    itemGap: 8,
-                }
-            }}
-        />
-    </div>
-    <div>
-        <div className='h-5 my-8 mx-20'>
-            <span className="font-semibold font-display ml-10 leading-none text-gray-900 dark:text-white text-md">
-                Approval Status
-            </span>
-        </div> 
-        <PieChart
-            margin={{ top: -40, bottom: 0, left: 40, right:0}}
-            series={[
-                {
-                    data: detailFilteredChartData,
-                    innerRadius: 50,
-                    outerRadius: 120,
-                    paddingAngle: 2,
-                    cornerRadius: 10,
-                    startAngle: -110,
-                    endAngle: 110,
-                    cx:130,
-                    cy: 160,
-                    highlightScope: { faded: 'global', highlighted: 'item' },
-                    faded: { innerRadius: 75, additionalRadius: -40, color: 'grey' },
-                },
-            ]}
-            width={340}
-            height={220}
-            slotProps={{
-                legend: {
-                    direction: 'row',
-                    position: { vertical: 'bottom', horizontal: 'middle' },
-                    hidden: false,
-                    labelStyle: {
-                        fontSize: 12,
-                    },
-                    itemMarkWidth: 8,
-                    itemMarkHeight: 12,
-                    markGap: 2,
-                    itemGap: 8,
-                }
-            }}
-        />
-    </div>
-    <div>
-        <div className='h-5 my-8 mx-20'>
-            <span className="font-semibold font-display ml-8 leading-none text-gray-900 dark:text-white text-md">
-                Allocation Status
-            </span>
-        </div> 
-        <PieChart
-            margin={{ top: -40, bottom: 0, left: 35, right:0}}
-            series={[
-                {
-                    data: assignFilteredChartData,
-                    innerRadius: 50,
-                    outerRadius: 120,
-                    paddingAngle: 2,
-                    cornerRadius: 10,
-                    startAngle: -110,
-                    endAngle: 110,
-                    cx:130,
-                    cy: 160,
-                    highlightScope: { faded: 'global', highlighted: 'item' },
-                    faded: { innerRadius: 75, additionalRadius: -40, color: 'grey' },
-                },
-            ]}
-            width={340}
-            height={220}
-            slotProps={{
-                legend: {
-                    direction: 'row',
-                    position: { vertical: 'bottom', horizontal: 'middle' },
-                    hidden: false,
-                    labelStyle: {
-                        fontSize: 12,
-                    },
-                    itemMarkWidth: 8,
-                    itemMarkHeight: 12,
-                    markGap: 2,
-                    itemGap: 8,
-                }
-            }}
-        />
-    </div>
-    </Stack>
-    <Stack direction="row"> 
-    </Stack>                      
+        <Carousel>
+        <div className='item pt-6 mt-4 mx-24'>
+                <div className='ml-20'>
+                    <span className="font-semibold font-display leading-none text-gray-900 dark:text-white text-lg">
+                        Asset Status
+                    </span>  
+                </div>  
+                <PieChart
+                    margin={{ top: 10, bottom: 0, left: 10, right:0}}
+                    series={[
+                        {
+                            data: assetFilteredChartData,
+                            innerRadius: 60,
+                            outerRadius: 140,
+                            paddingAngle: 2,
+                            cornerRadius: 10,
+                            startAngle: -110,
+                            endAngle: 110,
+                            cx:130,
+                            cy: 155,
+                            highlightScope: { faded: 'global', highlighted: 'item' },
+                            faded: { innerRadius: 75, additionalRadius: -40, color: 'grey' },
+                        },
+                    ]}
+                    width={300}
+                    height={280}
+                    slotProps={{
+                        legend: {
+                            direction: 'row',
+                            position: { vertical: 'bottom', horizontal: 'middle' },
+                            hidden: false,
+                            labelStyle: {
+                                fontSize: 11,
+                            },
+                            itemMarkWidth: 8,
+                            itemMarkHeight: 12  ,
+                            markGap: 2,
+                            itemGap: 8,
+                        }
+                    }}
+                />
+            </div>
+            <div className='item pt-6 mt-4 mx-24'>
+                <div className='ml-20'>
+                    <span className="font-semibold font-display leading-none text-gray-900 dark:text-white text-lg">
+                        Approval Status
+                    </span>  
+                </div>
+                <PieChart
+                    margin={{ top: 10, bottom: 0, left: 10, right:0}}
+                    series={[
+                        {
+                            data: detailFilteredChartData,
+                            innerRadius: 60,
+                            outerRadius: 140,
+                            paddingAngle: 2,
+                            cornerRadius: 10,
+                            startAngle: -110,
+                            endAngle: 110,
+                            cx:130,
+                            cy: 155,
+                            highlightScope: { faded: 'global', highlighted: 'item' },
+                            faded: { innerRadius: 75, additionalRadius: -40, color: 'grey' },
+                        },
+                    ]}
+                    width={300}
+                    height={280}
+                    slotProps={{
+                        legend: {
+                            direction: 'row',
+                            position: { vertical: 'bottom', horizontal: 'middle' },
+                            hidden: false,
+                            labelStyle: {
+                                fontSize: 11,
+                            },
+                            itemMarkWidth: 8,
+                            itemMarkHeight: 12  ,
+                            markGap: 2,
+                            itemGap: 8,
+                        }
+                    }}
+                />
+            </div>
+            <div className='item pt-6 mt-4 mx-24'>
+                <div className='ml-20'>
+                    <span className="font-semibold font-display leading-none text-gray-900 dark:text-white text-lg">
+                        Assign Status
+                    </span>  
+                </div>
+                <PieChart
+                    margin={{ top: 10, bottom: 0, left: 10, right:0}}
+                    series={[
+                        {
+                            data: assignFilteredChartData,
+                            innerRadius: 60,
+                            outerRadius: 140,
+                            paddingAngle: 2,
+                            cornerRadius: 10,
+                            startAngle: -110,
+                            endAngle: 110,
+                            cx:130,
+                            cy: 155,
+                            highlightScope: { faded: 'global', highlighted: 'item' },
+                            faded: { innerRadius: 75, additionalRadius: -40, color: 'grey' },
+                        },
+                    ]}
+                    width={300}
+                    height={280}
+                    slotProps={{
+                        legend: {
+                            direction: 'row',
+                            position: { vertical: 'bottom', horizontal: 'middle' },
+                            hidden: false,
+                            labelStyle: {
+                                fontSize: 11,
+                            },
+                            itemMarkWidth: 8,
+                            itemMarkHeight: 12  ,
+                            markGap: 2,
+                            itemGap: 8,
+                        }
+                    }}
+                />
+            </div>
+        </Carousel>    
+    </Stack>                    
 </Stack>
 );
 }
