@@ -118,7 +118,7 @@ const AddAsset: React.FC = () => {
   return (
     <div className = "font-display">
     <div className={styles['container']}>
-      <h1 className={styles['heading']}>Add a new asset</h1>
+      <h1 className={styles['heading']}>Create a new asset</h1>
       <Form
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 12 }}
