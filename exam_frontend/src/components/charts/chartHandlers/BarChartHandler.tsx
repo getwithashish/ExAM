@@ -1,18 +1,23 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import { BarChart } from '@mui/x-charts/BarChart';
+import { useState, useEffect } from 'react';
 import axiosInstance from '../../../config/AxiosConfig'; // Import your axios instance here
+import { BarChart } from '@mui/x-charts';
+import { AxiosError } from 'axios';
 
 export default function BarAnimation() {
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState(null);
-  const [assetTypeCounts, setAssetTypeCounts] = React.useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<AxiosError | null>(null);
+  const [assetData, setAssetData] = useState<{ name: string; count: number }[]>([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axiosInstance.get('/asset/asset_count');
-        setAssetTypeCounts(response.data.data.asset_type_counts);
+        const assetCountData = response.data.data;
+        const assetDataArray = Object.entries(assetCountData.asset_type_counts || {}).map(([name, count]) => ({
+          name: name,
+          count: count as number,
+        }));
+        setAssetData(assetDataArray);
         setLoading(false);
       } catch (error) {
         setError(error);
@@ -28,25 +33,20 @@ export default function BarAnimation() {
   }
 
   if (error) {
-    return <div>Error....</div>;
+    return <div>Error: {error}</div>;
   }
 
-  // Extract asset type names and counts from the response
-  const types = Object.keys(assetTypeCounts);
-  const counts = Object.values(assetTypeCounts);
+  const xAxis = [{ scaleType: 'band', data: assetData.map(asset => asset.name) }];
+  const series = [{ data: assetData.map(asset => asset.count) }];
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <div>
       <BarChart
+        xAxis={xAxis}
+        series={series}
+        width={1000}
         height={300}
-        series={[
-          {
-            label: 'Asset Type Counts',
-            data: counts,
-          },
-        ]}
-        labels={types} // Set labels as the asset type names
       />
-    </Box>
+    </div>
   );
 }
