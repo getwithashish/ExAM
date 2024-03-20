@@ -249,21 +249,23 @@ const SidebarComponentNew = ({ children }) => {
                 icon={<CheckSquareOutlined />}
                 title="Approve Assets"
               >
-                <ToolTip title="Approve assets that are in creation state">
-                  <Menu.Item icon={<CarryOutOutlined />}>
+                <Menu.Item icon={<CarryOutOutlined />}>
+                  <ToolTip title="Approve Assets that are pending to be created">
                     <Link to="/exam/creation_requests">In Creation</Link>
-                  </Menu.Item>
-                </ToolTip>
-                <ToolTip title="Approve assets that are in modification state">
-                  <Menu.Item icon={<CarryOutOutlined />}>
+                  </ToolTip>
+                </Menu.Item>
+
+                <Menu.Item icon={<CarryOutOutlined />}>
+                  <ToolTip title="Approve Assets that are pending to be updated">
                     <Link to="/exam/updation_requests">In Modification</Link>
-                  </Menu.Item>
-                </ToolTip>
-                <ToolTip title="Approve assets that are in allocation state">
-                  <Menu.Item icon={<CarryOutOutlined />}>
+                  </ToolTip>
+                </Menu.Item>
+
+                <Menu.Item icon={<CarryOutOutlined />}>
+                  <ToolTip title="Approve Assets that are pending to be allocated">
                     <Link to="/exam/assign_requests">In Allocation</Link>
-                  </Menu.Item>
-                </ToolTip>
+                  </ToolTip>
+                </Menu.Item>
               </SubMenu>
             ) : (
               ""
@@ -272,18 +274,18 @@ const SidebarComponentNew = ({ children }) => {
             {userRole === "LEAD" ? (
               <Menu.Item icon={<MailOutlined />}>
                 {/* For lead */}
-                <ToolTip title="Requests I approved">
+                <ToolTip title="Show Assets that I have approved">
                   <Link to="/exam/my_approvals">My Approval History</Link>
                 </ToolTip>
               </Menu.Item>
             ) : userRole === "SYSTEM_ADMIN" ? (
               <SubMenu key="sub1" icon={<MailOutlined />} title="My Requests">
-                <ToolTip title="Approved requests">
-                  <Menu.Item icon={<CheckCircleOutlined />}>
-                    {/* For sysadmin */}
+                <Menu.Item icon={<CheckCircleOutlined />}>
+                  {/* For sysadmin */}
+                  <ToolTip title="Show my Asset Requests which have been approved">
                     <Link to="/exam/approved_requests">Approved</Link>
-                  </Menu.Item>
-                </ToolTip>
+                  </ToolTip>
+                </Menu.Item>
               </SubMenu>
             ) : (
               ""
