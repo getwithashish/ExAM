@@ -27,7 +27,7 @@ const UpdatableAsset = () => {
           </li>
         </ol>
       </nav>
-      <AssetTableHandler isRejectedPage={false} queryParamProp={queryParamProp} heading={heading} />
+      <AssetTableHandler isRejectedPage={false} queryParamProp={queryParamProp} heading={heading}  isMyApprovalPage={true}/>
     </div>
   )
 }

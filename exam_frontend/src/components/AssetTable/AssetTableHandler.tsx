@@ -49,7 +49,12 @@ interface AssetTableHandlerProps {
   isRejectedPage: boolean;
 }
 
-const AssetTableHandler = ({ isRejectedPage, queryParamProp,heading }) => {
+const AssetTableHandler = ({
+  isRejectedPage,
+  queryParamProp,
+  heading,
+  isMyApprovalPage,
+}) => {
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null); // State to store the selected asset ID
 
   const {
@@ -182,13 +187,13 @@ const AssetTableHandler = ({ isRejectedPage, queryParamProp,heading }) => {
               location: asset_log.location.location_name,
               invoice_location:
                 asset_log.invoice_location.invoice_location_name,
-                warranty_period:asset_log.warranty_period,
-                version:asset_log.version,
-                configuration:asset_log.configuration,
-                storage:asset_log.storage,
-                os:asset_log.os,
-                owner:asset_log.owner,
-                notes:asset_log.notes,
+              warranty_period: asset_log.warranty_period,
+              version: asset_log.version,
+              configuration: asset_log.configuration,
+              storage: asset_log.storage,
+              os: asset_log.os,
+              owner: asset_log.owner,
+              notes: asset_log.notes,
               name: asset_log.product_name,
               upgradeNum: asset_log.assign_status,
             },
@@ -289,7 +294,7 @@ const AssetTableHandler = ({ isRejectedPage, queryParamProp,heading }) => {
 
   <div>
     <h1>Asset Overview</h1>
-  </div>
+  </div>;
 
   const columns = [
     {
@@ -297,7 +302,7 @@ const AssetTableHandler = ({ isRejectedPage, queryParamProp,heading }) => {
       dataIndex: "product_name",
       fixed: "left",
       // width: 160,
-      responsive: ['md'],
+      responsive: ["md"],
       filterIcon: <SearchOutlined />,
       filterDropdown: ({
         setSelectedKeys,
@@ -694,7 +699,7 @@ const AssetTableHandler = ({ isRejectedPage, queryParamProp,heading }) => {
 
   return (
     <AssetTable
-     heading={heading}
+      heading={heading}
       // drawerTitle={drawerTitle}
       logsData={logsData}
       isLoading={isLoading}
@@ -711,6 +716,7 @@ const AssetTableHandler = ({ isRejectedPage, queryParamProp,heading }) => {
       memoryData={memoryData}
       assetTypeData={assetTypeData}
       locations={locations}
+      isMyApprovalPage={isMyApprovalPage}
       statusOptions={statusOptions}
       asset_uuid={selectedAssetId}
       businessUnitOptions={businessUnitOptions}

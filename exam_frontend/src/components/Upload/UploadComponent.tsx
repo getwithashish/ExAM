@@ -96,7 +96,7 @@ const UploadComponent: React.FC = () => {
       </Dragger>
       <Button
         style={{
-          marginTop: 20,
+          marginTop: 20
         }}
         onClick={handleSubmit}
       >
