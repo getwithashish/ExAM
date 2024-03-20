@@ -5,12 +5,13 @@ from asset.models import BusinessUnit
 from user_auth.models import User
 from rest_framework_simplejwt.tokens import AccessToken
 
+
 class TestBusinessUnitViewTests(APITestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='12345')
+        self.user = User.objects.create_user(username="testuser", password="12345")
         self.client = APIClient()
         self.token = str(AccessToken.for_user(self.user))
-        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.token)
+        self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.token)
         self.business_unit_data = {"business_unit_name": "Test Business Unit"}
 
     def test_create_business_unit(self):

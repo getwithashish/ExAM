@@ -1,10 +1,8 @@
 from rest_framework.test import APITestCase
-from rest_framework import status
 from django.urls import reverse
 from asset.models import Asset, Location, AssetType, Memory, BusinessUnit, Employee
 from user_auth.models import User
 from rest_framework_simplejwt.tokens import AccessToken
-import datetime
 
 
 class AssetApproveViewTestCase(APITestCase):
@@ -85,5 +83,4 @@ class AssetApproveViewTestCase(APITestCase):
             "asset_uuid": str(self.asset.asset_uuid),
             "comments": "Approved",
         }
-        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + str(token))
-       
+        self.client.credentials(HTTP_AUTHORIZATION="Bearer " + str(token))
