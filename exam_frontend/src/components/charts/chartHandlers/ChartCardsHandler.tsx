@@ -29,6 +29,7 @@ const AssetCountComponent = () => {
 
                 let pendingAssignsCount = 0;
                 const assignStatus = assetCountData.assign_status;
+                console.log("assignStatus: ", assignStatus);
                 if (assignStatus) {
                     pendingAssignsCount = assignStatus["ASSIGN_PENDING"] || 0;
                 }
