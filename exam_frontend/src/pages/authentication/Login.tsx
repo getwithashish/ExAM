@@ -95,7 +95,7 @@ export default function Login() {
 
         <Card
           horizontal
-          className="w-full lg:w-full md:max-w-screen-sm md:[&>*]:w-full md:[&>*]:p-16 z-10 absolute right-10" 
+          className="w-full lg:w-full md:max-w-screen-sm md:[&>*]:w-full md:[&>*]:p-8 z-10 absolute right-10" 
         >
           <div className="flex justify-center lg:my-0 text-sm">
             <span className="font-normal dark:text-white md:text-3xl text-center">
