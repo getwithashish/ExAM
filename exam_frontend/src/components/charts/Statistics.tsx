@@ -29,7 +29,7 @@ export const Statistics = () => {
           <div className='flex-3'>
             <AssetCountComponent/>            
           </div>
-          <div className='flex-4'>
+          <div className='flex-4 ml-14'>
             <ChartHandlers/>
           </div>          
         </div>        

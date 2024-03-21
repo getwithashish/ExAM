@@ -345,7 +345,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
             <div className='item pt-6 mt-4 mx-24'>
                 <div className='ml-20'>
                     <span className="font-semibold font-display leading-none text-gray-900 dark:text-white text-lg">
-                        Assign Status
+                        Allocation Status
                     </span>  
                 </div>
                 <PieChart
