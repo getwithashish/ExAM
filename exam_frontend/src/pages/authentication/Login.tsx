@@ -38,11 +38,9 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Reset any previous error messages
     setUsernameError("");
     setPasswordError("");
 
-    // Validate username and password
     if (!username) {
       setUsernameError("Please enter your username");
       return;
@@ -64,14 +62,9 @@ export default function Login() {
 
       const payload = decodeJWT(response.data.access);
 
-      // axios.defaults.headers.common[
-      //   "Authorization"
-      // ] = `Bearer ${response.data.access}`;
-
       setAuthenticated(true);
       setUserRole(payload.user_scope);
 
-      // Redirect to dashboard after successful login
       navigate("/exam/dashboard");
     } catch (error) {
       if (
@@ -88,26 +81,28 @@ export default function Login() {
 
   return (
     <Fragment>
-      <div className="flex flex-col lg:flex-row items-center justify-center lg:h-screen lg:gap-y-12">
-        <div className="lg:w-full h-full relative">
+      <div className="relative flex flex-col lg:flex-row items-center justify-center lg:h-screen lg:gap-y-12">
+        <div className="lg:w-full h-full absolute inset-0 z-0">
           <div
-            className="absolute inset-2 bg-cover bg-bottom rounded-lg"
+            className="absolute inset-0 bg-cover bg-bottom rounded-lg"
             style={{
-              backgroundImage: `url('../../../public/images/Experion.jfif')`,
+              backgroundImage: `url('../../../public/images/Experion.jpg')`,
+              filter: 'blur(1px)',
             }}
           ></div>
         </div>
 
+
         <Card
           horizontal
-          className="w-full lg:w-full md:max-w-screen-sm md:[&>*]:w-full md:[&>*]:p-16"
+          className="w-full lg:w-full md:max-w-screen-sm md:[&>*]:w-full md:[&>*]:p-8 z-10 absolute right-10" 
         >
-          <div className="flex lg:my-0 text-sm">
-            <span className="font-light item-center dark:text-white md:text-3xl text-center">
+          <div className="flex justify-center lg:my-0 text-sm">
+            <span className="font-normal dark:text-white md:text-3xl text-center">
               Experion Asset Management
             </span>
           </div>
-          <h1 className="font-display font-semi-bold dark:text-white md:text-3xl my-6 text-center">
+          <h1 className="font-display font-light dark:text-white md:text-3xl my-6 text-center">
             Login
           </h1>
           <form onSubmit={handleSubmit}>
@@ -154,7 +149,7 @@ export default function Login() {
                   <img
                     src="../../../public/images/Microsoft logo.png"
                     alt="Microsoft logo"
-                    className="w-30 h-6 ml-2 mx-3" // Adjust width and height as needed
+                    className="w-30 h-6 ml-2 mx-3" 
                   />
                   Sign in with Microsoft
                 </Button>

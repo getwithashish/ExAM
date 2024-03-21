@@ -20,8 +20,8 @@ const statusColors: { [key: string]: string } = {
     'ASSIGN_PENDING': '#FFB92A',
     'ASSIGNED': '#9BCA3E',
     'REJECTED': '#CC0000',
-    'CREATE_PENDING': '#FD6A02', // Consider using the same color for both 'CREATE_PENDING' and 'UPDATE_PENDING'
-    'UPDATE_PENDING': '#FD6A02', // Consider using the same color for both 'CREATE_PENDING' and 'UPDATE_PENDING'
+    'CREATE_PENDING': '#FD6A02',
+    'UPDATE_PENDING': '#FD6A02', 
     'CREATED': '#9BCA3E',
     'UPDATED': '#3ABBC9',
     'CREATE_REJECTED': '#CC0000',
@@ -34,8 +34,10 @@ const statusMapping: { [key: string]: string } = {
     ASSIGN_PENDING: 'PENDING',
     ASSIGNED: 'ASSIGNED',
     REJECTED: 'REJECTED',
-    CREATE_PENDING: 'PENDING', // Combine both 'CREATE_PENDING' and 'UPDATE_PENDING' into 'PENDING'
-    UPDATE_PENDING: 'PENDING', // Combine both 'CREATE_PENDING' and 'UPDATE_PENDING' into 'PENDING'
+
+
+    CREATE_PENDING: 'PENDING',
+    UPDATE_PENDING: 'PENDING',
     CREATED: 'CREATED',
     UPDATED: 'UPDATED',
     CREATE_REJECTED: 'REJECTED',
@@ -44,7 +46,6 @@ const statusMapping: { [key: string]: string } = {
 
 
 const ChartHandlers: React.FC<PieChartGraphProps> = () => {
-     // State variables to store data and manage loading/error states
     const [assetTypeData, setAssetTypeData] = useState<AssetDetailData[]>([]);
     const [selectedType, setSelectedType] = useState<string>('');
     const [assetChartData, setAssetChartData] = useState<ChartData[]>([]);
@@ -55,9 +56,6 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
     const [detailFilteredChartData, setDetailFilteredChartData] = useState<ChartData[]>([]);
     
 
-
-
-    // UseQuery hook to fetch asset data from the server
     const { data: assetData, isLoading: assetLoading, isError: assetError } = useQuery<AssetData>({
         queryKey: ['assetData'],
         queryFn: fetchAssetData,
@@ -75,9 +73,8 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
 
 
       useEffect(() => {
-        axiosInstance.get(`/asset/asset_count`)
-            .then((res) => {
-                const assetCountData = res.data.data;
+        fetchAssetData()
+            .then(assetCountData => {
                 console.log("assetCountData", assetCountData);
                 const assetTypeData = Object.entries(assetCountData?.status_counts ?? {}).map(([label, value]) => ({
                     label,
@@ -102,7 +99,27 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                 const assetDetailStatusData = Object.entries(assetDetailData?.asset_detail_status ?? {}).reduce((acc, [label, value]) => {
                     const mappedLabel = statusMapping[label] ?? label;
                     if (mappedLabel === 'CREATE_REJECTED' || mappedLabel === 'UPDATE_REJECTED') {
-                        acc['REJECTED'] = (acc['REJECTED'] as number || 0) + (value as number);
+                        const rejectedLabel = 'REJECTED';
+                        if (acc[rejectedLabel]) {
+                            acc[rejectedLabel].value += value as number;
+                        } else {
+                            acc[rejectedLabel] = {
+                                label: rejectedLabel,
+                                value: value as number,
+                                color: statusColors[rejectedLabel],
+                            };
+                        }
+                    } else if (mappedLabel === 'CREATE_PENDING' || mappedLabel === 'UPDATE_PENDING') {
+                        const pendingLabel = 'PENDING';
+                        if (acc[pendingLabel]) {
+                            acc[pendingLabel].value += value as number;
+                        } else {
+                            acc[pendingLabel] = {
+                                label: pendingLabel,
+                                value: value as number,
+                                color: statusColors[pendingLabel],
+                            };
+                        }
                     } else {
                         if (acc[mappedLabel]) {
                             acc[mappedLabel].value += value as number;
@@ -127,52 +144,16 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                 setDetailFilteredChartData([]);
             })
     }, []);
-    
-    
+
     
     useEffect(() => {
-        axiosInstance.get(`/asset/asset_count`)
-            .then((res) => {
-                const assetAssignData = res.data.data ?? {}; // Provide an empty object as default value
-                const assetAssignStatusData = Object.entries(assetAssignData?.assign_status ?? {}).map(([label, value]) => {
-                    const mappedLabel = statusMapping[label] ?? label;
-                    if (mappedLabel === 'UPDATE_PENDING' || mappedLabel === 'CREATE_PENDING') {
-                        return {
-                            label: 'PENDING',
-                            value: value as number,
-                            color: statusColors[mappedLabel], // Use 'mappedLabel' to get the color
-                        };
-                    } else {
-                        return {
-                            label: mappedLabel,
-                            value: value as number,
-                            color: statusColors[label],
-                        };
-                    }
-                });
-                // Calculate the sum for 'PENDING' status
-                const pendingSum = assetAssignStatusData.reduce((acc, curr) => {
-                    if (curr.label === 'PENDING') {
-                        acc += curr.value;
-                    }
-                    return acc;
-                }, 0);
-                // Find the index of 'PENDING' status
-                let pendingIndex = assetAssignStatusData.findIndex(status => status.label === 'PENDING');
-                // If 'PENDING' status exists, update its value with the sum
-                if (pendingIndex === -1) {
-                    // If 'PENDING' status does not exist, add it to the array with the computed sum
-                    assetAssignStatusData.push({
-                        label: 'PENDING',
-                        value: pendingSum,
-                        color: statusColors['PENDING'], // Use the color for 'PENDING' status
-                    });
-                    // Set the pendingIndex to the newly added element's index
-                    pendingIndex = assetAssignStatusData.length - 1;
-                } else {
-                    // If 'PENDING' status exists, update its value with the sum
-                    assetAssignStatusData[pendingIndex].value = pendingSum;
-                }
+        fetchAssetData()
+            .then((assetAssignData) => {
+                const assetAssignStatusData = Object.entries(assetAssignData?.assign_status ?? {}).map(([label, value]) => ({
+                    label: statusMapping[label] ?? label,
+                    value: value as number,
+                    color: statusColors[label],
+                }));
                 setAssignChartData(assetAssignStatusData);
                 setAssignFilteredChartData(assetAssignStatusData);
             })
@@ -182,13 +163,13 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
             });
     }, []);
     
+    
 
-    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => { // Handler function for select change event
+    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => { 
         const assetTypeValue = parseInt(e.target.value);
         setSelectedType(assetTypeValue.toString());
     
         if (assetTypeValue === 0) {
-            // Set all charts to use their original data
             setAssetFilteredChartData(assetChartData);
             setDetailFilteredChartData(detailChartData);
             setAssignFilteredChartData(assignChartData);
