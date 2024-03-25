@@ -5,10 +5,10 @@ from faker import Faker
 fake = Faker()
 
 # Define the number of rows to generate
-num_rows = 1000
+num_rows = 400
 
 # Open a file in write mode
-file_path = r"c:\Users\aidrin.varghese\Downloads\sample_data.csv"
+file_path = r"c:\Users\ashish.george\Downloads\sample_data.csv"
 with open(file_path, mode="w", newline="") as file:
     writer = csv.writer(file)
 
@@ -58,41 +58,55 @@ with open(file_path, mode="w", newline="") as file:
                 fake.random_int(min=0, max=10),  # version
                 "HARDWARE",  # asset_category
                 fake.random_element(
-                    elements=("ACER V227Q", "SAMSUNG S3422", "MSI PRO MP241X","Acer Swift 3","Apple MacBook Pro","Google Pixelbook Go","Cisco ISR","D-Link EXO series")
+                    elements=(
+                        "Samsung Galaxy S21 Ultra ",
+                        "Google Pixel 6 Pro ",
+                        "OnePlus 9 Pro",
+                    )
                 ),  # product_name
-                fake.word(),  # model_number
-                fake.random_element("Model: 9310","Model: 13t-aw200","Model: A2483","Model: USW-24","Model: HLL2350DW","Model: TL-SG105"),  # serial_number
-                fake.random_element(elements=("EXPERION")),  # owner
+                fake.random_int(min=2, max=1000),
+                # model_number
+                fake.random_int(),  # serial_number
+                "EXPERION",  # owner
                 fake.date(),  # date_of_purchase
-                "IN STORE",  # status
+                "IN USE",  # status
                 fake.random_element(elements=(12, 24)),  # warranty_period
                 "",  # os
                 "",  # os_version
-                "",  # mobile_os
-                "",  # processor
-                "",  # processor_gen
-                "",  # storage
-                "",  # configuration
+                "Android",  # mobile_os
+                "Snapdragon 880",  # processor
+                "8",  # processor_gen
+                "256",  # storage
                 fake.random_element(
-                    elements=("HDMI cable", "extension cable","Mouse","Screen Protector","Headphones","USB cable")
-                ),  # accessories
-                fake.text(),  # notes
-                fake.random_element(
-                    elements=("UPDATED", "UPDATE_PENDING", "CREATED", "CREATE_PENDING")
-                ),  # asset_detail_status
-                fake.sentence(),  # approval_status_message
+                    elements=(
+                        "Flagship Smartphones",
+                        "Mid-Range Smartphones",
+                    )
+                ),  # configuration
+                fake.random_element(elements=("Charger", "Ear Phones")),  # accessories
+                "Good",  # notes
+                "CREATED",  # asset_detail_status
+                "Approved",  # approval_status_message
                 fake.date_time_this_year(),  # created_at
                 fake.date_time_this_year(),  # updated_at
-                fake.random_element(elements=("Aidrin", "Ashish","Pavithra")),  # requester_id
+                "ashish.sysadmin",  # requester_id
                 False,  # is_deleted
-                fake.random_element(elements=("Ananthan", "Asima")),  # conceder_id
-                "Laptop",  # asset_type_id
-                fake.random_element(elements=("DU1", "DU2","DU3","DU4")),  # business_unit_id
-                "",  # custodian
                 fake.random_element(
-                    elements=("Trivandrum", "Kochi","Banglore","London")
+                    elements=("ashish.manager", "ashish.lead")
+                ),  # conceder_id
+                "Smartphone",  # asset_type_id
+                fake.random_element(
+                    elements=("DU1", "DU2", "DU3", "DU4")
+                ),  # business_unit_id
+                fake.random_element(
+                    elements=("Pratheep", "Jayan", "Suresh", "Mahesh")
+                ),  # custodian
+                fake.random_element(
+                    elements=("Trivandrum", "Kochi", "Banglore")
                 ),  # invoice_location
-                fake.random_element(elements=("Trivandrum", "Kochi","Banglore","London")),  # location
-                0,  # memory_id
+                fake.random_element(
+                    elements=("Trivandrum", "Kochi", "Banglore")
+                ),  # location
+                fake.random_element(elements=(4, 8, 16)),  # memory_id
             ]
         )
