@@ -1,5 +1,5 @@
 from .AssetSearchView import AssetSearchWithFilterView
-from .AssetView import AssetView
+from .AssetView import AssetView, UserAgentAssetView
 from .AssetUpdateView import AssetUpdateView
 from .AssetApproveView import AssetApproveView
 from .AssetUpdateView import AssetUpdateView
@@ -14,6 +14,7 @@ from .AssetLogView import AssetLogView
 from .DataImportView import DataImportView
 
 from .AssetExportView import AssetExportView
+
 __all__ = [
     "AssetView",
     "AssetUpdateView",
@@ -28,5 +29,6 @@ __all__ = [
     "AssetSearchWithFilterView",
     "AssetLogView",
     "DataImportView",
-    "AssetExportView"
+    "AssetExportView",
+    "UserAgentAssetView",
 ]

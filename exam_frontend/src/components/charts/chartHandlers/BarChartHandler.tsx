@@ -1,25 +1,31 @@
 import { useState, useEffect } from 'react';
-import axiosInstance from '../../../config/AxiosConfig'; // Import your axios instance here
-import { BarChart } from '@mui/x-charts';
+import { fetchAssetData } from '../api/ChartApi';
+import { AxisConfig, BarChart } from '@mui/x-charts';
 import { AxiosError } from 'axios';
+import { MakeOptional } from '@mui/x-charts/models/helpers';
 
-export default function BarAnimation() {
+interface ErrorResponse {
+  message: string;  
+}
+
+type Error = AxiosError<ErrorResponse>;
+
+export default function BarChartHandler() {
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<AxiosError | null>(null);
+  const [error, setError] = useState<Error | null>(null);
   const [assetData, setAssetData] = useState<{ name: string; count: number }[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axiosInstance.get('/asset/asset_count');
-        const assetCountData = response.data.data;
+        const assetCountData = await fetchAssetData();
         const assetDataArray = Object.entries(assetCountData.asset_type_counts || {}).map(([name, count]) => ({
           name: name,
           count: count as number,
         }));
         setAssetData(assetDataArray);
         setLoading(false);
-      } catch (error) {
+      } catch (error: any) {
         setError(error);
         setLoading(false);
       }
@@ -33,10 +39,12 @@ export default function BarAnimation() {
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div>Error fetching data</div>;
   }
 
-  const xAxis = [{ scaleType: 'band', data: assetData.map(asset => asset.name) }];
+  const xAxis: MakeOptional<AxisConfig, "id">[] = [
+    { scaleType: "band", data: assetData.map(asset => asset.name) }
+  ];
   const series = [{ data: assetData.map(asset => asset.count) }];
 
   return (
