@@ -130,6 +130,7 @@ MEMORY_SUCCESSFULLY_CREATED = "Memory sucessfully created."
 BUSINESS_UNIT_SUCCESSFULLY_RETRIEVED = "Business Unit details sucessfully retrieved."
 MEMORY_SUCCESSFULLY_RETRIEVED = "Memory details sucessfully retrieved."
 EMPLOYEE_DETAILS_SUCCESSFULLY_RETRIEVED = "Employee details sucessfully retrieved"
+EMPLOYEE_DETAILS_FOUND="Employee details retrieved based on specified search criteria"
 # Asset Type -Success/Invalid Messages
 VALID_ASSET_TYPE = "You have entered a valid asset type."
 INVALID_ASSET_TYPE = "The given asset type is invalid."
