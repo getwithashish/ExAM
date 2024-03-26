@@ -1,6 +1,5 @@
 import React, { Key, SetStateAction, useEffect, useMemo, useState } from "react";
 import { Badge, Button, Dropdown, Input, Space, Table, TableColumnsType } from "antd";
-import DrawerComponent from "../DrawerComponent/DrawerComponent";
 import { SearchOutlined } from "@ant-design/icons";
 import "./AssetTable.css";
 import CardComponent from "../CardComponent/CardComponent"
@@ -20,6 +19,7 @@ import { AxiosError } from "axios";
 import TableNavbar from "../TableNavBar/TableNavbar";
 import SideDrawerComponent from "../SideDrawerComponent/SideDrawerComponent";
 import UploadComponent from "../Upload/UploadComponent";
+import DrawerViewRequest from "../../pages/RequestPage/DrawerViewRequest";
  
 interface ExpandedDataType {
   key: React.Key;
@@ -104,7 +104,7 @@ boxShadow
   />
  </div>
 </div>
-      <DrawerComponent
+      <DrawerViewRequest
         visible={drawerVisible}
         onClose={onCloseDrawer}
         selectedRow={selectedRow}
@@ -134,7 +134,7 @@ boxShadow
             } }          />
         )}
      
-      </DrawerComponent>
+      </DrawerViewRequest>
     </>
   );
 };
