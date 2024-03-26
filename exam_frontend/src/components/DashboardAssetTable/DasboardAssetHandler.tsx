@@ -14,7 +14,7 @@ import {
   Table,
   TableColumnsType,
 } from "antd";
-import DrawerComponent from "../DrawerComponent/DrawerComponent";
+
 import { SearchOutlined } from "@ant-design/icons";
 import "./DasboardAssetTable.css";
 import CardComponent from "../CardComponent/CardComponent";
