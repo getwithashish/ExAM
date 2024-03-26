@@ -23,8 +23,15 @@ class AssetTypeView(ListCreateAPIView):
         is_valid = AssetTypeValidationService.is_valid_asset_type_data(data)
         if is_valid:
             asset_type, message, http_status = AssetTypeService.create_asset_type(data)
-            return APIResponse(data=asset_type, message=message, status=http_status)
-        return APIResponse(data=data, message=INVALID_ASSET_TYPE, status=status.HTTP_404_NOT_FOUND)
+            return APIResponse(
+                data=asset_type,
+                message=message,
+                status=http_status)
+            
+        return APIResponse(
+            data=data,
+            message=INVALID_ASSET_TYPE,
+            status=status.HTTP_404_NOT_FOUND)
 
     def get(self, request, format=None):
         asset_types, message, http_status = AssetTypeService.retrieve_asset_types(request)
