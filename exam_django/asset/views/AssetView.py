@@ -66,7 +66,13 @@ class AssetView(ListCreateAPIView):
             email_service.send_email(
                 email_subject,
                 "Serializer Data: {}".format(json_string),
-                ["astg7542@gmail.com"],
+                [
+                    "astg7542@gmail.com",
+                    "acj88178@gmail.com",
+                    "asimapalexperion23@gmail.com",
+                    "aidrin.varghese@experionglobal.com",
+                    "pavithravprabhu6@gmail.com",
+                ],
             )
 
             return APIResponse(
@@ -235,9 +241,7 @@ class UserAgentAssetView(APIView):
         request_body = json.loads(request.body)
         print(request_body)
         # memory = Memory.objects.filter(memory_space=request_body.get("TotalMemoryGB")).first()
-        asset_type = AssetType.objects.filter(
-            asset_type_name="Laptop"
-        ).first()
+        asset_type = AssetType.objects.filter(asset_type_name="Laptop").first()
         memory = int(request_body.get("totalMemoryGB"))
         memory, create = Memory.objects.get_or_create(memory_space=memory)
         business_unit, create = BusinessUnit.objects.get_or_create(
@@ -259,7 +263,7 @@ class UserAgentAssetView(APIView):
             business_unit=business_unit,
             asset_detail_status="CREATED",
             assign_status="UNASSIGNED",
-            date_of_purchase="2000-01-01"
+            date_of_purchase="2000-01-01",
         )
 
         return APIResponse(
