@@ -1,9 +1,8 @@
 from .AssetSearchView import AssetSearchWithFilterView
-from .AssetView import AssetView, UserAgentAssetView
-from .AssetUpdateView import AssetUpdateView
+from .asset_view import AssetView, UserAgentAssetView
+from .asset_update import AssetUpdateView
 from .AssetApproveView import AssetApproveView
-from .AssetUpdateView import AssetUpdateView
-from .AssetTypeView import AssetTypeView
+from .asset_type_view import AssetTypeView
 from .BusinessUnitView import BusinessUnitView
 from .LocationView import LocationView
 from .AssetCountView import AssetCountView
@@ -17,9 +16,9 @@ from .AssetExportView import AssetExportView
 
 __all__ = [
     "AssetView",
-    "AssetUpdateView",
+    "asset_update",
     "AssetApproveView",
-    "AssetTypeView",
+    "asset_type_view",
     "BusinessUnitView",
     "LocationView",
     "AssetCountView",
