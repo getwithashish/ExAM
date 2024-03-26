@@ -43,6 +43,24 @@ import { MdFacebook } from "react-icons/md";
 const SidebarComponentNew = ({ children }) => {
   const { userRole, setUserRole, login, logout } = useAuth();
 
+  const handleDownload = async () => {
+    const fileUrl = '/static/asset_management_windows.exe';
+    
+    try {
+      const response = await fetch(fileUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'asset_management_windows.exe');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Error downloading file:', error);
+    }
+  };
+
   // const { addAssetState, setAddAssetState } = useMyContext();
   const [displaydrawer, setDisplayDrawer] = useState(false);
   const closeDrawer = () => {
@@ -290,6 +308,11 @@ const SidebarComponentNew = ({ children }) => {
             ) : (
               ""
             )}
+            <Menu.Item icon={<CarryOutOutlined />}>
+              <ToolTip title="Approve Assets that are pending to be allocated">
+                <div onClick={handleDownload}>Download</div>
+              </ToolTip>
+            </Menu.Item>
           </Menu>
         </Sider>
         <Content>
