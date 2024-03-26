@@ -121,7 +121,7 @@ class AssetApproveView(APIView):
                     "acj88178@gmail.com",
                     "asimapalexperion23@gmail.com",
                     "aidrin.varghese@experionglobal.com",
-                    "pavithravprabhu6@gmail.com",
+                    "pavithraexperion@gmail.com",
                 ],
             )
             print(serializer.data)
