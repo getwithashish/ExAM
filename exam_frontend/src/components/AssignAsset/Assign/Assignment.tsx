@@ -99,19 +99,19 @@ export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
 
   return (
     <div className={styles['square-box']}>
-      <div className={styles['info']}>Asset Name: {record.product_name}</div>
-      <div className={styles['info']}>Asset Type: {record.asset_type}</div>
-      <div className={styles['info']}>Configuration: {record.configuration}</div>
-      <div className={styles['info']}>Location:{record.location}</div>
-      <div className={styles['info']}>Asset Serial Number: {record.serial_number}</div>
-      <div className={styles['info']}>Asset Model Number: {record.model_number}</div>
-      <div className={styles['info']}>Version: {record.version}</div>
+      <div className={styles['assetBox']}>Asset Name: {record.product_name}</div>
+      <div className={styles['assetBox']}>Asset Type: {record.asset_type}</div>
+      <div className={styles['assetBox']}>Configuration: {record.configuration}</div>
+      <div className={styles['assetBox']}>Location:{record.location}</div>
+      <div className={styles['assetBox']}>Asset Serial Number: {record.serial_number}</div>
+      <div className={styles['assetBox']}>Asset Model Number: {record.model_number}</div>
+      <div className={styles['assetBox']}>Version: {record.version}</div>
 
       <input type='text' name={"employee"} className={styles['search-input']} placeholder='employee name' onChange={handleInputChange } value={value} />
-      <div className={divVisible?styles['info']:styles['result']}>
-        <div className={value&&showEmployee ? styles['resultBox'] : styles['result']}>
+      <div className={divVisible?styles['']:styles['result']}>
+        <div className={value&&showEmployee ? styles[''] : styles['result']}>
           { data?.data.length?data.data.map((employee: EmployeeDetails) => (
-            <div key={employee.id} onClick={() => handleNameClick(employee.employee_name, employee.id)}>{employee?employee.employee_name:"sorry no employee not found"}</div>
+            <div className={styles['resultBox']}key={employee.id} onClick={() => handleNameClick(employee.employee_name, employee.id)}>{employee?employee.employee_name:"sorry no employee not found"}</div>
           )):<div>{"No employee available"}</div>}
         </div>
       </div>
