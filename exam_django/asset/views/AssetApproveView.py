@@ -116,7 +116,13 @@ class AssetApproveView(APIView):
             email_service.send_email(
                 email_subject,
                 "Serializer Data: {}".format(json_string),
-                ["astg7542@gmail.com"],
+                [
+                    "astg7542@gmail.com",
+                    "acj88178@gmail.com",
+                    "asimapalexperion23@gmail.com",
+                    "aidrin.varghese@experionglobal.com",
+                    "pavithravprabhu6@gmail.com",
+                ],
             )
             print(serializer.data)
             return APIResponse(
