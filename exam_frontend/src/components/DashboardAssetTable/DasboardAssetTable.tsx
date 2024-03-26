@@ -15,7 +15,6 @@ import {
   Table,
   TableColumnsType,
 } from "antd";
-import DrawerComponent from "../DrawerComponent/DrawerComponent";
 import { SearchOutlined } from "@ant-design/icons";
 import "./DasboardAssetTable.css";
 import CardComponent from "../CardComponent/CardComponent";
@@ -36,6 +35,7 @@ import TableNavbar from "../TableNavBar/TableNavbar";
 import SideDrawerComponent from "../SideDrawerComponent/SideDrawerComponent";
 import UploadComponent from "../Upload/UploadComponent";
 import DashBoardCardComponent from "../DashBoardCardComponent/DashBoardCardComponent";
+import DrawerViewRequest from "../../pages/RequestPage/DrawerViewRequest";
 
 const DasboardAssetTable = ({
   asset_uuid,
@@ -140,7 +140,7 @@ boxShadow
   />
  </div>
 </div>
-      <DrawerComponent
+      <DrawerViewRequest
         visible={drawerVisible}
         onClose={onCloseDrawer}
         selectedRow={selectedRow}
@@ -170,7 +170,7 @@ boxShadow
             }}
           />
         )}
-      </DrawerComponent>
+      </DrawerViewRequest>
     </div>
   );
 };

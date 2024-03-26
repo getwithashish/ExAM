@@ -96,16 +96,60 @@ export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
   };
 
 
+  const mainCardStyle = {
+    width: "90%",
+    display: "flex",
+    flexWrap: "wrap",
+    background: "white",
+    marginLeft: "6%",
+    alignItems: "flex-start",
+    rowGap: "-10px",
+  };
+  const formItemStyle = {
+    flex: "0 0 calc(16.66% - 20px)", // Six items in one row (adjust margin)
+    margin: "10px", // Adjust margin as needed
+    boxSizing: "border-box",
+  };
+
 
   return (
-    <div className={styles['square-box']}>
-      <div className={styles['assetBox']}>Asset Name: {record.product_name}</div>
-      <div className={styles['assetBox']}>Asset Type: {record.asset_type}</div>
-      <div className={styles['assetBox']}>Configuration: {record.configuration}</div>
-      <div className={styles['assetBox']}>Location:{record.location}</div>
-      <div className={styles['assetBox']}>Asset Serial Number: {record.serial_number}</div>
-      <div className={styles['assetBox']}>Asset Model Number: {record.model_number}</div>
-      <div className={styles['assetBox']}>Version: {record.version}</div>
+<div>
+ <div className={styles['square-box']}>
+  <form >
+    <div className={styles['firstRow']}>
+      <div className={styles['assetBox']}>
+        <label htmlFor="productName">Asset Name:</label>
+        <input type="text" id="productName" value={record.product_name}  disabled/>
+      </div>
+      <div className={styles['assetBox']}>
+        <label htmlFor="assetType">Asset Type:</label>
+        <input type="text" id="assetType" value={record.asset_type}  disabled/>
+      </div>
+      <div className={styles['assetBox']}>
+        <label htmlFor="configuration">Configuration:</label>
+        <input type="text" id="configuration" value={record.configuration}  disabled/>
+      </div>
+    </div>
+    <div className={styles['firstRow']}>
+    <div className={styles['assetBox']}>
+      <label htmlFor="location">Location:</label>
+      <input type="text" id="location" value={record.location} disabled />
+    </div>
+    <div className={styles['assetBox']}>
+      <label htmlFor="serialNumber">Asset Serial Number:</label>
+      <input type="text" id="serialNumber" value={record.serial_number} disabled/>
+    </div>
+    <div className={styles['assetBox']}>
+      <label htmlFor="modelNumber">Asset Model Number:</label>
+      <input type="text" id="modelNumber" value={record.model_number} disabled />
+    </div>
+    </div>
+    <div className={styles['assetBox']}>
+      <label htmlFor="version">Version:</label>
+      <input type="text" id="version" value={record.version} disabled />
+    </div>
+  </form>
+ </div>
 
       <input type='text' name={"employee"} className={styles['search-input']} placeholder='employee name' onChange={handleInputChange } value={value} />
       <div className={divVisible?styles['']:styles['result']}>
@@ -115,9 +159,12 @@ export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
           )):<div>{"No employee available"}</div>}
         </div>
       </div>
+      <div>
       <button className={styles['assign-button']} onClick={handleAssign}>
         Assign
       </button>
-    </div>
+      </div>
+      
+</div>
   );
 };

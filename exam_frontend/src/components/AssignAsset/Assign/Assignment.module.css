@@ -1,24 +1,33 @@
 .square-box {
-  width: 300px;
+  width: 1100px;
   background-color:white;
   padding: 20px;
+
+  
 }
 
+form{
+  display:flex;
+  flex-direction: row;
+}
+.firstRow{
+ flex:1
+}
 .square-box:hover{
 box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.1);
 
 }
 
 .search-input {
-  width: 100%;
-  height: 30px; /* Adjust for padding */
+  width: 30%;
+  height: 30px; 
   padding: 10px;
   margin-bottom: 10px;
   margin-top: 50px;
 }
 
 .assign-button {
-  width: 100%;
+  width: 30%;
   height: 30px;
   margin-top: 10px;
   background-color: #007bff;
@@ -40,26 +49,26 @@ box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.1);
 .info {
   margin: 10px;
   padding: 10px;
-  background-color:white; /* Light gray background */
-  border-radius: 5px; /* Rounded corners */
+  background-color:white; 
+  border-radius: 5px; 
   
 }
 
-/* Hover effect */
 .info:hover {
-  background-color: #e0e0e0; /* Lighter gray on hover */
+  background-color: #e0e0e0; 
  
 }
 
 .resultBox{
-  width: 100%;
+  width: 30%;
   min-height: 30px;
   padding: 10px;
 }
 
 .resultBox:hover{
-  /* background-color: red;  */
+
   box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.1);
+  
 }
 
 .assetBox{
