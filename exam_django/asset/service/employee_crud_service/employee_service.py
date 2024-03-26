@@ -6,6 +6,7 @@ from messages import (
     EMPLOYEE_CREATION_UNSUCCESSFUL,
     GLOBAL_500_EXCEPTION_ERROR,
     EMPLOYEE_DETAILS_SUCCESSFULLY_RETRIEVED,
+    EMPLOYEE_DETAILS_FOUND
 )
 from rest_framework import status
 
@@ -27,7 +28,7 @@ class EmployeeService:
         try:
             if query:
                 employees = Employee.objects.filter(employee_name__istartswith=query)
-                message = f"Employee details with name containing '{query}' successfully retrieved"
+                message = EMPLOYEE_DETAILS_FOUND
             else:
                 employees = Employee.objects.all()
                 message = EMPLOYEE_DETAILS_SUCCESSFULLY_RETRIEVED
