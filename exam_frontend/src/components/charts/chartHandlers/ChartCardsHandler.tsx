@@ -20,12 +20,14 @@ const AssetCountComponent = () => {
                 setTotalAssetTypes(types.length);
                 setAssetTypes(types);
 
-                let pendingAssetsCount = 0;
-                const detailStatus = assetCountData.asset_detail_status;
-                if (detailStatus) {
-                    pendingAssetsCount += (detailStatus["CREATE_PENDING"] || 0) + (detailStatus["UPDATE_PENDING"] || 0);
-                }
-                setPendingAssetsCount(pendingAssetsCount);
+        let pendingAssetsCount = 0;
+        const detailStatus = assetCountData.asset_detail_status;
+        if (detailStatus) {
+          pendingAssetsCount +=
+            (detailStatus["CREATE_PENDING"] || 0) +
+            (detailStatus["UPDATE_PENDING"] || 0);
+        }
+        setPendingAssetsCount(pendingAssetsCount);
 
                 let pendingAssignsCount = 0;
                 const assignStatus = assetCountData.assign_status;

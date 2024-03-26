@@ -122,6 +122,20 @@ boxShadow
       onExpand:(expanded,record)=>{if(expanded) return setSelectedAssetId(record.key); else return},
       expandedRowRender: (record, index, indent, expanded) => {return memoizedRowRender(record, expanded);},
     }}
+
+    footer={() => (
+      <Pagination
+        pageSize={20}
+        showTotal={(total, range) =>
+          `${range[0]}-${range[1]} of ${total} assets`
+        }
+        total={totalItemCount}
+        onChange={(page, pageSize) => {
+          assetPageDataFetch(`&offset=${(page - 1) * pageSize}`);
+        }}
+        hideOnSinglePage={true}
+      />
+    )}
  
   />
  </div>
