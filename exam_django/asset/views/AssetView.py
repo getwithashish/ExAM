@@ -78,11 +78,11 @@ class AssetView(ListCreateAPIView):
             message=ASSET_CREATED_UNSUCCESSFUL,
             status=status.HTTP_400_BAD_REQUEST,
         )
- 
+
     def list(self, request, *args, **kwargs):
         try:
             queryset = Asset.objects.all()
- 
+
             # Get query parameters
             global_search = request.query_params.get("global_search")
  
