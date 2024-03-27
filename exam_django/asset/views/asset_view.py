@@ -30,17 +30,16 @@ from messages import (
 
 class AssetView(ListCreateAPIView):
 
-    pagination_class = LimitOffsetPagination
     permission_classes = (IsAuthenticated,)
     serializer_class = AssetWriteSerializer
 
     def get_serializer_class(self):
         if self.request.method == "GET":
-            return AssetReadSerializer  # For read operation
+            return AssetReadSerializer
         return self.serializer_class
 
     def post(self, request):
-        serializer = AssetWriteSerializer(data=request.data)
+        serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
             user_scope = request.user.user_scope
@@ -84,8 +83,9 @@ class AssetView(ListCreateAPIView):
 
     def list(self, request, *args, **kwargs):
         try:
+            serializer = self.serializer_class
             asset_query_service = AssetQueryService()
-            return asset_query_service.get_asset_details(request)
+            return asset_query_service.get_asset_details(serializer, request)
 
         except Exception as e:
             print("Error: ", e)
