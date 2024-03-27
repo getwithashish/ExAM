@@ -1,70 +1,25 @@
 # exam_django/asset/views/LocationView.py
 
+from asset.service.location_crud_service.location_service import LocationService
 from rest_framework.generics import ListCreateAPIView
-from rest_framework import status
-from rest_framework.response import Response
-from asset.models import Location
-from asset.serializers import LocationSerializer
 from rest_framework.permissions import IsAuthenticated
 from response import APIResponse
-from messages import (
-    LOCATION_RETRIEVED_SUCCESSFULLY,
-    LOCATION_CREATED_SUCCESSFULLY,
-    GLOBAL_500_EXCEPTION_ERROR,
-    LOCATION_CREATION_FAILED,
-)
 
 
 class LocationView(ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
-    serializer_class = LocationSerializer  # Define the serializer_class attribute
 
-    def post(self, request):
-        try:
-            serializer = LocationSerializer(data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return APIResponse(
-                    data=request.data,
-                    message=LOCATION_CREATED_SUCCESSFULLY,
-                    status=status.HTTP_201_CREATED,
-                )
-            return APIResponse(
-                message=LOCATION_CREATION_FAILED,
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        except Exception:
-            return APIResponse(
-                message=GLOBAL_500_EXCEPTION_ERROR,
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
+    def get_permissions(self):
+        if self.request.method == "GET" or self.request.method == "POST":
+            return [IsAuthenticated()]
+        return super().get_permissions()
+
+    def post(self, request, format=None):
+        data = request.data
+        location, message, http_status = LocationService.create_location(data)
+        return APIResponse(data=location, message=message, status=http_status)
 
     def get(self, request):
-        try:
-            query = request.query_params.get("query")
-            if query:
-                locations = Location.objects.filter(location_name__istartswith=query)
-            else:
-                locations = Location.objects.all()
-
-            # Paginate the queryset
-            page = self.paginate_queryset(locations)
-            if page is not None:
-                # Serialize the paginated queryset
-                serializer = LocationSerializer(page, many=True)
-                # Return the paginated response
-                return self.get_paginated_response(serializer.data)
-
-            # Serialize the queryset
-            serializer = LocationSerializer(locations, many=True)
-            return Response(
-                data=serializer.data,
-                message=LOCATION_RETRIEVED_SUCCESSFULLY,
-                status=status.HTTP_200_OK,
-            )
-
-        except Exception:
-            return APIResponse(
-                message=GLOBAL_500_EXCEPTION_ERROR,
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
+        search_query = request.GET.get("query", None)
+        location, message, http_status = LocationService.retrieve_location(search_query)
+        return APIResponse(data=location, message=message, status=http_status)
