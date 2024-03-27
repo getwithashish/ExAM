@@ -178,7 +178,7 @@ export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
       </button>
       </div>
 
-      <div className={employeeName==value?styles['employeeBox']:styles['result']}>
+      <div className={employeeName==value&&value?styles['employeeBox']:styles['result']}>
             {
               <div>
               <div>employee id :{employeeId}</div>

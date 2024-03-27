@@ -1,22 +1,7 @@
-.square-box {
-  width: 1100px;
-  background-color:white;
-  padding: 20px;
 
-  
-}
 
-form{
-  display:flex;
-  flex-direction: row;
-}
-.firstRow{
- flex:1
-}
-.square-box:hover{
-box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.1);
 
-}
+
 
 .search-input {
   width: 30%;
@@ -86,4 +71,5 @@ box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.1);
   border: 1px solid black;
   text-align: left;
   padding: 10px;
-}
+} 
+
