@@ -40,7 +40,7 @@ class LocationService:
             search_query = query
 
             if search_query:
-                location = location.filter(location_name_istartswith=search_query)
+                location = location.filter(location_name__istartswith=search_query)
             serializer = LocationSerializer(location, many=True)
             return serializer.data, message_success, status.HTTP_200_OK
 
