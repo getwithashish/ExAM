@@ -17,37 +17,7 @@ class AssetQueryService:
         global_search = request.query_params.get("global_search")
 
         if global_search:
-            query = Q()
-            for field in [
-                "asset_uuid",
-                "asset_id",
-                "version",
-                "asset_category",
-                "product_name",
-                "model_number",
-                "serial_number",
-                "owner",
-                "date_of_purchase",
-                "status",
-                "warranty_period",
-                "os",
-                "os_version",
-                "mobile_os",
-                "processor",
-                "processor_gen",
-                "storage",
-                "configuration",
-                "accessories",
-                "notes",
-                "asset_detail_status",
-                "assign_status",
-                "approval_status_message",
-                "created_at",
-                "updated_at",
-            ]:
-                query |= Q(**{f"{field}__icontains": global_search})
-
-            queryset = queryset.filter(query)
+            queryset = self.get_queryset_from_global_search(global_search, queryset)
 
         assign_status = request.query_params.get("assign_status")
         asset_detail_status = request.query_params.get("asset_detail_status")
@@ -114,6 +84,40 @@ class AssetQueryService:
             message=ASSET_LIST_SUCCESSFULLY_RETRIEVED,
             status=status.HTTP_200_OK,
         )
+
+    def get_queryset_from_global_search(self, global_search, queryset):
+        query = Q()
+        for field in [
+            "asset_uuid",
+            "asset_id",
+            "version",
+            "asset_category",
+            "product_name",
+            "model_number",
+            "serial_number",
+            "owner",
+            "date_of_purchase",
+            "status",
+            "warranty_period",
+            "os",
+            "os_version",
+            "mobile_os",
+            "processor",
+            "processor_gen",
+            "storage",
+            "configuration",
+            "accessories",
+            "notes",
+            "asset_detail_status",
+            "assign_status",
+            "approval_status_message",
+            "created_at",
+            "updated_at",
+        ]:
+            query |= Q(**{f"{field}__icontains": global_search})
+
+        queryset = queryset.filter(query)
+        return queryset
 
     def remove_fields_from_dict(self, input_dict, fields_to_remove):
         return {
