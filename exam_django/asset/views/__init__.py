@@ -2,12 +2,12 @@ from .AssetSearchView import AssetSearchWithFilterView
 from .asset_view import AssetView, UserAgentAssetView
 from .asset_update import AssetUpdateView
 from .AssetApproveView import AssetApproveView
-from .AssetTypeView import AssetTypeView
-from .BusinessUnitView import BusinessUnitView
+from .asset_type_view import AssetTypeView
+from .business_unit_view import BusinessUnitView
 from .LocationView import LocationView
 from .AssetCountView import AssetCountView
 from .MemoryView import MemoryView
-from .EmployeeView import EmployeeView
+from .employee_view import EmployeeView
 from .AssignAssetView import AssignAssetView
 from .AssetLogView import AssetLogView
 from .DataImportView import DataImportView
@@ -18,12 +18,12 @@ __all__ = [
     "AssetView",
     "asset_update",
     "AssetApproveView",
-    "AssetTypeView",
-    "BusinessUnitView",
+    "asset_type_view",
+    "business_unit_view",
     "LocationView",
     "AssetCountView",
     "MemoryView",
-    "EmployeeView",
+    "employee_view",
     "AssignAssetView",
     "AssetSearchWithFilterView",
     "AssetLogView",
