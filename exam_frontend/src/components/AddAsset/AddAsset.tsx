@@ -63,6 +63,7 @@ const AddAsset: React.FC = () => {
   const { data: locationData, isLoading: isLocationLoading, isError: isLocationError } = useQuery({
     queryKey: ['locations'],
     queryFn: () => axiosInstance.get('/asset/location').then((res) => res.data),
+    
   });
  
   if (isAssetTypeLoading || isMemoryLoading || isBusinessUnitLoading || isLocationLoading) return <div>Loading...</div>;
@@ -82,8 +83,9 @@ const AddAsset: React.FC = () => {
     id: item.id,
     name: item.business_unit_name,
   }));
+  
  
-  const locations = locationData.results.map((item: any) => ({
+  const locations = locationData.data.map((item: any) => ({
     id: item.id,
     name: item.location_name,
   }));
