@@ -6,6 +6,3 @@ class AssetSysadminRoleAssignService:
         asset.requester = requester
         asset.save()
         return "ASSET ASSIGNMENT REQUEST SENT"
-
-
-

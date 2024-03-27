@@ -7,4 +7,3 @@ class AssetLeadRoleAssignService:
         asset.requester = requester
         asset.save()
         return "ASSET ASSIGNMENT SUCCESSFUL"
-    

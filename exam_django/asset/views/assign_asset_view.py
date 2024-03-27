@@ -9,9 +9,12 @@ from response import APIResponse
 from messages import (
     ASSET_NOT_FOUND,
     EMPLOYEE_NOT_FOUND_ERROR,
-    STATUS_EXPIRED_OR_DISPOSED
+    STATUS_EXPIRED_OR_DISPOSED,
 )
-from asset.service.asset_assign_crud_service.assign_asset_service import AssignAssetService
+from asset.service.asset_assign_crud_service.assign_asset_service import (
+    AssignAssetService,
+)
+
 
 class AssignAssetView(APIView):
     def get_permissions(self):
@@ -26,16 +29,9 @@ class AssignAssetView(APIView):
         if serializer.is_valid():
             requester = request.user
             role = requester.user_scope
- 
-            try:
-                employee_id = request.data.get("id")
-                employee = Employee.objects.get(id=employee_id)
-            except Employee.DoesNotExist:
-                return APIResponse(
-                    message=EMPLOYEE_NOT_FOUND_ERROR,
-                    status=status.HTTP_404_NOT_FOUND,
-                )
- 
+
+            employee_id = request.data.get("id")
+
             asset_id = request.data.get("asset_uuid")
             try:
                 asset = Asset.objects.get(asset_uuid=asset_id)
@@ -44,20 +40,22 @@ class AssignAssetView(APIView):
                     message=ASSET_NOT_FOUND,
                     status=status.HTTP_404_NOT_FOUND,
                 )
- 
+
             # Check if the asset status is expired or disposed
             if asset.status in ["EXPIRED", "DISPOSED"]:
                 return APIResponse(
                     message=STATUS_EXPIRED_OR_DISPOSED,
                     status=status.HTTP_400_BAD_REQUEST,
                 )
- 
+
             # Assign the asset using the appropriate service based on requester's role
-            message = AssignAssetService.assign_asset(role, asset, employee, requester)
- 
+            message = AssignAssetService.assign_asset(
+                role, asset, employee_id, requester
+            )
+
             # Serialize the assigned asset using the custom serializer
             assigned_asset_serializer = AssignAssetSerializer(asset)
- 
+
             json_string = (
                 JSONRenderer().render(assigned_asset_serializer.data).decode("utf-8")
             )
@@ -72,7 +70,7 @@ class AssignAssetView(APIView):
                     "pavithraexperion@gmail.com",
                 ],
             )
- 
+
             return APIResponse(
                 data=assigned_asset_serializer.data,
                 message=message,
