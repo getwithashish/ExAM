@@ -3,19 +3,19 @@ import AssignmentDrawer from "../../components/AssignAsset/Assign/AssignmentDraw
 import { Assignment } from "../../components/AssignAsset/Assign/Assignment";
 import { DataType } from "../../components/AssetTable/types";
 import AssetTableHandler from "../../components/AssignAsset/AssetTable/AssetTableHandler";
+import DrawerViewRequest from "../RequestPage/DrawerViewRequest";
 const Assignableasset = () => {
-  const [isAssign, setIsAssign] = useState(false);
   const [record, setRecord] = useState<DataType>([]);
-
+  const [visible,setVisible] = useState<boolean>(false)
   const showAssignDrawer = (record: DataType) => {
     console.log("Hello");
     console.log("uuid", record);
     setRecord(record);
-    setIsAssign(true);
-    // closeAssignDrawer()
+    setVisible(true);
+    console.log("visible",visible)
   };
   const closeAssignDrawer = () => {
-    setIsAssign(false);
+    setVisible(false);
   };
   return (
     <div style={{ background: "white" }}>
@@ -65,15 +65,16 @@ const Assignableasset = () => {
           </li>
         </ol>
       </nav>
-      {/* <AssetTableOne showAssignDrawer={showAssignDrawer}/> */}
+      
       <AssetTableHandler showAssignDrawer={showAssignDrawer} />
 
-      <AssignmentDrawer
-        isAssign={isAssign}
-        closeAssignDrawer={closeAssignDrawer}
+      <DrawerViewRequest
+        title="assign"
+        onClose={closeAssignDrawer}
+        visible={visible}
       >
-        {record && <Assignment record={record} />}
-      </AssignmentDrawer>
+        { <Assignment record={record} />}
+      </DrawerViewRequest>
     </div>
   );
 };

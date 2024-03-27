@@ -558,6 +558,7 @@ const AssetTableHandler = ({showAssignDrawer}) => {
             color: "black",
           }}
           onClick={() => {
+            console.log("button clicked ")
             if (record.custodian == null || record.custodian == undefined) {
               showAssignDrawer(record);
             } else {

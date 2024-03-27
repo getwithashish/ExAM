@@ -123,7 +123,8 @@ MEMORY_SUCCESSFULLY_RETRIEVED = "Memory details sucessfully retrieved."
 BUSINESS_UNIT_CREATED_UNSUCCESSFUL = (
     "Error while creating business unit.Please try again later."
 )
-
+UNAUTHORIZED_NO_PERMISSION="Unauthorized. You do not have permission to assign assets."
+STATUS_EXPIRED_OR_DISPOSED="Cannot assign the asset. Status is expired or disposed."
 # Business Unit Success Messages
 BUSINESS_UNIT_SUCCESSFULLY_CREATED = "Business unit sucessfully created."
 MEMORY_SUCCESSFULLY_CREATED = "Memory sucessfully created."
