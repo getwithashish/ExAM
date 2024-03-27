@@ -149,16 +149,16 @@ export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
       <input type="text" id="version" value={record.version} className='mt-1 font-display rounded-lg' disabled />
     </div>
     <div>
-      <label htmlFor="version">VERSION:</label>
-      <input type="text" id="version" value={record.version} className='mt-1 font-display rounded-lg' disabled />
+      <label htmlFor="version">MEMORY:</label>
+      <input type="text" id="version" value={record.memory} className='mt-1 font-display rounded-lg' disabled />
     </div>
     <div>
-      <label htmlFor="version">VERSION:</label>
-      <input type="text" id="version" value={record.version} className='mt-1 font-display rounded-lg' disabled />
+      <label htmlFor="version">PROCESSOR:</label>
+      <input type="text" id="version" value={record.processor} className='mt-1 font-display rounded-lg' disabled />
     </div>
     <div>
-      <label htmlFor="version">VERSION:</label>
-      <input type="text" id="version" value={record.version} className='mt-1 font-display rounded-lg' disabled />
+      <label htmlFor="version">INVOICE LOCATION</label>
+      <input type="text" id="version" value={record.invoice_location} className='mt-1 font-display rounded-lg' disabled />
     </div>
     </div>
   </form>
