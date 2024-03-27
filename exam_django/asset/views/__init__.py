@@ -9,7 +9,7 @@ from .AssetCountView import AssetCountView
 from .memory_view import MemoryView
 from .employee_view import EmployeeView
 from .AssignAssetView import AssignAssetView
-from .AssetLogView import AssetLogView
+from .asset_log_view import AssetLogView
 from .data_import_view import DataImportView
 
 from .AssetExportView import AssetExportView
@@ -26,7 +26,7 @@ __all__ = [
     "employee_view",
     "AssignAssetView",
     "AssetSearchWithFilterView",
-    "AssetLogView",
+    "asset_log_view",
     "data_import_view",
     "AssetExportView",
     "UserAgentAssetView",
