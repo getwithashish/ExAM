@@ -1,23 +1,20 @@
-from rest_framework.views import APIView
-from rest_framework import status
-from django.http import JsonResponse
 import json
 from asset.models import AssetLog, Location, BusinessUnit, Memory, AssetType, Employee
 from user_auth.models import User
 from response import APIResponse
-from messages import (
-    ASSET_NOT_FOUND,
-    ASSET_LOG_FOUND,
-)
+from messages import ASSET_NOT_FOUND, ASSET_LOG_FOUND
+from rest_framework import status
 
-
-class AssetLogView(APIView):
-    def get(self, request, asset_uuid):
+class AssetLogService:
+    @staticmethod
+    def get_asset_logs(asset_uuid):
         try:
             asset_logs = AssetLog.objects.filter(asset_uuid=asset_uuid)
             if not asset_logs.exists():
-                return JsonResponse(
-                    {"message": "Assets not found for the provided UUID"}, status=404
+                return APIResponse(
+                    data=[],
+                    message=ASSET_NOT_FOUND,
+                    status=status.HTTP_404_NOT_FOUND,
                 )
 
             response_data = {"asset_uuid": asset_uuid, "logs": []}
