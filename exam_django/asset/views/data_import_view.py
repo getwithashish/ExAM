@@ -1,23 +1,18 @@
 from django.http import JsonResponse
 from rest_framework.views import APIView
 from rest_framework import status
-from asset.views.CsvFileImportView import parse_and_add_assets
+from asset.service.data_import_crud_service.data_import_service import AssetImportService
 from user_auth.rbac import IsLead
 from response import APIResponse
 from messages import INVALID_CSV_FILE_TYPE, FILE_NOT_FOUND
-import jwt  # Import JWT librarya
-from user_auth.models import User  # Import the User model
-
 
 class DataImportView(APIView):
     permission_classes = (IsLead,)
 
     def post(self, request, format=None):
         try:
-            # Extract JWT token from request headers
             user = request.user
 
-            # Check if the file is provided in the request
             file = request.FILES.get("file")
             if not file:
                 return APIResponse(
@@ -26,14 +21,17 @@ class DataImportView(APIView):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-            # Read the file content
-            file_content = file.read()
+            # Use the AssetImportService to process the file
+            result = AssetImportService.parse_and_add_assets(file.read(), user)
+            
+            # Include import summary in the response
+            response_data = {
+                "message": result["message"],
+                "added_assets_count": result["added_assets_count"],
+                "skipped_assets_count": result["skipped_assets_count"]
+            }
 
-            # Call the parse_and_add_assets function to parse and add assets
-            result = parse_and_add_assets(file_content, user)
-
-            # Return a success response
-            return JsonResponse({"message": result}, status=status.HTTP_200_OK)
+            return JsonResponse(response_data, status=status.HTTP_200_OK)
 
         except UnicodeDecodeError:
             return APIResponse(
