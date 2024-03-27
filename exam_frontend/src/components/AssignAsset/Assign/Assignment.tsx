@@ -18,6 +18,9 @@ export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
   const [employeeId, setEmployeeId] = useState<number>();
   const [divVisible,setdivVisible] = useState<boolean>(false)
   const [showEmployee,setShowEmployee] = useState<boolean>(true)
+  const [employeeDepartment,setEmployeeDepartment]=useState<string>("")
+  const [employeeDesignation,setEmployeeDesignation] = useState<string>("")
+  const [employeeName,setEmployeeName] = useState<string>("")
 
   const { data, isLoading, isError } = useQuery<ApiResponse>({
 
@@ -54,12 +57,19 @@ export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
 
   useEffect(() => {
     data?setShowEmployee(true):setShowEmployee(false)
+    if(value=="")
+    {
+      setEmployeeId(undefined)
+      
+
+    }
     return () => {
       
     };
   }, [value]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(value,"value",name,"name")
     setdivVisible(true)
     const inputValue = event.target.value;
     console.log("in the handleinputchange " ,inputValue.trim().length)
@@ -69,13 +79,19 @@ export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
       console.log("input value > 0",inputValue)
       setFetchData(true);
     }
+    if(value!=employeeName)
+     setEmployeeId(undefined)
   };
 
-  const handleNameClick = (name: string, id: number) => {
+  const handleNameClick = (name: string, id: number, department:string, designation:string,) => {
     setValue(name);
+    setEmployeeName(name)
     setShowEmployee(false)
     setEmployeeId(id);
     setdivVisible(false)
+    setEmployeeDepartment(department)
+    setEmployeeDesignation(designation)
+    console.log("handle name clck worked")
     
   };
 
@@ -96,20 +112,7 @@ export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
   };
 
 
-  const mainCardStyle = {
-    width: "90%",
-    display: "flex",
-    flexWrap: "wrap",
-    background: "white",
-    marginLeft: "6%",
-    alignItems: "flex-start",
-    rowGap: "-10px",
-  };
-  const formItemStyle = {
-    flex: "0 0 calc(16.66% - 20px)", // Six items in one row (adjust margin)
-    margin: "10px", // Adjust margin as needed
-    boxSizing: "border-box",
-  };
+  
 
 
   return (
@@ -165,7 +168,7 @@ export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
       <div className={divVisible?styles['']:styles['result']}>
         <div className={value&&showEmployee ? styles[''] : styles['result']}>
           { data?.data.length?data.data.map((employee: EmployeeDetails) => (
-            <div className={styles['resultBox']}key={employee.id} onClick={() => handleNameClick(employee.employee_name, employee.id)}>{employee?employee.employee_name:"sorry no employee not found"}</div>
+            <div className={styles['resultBox']}key={employee.id} onClick={() => handleNameClick(employee.employee_name, employee.id,employee.employee_department,employee.employee_designation)}>{employee?employee.employee_name:"sorry no employee not found"}</div>
           )):<div>{"No employee available"}</div>}
         </div>
       </div>
@@ -174,6 +177,17 @@ export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
         Assign
       </button>
       </div>
+
+      <div className={employeeName==value?styles['employeeBox']:styles['result']}>
+            {
+              <div>
+              <div>employee id :{employeeId}</div>
+              <div>employee designation : {employeeDesignation}</div>
+              <div>employee department : {employeeDepartment}</div>
+              </div>
+            }
+    </div>
+
       
 </div>
   );
