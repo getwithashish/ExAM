@@ -1,36 +1,30 @@
-from django.db.models import Q
-from asset.models import Asset
-from rest_framework.generics import ListCreateAPIView
-from rest_framework import status
-from asset.serializers import AssetReadSerializer, AssetWriteSerializer
-from response import APIResponse
-from rest_framework.permissions import IsAuthenticated
+# views.py
+from rest_framework.views import APIView
+from django.http import JsonResponse
+import json
 
 
-class QueryBuilderView(ListCreateAPIView):
-    permission_classes = (IsAuthenticated,)
+class QueryBuilderView(APIView):
+    # Assume you have a function to process the CEL query
 
-    def get_serializer_class(self):
-        if self.request.method == 'POST':
-            return AssetWriteSerializer
-        else:
-            return AssetReadSerializer
+    def post(self, request):
+        if request.method == "POST":
+            # Retrieve the CEL query from the request body
+            data = json.loads(request.body)
+            cel_query = data.get("cel_query")
 
-    def get(self, request):
-        asset_category = request.GET.get("asset_category")
-        asset_status = request.GET.get("status")
-        owner = request.GET.get("owner")
+            # Process the CEL query
+            result = process_cel_query(cel_query)
 
-        query = Q()
+            # Return the response
+            return JsonResponse({"result": result})
 
-        if asset_category:
-            query &= Q(asset_category=asset_category)
-        if status:
-            query &= Q(status=asset_status)
-        if owner:
-            query &= Q(owner=owner)
+        return JsonResponse({"error": "Only POST requests are allowed."}, status=405)
 
-        assets = Asset.objects.filter(query)
-        serializer_class = self.get_serializer_class()
-        serializer = serializer_class(assets, many=True)
-        return APIResponse(data=serializer.data, message="success", status=status.HTTP_200_OK)
+
+def process_cel_query(cel_query):
+    try:
+
+        return cel_query
+    except Exception as e:
+        return str(e)
