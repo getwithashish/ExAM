@@ -17,7 +17,6 @@ export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
   const [fetchData, setFetchData] = useState<boolean>(false); // Initialize as false
   const [employeeId, setEmployeeId] = useState<number>();
   const [divVisible,setdivVisible] = useState<boolean>(false)
-  const [showEmployee,setShowEmployee] = useState<boolean>(true)
   const [employeeDepartment,setEmployeeDepartment]=useState<string>("")
   const [employeeDesignation,setEmployeeDesignation] = useState<string>("")
   const [employeeName,setEmployeeName] = useState<string>("")
@@ -56,7 +55,7 @@ export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
   );
 
   useEffect(() => {
-    data?setShowEmployee(true):setShowEmployee(false)
+    
     if(value=="")
     {
       setEmployeeId(undefined)
