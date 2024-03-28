@@ -166,7 +166,7 @@ export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
 
       <input type='text' name={"employee"} className={styles['search-input']}  placeholder='employee name' onChange={handleInputChange } value={value} />
       <div className={divVisible?styles['']:styles['result']}>
-        <div className={value&&showEmployee ? styles[''] : styles['result']}>
+        <div className={value&&data? styles[''] : styles['result']}>
           { data?.data.length?data.data.map((employee: EmployeeDetails) => (
             <div className={styles['resultBox']}key={employee.id} onClick={() => handleNameClick(employee.employee_name, employee.id,employee.employee_department,employee.employee_designation)}>{employee?employee.employee_name:"sorry no employee not found"}</div>
           )):<div>{"No employee available"}</div>}
