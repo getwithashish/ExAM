@@ -2,7 +2,6 @@
 from rest_framework.views import APIView
 from django.http import JsonResponse
 import json
-from pycel import *
 
 
 class QueryBuilderView(APIView):
@@ -25,15 +24,7 @@ class QueryBuilderView(APIView):
 
 def process_cel_query(cel_query):
     try:
-        # Parse the CEL expression
-        parsed_expr = parse(cel_query)
 
-        # Compile the parsed expression
-        compiled_expr = parsed_expr.compile()
-
-        # Evaluate the compiled expression
-        result = compiled_expr.evaluate()
-
-        return result
+        return cel_query
     except Exception as e:
         return str(e)

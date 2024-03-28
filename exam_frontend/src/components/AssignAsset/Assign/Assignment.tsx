@@ -85,7 +85,7 @@ export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
   const handleNameClick = (name: string, id: number, department:string, designation:string,) => {
     setValue(name);
     setEmployeeName(name)
-    setShowEmployee(false)
+    
     setEmployeeId(id);
     setdivVisible(false)
     setEmployeeDepartment(department)
@@ -96,7 +96,7 @@ export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
 
   const handleAssign = () => {
     setValue("")
-    setShowEmployee(true)
+  
  
     if (data != null && !record.custodian) {
       const requestBody = {
