@@ -17,7 +17,6 @@ export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
   const [fetchData, setFetchData] = useState<boolean>(false); // Initialize as false
   const [employeeId, setEmployeeId] = useState<number>();
   const [divVisible,setdivVisible] = useState<boolean>(false)
-  const [showEmployee,setShowEmployee] = useState<boolean>(true)
   const [employeeDepartment,setEmployeeDepartment]=useState<string>("")
   const [employeeDesignation,setEmployeeDesignation] = useState<string>("")
   const [employeeName,setEmployeeName] = useState<string>("")
@@ -56,7 +55,7 @@ export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
   );
 
   useEffect(() => {
-    data?setShowEmployee(true):setShowEmployee(false)
+    
     if(value=="")
     {
       setEmployeeId(undefined)
@@ -86,7 +85,7 @@ export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
   const handleNameClick = (name: string, id: number, department:string, designation:string,) => {
     setValue(name);
     setEmployeeName(name)
-    setShowEmployee(false)
+    
     setEmployeeId(id);
     setdivVisible(false)
     setEmployeeDepartment(department)
@@ -97,7 +96,7 @@ export const Assignment: React.FC<AssignmentProps> = ({ record }) => {
 
   const handleAssign = () => {
     setValue("")
-    setShowEmployee(true)
+  
  
     if (data != null && !record.custodian) {
       const requestBody = {

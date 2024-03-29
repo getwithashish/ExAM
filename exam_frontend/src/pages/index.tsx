@@ -1,59 +1,34 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useState, type FC, useContext } from "react";
-import NavbarSidebarLayout from "../layouts/navbar-sidebar";
-import AddAsset from "../components/AddAsset/AddAsset";
-import AssetTable from "../components/AssetTable/AssetTable";
+import { useState, FC } from "react";
 import { Statistics } from "../components/charts/Statistics";
-import { RecordProps } from "./types";
-import SideDrawerComponent from "../components/SideDrawerComponent/SideDrawerComponent";
-
-import AssignmentDrawer from "../components/Assign/AssignmentDrawer";
-import { Assignment } from "../components/Assign/Assignment";
-import TableNavbar from "../components/TableNavBar/TableNavbar";
-// import Upload from "antd/es/upload/Upload";
-import { Upload } from "antd";
-import { styles } from "../components/SideDrawerComponent/SideDrawerComponent.module.css";
-import UploadComponent from "../components/Upload/UploadComponent";
 import DasboardAssetHandler from '../components/DashboardAssetTable/DasboardAssetHandler'
-import { QueryBuilder, QueryBuilderComponent } from "../components/QueryBuilder/QueryBuilder";
+import { QueryBuilderComponent } from "../components/QueryBuilder/QueryBuilder";
+import DrawerViewRequest from "./RequestPage/DrawerViewRequest";
+import { Button } from "flowbite-react";
 
 const DashboardPage: FC = function () {
-  const [displaydrawer, setDisplayDrawer] = useState(false);
+  const [visible, setVisible] = useState(false);
 
-  const showDefaultDrawer = () => {
-    setDisplayDrawer(true);
-    console.log("displaydrawer value is ", displaydrawer);
-  };
-  const closeDrawer = () => {
-    setDisplayDrawer(false);
-    console.log("displaydrwer value is ", displaydrawer);
+  const showQueryBuilder = () => {
+    setVisible(true);
   };
 
-  const toggleDrawer = () => {
-    setDisplayDrawer(!displaydrawer);
+  const closeQueryBuilder = () => {
+    setVisible(false);
   };
-
+ 
   return (
-    <div>
-      {/* <SidebarHandler addAsset={showDefaultDrawer} /> */}
+    <div className="bg-white">
       <Statistics />
-
-      <DasboardAssetHandler showDrawer={showDefaultDrawer} />
-      {/* <AssetTable showDrawer={showDefaultDrawer} /> */}
-
-      {/* <AssignmentDrawer buttonTextDefault="Import" displayDrawer={showUpload} >
-                    <UploadComponent/>
-                  </AssignmentDrawer> */}
-
-      {/* <SideDrawerComponent  displayDrawer={displaydrawer} closeDrawer={toggleDrawer}>
-                  <div className="{styles.small-upload}">
-                  <UploadComponent />
-                  </div>
-                  </SideDrawerComponent>  */}
-                  {/* <QueryBuilderComponent /> */}
-
-      <div></div>
+      <DasboardAssetHandler />
+      <Button onClick={showQueryBuilder} className="bg-blue-500 p-2 ml-10 h-50 w-50 font-display">QueryBuilder</Button>
+      <DrawerViewRequest
+        title="Assign"
+        onClose={closeQueryBuilder}
+        visible={visible}
+      >
+        <QueryBuilderComponent />
+      </DrawerViewRequest>
     </div>
   );
 };
