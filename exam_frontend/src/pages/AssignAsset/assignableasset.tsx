@@ -1,13 +1,12 @@
 import { useState } from "react";
-import AssignmentDrawer from "../../components/AssignAsset/Assign/AssignmentDrawer";
-import { Assignment } from "../../components/AssignAsset/Assign/Assignment";
 import { DataType } from "../../components/AssetTable/types";
 import AssetTableHandler from "../../components/AssignAsset/AssetTable/AssetTableHandler";
 import DrawerViewRequest from "../RequestPage/DrawerViewRequest";
+import { AssignmentHandler } from "../../components/AssignAsset/Assign/AssignmentHandler";
 const Assignableasset = () => {
-  const [record, setRecord] = useState<DataType>([]);
+  const [record, setRecord] = useState<DataType | null>(null);
   const [visible,setVisible] = useState<boolean>(false)
-  const showAssignDrawer = (record: DataType) => {
+  const showAssignDrawer = (record: DataType | null) => {
     console.log("Hello");
     console.log("uuid", record);
     setRecord(record);
@@ -73,7 +72,7 @@ const Assignableasset = () => {
         onClose={closeAssignDrawer}
         visible={visible}
       >
-        { <Assignment record={record} />}
+        { <AssignmentHandler record={record} closeAssignDrawer={closeAssignDrawer}/>}
       </DrawerViewRequest>
     </div>
   );
