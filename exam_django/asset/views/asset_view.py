@@ -3,10 +3,6 @@ from rest_framework import status
 from rest_framework.views import APIView
 from asset.serializers import AssetReadSerializer, AssetWriteSerializer
 from asset.models import Asset, Memory, BusinessUnit, AssetType
-from django.db.models.signals import pre_save
-from django.dispatch import receiver
-from django.db import transaction
-from asset.models import AssetLog
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated, AllowAny
 import json
@@ -17,13 +13,11 @@ from asset.service.asset_crud_service.asset_lead_role_mutation_service import (
 from asset.service.asset_crud_service.asset_sysadmin_role_mutation_service import (
     AssetSysadminRoleMutationService,
 )
-from django.db.models import Q
 from asset.service.asset_crud_service.asset_query_service import AssetQueryService
 from response import APIResponse
 from messages import (
     ASSET_CREATED_UNSUCCESSFUL,
     ASSET_LIST_RETRIEVAL_UNSUCCESSFUL,
-    ASSET_LIST_SUCCESSFULLY_RETRIEVED,
     USER_UNAUTHORIZED,
 )
 
@@ -101,32 +95,6 @@ class AssetView(ListCreateAPIView):
             for key, value in input_dict.items()
             if key not in fields_to_remove
         }
-
-
-@receiver(pre_save, sender=Asset)
-def log_asset_changes(sender, instance, **kwargs):
-    old_instance = Asset.objects.filter(pk=instance.pk).values().first()
-    if (
-        old_instance
-        or instance.asset_detail_status == "UPDATED"
-        or instance.asset_detail_status == "ASSIGNED"
-        or instance.asset_detail_status == "UNASSIGNED"
-    ):
-        changes = {
-            field: getattr(instance, field)
-            for field in old_instance
-            if field != "asset_uuid"
-        }
-        asset_log_data = json.dumps(changes, indent=4, sort_keys=True, default=str)
-
-        if changes:
-            with transaction.atomic():
-                asset_instance = Asset.objects.select_for_update().get(pk=instance.pk)
-                asset_log_entry = AssetLog.objects.create(
-                    asset_uuid=asset_instance,
-                    asset_log=asset_log_data,
-                )
-                asset_log_entry.save()
 
 
 class UserAgentAssetView(APIView):
