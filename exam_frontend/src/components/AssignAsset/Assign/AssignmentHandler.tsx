@@ -4,15 +4,16 @@ import axiosInstance from '../../../config/AxiosConfig';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { ApiResponse } from './types';
 import { DataType } from '../../AssetTable/types'
-import { message } from 'antd';
+import { message, Spin} from 'antd';
 import { Assignment } from './Assignment';
 
 interface AssignmentHandlerProps{
     record : DataType | null
+    closeAssignDrawer:()=>void
 }
 
 
-export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({record}) => {
+export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({record,closeAssignDrawer}) => {
     const [query, setQuery] = useState<string>("");
   const [value, setValue] = useState<string>("");
   const [fetchData, setFetchData] = useState<boolean>(false); // Initialize as false
@@ -21,8 +22,9 @@ export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({record}) =>
   const [employeeDepartment,setEmployeeDepartment]=useState<string>("")
   const [employeeDesignation,setEmployeeDesignation] = useState<string>("")
   const [employeeName,setEmployeeName] = useState<string>("")
+  const [loading, setLoading] = useState<boolean>(false); // Loading state
 
-  const { data, isLoading, isError } = useQuery<ApiResponse>({
+  const { data } = useQuery<ApiResponse>({
 
     queryKey: ['Assign'],
     enabled: fetchData && query.trim().length > 0,
@@ -47,10 +49,14 @@ export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({record}) =>
     {
       onSuccess: () => {
         message.success("successfully assigned")
+        setLoading(false);
+        closeAssignDrawer();
       },
       onError: (error) => {
         message.error("unsuccessful, the asset may be already assigned")
+        setLoading(false);
         console.log(error)
+        closeAssignDrawer();
       }
     }
   );
@@ -97,7 +103,7 @@ export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({record}) =>
 
   const handleAssign = () => {
     setValue("")
-  
+    setLoading(true);
  
     if (data != null && record) {
       const requestBody = {
@@ -113,6 +119,8 @@ export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({record}) =>
 
 
     return (
+        <>
+        <Spin spinning={loading}>
         <Assignment
             value={value}
             employeeId={employeeId}
@@ -126,5 +134,7 @@ export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({record}) =>
             handleAssign={handleAssign}
             record = {record}
         />
+        </Spin>
+        </>
     );
 };

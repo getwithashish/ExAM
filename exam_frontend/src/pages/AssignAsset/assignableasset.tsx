@@ -72,7 +72,7 @@ const Assignableasset = () => {
         onClose={closeAssignDrawer}
         visible={visible}
       >
-        { <AssignmentHandler record={record} />}
+        { <AssignmentHandler record={record} closeAssignDrawer={closeAssignDrawer}/>}
       </DrawerViewRequest>
     </div>
   );
