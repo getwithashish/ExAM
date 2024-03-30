@@ -130,6 +130,7 @@ class AssetUpdateView(APIView):
             serializer.validated_data["requester"] = request.user
             serializer.save()
 
+            # TODO Retrieve email addresses of recipient from database
             json_string = JSONRenderer().render(serializer.data).decode("utf-8")
             email_service.send_email(
                 email_subject,

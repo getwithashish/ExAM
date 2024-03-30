@@ -19,7 +19,7 @@ __all__ = [
     "asset_update",
     "AssetApproveView",
     "asset_type_view",
-    "business_unit_view",
+    "BusinessUnitView",
     "LocationView",
     "AssetCountView",
     "MemoryView",
