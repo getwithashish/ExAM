@@ -1,13 +1,7 @@
-from rest_framework.generics import ListCreateAPIView
 from rest_framework import status
 from rest_framework.views import APIView
 from asset.serializers import AssetReadSerializer, AssetWriteSerializer
 from asset.models import Asset, Memory, BusinessUnit, AssetType
-from django.db.models.signals import pre_save
-from django.dispatch import receiver
-from django.db import transaction
-from asset.models import AssetLog
-from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated, AllowAny
 import json
 from asset.service.asset_crud_service.asset_mutation_service import AssetMutationService
@@ -17,48 +11,51 @@ from asset.service.asset_crud_service.asset_lead_role_mutation_service import (
 from asset.service.asset_crud_service.asset_sysadmin_role_mutation_service import (
     AssetSysadminRoleMutationService,
 )
-from django.db.models import Q
 from asset.service.asset_crud_service.asset_query_service import AssetQueryService
+from exceptions import NotAcceptableOperation
 from response import APIResponse
 from messages import (
     ASSET_CREATED_UNSUCCESSFUL,
     ASSET_LIST_RETRIEVAL_UNSUCCESSFUL,
-    ASSET_LIST_SUCCESSFULLY_RETRIEVED,
+    ASSET_NOT_FOUND,
     USER_UNAUTHORIZED,
 )
 
 
-class AssetView(ListCreateAPIView):
+class AssetView(APIView):
 
-    pagination_class = LimitOffsetPagination
     permission_classes = (IsAuthenticated,)
     serializer_class = AssetWriteSerializer
 
     def get_serializer_class(self):
         if self.request.method == "GET":
-            return AssetReadSerializer  # For read operation
+            return AssetReadSerializer
         return self.serializer_class
 
+    def get(self, request, *args, **kwargs):
+        try:
+            serializer = self.serializer_class
+            asset_query_service = AssetQueryService()
+            return asset_query_service.get_asset_details(serializer, request)
+
+        except Exception as e:
+            print("Error: ", e)
+            return APIResponse(
+                data={},
+                message=ASSET_LIST_RETRIEVAL_UNSUCCESSFUL,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
     def post(self, request):
-        serializer = AssetWriteSerializer(data=request.data)
+        serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
             user_scope = request.user.user_scope
 
             if user_scope == "SYSTEM_ADMIN":
-                asset_sysadmin_role_mutation_service = (
-                    AssetSysadminRoleMutationService()
-                )
-                asset_mutation_service = AssetMutationService(
-                    asset_sysadmin_role_mutation_service
-                )
-
+                asset_user_role_mutation_service = AssetSysadminRoleMutationService()
             elif user_scope == "LEAD":
-                asset_lead_role_mutation_service = AssetLeadRoleMutationService()
-                asset_mutation_service = AssetMutationService(
-                    asset_lead_role_mutation_service
-                )
-
+                asset_user_role_mutation_service = AssetLeadRoleMutationService()
             else:
                 return APIResponse(
                     data={},
@@ -66,6 +63,9 @@ class AssetView(ListCreateAPIView):
                     status=status.HTTP_401_UNAUTHORIZED,
                 )
 
+            asset_mutation_service = AssetMutationService(
+                asset_user_role_mutation_service
+            )
             data, message, http_status = asset_mutation_service.create_asset(
                 serializer, request
             )
@@ -82,51 +82,47 @@ class AssetView(ListCreateAPIView):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    def list(self, request, *args, **kwargs):
+    def patch(self, request):
         try:
-            asset_query_service = AssetQueryService()
-            return asset_query_service.get_asset_details(request)
+            user_scope = request.user.user_scope
 
-        except Exception as e:
-            print("Error: ", e)
-            return APIResponse(
-                data={},  # Fixed missing serializer reference here
-                message=ASSET_LIST_RETRIEVAL_UNSUCCESSFUL,
-                status=status.HTTP_400_BAD_REQUEST,
+            if user_scope == "SYSTEM_ADMIN":
+                asset_user_role_mutation_service = AssetSysadminRoleMutationService()
+            elif user_scope == "LEAD":
+                asset_user_role_mutation_service = AssetLeadRoleMutationService()
+            else:
+                return APIResponse(
+                    data={},
+                    message=USER_UNAUTHORIZED,
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
+
+            asset_mutation_service = AssetMutationService(
+                asset_user_role_mutation_service
+            )
+            data, message, http_status = asset_mutation_service.update_asset(
+                self.serializer_class, request
             )
 
-    def remove_fields_from_dict(self, input_dict, fields_to_remove):
-        return {
-            key: value
-            for key, value in input_dict.items()
-            if key not in fields_to_remove
-        }
+            return APIResponse(
+                data=data,
+                message=message,
+                status=http_status,
+            )
 
+        except Asset.DoesNotExist:
+            return APIResponse(
+                data={},
+                message=ASSET_NOT_FOUND,
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
-@receiver(pre_save, sender=Asset)
-def log_asset_changes(sender, instance, **kwargs):
-    old_instance = Asset.objects.filter(pk=instance.pk).values().first()
-    if (
-        old_instance
-        or instance.asset_detail_status == "UPDATED"
-        or instance.asset_detail_status == "ASSIGNED"
-        or instance.asset_detail_status == "UNASSIGNED"
-    ):
-        changes = {
-            field: getattr(instance, field)
-            for field in old_instance
-            if field != "asset_uuid"
-        }
-        asset_log_data = json.dumps(changes, indent=4, sort_keys=True, default=str)
-
-        if changes:
-            with transaction.atomic():
-                asset_instance = Asset.objects.select_for_update().get(pk=instance.pk)
-                asset_log_entry = AssetLog.objects.create(
-                    asset_uuid=asset_instance,
-                    asset_log=asset_log_data,
-                )
-                asset_log_entry.save()
+        except NotAcceptableOperation as e:
+            return APIResponse(
+                data=str(e),
+                message=e.message,
+                status=e.status,
+            )
 
 
 class UserAgentAssetView(APIView):

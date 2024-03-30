@@ -124,6 +124,7 @@ class Asset(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     # TODO requester should be null=False, right?
+    # I think so too - Ananthan
     requester = models.ForeignKey(
         User,
         related_name="%(app_label)s_%(class)s_requester",
