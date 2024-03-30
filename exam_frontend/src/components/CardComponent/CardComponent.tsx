@@ -61,7 +61,7 @@ const CardComponent: React.FC<CardType> = ({
       };
 
       const response = await axiosInstance.patch(
-        "/asset/update",
+        "/asset/",
         updatePayload,
         {
           headers: {
