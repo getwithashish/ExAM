@@ -19,7 +19,7 @@ export interface DataType {
     warranty_period:number;
     WarrantyCountdown:number;
     approval_status:string;
-    conceder:string;
+    approved_by:string;
     AssignAsset:string;
     model_number:string;
     serial_number:string;

@@ -20,7 +20,8 @@ import TableNavbar from "../TableNavBar/TableNavbar";
 import SideDrawerComponent from "../SideDrawerComponent/SideDrawerComponent";
 import UploadComponent from "../Upload/UploadComponent";
 import DrawerViewRequest from "../../pages/RequestPage/DrawerViewRequest";
- 
+import GlobalSearch from "../GlobalSearch/GlobalSearch";
+
 interface ExpandedDataType {
   key: React.Key;
   date: string;
@@ -53,10 +54,10 @@ const AssetTable = ({
   assetTypeData,
   expandedRowRender,
   isMyApprovalPage,
-  heading
+  heading,
+  assetDataRefetch
 }:AssetTableProps
 ) => {
- 
  
 const rowRender=(record: { key: string; }, expanded: any)=>{if(isSuccess){ if(expanded && selectedAssetId && expandedRowRender)return expandedRowRender(record.key);else return;} else return <>not loaded</>}  
 const memoizedRowRender=useMemo(()=>rowRender,[isSuccess])
@@ -65,11 +66,21 @@ const [showUpload, setShowUpload] = useState(false);
   const closeImportDrawer = () => {
     setShowUpload(false);
   };
- 
+
+  function handleSearch(_searchTerm: string): void {
+    console.log("Global Search Term: ", _searchTerm);
+    assetDataRefetch(`&global_search=${_searchTerm}`);
+  }
   return (
     <>
      <div className="mainHeading" font-display>
         <h1>{heading}</h1> 
+      </div>
+      <div>
+      <GlobalSearch
+        onSearch={handleSearch}
+        assetDataRefetch={assetDataRefetch}
+      />
       </div>
       
 
@@ -79,6 +90,7 @@ boxShadow
 :
 '0 0 10px rgba(0, 0, 0, 0.2)'
 }}>
+   
   <Table
    
     columns={columns}
