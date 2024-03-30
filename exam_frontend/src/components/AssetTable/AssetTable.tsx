@@ -101,17 +101,18 @@ boxShadow
     bordered={false}
     handleRowClick={handleRowClick}
     style={{
-      borderRadius: 10,
-      // padding: 20,
       fontSize: "50px",
+      borderColor:"white",
+      width:"29%"
+      
     }}
  
    
-  rowKey={(record:DataType)=>record.key}
-    expandable={{
-      onExpand:(expanded,record)=>{if(expanded) return setSelectedAssetId(record.key); else return},
-      expandedRowRender: (record, index, indent, expanded) => {return memoizedRowRender(record, expanded);},
-    }}
+  // rowKey={(record:DataType)=>record.key}
+  //   expandable={{
+  //     onExpand:(expanded,record)=>{if(expanded) return setSelectedAssetId(record.key); else return},
+  //     expandedRowRender: (record, index, indent, expanded) => {return memoizedRowRender(record, expanded);},
+  //   }}
  
   />
  </div>

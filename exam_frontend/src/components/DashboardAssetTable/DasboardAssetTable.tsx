@@ -111,7 +111,7 @@ boxShadow
     style={{
       fontSize: "50px",
       borderColor:"white",
-      width:"28%"
+      width:"29%"
       
     }}
     
