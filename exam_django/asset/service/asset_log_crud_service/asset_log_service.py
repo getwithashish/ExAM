@@ -1,23 +1,25 @@
-from rest_framework.views import APIView
-from rest_framework import status
-from django.http import JsonResponse
 import json
 from asset.models import AssetLog, Location, BusinessUnit, Memory, AssetType, Employee
 from user_auth.models import User
 from response import APIResponse
-from messages import (
-    ASSET_NOT_FOUND,
-    ASSET_LOG_FOUND,
-)
+from messages import ASSET_NOT_FOUND, ASSET_LOG_FOUND
+from rest_framework import status
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+from django.db import transaction
+from asset.models import Asset
 
 
-class AssetLogView(APIView):
-    def get(self, request, asset_uuid):
+class AssetLogService:
+    @staticmethod
+    def get_asset_logs(asset_uuid):
         try:
             asset_logs = AssetLog.objects.filter(asset_uuid=asset_uuid)
             if not asset_logs.exists():
-                return JsonResponse(
-                    {"message": "Assets not found for the provided UUID"}, status=404
+                return APIResponse(
+                    data=[],
+                    message=ASSET_NOT_FOUND,
+                    status=status.HTTP_404_NOT_FOUND,
                 )
 
             response_data = {"asset_uuid": asset_uuid, "logs": []}
@@ -127,3 +129,29 @@ class AssetLogView(APIView):
                 message=ASSET_NOT_FOUND,
                 status=status.HTTP_404_NOT_FOUND,
             )
+
+
+@receiver(pre_save, sender=Asset)
+def log_asset_changes(sender, instance, **kwargs):
+    old_instance = Asset.objects.filter(pk=instance.pk).values().first()
+    if (
+        old_instance
+        or instance.asset_detail_status == "UPDATED"
+        or instance.asset_detail_status == "ASSIGNED"
+        or instance.asset_detail_status == "UNASSIGNED"
+    ):
+        changes = {
+            field: getattr(instance, field)
+            for field in old_instance
+            if field != "asset_uuid"
+        }
+        asset_log_data = json.dumps(changes, indent=4, sort_keys=True, default=str)
+
+        if changes:
+            with transaction.atomic():
+                asset_instance = Asset.objects.select_for_update().get(pk=instance.pk)
+                asset_log_entry = AssetLog.objects.create(
+                    asset_uuid=asset_instance,
+                    asset_log=asset_log_data,
+                )
+                asset_log_entry.save()

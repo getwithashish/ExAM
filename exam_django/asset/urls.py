@@ -14,7 +14,8 @@ from asset.views import (
     AssetLogView,
     DataImportView,
     AssetExportView,
-    UserAgentAssetView
+    UserAgentAssetView,
+    QueryBuilderView,
 )
 
 
@@ -31,9 +32,8 @@ urlpatterns = [
     path("approve_asset", AssetApproveView.as_view(), name="approve_asset"),
     path("search", AssetSearchWithFilterView.as_view(), name="search"),
     path("asset_logs/<str:asset_uuid>", AssetLogView.as_view(), name="asset_logs"),
-    path('import-csv/', DataImportView.as_view(), name='csv_file_import'),
+    path("import-csv/", DataImportView.as_view(), name="csv_file_import"),
     path("export", AssetExportView.as_view(), name="export"),
-
-    path("useragent", UserAgentAssetView.as_view(), name="user_agent_asset")
-
+    path("queryBuilder", QueryBuilderView.as_view(), name="queryBuilder"),
+    path("useragent", UserAgentAssetView.as_view(), name="user_agent_asset"),
 ]
