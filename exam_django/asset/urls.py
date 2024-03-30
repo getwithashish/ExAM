@@ -1,7 +1,6 @@
 from django.urls import path
 from asset.views import (
     AssetView,
-    AssetUpdateView,
     LocationView,
     AssetCountView,
     AssetTypeView,
@@ -21,7 +20,6 @@ from asset.views import (
 
 urlpatterns = [
     path("", AssetView.as_view(), name="asset"),
-    path("update", AssetUpdateView.as_view(), name="asset_update"),
     path("location", LocationView.as_view(), name="location"),
     path("asset_count", AssetCountView.as_view(), name="asset_count"),
     path("asset_type", AssetTypeView.as_view(), name="asset_type"),
