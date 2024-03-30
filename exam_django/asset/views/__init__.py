@@ -6,12 +6,12 @@ from .asset_type_view import AssetTypeView
 from .business_unit_view import BusinessUnitView
 from .LocationView import LocationView
 from .AssetCountView import AssetCountView
-from .MemoryView import MemoryView
+from .memory_view import MemoryView
 from .employee_view import EmployeeView
-from .AssignAssetView import AssignAssetView
-from .AssetLogView import AssetLogView
-from .DataImportView import DataImportView
-
+from .assign_asset_view import AssignAssetView
+from .asset_log_view import AssetLogView
+from .data_import_view import DataImportView
+from .QueryBuilderView import QueryBuilderView
 from .AssetExportView import AssetExportView
 
 __all__ = [
@@ -22,12 +22,13 @@ __all__ = [
     "BusinessUnitView",
     "LocationView",
     "AssetCountView",
-    "MemoryView",
+    "memory_view",
     "employee_view",
-    "AssignAssetView",
+    "assign_asset_view",
     "AssetSearchWithFilterView",
-    "AssetLogView",
-    "DataImportView",
+    "asset_log_view",
+    "data_import_view",
     "AssetExportView",
     "UserAgentAssetView",
+    "QueryBuilderView"
 ]
