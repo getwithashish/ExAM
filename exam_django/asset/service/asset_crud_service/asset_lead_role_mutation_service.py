@@ -61,11 +61,6 @@ class AssetLeadRoleMutationService(AssetUserRoleMutationAbstract):
                 serializer.validated_data["version"] = original_data.get("version") + 1
 
         elif asset.asset_detail_status in ["CREATE_PENDING", "UPDATE_PENDING"]:
-            # return APIResponse(
-            #     data={},
-            #     message=ASSET_UPDATION_UNSUCCESSFUL,
-            #     status=status.HTTP_406_NOT_ACCEPTABLE,
-            # )
             raise NotAcceptableOperation(
                 {}, ASSET_UPDATION_UNSUCCESSFUL, status.HTTP_406_NOT_ACCEPTABLE
             )
