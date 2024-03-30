@@ -2,7 +2,6 @@ from rest_framework import status
 from rest_framework.views import APIView
 from asset.serializers import AssetReadSerializer, AssetWriteSerializer
 from asset.models import Asset, Memory, BusinessUnit, AssetType
-from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated, AllowAny
 import json
 from asset.service.asset_crud_service.asset_mutation_service import AssetMutationService
@@ -42,7 +41,7 @@ class AssetView(APIView):
         except Exception as e:
             print("Error: ", e)
             return APIResponse(
-                data={},  # Fixed missing serializer reference here
+                data={},
                 message=ASSET_LIST_RETRIEVAL_UNSUCCESSFUL,
                 status=status.HTTP_400_BAD_REQUEST,
             )
@@ -54,19 +53,9 @@ class AssetView(APIView):
             user_scope = request.user.user_scope
 
             if user_scope == "SYSTEM_ADMIN":
-                asset_sysadmin_role_mutation_service = (
-                    AssetSysadminRoleMutationService()
-                )
-                asset_mutation_service = AssetMutationService(
-                    asset_sysadmin_role_mutation_service
-                )
-
+                asset_user_role_mutation_service = AssetSysadminRoleMutationService()
             elif user_scope == "LEAD":
-                asset_lead_role_mutation_service = AssetLeadRoleMutationService()
-                asset_mutation_service = AssetMutationService(
-                    asset_lead_role_mutation_service
-                )
-
+                asset_user_role_mutation_service = AssetLeadRoleMutationService()
             else:
                 return APIResponse(
                     data={},
@@ -74,6 +63,9 @@ class AssetView(APIView):
                     status=status.HTTP_401_UNAUTHORIZED,
                 )
 
+            asset_mutation_service = AssetMutationService(
+                asset_user_role_mutation_service
+            )
             data, message, http_status = asset_mutation_service.create_asset(
                 serializer, request
             )
@@ -131,13 +123,6 @@ class AssetView(APIView):
                 message=e.message,
                 status=e.status,
             )
-
-    def remove_fields_from_dict(self, input_dict, fields_to_remove):
-        return {
-            key: value
-            for key, value in input_dict.items()
-            if key not in fields_to_remove
-        }
 
 
 class UserAgentAssetView(APIView):
