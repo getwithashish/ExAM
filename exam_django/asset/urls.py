@@ -15,6 +15,7 @@ from asset.views import (
     AssetExportView,
     UserAgentAssetView,
     QueryBuilderView,
+    AssetLifeCycleView,
 )
 
 
@@ -33,5 +34,6 @@ urlpatterns = [
     path("import-csv/", DataImportView.as_view(), name="csv_file_import"),
     path("export", AssetExportView.as_view(), name="export"),
     path("queryBuilder", QueryBuilderView.as_view(), name="queryBuilder"),
+    path("asset_lifecycle/<str:asset_uuid>", AssetLifeCycleView.as_view(), name="asset_lifecycle"),
     path("useragent", UserAgentAssetView.as_view(), name="user_agent_asset"),
 ]
