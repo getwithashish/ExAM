@@ -1,7 +1,7 @@
 import React from 'react'
 import AssetTableHandler from '../../components/AssetTable/AssetTableHandler'
 
-const RejectedAsset = () => {
+const RejectedAllocationAsset = () => {
   const decodeJWT = (token: string) => {
     try {
       const base64Url = token.split(".")[1];
@@ -31,7 +31,7 @@ const RejectedAsset = () => {
   };
 
   let queryParamProp =
-    `&asset_detail_status=UPDATE_REJECTED|CREATE_REJECTED|assign_status=REJECTED&requester_id=${getUserId()}`;
+    `&assign_status=REJECTED&requester_id=${getUserId()}`;
   let heading = "My Rejected Request";
 
   return (
@@ -45,4 +45,4 @@ const RejectedAsset = () => {
   );
 };
 
-export default RejectedAsset
+export default RejectedAllocationAsset

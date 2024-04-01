@@ -14,6 +14,7 @@ import {
   ExclamationOutlined,
   CheckCircleOutlined,
   CheckSquareOutlined,
+  CloseCircleOutlined,
 } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import ExampleNavbar from "../Navbar/navbar";
@@ -302,6 +303,18 @@ const SidebarComponentNew = ({ children }) => {
                   {/* For sysadmin */}
                   <ToolTip title="Show my Asset Requests which have been approved">
                     <Link to="/exam/approved_requests">Approved</Link>
+                  </ToolTip>
+                </Menu.Item>
+                <Menu.Item icon={<CloseCircleOutlined />}>
+                  {/* For sysadmin */}
+                  <ToolTip title="Show my Asset creation and updation Requests which have been rejected">
+                    <Link to="/exam/rejected_assets">Rejected Asset</Link>
+                  </ToolTip>
+                </Menu.Item>
+                <Menu.Item icon={<CloseCircleOutlined />}>
+                  {/* For sysadmin */}
+                  <ToolTip title="Show my Asset allocation Requests which have been rejected">
+                    <Link to="/exam/rejected_allocation">Rejected Allocation</Link>
                   </ToolTip>
                 </Menu.Item>
               </SubMenu>
