@@ -106,22 +106,21 @@ boxShadow
     className="mainTable"
     pagination={false}
     bordered={false}
-    scroll={{ y: 600 }}
+    scroll={{ x:1300, y: 600 }}
     handleRowClick={handleRowClick}
     style={{
-      
       fontSize: "50px",
       borderColor:"white",
-      scrollbarWidth: "thin"
+      width:"29%"
       
     }}
     
    
-  rowKey={(record:DataType)=>record.key}
-    expandable={{
-      onExpand:(expanded,record)=>{if(expanded) return setSelectedAssetId(record.key); else return},
-      expandedRowRender: (record, index, indent, expanded) => {return memoizedRowRender(record, expanded);},
-    }}
+  // rowKey={(record:DataType)=>record.key}
+  //   expandable={{
+  //     onExpand:(expanded,record)=>{if(expanded) return setSelectedAssetId(record.key); else return},
+  //     expandedRowRender: (record, index, indent, expanded) => {return memoizedRowRender(record, expanded);},
+  //   }}
 
     footer={() => (
       <Pagination
