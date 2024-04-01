@@ -13,7 +13,7 @@
   overflow-y: auto;
   background: black;
 }
-.mainTable {
+/* .mainTable {
   width: 93%;
   padding: 40px;
   margin-left: 40px;
@@ -22,7 +22,7 @@
   background-color: #f2f2f2;
   font-size: small;
   line-height: 100px;
-}
+} */
 .mainTable td {
   color: black;
   font-size: 90%;
@@ -34,12 +34,8 @@
   background: #afb6ba;
 }
 
-.customTable .ant-table-body {
-  /* Apply custom styles to the container that enables horizontal scrolling */
-  overflow-x: auto; /* Enable horizontal scrolling */
-  border: 1px solid #ddd; /* Example border style */
-}
-.spin {
+
+/* .spin {
   margin-left: 500px;
   margin-bottom: 300px;
-}
+} */

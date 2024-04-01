@@ -61,7 +61,7 @@ const CardComponent: React.FC<CardType> = ({
       };
 
       const response = await axiosInstance.patch(
-        "/asset/update",
+        "/asset/",
         updatePayload,
         {
           headers: {
@@ -78,16 +78,34 @@ const CardComponent: React.FC<CardType> = ({
       }, 1500);
     } catch (error) {
       console.error("Error updating data:", error);
+          message.error("Error updating asset details. Please try again.");
+
+
     }
   };
 
+  // const handleUpdateChange = (field: string, value: any) => {
+  //   setUpdatedData((prevData) => ({
+  //     ...prevData,
+  //     [field]: value,
+  //   }));
+  // };
   const handleUpdateChange = (field: string, value: any) => {
-    setUpdatedData((prevData) => ({
-      ...prevData,
-      [field]: value,
-    }));
+    if (field === "business_unit") {
+      // Map the business unit name to its primary key
+      const businessUnitPK = uniqueBusinessOptions.find(option => option.name === value)?.id;
+      setUpdatedData((prevData) => ({
+        ...prevData,
+        [field]: businessUnitPK,
+      }));
+    } else {
+      setUpdatedData((prevData) => ({
+        ...prevData,
+        [field]: value,
+      }));
+    }
   };
-
+  
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -595,7 +613,7 @@ const CardComponent: React.FC<CardType> = ({
                 value={business_unit}
                 style={{ background: "#f0f0f0" }}
               >
-                {business_unit}
+                {business_unit.business_unit_name}
               </Select.Option>
             ))}
           </Select>
