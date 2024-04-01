@@ -1,6 +1,11 @@
 from asset.models import AssetType
 from asset.serializers import AssetTypeSerializer
-from messages import ASSET_TYPE_RETRIEVE_FAILURE, ASSET_TYPE_RETRIEVE_SUCCESS, INVALID_ASSET_TYPE, VALID_ASSET_TYPE
+from messages import (
+    ASSET_TYPE_RETRIEVE_FAILURE,
+    ASSET_TYPE_RETRIEVE_SUCCESS,
+    INVALID_ASSET_TYPE,
+    VALID_ASSET_TYPE,
+)
 from rest_framework import status
 
 
@@ -12,7 +17,9 @@ class AssetTypeService:
         message_failure = INVALID_ASSET_TYPE
         if serializer.is_valid():
             asset_type = serializer.save()
-            serialized_asset_type = AssetTypeSerializer(asset_type).data  # Serialize the object
+            serialized_asset_type = AssetTypeSerializer(
+                asset_type
+            ).data  # Serialize the object
             return serialized_asset_type, message_success, status.HTTP_201_CREATED
         return serializer.errors, message_failure, status.HTTP_404_NOT_FOUND
 
@@ -30,12 +37,6 @@ class AssetTypeService:
 
             serializer = AssetTypeSerializer(queryset, many=True)
             return serializer.data, message_success, status.HTTP_200_OK
+
         except Exception as e:
             return str(e), message_failure, status.HTTP_404_NOT_FOUND
-        
-
-class AssetTypeValidationService:
-    @staticmethod
-    def is_valid_asset_type_data(data):
-        serializer = AssetTypeSerializer(data=data)
-        return serializer.is_valid()

@@ -38,6 +38,8 @@ import {
   getLocationOptions,
   getMemoryOptions,
 } from "./api/getAssetDetails";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBookOpenReader } from "@fortawesome/free-solid-svg-icons";
 
 interface ExpandedDataType {
   key: React.Key;
@@ -295,13 +297,21 @@ const AssetTableHandler = ({
   <div>
     <h1>Asset Overview</h1>
   </div>;
-
+ const renderClickableColumn = (columnName, dataIndex) => (_, record) => (
+  <div
+    data-column-name={columnName}
+    onClick={() => handleColumnClick(record, columnName)}
+    style={{ cursor: "pointer" }}
+  >
+    {record[dataIndex]}
+  </div>
+);
   const columns = [
     {
       title: "Product Name",
       dataIndex: "product_name",
       fixed: "left",
-      // width: 160,
+       width: 120,
       responsive: ["md"],
       filterIcon: <SearchOutlined />,
       filterDropdown: ({
@@ -355,21 +365,14 @@ const AssetTableHandler = ({
       sorter: (a: { product_name: string }, b: { product_name: any }) =>
         a.product_name.localeCompare(b.product_name),
       sortDirections: ["ascend", "descend"],
-      render: (_: any, record: string[]) => (
-        <div
-          data-column-name="Product Name"
-          onClick={() => handleColumnClick(record, "Product Name")}
-          style={{ cursor: "pointer" }}
-        >
-          {record.product_name}
-        </div>
-      ),
+      render: renderClickableColumn("Product Name", "product_name"),
+
     },
     {
       title: "Serial Number",
       dataIndex: "serial_number",
       responsive: ["md"],
-      // width: 160,
+      width: 120,
       filterIcon: <SearchOutlined />,
       filterDropdown: ({
         setSelectedKeys,
@@ -422,21 +425,14 @@ const AssetTableHandler = ({
       sorter: (a: { serial_number: string }, b: { serial_number: any }) =>
         a.serial_number.localeCompare(b.serial_number),
       sortDirections: ["ascend", "descend"],
-      render: (_: any, record: string[]) => (
-        <div
-          data-column-name="Serial Number"
-          onClick={() => handleColumnClick(record, "Serial Number")}
-          style={{ cursor: "pointer" }}
-        >
-          {record.serial_number}
-        </div>
-      ),
+      render: renderClickableColumn("Serial Number", "serial_number"),
+
     },
     {
       title: "Location",
       dataIndex: "location",
       responsive: ["md"],
-      // width: 160,
+      width: 120,
       filters: locationFilters,
       onFilter: (
         value: string | number | boolean | React.ReactText[] | Key,
@@ -447,21 +443,13 @@ const AssetTableHandler = ({
         }
         return record.location.indexOf(value.toString()) === 0;
       },
-      render: (_: any, record: string[]) => (
-        <div
-          data-column-name="Location"
-          onClick={() => handleColumnClick(record, "Location")}
-          style={{ cursor: "pointer" }}
-        >
-          {record.location}
-        </div>
-      ),
+      render: renderClickableColumn("Location", "location"),
     },
     {
       title: "Invoice Location",
       dataIndex: "invoice_location",
       responsive: ["md"],
-      // width: 160,
+      width: 120,
       filters: locationFilters,
       onFilter: (
         value: string | number | boolean | React.ReactText[] | Key,
@@ -472,21 +460,16 @@ const AssetTableHandler = ({
         }
         return record.location.indexOf(value.toString()) === 0;
       },
-      render: (_: any, record: string[]) => (
-        <div
-          data-column-name="Invoice Location"
-          onClick={() => handleColumnClick(record, "Invoice Location")}
-          style={{ cursor: "pointer" }}
-        >
-          {record.location}
-        </div>
-      ),
+    
+      render: renderClickableColumn("Invoice Location", "invoice_location"),
+
+
     },
     {
       title: "Custodian",
       dataIndex: "custodian",
       responsive: ["md"],
-      // width: 160,
+      width: 120,
       filterIcon: <SearchOutlined />,
       filterDropdown: ({
         setSelectedKeys,
@@ -540,21 +523,14 @@ const AssetTableHandler = ({
         }
         return false; // Return false if custodian is undefined
       },
-      render: (_: any, record: string[]) => (
-        <div
-          data-column-name="Custodian"
-          onClick={() => handleColumnClick(record, "Custodian")}
-          style={{ cursor: "pointer" }}
-        >
-          {record.custodian}
-        </div>
-      ),
+      render: renderClickableColumn("Custodian", "custodian"),
+
     },
     {
       title: "Asset Type",
       dataIndex: "asset_type",
       responsive: ["md"],
-      // width: 160,
+      width: 120,
       filters: assetTypeFilters,
       onFilter: (
         value: string | number | boolean | React.ReactText[] | Key,
@@ -565,16 +541,196 @@ const AssetTableHandler = ({
         }
         return record.asset_type.indexOf(value.toString()) === 0;
       },
-      render: (_: any, record: string[]) => (
-        <div
-          data-column-name="Asset Type"
-          onClick={() => handleColumnClick(record, "Asset Type")}
-          style={{ cursor: "pointer" }}
-        >
-          {record.asset_type}
-        </div>
-      ),
+      render: renderClickableColumn("Asset Type", "asset_type"),
+
     },
+    {
+      title: "Asset Category",
+      dataIndex: "asset_category",
+      responsive: ["md"],
+      width: 140,
+      render: renderClickableColumn("Asset Category", "asset_category"),
+    },
+    {
+      title: 'Version',
+      dataIndex: 'Version',
+      responsive: ['md'],
+      width: 120,
+      render: renderClickableColumn("Version", "version"),
+
+    },
+    {
+      title: 'Asset Status',
+      dataIndex: 'Status',
+      responsive: ['md'],
+      width: 140,
+      render: renderClickableColumn("Asset Status", "status"),
+
+    },
+    {
+      title: 'Business Unit',
+      dataIndex: 'BusinessUnit',
+      responsive: ['md'],
+      width: 120,
+      render: renderClickableColumn("Business Unit", "business_unit"),
+
+    },
+    {
+      title: 'Os',
+      dataIndex: 'os',
+      responsive: ['md'],
+      width: 120,
+      render: renderClickableColumn("Os", "os"),
+
+    },
+    {
+      title: 'Os Version',
+      dataIndex: 'os_version',
+      responsive: ['md'],
+       width: 120,
+      render: renderClickableColumn("Os Version", "os_version"),
+
+    },
+    {
+      title: 'Processor',
+      dataIndex: 'processor',
+      responsive: ['md'],
+      width: 120,
+      render: renderClickableColumn("Processor", "processor"),
+
+    },
+    {
+      title: 'Generation',
+      dataIndex: 'processor_gen',
+      responsive: ['md'],
+      width: 120,
+      render: renderClickableColumn("Asset Status", "processor_gen"),
+
+    },
+    {
+      title: 'Date Of Purchase',
+      dataIndex: 'DateOfPurchase',
+      responsive: ['md'],
+      width: 120,
+      render: renderClickableColumn("Asset Status", "date_of_purchase"),
+
+    },
+    {
+      title: 'Warranty Period',
+      dataIndex: 'WarrantyPeriod',
+      responsive: ['md'],
+      width: 120,
+      render: renderClickableColumn("Asset Status", "warranty_period"),
+
+    },
+    {
+      title: 'Model Number',
+      dataIndex: 'ModelNumber', // Corrected dataIndex
+      responsive: ['md'],
+      width: 120,
+      render: renderClickableColumn("Asset Status", "model_number"),
+
+    },
+    {
+      title: 'Memory',
+      dataIndex: 'Memory',
+      responsive: ['md'],
+      width: 120,
+      render: renderClickableColumn("Asset Status", "memory"),
+
+    },
+    {
+      title: 'Storage',
+      dataIndex: 'storage',
+      responsive: ['md'],
+      width: 120,
+      render: renderClickableColumn("Storage", "storage"),
+
+    },
+    {
+      title: 'Owner',
+      dataIndex: 'owner',
+      responsive: ['md'],
+      width: 120,
+      render: renderClickableColumn("Owner", "owner"),
+
+    },
+    {
+      title: 'Approved By',
+      dataIndex: 'approved_by',
+      responsive: ['md'],
+      width: 120,
+      render: renderClickableColumn("Approved By", "approved_by"),
+
+    },
+    {
+      title: 'Requester',
+      dataIndex: 'requester',
+      responsive: ['md'],
+      width: 120,
+      render: renderClickableColumn("Requester", "requester"),
+
+    },
+    {
+      title: 'Asset Detail Status',
+      dataIndex: 'asset_detail_status',
+      responsive: ['md'],
+      width: 140,
+      render: renderClickableColumn("Asset Detail Status", "asset_detail_status"),
+
+    },
+    {
+      title: 'Asset Assign Status',
+      dataIndex: 'assign_status',
+      responsive: ['md'],
+      width: 140,
+      render: renderClickableColumn("Asset Assign Status", "assign_status"),
+
+    },
+    {
+      title: 'Created At',
+      dataIndex: 'created_at',
+      responsive: ['md'],
+      width: 120,
+      render: renderClickableColumn("Accessories", "created_at"),
+
+    },
+    {
+      title: 'Updated At',
+      dataIndex: 'updated_at',
+      responsive: ['md'],
+      width: 120,
+      render: renderClickableColumn("Accessories", "updated_at"),
+
+    },
+ 
+    {
+      title: 'Accessories',
+      dataIndex: 'Accessories',
+      responsive: ['md'],
+      width: 120,
+      render: renderClickableColumn("Accessories", "accessories"),
+    },
+    
+    {
+      title: 'Asset Log',
+      dataIndex: 'Accessories',
+      responsive: ['md'],
+      fixed:"right",
+       width: 120,
+       
+       render: () => (
+        <span>
+          <FontAwesomeIcon icon={faBookOpenReader} className="plus-icon" /> {/* Plus button icon */}
+        </span>
+      ),
+    
+     
+ 
+    },
+    
+
+
     ...(isRejectedPage
       ? [
           {

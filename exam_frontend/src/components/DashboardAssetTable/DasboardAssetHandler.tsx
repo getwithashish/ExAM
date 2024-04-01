@@ -39,6 +39,8 @@ import {
   getMemoryOptions,
 } from "../DashboardAssetTable/api/getDasboardAssetDetails";
 import DasboardAssetTable from "./DasboardAssetTable";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBookOpenReader, faBoxOpen, faPlus, faUsersViewfinder } from "@fortawesome/free-solid-svg-icons";
 
 interface ExpandedDataType {
   key: React.Key;
@@ -306,6 +308,15 @@ const DasboardAssetHandler = () => {
       )
     );
   };
+  const renderClickableColumn = (columnName, dataIndex) => (_, record) => (
+    <div
+      data-column-name={columnName}
+      onClick={() => handleColumnClick(record, columnName)}
+      style={{ cursor: "pointer" }}
+    >
+      {record[dataIndex]}
+    </div>
+  );
 
   <div>
     <h1>Asset Overview</h1>
@@ -316,7 +327,7 @@ const DasboardAssetHandler = () => {
       title: "Product Name",
       dataIndex: "product_name",
       fixed: "left",
-      width: 160,
+      width: 120,
       responsive: ["md"],
       // filterIcon: <SearchOutlined />,
       filterDropdown: ({
@@ -361,21 +372,14 @@ const DasboardAssetHandler = () => {
       },
       sorter: (a, b) => a.product_name.localeCompare(b.product_name),
       sortDirections: ["ascend", "descend"],
-      render: (_, record) => (
-        <div
-          data-column-name="Product Name"
-          onClick={() => handleColumnClick(record, "Product Name")}
-          style={{ cursor: "pointer" }}
-        >
-          {record.product_name}
-        </div>
-      ),
+      render: renderClickableColumn("Product Name", "product_name"),
+
     },
     {
       title: "Serial Number",
       dataIndex: "serial_number",
       responsive: ["md"],
-      width: 160,
+      width: 120,
       filterIcon: <SearchOutlined />,
       filterDropdown: ({
         setSelectedKeys,
@@ -419,22 +423,15 @@ const DasboardAssetHandler = () => {
       },
       sorter: (a, b) => a.serial_number.localeCompare(b.serial_number),
       sortDirections: ["ascend", "descend"],
-      render: (_, record) => (
-        <div
-          data-column-name="Serial Number"
-          onClick={() => handleColumnClick(record, "Serial Number")}
-          style={{ cursor: "pointer" }}
-        >
-          {record.serial_number}
-        </div>
-      ),
+      render: renderClickableColumn("Serial Number", "serial_number"),
+
     },
 
     {
       title: "Location",
       dataIndex: "location",
       responsive: ["md"],
-      width: 160,
+      width: 120,
       filters: locationFilters,
       onFilter: (
         value: string | number | boolean | React.ReactText[] | Key,
@@ -445,21 +442,14 @@ const DasboardAssetHandler = () => {
         }
         return record.location.indexOf(value.toString()) === 0;
       },
-      render: (_, record) => (
-        <div
-          data-column-name="Location"
-          onClick={() => handleColumnClick(record, "Location")}
-          style={{ cursor: "pointer" }}
-        >
-          {record.location}
-        </div>
-      ),
+      render: renderClickableColumn("Location", "location"),
+
     },
     {
       title: "Invoice Location",
       dataIndex: "invoice_location",
       responsive: ["md"],
-      width: 160,
+      width: 120,
       filters: locationFilters,
       onFilter: (
         value: string | number | boolean | React.ReactText[] | Key,
@@ -470,21 +460,14 @@ const DasboardAssetHandler = () => {
         }
         return record.location.indexOf(value.toString()) === 0;
       },
-      render: (_, record) => (
-        <div
-          data-column-name="Invoice Location"
-          onClick={() => handleColumnClick(record, "Invoice Location")}
-          style={{ cursor: "pointer" }}
-        >
-          {record.location}
-        </div>
-      ),
+      render: renderClickableColumn("Invoice Location", "invoice_location"),
+
     },
     {
       title: "Custodian",
       dataIndex: "custodian",
       responsive: ["md"],
-      width: 160,
+      width: 120,
       filterIcon: <SearchOutlined />,
       filterDropdown: ({
         setSelectedKeys,
@@ -530,22 +513,15 @@ const DasboardAssetHandler = () => {
         }
         return false; // Return false if custodian is undefined
       },
-      render: (_, record) => (
-        <div
-          data-column-name="Custodian"
-          onClick={() => handleColumnClick(record, "Custodian")}
-          style={{ cursor: "pointer" }}
-        >
-          {record.custodian}
-        </div>
-      ),
+      render: renderClickableColumn("Custodian", "custodian"),
+
     },
     {
       title: "Asset Type",
       dataIndex: "asset_type",
       responsive: ["md"],
-      fixed: "right",
-      width: 160,
+      // fixed: "right",
+      width: 120,
       filters: assetTypeFilters,
       onFilter: (
         value: string | number | boolean | React.ReactText[] | Key,
@@ -556,16 +532,559 @@ const DasboardAssetHandler = () => {
         }
         return record.asset_type.indexOf(value.toString()) === 0;
       },
-      render: (_, record) => (
-        <div
-          data-column-name="Asset Type"
-          onClick={() => handleColumnClick(record, "Asset Type")}
-          style={{ cursor: "pointer" }}
-        >
-          {record.asset_type}
+      render: renderClickableColumn("Asset Type", "asset_type"),
+    },
+    {
+      title: "Asset Category",
+      dataIndex: "asset_category",
+      responsive: ["md"],
+      width: 140,
+      filters: assetTypeFilters,
+      onFilter: (
+        value: string | number | boolean | React.ReactText[] | Key,
+        record: DataType
+      ) => {
+        if (Array.isArray(value)) {
+          return value.includes(record.asset_category);
+        }
+        return record.asset_category.indexOf(value.toString()) === 0;
+      },
+      render: renderClickableColumn("Asset Category", "asset_category"),
+    },
+    {
+      title: 'Version',
+      dataIndex: 'Version',
+      responsive: ['md'],
+      width: 120,
+      render: renderClickableColumn("Version", "version"),
+
+    },
+    {
+      title: 'Asset Status',
+      dataIndex: 'Status',
+      responsive: ['md'],
+      width: 140,
+      filters: [
+        {
+          text: 'In Use ',
+          value: 'In Use',
+        },
+        {
+          text: 'In Store',
+          value: 'In Store',
+        },
+      ],
+     
+      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+     
+        if (Array.isArray(value)) {
+          return value.includes(record.status);
+        }
+        return record.status.indexOf(value.toString()) === 0;
+      },
+      render: renderClickableColumn("Asset Status", "status"),
+
+    },
+    {
+      title: 'Business Unit',
+      dataIndex: 'BusinessUnit',
+      responsive: ['md'],
+      width: 120,
+      // filters: [
+      //   {
+      //     text: 'du1 ',
+      //     value: 'du1',
+      //   },
+      //   {
+      //     text: 'du2',
+      //     value: 'du2',
+      //   },
+      //   {
+      //     text: 'du3 ',
+      //     value: 'du3',
+      //   },
+      //   {
+      //     text: 'du4',
+      //     value: 'du4',
+      //   },
+      // ],
+     
+      // onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+      //   if (Array.isArray(value)) {
+      //     return value.includes(record.business_unit);
+      //   }
+      //   return record.business_unit.indexOf(value.toString()) === 0;
+      // },
+      render: renderClickableColumn("Business Unit", "business_unit"),
+
+    },
+    {
+      title: 'Os',
+      dataIndex: 'os',
+      responsive: ['md'],
+      width: 120,
+      filters: [
+        {
+          text: 'Linux ',
+          value: 'Linux',
+        },
+        {
+          text: 'Windows',
+          value: 'Windows',
+        },
+      ],
+     
+      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+        if (Array.isArray(value)) {
+          return value.includes(record.os);
+        }
+        return record.os.indexOf(value.toString()) === 0;
+      },
+      render: renderClickableColumn("Os", "os"),
+
+    },
+    {
+      title: 'Os Version',
+      dataIndex: 'os_version',
+      responsive: ['md'],
+       width: 120,
+      filters: [
+        {
+          text: '11',
+          value: '11',
+        },
+        {
+          text: '12',
+          value: '12',
+        }
+      ],
+     
+      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+        if (Array.isArray(value)) {
+          return value.includes(record.os_version);
+        }
+        return record.os_version.indexOf(value.toString()) === 0;
+      },
+      render: renderClickableColumn("Os Version", "os_version"),
+
+    },
+    {
+      title: 'Processor',
+      dataIndex: 'processor',
+      responsive: ['md'],
+      width: 120,
+      filters: [
+        {
+          text: 'i5',
+          value: 'i5',
+        },
+        {
+          text: 'i3',
+          value: 'i3',
+        },
+      ],
+     
+      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+        if (Array.isArray(value)) {
+          return value.includes(record.processor);
+        }
+        return record.processor.indexOf(value.toString()) === 0;
+      },
+      render: renderClickableColumn("Processor", "processor"),
+
+    },
+    {
+      title: 'Generation',
+      dataIndex: 'processor_gen',
+      responsive: ['md'],
+      width: 120,
+      filters: [
+        {
+          text: 'In Use ',
+          value: 'In Use',
+        },
+        {
+          text: 'In Store',
+          value: 'In Store',
+        },
+      ],
+     
+      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+        if (Array.isArray(value)) {
+          return value.includes(record.Generation);
+        }
+        return record.Generation.indexOf(value.toString()) === 0;
+      },
+      render: renderClickableColumn("Asset Status", "processor_gen"),
+
+    },
+    {
+      title: 'Date Of Purchase',
+      dataIndex: 'DateOfPurchase',
+      responsive: ['md'],
+      width: 120,
+
+      filters: [
+        {
+          text: '02/03/24 ',
+          value: '02/03/24 ',
+        },
+        {
+          text: '03/03/24 ',
+          value: '03/03/24 ',
+        },
+      ],
+     
+      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+        const dateValue = new Date(value as string).getTime(); // Convert filter value to timestamp
+        const recordDate = record.date_of_purchase.getTime(); // Get timestamp of record's date
+    
+        if (Array.isArray(value)) {
+          return value.includes(record.date_of_purchase);
+        }
+        return recordDate === dateValue;
+      },
+      render: renderClickableColumn("Asset Status", "date_of_purchase"),
+
+    },
+    {
+      title: 'Warranty Period',
+      dataIndex: 'WarrantyPeriod',
+      responsive: ['md'],
+      width: 120,
+
+      filters: [
+        {
+          text: ' 2Years',
+          value: '2Years',
+        },
+        {
+          text: '3Years',
+          value: '3Years',
+        },
+      ],
+     
+      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+        if (Array.isArray(value)) {
+          return value.includes(record.warranty_period);
+        }
+        return record.warranty_period.indexOf(value.toString()) === 0;
+      },
+      render: renderClickableColumn("Asset Status", "warranty_period"),
+
+    },
+    {
+      title: 'Model Number',
+      dataIndex: 'ModelNumber', // Corrected dataIndex
+      responsive: ['md'],
+      width: 120,
+
+      filterIcon: <SearchOutlined rev={undefined} />,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            placeholder="Search Model Number"
+            value={selectedKeys[0]}
+            onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+            onPressEnter={() => confirm()}
+            style={{ marginBottom: 8, display: 'block' }}
+          />
+          <Space>
+            <button
+              type="button"
+              onClick={confirm}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Search
+            </button>
+            <button
+              type="button"
+              onClick={clearFilters}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Reset
+            </button>
+          </Space>
         </div>
       ),
+      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+        if (Array.isArray(value)) {
+          return value.includes(record.model_number);
+        }
+        return record.model_number.indexOf(value.toString()) === 0;
+      },
+      render: renderClickableColumn("Asset Status", "model_number"),
+
     },
+    {
+      title: 'Memory',
+      dataIndex: 'Memory',
+      responsive: ['md'],
+      width: 120,
+      filters: [
+        {
+          text: '16Gb',
+          value: '16Gb',
+        },
+        {
+          text: '128Gb',
+          value: '128Gb',
+        },
+      ],
+      
+      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+        if (Array.isArray(value)) {
+          return value.includes(record.memory);
+        }
+        return record.memory.indexOf(value.toString()) === 0;
+      },
+      render: renderClickableColumn("Asset Status", "memory"),
+
+    },
+    {
+      title: 'Storage',
+      dataIndex: 'storage',
+      responsive: ['md'],
+      width: 120,
+      filters: [
+        {
+          text: '16Gb',
+          value: '16Gb',
+        },
+        {
+          text: '128Gb',
+          value: '128Gb',
+        },
+      ],
+      
+      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+        if (Array.isArray(value)) {
+          return value.includes(record.storage);
+        }
+        return record.storage.indexOf(value.toString()) === 0;
+      },
+      render: renderClickableColumn("Storage", "storage"),
+
+    },
+    {
+      title: 'Owner',
+      dataIndex: 'owner',
+      responsive: ['md'],
+      width: 120,
+      filters: [
+        {
+          text: '16Gb',
+          value: '16Gb',
+        },
+        {
+          text: '128Gb',
+          value: '128Gb',
+        },
+      ],
+      
+      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+        if (Array.isArray(value)) {
+          return value.includes(record.owner);
+        }
+        return record.owner.indexOf(value.toString()) === 0;
+      },
+      render: renderClickableColumn("Owner", "owner"),
+
+    },
+    {
+      title: 'Approved By',
+      dataIndex: 'approved_by',
+      responsive: ['md'],
+      width: 120,
+      filters: [
+        {
+          text: 'Sfm Lead',
+          value: 'Sfm Lead',
+        },
+        {
+          text: 'Sfm Manager',
+          value: 'Sfm Manager',
+        },
+      ],
+     
+      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+        if (Array.isArray(value)) {
+          return value.includes(record.approved_by);
+        }
+        return record.approved_by.indexOf(value.toString()) === 0;
+      },
+      render: renderClickableColumn("Approved By", "approved_by"),
+
+    },
+    {
+      title: 'Requester',
+      dataIndex: 'requester',
+      responsive: ['md'],
+      width: 120,
+      filters: [
+        {
+          text: 'Sfm Lead',
+          value: 'Sfm Lead',
+        },
+        {
+          text: 'Sfm Manager',
+          value: 'Sfm Manager',
+        },
+      ],
+     
+      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+        if (Array.isArray(value)) {
+          return value.includes(record.requester);
+        }
+        return record.requester.indexOf(value.toString()) === 0;
+      },
+      render: renderClickableColumn("Requester", "requester"),
+
+    },
+    {
+      title: 'Asset Detail Status',
+      dataIndex: 'asset_detail_status',
+      responsive: ['md'],
+      width: 140,
+      filters: [
+        {
+          text: 'Sfm Lead',
+          value: 'Sfm Lead',
+        },
+        {
+          text: 'Sfm Manager',
+          value: 'Sfm Manager',
+        },
+      ],
+     
+      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+        if (Array.isArray(value)) {
+          return value.includes(record.asset_detail_status);
+        }
+        return record.asset_detail_status.indexOf(value.toString()) === 0;
+      },
+      render: renderClickableColumn("Asset Detail Status", "asset_detail_status"),
+
+    },
+    {
+      title: 'Asset Assign Status',
+      dataIndex: 'assign_status',
+      responsive: ['md'],
+      width: 140,
+      filters: [
+        {
+          text: 'Sfm Lead',
+          value: 'Sfm Lead',
+        },
+        {
+          text: 'Sfm Manager',
+          value: 'Sfm Manager',
+        },
+      ],
+     
+      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+        if (Array.isArray(value)) {
+          return value.includes(record.assign_status);
+        }
+        return record.assign_status.indexOf(value.toString()) === 0;
+      },
+      render: renderClickableColumn("Asset Assign Status", "assign_status"),
+
+    },
+    {
+      title: 'Created At',
+      dataIndex: 'created_at',
+      responsive: ['md'],
+      width: 120,
+      filters: [
+        {
+          text: 'Sfm Lead',
+          value: 'Sfm Lead',
+        },
+        {
+          text: 'Sfm Manager',
+          value: 'Sfm Manager',
+        },
+      ],
+     
+      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+        if (Array.isArray(value)) {
+          return value.includes(record.created_at);
+        }
+        return record.created_at.indexOf(value.toString()) === 0;
+      },
+    },
+    {
+      title: 'Updated At',
+      dataIndex: 'updated_at',
+      responsive: ['md'],
+      width: 120,
+      filters: [
+        {
+          text: 'Sfm Lead',
+          value: 'Sfm Lead',
+        },
+        {
+          text: 'Sfm Manager',
+          value: 'Sfm Manager',
+        },
+      ],
+     
+      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+        if (Array.isArray(value)) {
+          return value.includes(record.updated_at);
+        }
+        return record.updated_at.indexOf(value.toString()) === 0;
+      },
+      render: renderClickableColumn("Accessories", "updated_at"),
+
+    },
+ 
+    {
+      title: 'Accessories',
+      dataIndex: 'Accessories',
+      responsive: ['md'],
+      width: 120,
+      filters: [
+        {
+          text: 'In Use ',
+          value: 'In Use',
+        },
+        {
+          text: 'In Store',
+          value: 'In Store',
+        },
+      ],
+     
+      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
+        if (Array.isArray(value)) {
+          return value.includes(record.accessories);
+        }
+        return record.accessories.indexOf(value.toString()) === 0;
+      },
+      render: renderClickableColumn("Accessories", "accessories"),
+
+    },
+    {
+      title: 'Asset Log',
+      dataIndex: 'Accessories',
+      responsive: ['md'],
+      fixed:"right",
+       width: 120,
+       
+       render: () => (
+        <span>
+          <FontAwesomeIcon icon={faBookOpenReader} className="plus-icon" /> {/* Plus button icon */}
+        </span>
+      ),
+    
+     
+ 
+    },
+    
+
   ];
 
   const handleColumnClick = (record: string[], columnName: string) => {
@@ -599,7 +1118,7 @@ const DasboardAssetHandler = () => {
     warranty_period: result.warranty_period,
     asset_detail_status: result.asset_detail_status,
     assign_status: result.assign_status,
-    conceder: result.conceder?.username,
+    approved_by: result.approved_by?.username,
     model_number: result.model_number,
     serial_number: result.serial_number,
     memory: result.memory?.memory_space,
