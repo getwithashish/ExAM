@@ -1,16 +1,9 @@
-import AssetTimelineHandler from '../TimelineLog/AssetTimeLIneHandler';
 import BarAnimation from './chartHandlers/BarChartHandler';
 import AssetCountComponent from './chartHandlers/ChartCardsHandler';
 import ChartHandlers from './chartHandlers/ChartHandlers';
-import { useState } from 'react';
+
 
 export const Statistics = () => {
-
-  const [showTimeline, setShowTimeline] = useState(false);
-
-  const handleButtonClick = () => {
-    setShowTimeline(true);
-  };
 
   return (
     <div className='bg-white py-2'>
@@ -52,12 +45,6 @@ export const Statistics = () => {
         <div className="mx-4">
           <BarAnimation/>          
         </div>
-        <div>
-      <button className="primary" onClick={handleButtonClick}>
-        Show Timeline
-      </button>
-      {showTimeline && <AssetTimelineHandler />}
-    </div>
       </div>
     </div>
   )
