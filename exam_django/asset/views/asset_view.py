@@ -12,7 +12,7 @@ from asset.service.asset_crud_service.asset_sysadmin_role_mutation_service impor
     AssetSysadminRoleMutationService,
 )
 from asset.service.asset_crud_service.asset_query_service import AssetQueryService
-from exceptions import NotAcceptableOperation
+from exceptions import NotAcceptableOperationException, PermissionDeniedException
 from response import APIResponse
 from messages import (
     ASSET_CREATED_UNSUCCESSFUL,
@@ -91,10 +91,8 @@ class AssetView(APIView):
             elif user_scope == "LEAD":
                 asset_user_role_mutation_service = AssetLeadRoleMutationService()
             else:
-                return APIResponse(
-                    data={},
-                    message=USER_UNAUTHORIZED,
-                    status=status.HTTP_401_UNAUTHORIZED,
+                raise PermissionDeniedException(
+                    {}, USER_UNAUTHORIZED, status.HTTP_401_UNAUTHORIZED
                 )
 
             asset_mutation_service = AssetMutationService(
@@ -110,6 +108,13 @@ class AssetView(APIView):
                 status=http_status,
             )
 
+        except PermissionDeniedException as e:
+            return APIResponse(
+                data=str(e),
+                message=e.message,
+                status=e.status,
+            )
+
         except Asset.DoesNotExist:
             return APIResponse(
                 data={},
@@ -117,7 +122,7 @@ class AssetView(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        except NotAcceptableOperation as e:
+        except NotAcceptableOperationException as e:
             return APIResponse(
                 data=str(e),
                 message=e.message,
