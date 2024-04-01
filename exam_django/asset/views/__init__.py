@@ -11,7 +11,9 @@ from .assign_asset_view import AssignAssetView
 from .asset_log_view import AssetLogView
 from .data_import_view import DataImportView
 from .QueryBuilderView import QueryBuilderView
-from .asset_export_view import AssetExportView
+from .AssetExportView import AssetExportView
+from .asset_lifecycle_view import AssetLifeCycleView
+
 
 __all__ = [
     "AssetView",
@@ -28,5 +30,7 @@ __all__ = [
     "DataImportView",
     "AssetExportView",
     "UserAgentAssetView",
-    "QueryBuilderView",
+    "AssetLifeCycleView",
+    "QueryBuilderView"
+
 ]
