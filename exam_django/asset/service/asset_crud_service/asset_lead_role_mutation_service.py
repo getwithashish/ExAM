@@ -2,7 +2,7 @@ from rest_framework import status
 from asset.service.asset_crud_service.asset_user_role_mutation_abstract import (
     AssetUserRoleMutationAbstract,
 )
-from asset.serializers.AssetSerializer import AssetWriteSerializer
+from asset.serializers.asset_serializer import AssetWriteSerializer
 from exceptions import NotAcceptableOperationException
 from messages import (
     ASSET_SUCCESSFULLY_CREATED,

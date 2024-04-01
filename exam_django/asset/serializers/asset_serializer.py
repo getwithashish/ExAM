@@ -1,11 +1,11 @@
 # exam_django/asset/serializers/AssetSerializer
 from rest_framework import serializers
 from asset.models import Asset
-from asset.serializers.AssetTypeSerializer import AssetTypeSerializer
-from asset.serializers.EmployeeSerializer import EmployeeSerializer
-from asset.serializers.BusinessUnitSerializer import BusinessUnitSerializer
-from asset.serializers.LocationSerializer import LocationSerializer
-from asset.serializers.MemorySerializer import MemorySerializer
+from asset.serializers.asset_type_serializer import AssetTypeSerializer
+from asset.serializers.employee_serializer import EmployeeSerializer
+from asset.serializers.business_unit_serializer import BusinessUnitSerializer
+from asset.serializers.location_serializer import LocationSerializer
+from asset.serializers.memory_serializer import MemorySerializer
 from user_auth.serializers import UserSerializer
 
 
