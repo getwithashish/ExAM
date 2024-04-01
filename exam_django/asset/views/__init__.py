@@ -1,6 +1,6 @@
 from .AssetSearchView import AssetSearchWithFilterView
 from .asset_view import AssetView, UserAgentAssetView
-from .AssetApproveView import AssetApproveView
+from .asset_approve_view import AssetApproveView
 from .asset_type_view import AssetTypeView
 from .business_unit_view import BusinessUnitView
 from .LocationView import LocationView

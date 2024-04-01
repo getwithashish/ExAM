@@ -2,7 +2,7 @@ from rest_framework import status
 from asset.service.asset_crud_service.asset_user_role_mutation_abstract import (
     AssetUserRoleMutationAbstract,
 )
-from exceptions import NotAcceptableOperation
+from exceptions import NotAcceptableOperationException
 from messages import (
     ASSET_CREATE_PENDING_SUCCESSFUL,
     ASSET_UPDATE_PENDING_SUCCESSFUL,
@@ -34,7 +34,7 @@ class AssetSysadminRoleMutationService(AssetUserRoleMutationAbstract):
             email_subject = "ASSET UPDATION REQUEST SENT"
 
         elif asset.asset_detail_status in ["CREATE_PENDING", "UPDATE_PENDING"]:
-            raise NotAcceptableOperation(
+            raise NotAcceptableOperationException(
                 {}, ASSET_UPDATION_UNSUCCESSFUL, status.HTTP_406_NOT_ACCEPTABLE
             )
 
