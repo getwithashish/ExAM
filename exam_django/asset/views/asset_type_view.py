@@ -2,12 +2,9 @@ from rest_framework.generics import ListCreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from asset.serializers import AssetTypeSerializer
-from asset.service.asset_type_crud_service.asset_type_service import AssetTypeService, AssetTypeValidationService
+from asset.service.asset_type_crud_service.asset_type_service import AssetTypeService
 from response import APIResponse
-from messages import (
-    INVALID_ASSET_TYPE,
-    VALID_ASSET_TYPE
-)
+from messages import INVALID_ASSET_TYPE
 
 
 class AssetTypeView(ListCreateAPIView):
@@ -20,19 +17,18 @@ class AssetTypeView(ListCreateAPIView):
 
     def post(self, request, format=None):
         data = request.data
-        is_valid = AssetTypeValidationService.is_valid_asset_type_data(data)
-        if is_valid:
+        if self.serializer_class.is_valid:
             asset_type, message, http_status = AssetTypeService.create_asset_type(data)
-            return APIResponse(
-                data=asset_type,
-                message=message,
-                status=http_status)
-            
+            return APIResponse(data=asset_type, message=message, status=http_status)
+
         return APIResponse(
-            data=data,
+            data=self.serializer_class.errors,
             message=INVALID_ASSET_TYPE,
-            status=status.HTTP_404_NOT_FOUND)
+            status=status.HTTP_404_NOT_FOUND,
+        )
 
     def get(self, request, format=None):
-        asset_types, message, http_status = AssetTypeService.retrieve_asset_types(request)
+        asset_types, message, http_status = AssetTypeService.retrieve_asset_types(
+            request
+        )
         return APIResponse(data=asset_types, message=message, status=http_status)
