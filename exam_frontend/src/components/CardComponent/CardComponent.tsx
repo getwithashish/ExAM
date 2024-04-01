@@ -17,6 +17,8 @@ import { CardType } from "./types/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axiosInstance from "../../config/AxiosConfig";
 import { CommentOutlined } from "@ant-design/icons";
+import { Spin } from "antd";
+
 
 interface UpdateData {
   asset_uuid: string;
@@ -51,7 +53,11 @@ const CardComponent: React.FC<CardType> = ({
   };
 
   const [updatedData, setUpdatedData] = useState<Partial<DataType>>({});
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleUpdate = async () => {
+    setIsLoading(true); // Set loading to true when update starts
+
     console.log("Asset UUID:", data.key);
 
     try {
@@ -82,6 +88,8 @@ const CardComponent: React.FC<CardType> = ({
 
 
     }
+    setIsLoading(false); // Set loading to false when update completes
+
   };
 
   // const handleUpdateChange = (field: string, value: any) => {
@@ -817,7 +825,7 @@ const CardComponent: React.FC<CardType> = ({
             padding: "20px",
           }}
         />
-       {isMyApprovalPage && (
+       {/* {isMyApprovalPage && (
   <Button
     style={{
       marginBottom: "0px",
@@ -831,6 +839,29 @@ const CardComponent: React.FC<CardType> = ({
   >
     Update
   </Button>
+)} */}
+
+{isMyApprovalPage && (
+  <>
+    {isLoading ? (
+      <Spin size="large" />
+    ) : (
+      <Button
+        style={{
+          marginBottom: "0px",
+          marginTop: "0px",
+          color: "white",
+          border: "none",
+          background: "blue",
+          marginLeft: "600px",
+        }}
+        onClick={handleUpdate}
+        disabled={isLoading} // Disable button while updating
+      >
+        Update
+      </Button>
+    )}
+  </>
 )}
 
       </div>
