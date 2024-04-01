@@ -21,13 +21,10 @@ class AssignAssetView(APIView):
             requester = request.user
             role = requester.user_scope
 
-            employee_id = request.data.get("id")
             asset_uuid = request.data.get("asset_uuid")
 
             # Assign the asset using the appropriate service based on requester's role
-            message = AssignAssetService.assign_asset(
-                role, asset_uuid, employee_id, requester
-            )
+            message = AssignAssetService.assign_asset(role, asset_uuid, requester)
 
             return APIResponse(
                 message=message,
