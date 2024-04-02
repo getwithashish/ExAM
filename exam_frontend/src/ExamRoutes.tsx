@@ -26,6 +26,7 @@ import ModificationRequests from "./pages/RequestPage/ModifcationRequests";
 import CreateRequestPage from "./pages/RequestPage/CreateRequest";
 import ApprovedRequestPage from "./pages/ApprovedRequest/ApprovedRequestPage";
 import MyApprovalPage from "./pages/MyApprovals/MyApprovalPage";
+import RejectedAllocationAsset from "./pages/RejectedAssetPage/RejectedAllocation";
 
 const ExamRoutes = () => {
   const { authenticated, setAuthenticated, userRole } = useAuth();
@@ -79,6 +80,7 @@ const ExamRoutes = () => {
                   <Route path="/updation_requests" element={<ModificationRequests />} />
                   <Route path="/assign_requests" element={<AssignPage />} />
                   <Route path="/rejected_assets" element={<RejectedAsset/>}/>
+                  <Route path="/rejected_allocation" element={<RejectedAllocationAsset/>}/>
                   <Route  path="/approved_requests" element={<ApprovedRequestPage />}/>
                   <Route path="/my_approvals" element={<MyApprovalPage />}/>
                 </Routes>
