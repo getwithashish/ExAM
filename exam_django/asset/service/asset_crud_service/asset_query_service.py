@@ -3,7 +3,7 @@ from django.db.models import Q
 from rest_framework import status
 from rest_framework.pagination import LimitOffsetPagination
 
-from asset.serializers.AssetSerializer import AssetReadSerializer
+from asset.serializers.asset_serializer import AssetReadSerializer
 from messages import ASSET_LIST_SUCCESSFULLY_RETRIEVED
 from response import APIResponse
 
