@@ -15,6 +15,7 @@ from asset.views import (
     AssetExportView,
     UserAgentAssetView,
     QueryBuilderView,
+    UnassignAssetView,
 )
 
 
@@ -34,4 +35,5 @@ urlpatterns = [
     path("export", AssetExportView.as_view(), name="export"),
     path("queryBuilder", QueryBuilderView.as_view(), name="queryBuilder"),
     path("useragent", UserAgentAssetView.as_view(), name="user_agent_asset"),
+    path("unassign_asset", UnassignAssetView.as_view(), name="unassign_asset"),
 ]

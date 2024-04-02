@@ -1,20 +1,23 @@
-import { useState } from "react";
 import { DataType } from "../../components/AssetTable/types";
 import AssetTableHandler from "../../components/Deallocate/AssetTable/AssetTableHandler";
-import DrawerViewRequest from "../RequestPage/DrawerViewRequest";
+import axiosInstance from "../../config/AxiosConfig";
+import { message } from "antd";
+
 const Deallocate = () => {
-  const [record, setRecord] = useState<DataType | null>(null);
-  const [visible,setVisible] = useState<boolean>(false)
-  const showAssignDrawer = (record: DataType | null) => {
-    console.log("Hello");
-    console.log("uuid", record);
-    setRecord(record);
-    setVisible(true);
-    console.log("visible",visible)
+ 
+
+  const unassign = async (record: DataType | null) => {
+    try {
+      console.log("record",record)
+      const data = {asset_uuid : record?.key}
+      const res = await axiosInstance.post("/asset/unassign_asset", data);
+      message.success("Asset successfully deallocated");
+      console.log(res);
+    } catch (error) {
+      message.error("Asset deallocation failed");
+    }
   };
-  const closeAssignDrawer = () => {
-    setVisible(false);
-  };
+ 
   return (
     <div style={{ background: "white" }}>
       <nav className="flex mb-4 mx-4 my-0 py-4" aria-label="Breadcrumb">
@@ -64,7 +67,7 @@ const Deallocate = () => {
         </ol>
       </nav>
       
-      <AssetTableHandler showAssignDrawer={showAssignDrawer} />
+      <AssetTableHandler unassign={unassign} />
 
       
     </div>

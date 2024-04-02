@@ -3,12 +3,10 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from asset.serializers import AssignAssetSerializer
 from response import APIResponse
-from asset.service.asset_assign_crud_service.assign_asset_service import (
-    AssignAssetService,
-)
+from asset.service.unassign_service.unassign_service import UnassignAssetService
 
 
-class AssignAssetView(APIView):
+class UnassignAssetView(APIView):
     def get_permissions(self):
         if self.request.method == "POST":
             return [IsAuthenticated()]
@@ -22,13 +20,17 @@ class AssignAssetView(APIView):
             role = requester.user_scope
 
             asset_uuid = request.data.get("asset_uuid")
+            print("asset_uuid", request.data)
 
             # Assign the asset using the appropriate service based on requester's role
-            message = AssignAssetService.assign_asset(role, asset_uuid, requester)
+            data, message, http_status = UnassignAssetService.unassign_asset(
+                role, asset_uuid, requester
+            )
 
             return APIResponse(
+                data=data,
                 message=message,
-                status=status.HTTP_201_CREATED,
+                status=http_status,
             )
         else:
             return APIResponse(

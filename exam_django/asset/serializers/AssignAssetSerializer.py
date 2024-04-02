@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from asset.models import Asset
 
+
 class AssignAssetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Asset
@@ -26,22 +27,6 @@ class AssignAssetSerializer(serializers.ModelSerializer):
             "approved_by",
             "requester",
         )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # from asset.models import Asset

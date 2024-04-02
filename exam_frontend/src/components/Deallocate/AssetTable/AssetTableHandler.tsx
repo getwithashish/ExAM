@@ -48,8 +48,11 @@ interface ExpandedDataType {
   name: string;
   upgradeNum: string;
 }
+interface AssetTableHandlerProps{
+  unassign:(record:DataType)=>void
+}
 
-const AssetTableHandler = ({showAssignDrawer}) => {
+const AssetTableHandler = ({unassign}:AssetTableHandlerProps) => {
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null); // State to store the selected asset ID
 
   const {
@@ -744,7 +747,8 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => (
           onClick={() => {
             console.log(" unassign button clicked ")
             if (record.custodian != null || record.custodian != undefined) {
-              message.success("successfully deallocated")
+              unassign(record)
+              
             } else {
               message.warning("Not allocated yet");
             }
@@ -816,7 +820,6 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => (
 
   return (
     <AssetTable
-      showAssignDrawer={showAssignDrawer}
       drawerTitle={drawerTitle}
       logsData={logsData}
       isLoading={isLoading}
