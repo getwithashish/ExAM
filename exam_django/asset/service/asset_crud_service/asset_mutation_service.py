@@ -1,5 +1,5 @@
 from asset.models import Asset
-from notification.service.EmailService import EmailService
+from notification.service.email_service import EmailService
 from rest_framework import status
 from rest_framework.renderers import JSONRenderer
 
