@@ -1,8 +1,8 @@
 from response import APIResponse
-from asset.service.asset_assign_crud_service.asset_sysadmin_role_assignasset_service import (
+from asset.service.asset_assign_service.asset_sysadmin_role_assignasset_service import (
     AssetSysadminRoleAssignService,
 )
-from asset.service.asset_assign_crud_service.asset_lead_role_assignasset_service import (
+from asset.service.asset_assign_service.asset_lead_role_assignasset_service import (
     AssetLeadRoleAssignService,
 )
 from rest_framework import status

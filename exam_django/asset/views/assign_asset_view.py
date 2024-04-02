@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from asset.serializers import AssignAssetSerializer
 from response import APIResponse
 from messages import ASSET_NOT_FOUND
-from asset.service.asset_assign_crud_service.assign_asset_service import (
+from asset.service.asset_assign_service.assign_asset_service import (
     AssignAssetService,
 )
 
