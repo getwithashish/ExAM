@@ -31,7 +31,7 @@ const RejectedAsset = () => {
   };
 
   let queryParamProp =
-    `&asset_detail_status=UPDATE_REJECTED|CREATE_REJECTED|assign_status=REJECTED&requester_id=${getUserId()}`;
+    `&asset_detail_status=UPDATE_REJECTED|CREATE_REJECTED&requester_id=${getUserId()}`;
   let heading = "My Rejected Request";
 
   return (
