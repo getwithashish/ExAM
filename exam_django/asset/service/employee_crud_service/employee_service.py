@@ -1,12 +1,11 @@
 from asset.models import Employee
 from asset.serializers import EmployeeSerializer
-from response import APIResponse
 from messages import (
     EMPLOYEE_SUCCESSFULLY_CREATED,
     EMPLOYEE_CREATION_UNSUCCESSFUL,
     GLOBAL_500_EXCEPTION_ERROR,
     EMPLOYEE_DETAILS_SUCCESSFULLY_RETRIEVED,
-    EMPLOYEE_DETAILS_FOUND
+    EMPLOYEE_DETAILS_FOUND,
 )
 from rest_framework import status
 
