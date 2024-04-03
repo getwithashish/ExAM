@@ -9,7 +9,7 @@ from messages import (
     ASSET_SUCCESSFULLY_UPDATED,
     ASSET_UPDATION_UNSUCCESSFUL,
 )
-from utils.TableUtil import TableUtil
+from utils.table_util import TableUtil
 
 
 class AssetLeadRoleMutationService(AssetUserRoleMutationAbstract):
