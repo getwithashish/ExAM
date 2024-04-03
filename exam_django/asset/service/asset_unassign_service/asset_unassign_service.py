@@ -1,8 +1,8 @@
 from exceptions import PermissionDeniedException
-from asset.service.unassign_service.unassign_sys_admin_service import (
+from asset.service.asset_unassign_service.asset_unassign_sys_admin_service import (
     AssetSysadminRoleUnassignService,
 )
-from asset.service.unassign_service.unassign_lead_service import (
+from asset.service.asset_unassign_service.asset_unassign_lead_service import (
     AssetLeadRoleUnassignService,
 )
 from rest_framework import status
