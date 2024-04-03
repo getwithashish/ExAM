@@ -1,4 +1,4 @@
-from notification.client.EmailClient import EmailClient
+from notification.client.email_client import EmailClient
 
 
 class EmailService:
