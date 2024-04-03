@@ -10,7 +10,7 @@ from messages import (
     UNAUTHORIZED_NO_PERMISSION,
     ASSET_NOT_FOUND,
 )
-from notification.service.EmailService import EmailService
+from notification.service.email_service import EmailService
 from rest_framework.renderers import JSONRenderer
 from asset.serializers import AssignAssetSerializer
 from asset.models import Asset
