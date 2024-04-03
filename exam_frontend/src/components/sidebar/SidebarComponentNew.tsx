@@ -258,6 +258,11 @@ const SidebarComponentNew = ({ children }) => {
                     <Link to="/exam/assignable_asset">Allocate Assets</Link>
                   </ToolTip>
                 </Menu.Item>
+                <Menu.Item icon={<UserSwitchOutlined />}>
+                  <ToolTip title="To deallocate an Asset from an employee">
+                    <Link to="/exam/deallocate">Deallocate Assets</Link>
+                  </ToolTip>
+                </Menu.Item>
               </React.Fragment>
             ) : (
               ""
