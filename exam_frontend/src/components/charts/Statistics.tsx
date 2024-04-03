@@ -2,7 +2,9 @@ import BarAnimation from './chartHandlers/BarChartHandler';
 import AssetCountComponent from './chartHandlers/ChartCardsHandler';
 import ChartHandlers from './chartHandlers/ChartHandlers';
 
+
 export const Statistics = () => {
+
   return (
     <div className='bg-white py-2'>
       <div>
@@ -42,7 +44,7 @@ export const Statistics = () => {
       <div className="rounded-lg bg-gray-50 shadow-md dark:bg-gray-800 xl:p-4 mx-10 py-2 mt-8" style={{boxShadow:'0 0 20px rgba(0, 0, 0, 0.2)'}}>
         <div className="mx-4">
           <BarAnimation/>          
-        </div>        
+        </div>
       </div>
     </div>
   )
