@@ -1,4 +1,4 @@
-from response import APIResponse
+from exceptions import PermissionDeniedException
 from asset.service.unassign_service.unassign_sys_admin_service import (
     AssetSysadminRoleUnassignService,
 )
@@ -7,8 +7,7 @@ from asset.service.unassign_service.unassign_lead_service import (
 )
 from rest_framework import status
 from messages import (
-    UNAUTHORIZED_NO_PERMISSION,
-    ASSET_NOT_FOUND,
+    USER_UNAUTHORIZED,
 )
 from notification.service.email_service import EmailService
 from rest_framework.renderers import JSONRenderer
@@ -20,24 +19,16 @@ class UnassignAssetService:
     @staticmethod
     def unassign_asset(requester_role, asset_uuid, requester):
 
-        try:
-            asset = Asset.objects.get(asset_uuid=asset_uuid)
-        except Asset.DoesNotExist:
-            return APIResponse(
-                message=ASSET_NOT_FOUND,
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        asset = Asset.objects.get(asset_uuid=asset_uuid)
 
         if requester_role == "SYSTEM_ADMIN":
             asset_user_role_unassign_service = AssetSysadminRoleUnassignService()
         elif requester_role == "LEAD":
             asset_user_role_unassign_service = AssetLeadRoleUnassignService()
         else:
-            # Only return error message and status code for unauthorized roles
-            return {
-                "message": UNAUTHORIZED_NO_PERMISSION,
-                "status": status.HTTP_403_FORBIDDEN,
-            }
+            raise PermissionDeniedException(
+                {}, USER_UNAUTHORIZED, status.HTTP_401_UNAUTHORIZED
+            )
 
         asset, message, email_subject = asset_user_role_unassign_service.unassign_asset(
             asset, requester
