@@ -13,10 +13,11 @@ import {
   Space,
   Table,
   TableColumnsType,
+  message
 } from "antd";
-
+import DrawerComponent from "../../DrawerComponent/DrawerComponent";
 import { SearchOutlined } from "@ant-design/icons";
-import "./DasboardAssetTable.css";
+import "./AssetTable.css";
 import CardComponent from "../CardComponent/CardComponent";
 import { CloseOutlined } from "@ant-design/icons";
 import axiosInstance from "../../config/AxiosConfig";
@@ -28,23 +29,18 @@ import { FilterDropdownProps } from "../AssetTable/types";
 import { useInfiniteQuery } from "react-query";
 
 import { DownOutlined } from "@ant-design/icons";
-import ExportButton from "../Export/Export";
-import { getDasboardAssetLogDetails } from "../DashboardAssetTable/api/getDasboardAssetLogDetails";
+import ExportButton from "../../Export/Export";
+import { getAssetLog } from "./api/getAssetLog";
 import { AxiosError } from "axios";
-
+import AssetTable from "./AssetTable";
 import {
   getAssetDetails,
   getAssetTypeOptions,
   getLocationOptions,
   getMemoryOptions,
-} from "../DashboardAssetTable/api/getDasboardAssetDetails";
-import DasboardAssetTable from "./DasboardAssetTable";
+} from "./api/getAssetDetails";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBookOpenReader, faBoxOpen, faPlus, faUsersViewfinder } from "@fortawesome/free-solid-svg-icons";
-import { HiPencilAlt } from "react-icons/hi";
-import AssetTimelineHandler from "../TimelineLog/AssetTimelineHandler";
-import TimelineModal from "../TimelineLog/TimelineDrawer";
-import TimelineButton from "../TimelineLog/TimelineDrawer";
+import { faBookOpenReader } from "@fortawesome/free-solid-svg-icons";
 
 interface ExpandedDataType {
   key: React.Key;
@@ -52,8 +48,11 @@ interface ExpandedDataType {
   name: string;
   upgradeNum: string;
 }
+interface AssetTableHandlerProps{
+  unassign:(record:DataType)=>void
+}
 
-const DasboardAssetHandler = () => {
+const AssetTableHandler = ({unassign}:AssetTableHandlerProps) => {
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null); // State to store the selected asset ID
 
   const {
@@ -66,14 +65,14 @@ const DasboardAssetHandler = () => {
     refetch,
   } = useQuery<LogData[], Error>({
     queryKey: ["assetLogsData", selectedAssetId], // Include selectedAssetId in the query key
-    queryFn: () => getDasboardAssetLogDetails(selectedAssetId),
+    queryFn: () => getAssetLog(selectedAssetId),
   });
 
   const expandedRowRender = useCallback(
     (assetId: string) => {
-      let logsDataExpanded: readonly any[] | undefined = [];
+      let logsDataExpanded = [];
       const columnsLog: TableColumnsType<ExpandedDataType> = [
-        // { title: "timestamp", dataIndex: "timestamp", key: "timestamp" },
+        { title: "timestamp", dataIndex: "timestamp", key: "timestamp" },
         {
           title: "asset_category",
           dataIndex: "asset_category",
@@ -105,15 +104,6 @@ const DasboardAssetHandler = () => {
           title: "model_number",
           dataIndex: "model_number",
           key: "model_number",
-        },
-        // { title: "custodian", dataIndex: "custodian", key: "custodian" },
-        { title: "asset_type", dataIndex: "asset_type", key: "asset_type" },
-
-        { title: "location", dataIndex: "location", key: "location" },
-        {
-          title: "invoice_location",
-          dataIndex: "invoice_location",
-          key: "invoice_location",
         },
         { title: "Asset Type", dataIndex: "asset_type", key: "asset_type" },
 
@@ -182,7 +172,7 @@ const DasboardAssetHandler = () => {
             {
               ...asset_log,
               key: asset_log.asset_id,
-              // timestamp: formattedTimestamp,
+              timestamp: formattedTimestamp,
               asset_category: asset_log.asset_category,
               asset_detail_status: asset_log.asset_detail_status,
               assign_status: asset_log.assign_status,
@@ -191,18 +181,17 @@ const DasboardAssetHandler = () => {
               updated_at: formattedUpdatedAt,
               date_of_purchase: asset_log.date_of_purchase,
               date: asset_log.date_of_purchase,
-              // custodian:asset_log.custodian.employee_name,
               asset_type: asset_log.asset_type.asset_type_name,
               location: asset_log.location.location_name,
               invoice_location:
                 asset_log.invoice_location.invoice_location_name,
-              warranty_period: asset_log.warranty_period,
-              version: asset_log.version,
-              configuration: asset_log.configuration,
-              storage: asset_log.storage,
-              os: asset_log.os,
-              owner: asset_log.owner,
-              notes: asset_log.notes,
+                warranty_period:asset_log.warranty_period,
+                version:asset_log.version,
+                configuration:asset_log.configuration,
+                storage:asset_log.storage,
+                os:asset_log.os,
+                owner:asset_log.owner,
+                notes:asset_log.notes,
               name: asset_log.product_name,
               upgradeNum: asset_log.assign_status,
             },
@@ -246,22 +235,15 @@ const DasboardAssetHandler = () => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  const [queryParam, setQueryParam] = useState("");
-
-  const { data: assetData, refetch: assetDataRefetch } = useQuery({
-    queryKey: ["assetList", queryParam],
-    queryFn: () => getAssetDetails(`${queryParam}`),
+  const { data: assetData } = useQuery({
+    queryKey: ["assetList"],
+    queryFn: () => getAssetDetails(),
   });
 
-  const refetchAssetData = (queryParam = "") => {
-    setQueryParam(queryParam);
-    assetDataRefetch({ force: true });
-  };
-
   const statusOptions =
-    assetData?.results?.map((item: AssetResult) => item.status) || [];
+    assetData?.map((item: AssetResult) => item.status) || [];
   const businessUnitOptions =
-    assetData?.results?.map(
+    assetData?.map(
       (item: AssetResult) => item.business_unit.business_unit_name
     ) || [];
 
@@ -312,37 +294,38 @@ const DasboardAssetHandler = () => {
       )
     );
   };
-  const renderClickableColumn = (columnName, dataIndex) => (_, record) => (
-    <div
-      data-column-name={columnName}
-      onClick={() => handleColumnClick(record, columnName)}
-      style={{ cursor: "pointer" }}
-    >
-      {record[dataIndex]}
-    </div>
-  );
-  const handleViewAssetLog = (assetId) => {
-    // Logic to handle viewing asset log for the selected asset ID
-    console.log("Viewing asset log for asset ID:", assetId);
-  };
 
   <div>
     <h1>Asset Overview</h1>
   </div>;
 
+const renderClickableColumn = (columnName, dataIndex) => (_, record) => (
+  <div
+    data-column-name={columnName}
+    onClick={() => handleColumnClick(record, columnName)}
+    style={{ cursor: "pointer" }}
+  >
+    {record[dataIndex]}
+  </div>
+);
   const columns = [
     {
       title: "Product Name",
       dataIndex: "product_name",
       fixed: "left",
-      width: 120,
+       width: 120,
       responsive: ["md"],
-      // filterIcon: <SearchOutlined />,
+      filterIcon: <SearchOutlined />,
       filterDropdown: ({
         setSelectedKeys,
         selectedKeys,
         confirm,
         clearFilters,
+      }: {
+        setSelectedKeys: (keys: React.ReactText[]) => void;
+        selectedKeys: React.ReactText[];
+        confirm: () => void;
+        clearFilters: () => void;
       }) => (
         <div style={{ padding: 8 }}>
           <Input
@@ -372,13 +355,17 @@ const DasboardAssetHandler = () => {
           </Space>
         </div>
       ),
-      onFilter: (value, record) => {
+      onFilter: (
+        value: string | any[],
+        record: { product_name: string | any[] }
+      ) => {
         if (Array.isArray(value)) {
           return value.includes(record.product_name);
         }
         return record.product_name.indexOf(value.toString()) === 0;
       },
-      sorter: (a, b) => a.product_name.localeCompare(b.product_name),
+      sorter: (a: { product_name: string }, b: { product_name: any }) =>
+        a.product_name.localeCompare(b.product_name),
       sortDirections: ["ascend", "descend"],
       render: renderClickableColumn("Product Name", "product_name"),
 
@@ -394,6 +381,11 @@ const DasboardAssetHandler = () => {
         selectedKeys,
         confirm,
         clearFilters,
+      }: {
+        setSelectedKeys: (keys: React.ReactText[]) => void;
+        selectedKeys: React.ReactText[];
+        confirm: () => void;
+        clearFilters: () => void;
       }) => (
         <div style={{ padding: 8 }}>
           <Input
@@ -423,18 +415,21 @@ const DasboardAssetHandler = () => {
           </Space>
         </div>
       ),
-      onFilter: (value, record) => {
+      onFilter: (
+        value: string | any[],
+        record: { serial_number: string | any[] }
+      ) => {
         if (Array.isArray(value)) {
           return value.includes(record.serial_number);
         }
         return record.serial_number.indexOf(value.toString()) === 0;
       },
-      sorter: (a, b) => a.serial_number.localeCompare(b.serial_number),
+      sorter: (a: { serial_number: string }, b: { serial_number: any }) =>
+        a.serial_number.localeCompare(b.serial_number),
       sortDirections: ["ascend", "descend"],
       render: renderClickableColumn("Serial Number", "serial_number"),
 
     },
-
     {
       title: "Location",
       dataIndex: "location",
@@ -451,7 +446,6 @@ const DasboardAssetHandler = () => {
         return record.location.indexOf(value.toString()) === 0;
       },
       render: renderClickableColumn("Location", "location"),
-
     },
     {
       title: "Invoice Location",
@@ -468,7 +462,9 @@ const DasboardAssetHandler = () => {
         }
         return record.location.indexOf(value.toString()) === 0;
       },
+    
       render: renderClickableColumn("Invoice Location", "invoice_location"),
+
 
     },
     {
@@ -482,6 +478,11 @@ const DasboardAssetHandler = () => {
         selectedKeys,
         confirm,
         clearFilters,
+      }: {
+        setSelectedKeys: (keys: React.ReactText[]) => void;
+        selectedKeys: React.ReactText[];
+        confirm: () => void;
+        clearFilters: () => void;
       }) => (
         <div style={{ padding: 8 }}>
           <Input
@@ -511,7 +512,10 @@ const DasboardAssetHandler = () => {
           </Space>
         </div>
       ),
-      onFilter: (value, record) => {
+      onFilter: (
+        value: string | any[],
+        record: { custodian: string | any[] }
+      ) => {
         // Check if record.custodian is defined before accessing it
         if (record.custodian) {
           if (Array.isArray(value)) {
@@ -528,7 +532,6 @@ const DasboardAssetHandler = () => {
       title: "Asset Type",
       dataIndex: "asset_type",
       responsive: ["md"],
-      // fixed: "right",
       width: 120,
       filters: assetTypeFilters,
       onFilter: (
@@ -541,22 +544,13 @@ const DasboardAssetHandler = () => {
         return record.asset_type.indexOf(value.toString()) === 0;
       },
       render: renderClickableColumn("Asset Type", "asset_type"),
+
     },
     {
       title: "Asset Category",
       dataIndex: "asset_category",
       responsive: ["md"],
       width: 140,
-      filters: assetTypeFilters,
-      onFilter: (
-        value: string | number | boolean | React.ReactText[] | Key,
-        record: DataType
-      ) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.asset_category);
-        }
-        return record.asset_category.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Asset Category", "asset_category"),
     },
     {
@@ -572,24 +566,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'Status',
       responsive: ['md'],
       width: 140,
-      filters: [
-        {
-          text: 'In Use ',
-          value: 'In Use',
-        },
-        {
-          text: 'In Store',
-          value: 'In Store',
-        },
-      ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-     
-        if (Array.isArray(value)) {
-          return value.includes(record.status);
-        }
-        return record.status.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Asset Status", "status"),
 
     },
@@ -598,31 +574,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'BusinessUnit',
       responsive: ['md'],
       width: 120,
-      // filters: [
-      //   {
-      //     text: 'du1 ',
-      //     value: 'du1',
-      //   },
-      //   {
-      //     text: 'du2',
-      //     value: 'du2',
-      //   },
-      //   {
-      //     text: 'du3 ',
-      //     value: 'du3',
-      //   },
-      //   {
-      //     text: 'du4',
-      //     value: 'du4',
-      //   },
-      // ],
-     
-      // onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-      //   if (Array.isArray(value)) {
-      //     return value.includes(record.business_unit);
-      //   }
-      //   return record.business_unit.indexOf(value.toString()) === 0;
-      // },
       render: renderClickableColumn("Business Unit", "business_unit"),
 
     },
@@ -631,23 +582,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'os',
       responsive: ['md'],
       width: 120,
-      filters: [
-        {
-          text: 'Linux ',
-          value: 'Linux',
-        },
-        {
-          text: 'Windows',
-          value: 'Windows',
-        },
-      ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.os);
-        }
-        return record.os.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Os", "os"),
 
     },
@@ -656,23 +590,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'os_version',
       responsive: ['md'],
        width: 120,
-      filters: [
-        {
-          text: '11',
-          value: '11',
-        },
-        {
-          text: '12',
-          value: '12',
-        }
-      ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.os_version);
-        }
-        return record.os_version.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Os Version", "os_version"),
 
     },
@@ -681,23 +598,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'processor',
       responsive: ['md'],
       width: 120,
-      filters: [
-        {
-          text: 'i5',
-          value: 'i5',
-        },
-        {
-          text: 'i3',
-          value: 'i3',
-        },
-      ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.processor);
-        }
-        return record.processor.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Processor", "processor"),
 
     },
@@ -706,23 +606,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'processor_gen',
       responsive: ['md'],
       width: 120,
-      filters: [
-        {
-          text: 'In Use ',
-          value: 'In Use',
-        },
-        {
-          text: 'In Store',
-          value: 'In Store',
-        },
-      ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.Generation);
-        }
-        return record.Generation.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Asset Status", "processor_gen"),
 
     },
@@ -731,27 +614,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'DateOfPurchase',
       responsive: ['md'],
       width: 120,
-
-      filters: [
-        {
-          text: '02/03/24 ',
-          value: '02/03/24 ',
-        },
-        {
-          text: '03/03/24 ',
-          value: '03/03/24 ',
-        },
-      ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        const dateValue = new Date(value as string).getTime(); // Convert filter value to timestamp
-        const recordDate = record.date_of_purchase.getTime(); // Get timestamp of record's date
-    
-        if (Array.isArray(value)) {
-          return value.includes(record.date_of_purchase);
-        }
-        return recordDate === dateValue;
-      },
       render: renderClickableColumn("Asset Status", "date_of_purchase"),
 
     },
@@ -760,24 +622,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'WarrantyPeriod',
       responsive: ['md'],
       width: 120,
-
-      filters: [
-        {
-          text: ' 2Years',
-          value: '2Years',
-        },
-        {
-          text: '3Years',
-          value: '3Years',
-        },
-      ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.warranty_period);
-        }
-        return record.warranty_period.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Asset Status", "warranty_period"),
 
     },
@@ -786,43 +630,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'ModelNumber', // Corrected dataIndex
       responsive: ['md'],
       width: 120,
-
-      filterIcon: <SearchOutlined rev={undefined} />,
-      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-        <div style={{ padding: 8 }}>
-          <Input
-            placeholder="Search Model Number"
-            value={selectedKeys[0]}
-            onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-            onPressEnter={() => confirm()}
-            style={{ marginBottom: 8, display: 'block' }}
-          />
-          <Space>
-            <button
-              type="button"
-              onClick={confirm}
-              size="small"
-              style={{ width: 90 }}
-            >
-              Search
-            </button>
-            <button
-              type="button"
-              onClick={clearFilters}
-              size="small"
-              style={{ width: 90 }}
-            >
-              Reset
-            </button>
-          </Space>
-        </div>
-      ),
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.model_number);
-        }
-        return record.model_number.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Asset Status", "model_number"),
 
     },
@@ -831,23 +638,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'Memory',
       responsive: ['md'],
       width: 120,
-      filters: [
-        {
-          text: '16Gb',
-          value: '16Gb',
-        },
-        {
-          text: '128Gb',
-          value: '128Gb',
-        },
-      ],
-      
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.memory);
-        }
-        return record.memory.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Asset Status", "memory"),
 
     },
@@ -856,23 +646,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'storage',
       responsive: ['md'],
       width: 120,
-      filters: [
-        {
-          text: '16Gb',
-          value: '16Gb',
-        },
-        {
-          text: '128Gb',
-          value: '128Gb',
-        },
-      ],
-      
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.storage);
-        }
-        return record.storage.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Storage", "storage"),
 
     },
@@ -881,23 +654,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'owner',
       responsive: ['md'],
       width: 120,
-      filters: [
-        {
-          text: '16Gb',
-          value: '16Gb',
-        },
-        {
-          text: '128Gb',
-          value: '128Gb',
-        },
-      ],
-      
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.owner);
-        }
-        return record.owner.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Owner", "owner"),
 
     },
@@ -906,23 +662,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'approved_by',
       responsive: ['md'],
       width: 120,
-      filters: [
-        {
-          text: 'Sfm Lead',
-          value: 'Sfm Lead',
-        },
-        {
-          text: 'Sfm Manager',
-          value: 'Sfm Manager',
-        },
-      ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.approved_by);
-        }
-        return record.approved_by.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Approved By", "approved_by"),
 
     },
@@ -931,23 +670,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'requester',
       responsive: ['md'],
       width: 120,
-      filters: [
-        {
-          text: 'Sfm Lead',
-          value: 'Sfm Lead',
-        },
-        {
-          text: 'Sfm Manager',
-          value: 'Sfm Manager',
-        },
-      ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.requester);
-        }
-        return record.requester.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Requester", "requester"),
 
     },
@@ -956,23 +678,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'asset_detail_status',
       responsive: ['md'],
       width: 140,
-      filters: [
-        {
-          text: 'Sfm Lead',
-          value: 'Sfm Lead',
-        },
-        {
-          text: 'Sfm Manager',
-          value: 'Sfm Manager',
-        },
-      ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.asset_detail_status);
-        }
-        return record.asset_detail_status.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Asset Detail Status", "asset_detail_status"),
 
     },
@@ -981,23 +686,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'assign_status',
       responsive: ['md'],
       width: 140,
-      filters: [
-        {
-          text: 'Sfm Lead',
-          value: 'Sfm Lead',
-        },
-        {
-          text: 'Sfm Manager',
-          value: 'Sfm Manager',
-        },
-      ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.assign_status);
-        }
-        return record.assign_status.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Asset Assign Status", "assign_status"),
 
     },
@@ -1006,46 +694,14 @@ const DasboardAssetHandler = () => {
       dataIndex: 'created_at',
       responsive: ['md'],
       width: 120,
-      filters: [
-        {
-          text: 'Sfm Lead',
-          value: 'Sfm Lead',
-        },
-        {
-          text: 'Sfm Manager',
-          value: 'Sfm Manager',
-        },
-      ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.created_at);
-        }
-        return record.created_at.indexOf(value.toString()) === 0;
-      },
+      render: renderClickableColumn("Accessories", "created_at"),
+
     },
     {
       title: 'Updated At',
       dataIndex: 'updated_at',
       responsive: ['md'],
       width: 120,
-      filters: [
-        {
-          text: 'Sfm Lead',
-          value: 'Sfm Lead',
-        },
-        {
-          text: 'Sfm Manager',
-          value: 'Sfm Manager',
-        },
-      ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.updated_at);
-        }
-        return record.updated_at.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Accessories", "updated_at"),
 
     },
@@ -1055,38 +711,55 @@ const DasboardAssetHandler = () => {
       dataIndex: 'Accessories',
       responsive: ['md'],
       width: 120,
-      filters: [
-        {
-          text: 'In Use ',
-          value: 'In Use',
-        },
-        {
-          text: 'In Store',
-          value: 'In Store',
-        },
-      ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.accessories);
-        }
-        return record.accessories.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Accessories", "accessories"),
-
     },
+    
     {
-      title: 'View Asset Log',
+      title: 'Asset Log',
       dataIndex: 'Accessories',
       responsive: ['md'],
-      fixed: 'right',
-      width: 140,
-      render: (_,record) => (
-        <TimelineButton assetUuid={record.key} />
+      fixed:"right",
+       width: 120,
+       
+       render: () => (
+        <span>
+          <FontAwesomeIcon icon={faBookOpenReader} className="plus-icon" /> {/* Plus button icon */}
+        </span>
       ),
-  },
     
-
+     
+ 
+    },
+  
+    {
+      title: "Deallocate Asset",
+      dataIndex: "DeallocateAsset",
+      fixed: "right",
+       width: 120,
+      render: (_data, record) => (
+        <Button
+          ghost
+          style={{
+            borderRadius: "10px",
+            background: "#D3D3D3",
+            color: "black",
+          }}
+          onClick={() => {
+            console.log(" unassign button clicked ")
+            if (record.custodian != null || record.custodian != undefined) {
+              unassign(record)
+              
+            } else {
+              message.warning("Not allocated yet");
+            }
+          }}
+          
+        >
+          -
+        </Button>
+      ),
+    }
+  
   ];
 
   const handleColumnClick = (record: string[], columnName: string) => {
@@ -1100,16 +773,16 @@ const DasboardAssetHandler = () => {
     setDrawerVisible(true);
   };
 
-  const data = assetData?.results?.map((result) => ({
+  const data = assetData?.map((result) => ({
     key: result.asset_uuid,
     asset_id: result.asset_id,
     asset_category: result.asset_category,
-    asset_type: result.asset_type.asset_type_name,
+    asset_type: result.asset_type?.asset_type_name,
     version: result.version,
     status: result.status,
     location: result.location?.location_name,
     invoice_location: result.invoice_location?.location_name,
-    business_unit: result.business_unit.business_unit_name,
+    business_unit: result.business_unit?.business_unit_name,
     os: result.os,
     os_version: result.os_version,
     mobile_os: result.mobile_os,
@@ -1120,7 +793,7 @@ const DasboardAssetHandler = () => {
     warranty_period: result.warranty_period,
     asset_detail_status: result.asset_detail_status,
     assign_status: result.assign_status,
-    approved_by: result.approved_by?.username,
+    conceder: result.conceder?.username,
     model_number: result.model_number,
     serial_number: result.serial_number,
     memory: result.memory?.memory_space,
@@ -1136,6 +809,7 @@ const DasboardAssetHandler = () => {
   }));
 
   const drawerTitle = "Asset Details";
+
   const button = <Button type="primary"></Button>;
 
   useEffect(() => {
@@ -1145,7 +819,7 @@ const DasboardAssetHandler = () => {
   }, [selectedAssetId]);
 
   return (
-    <DasboardAssetTable
+    <AssetTable
       drawerTitle={drawerTitle}
       logsData={logsData}
       isLoading={isLoading}
@@ -1157,8 +831,6 @@ const DasboardAssetHandler = () => {
       selectedRow={selectedRow}
       drawerVisible={drawerVisible}
       assetData={data}
-      totalItemCount={assetData?.count}
-      assetPageDataFetch={setQueryParam}
       columns={columns}
       expandedRowRender={expandedRowRender}
       memoryData={memoryData}
@@ -1166,9 +838,7 @@ const DasboardAssetHandler = () => {
       locations={locations}
       statusOptions={statusOptions}
       asset_uuid={selectedAssetId}
-      bordered={false}
       businessUnitOptions={businessUnitOptions}
-      assetDataRefetch={refetchAssetData}
       handleUpdateData={function (updatedData: { key: any }): void {
         throw new Error("Function not implemented.");
       }}
@@ -1177,4 +847,4 @@ const DasboardAssetHandler = () => {
   );
 };
 
-export default DasboardAssetHandler;
+export default AssetTableHandler;

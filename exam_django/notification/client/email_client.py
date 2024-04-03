@@ -1,6 +1,6 @@
 from django.core.mail import send_mail
 
-from notification.config.EmailConfig import FROM_EMAIL
+from notification.config.email_config import FROM_EMAIL
 
 
 class EmailClient:

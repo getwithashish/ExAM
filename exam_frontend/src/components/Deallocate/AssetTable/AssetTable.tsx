@@ -10,14 +10,14 @@ import {
   Button,
   Dropdown,
   Input,
-  Pagination,
   Space,
   Table,
   TableColumnsType,
 } from "antd";
+
 import { SearchOutlined } from "@ant-design/icons";
-import "./DasboardAssetTable.css";
-import CardComponent from "../CardComponent/CardComponent";
+import "./AssetTable.css";
+import CardComponent from "./CardComponent/CardComponent";
 import { CloseOutlined } from "@ant-design/icons";
 import axiosInstance from "../../config/AxiosConfig";
 import { isError, useQuery } from "@tanstack/react-query";
@@ -28,16 +28,27 @@ import { FilterDropdownProps } from "../AssetTable/types";
 import { useInfiniteQuery } from "react-query";
 
 import { DownOutlined } from "@ant-design/icons";
-import ExportButton from "../Export/Export";
-
+import ExportButton from "../../Export/Export";
+import { getAssetLog } from "./api/getAssetLog";
 import { AxiosError } from "axios";
-import TableNavbar from "../TableNavBar/TableNavbar";
-import SideDrawerComponent from "../SideDrawerComponent/SideDrawerComponent";
-import UploadComponent from "../Upload/UploadComponent";
-import DashBoardCardComponent from "../DashBoardCardComponent/DashBoardCardComponent";
-import DrawerViewRequest from "../../pages/RequestPage/DrawerViewRequest";
+import TableNavbar from "../../TableNavBar/TableNavbar";
+import SideDrawerComponent from "../../SideDrawerComponent/SideDrawerComponent";
+import UploadComponent from "../../Upload/UploadComponent";
+import DrawerViewRequest from "../../../pages/RequestPage/DrawerViewRequest";
 
-const DasboardAssetTable = ({
+interface ExpandedDataType {
+  key: React.Key;
+  date: string;
+  name: string;
+  upgradeNum: string;
+}
+const items = [
+  { key: "1", label: "Action 1" },
+  { key: "2", label: "Action 2" },
+];
+
+const AssetTable = ({
+  
   asset_uuid,
   logsData,
   isLoading,
@@ -49,8 +60,6 @@ const DasboardAssetTable = ({
   selectedRow,
   drawerVisible,
   assetData,
-  totalItemCount,
-  assetPageDataFetch,
   columns,
   handleUpdateData,
   drawerTitle,
@@ -60,9 +69,8 @@ const DasboardAssetTable = ({
   memoryData,
   assetTypeData,
   expandedRowRender,
-  assetDataRefetch,
 }: AssetTableProps) => {
-  const rowRender = (record: { key: string }, expanded: any) => {
+  const rowRender = (record, expanded) => {
     if (isSuccess) {
       if (expanded && selectedAssetId && expandedRowRender)
         return expandedRowRender(record.key);
@@ -70,25 +78,25 @@ const DasboardAssetTable = ({
     } else return <>not loaded</>;
   };
   const memoizedRowRender = useMemo(() => rowRender, [isSuccess]);
+
   const [showUpload, setShowUpload] = useState(false);
   const closeImportDrawer = () => {
     setShowUpload(false);
   };
 
   return (
-    <div className="bg-white py-4 pt-20">
-      <div className="mainHeading font-medium font-display font-semibold">
-        <h6>Asset Details</h6>
-      </div>
-      <div className="ml-2">
-        <TableNavbar
-          showUpload={showUpload}
-          setShowUpload={setShowUpload}
-          assetDataRefetch={assetDataRefetch}
-        />
+    <>
+      <div className="mainHeading" style={{ background: "white" }}>
+        <div className=" font-display">Deallocate Assets</div>
       </div>
 
-      <div style={{ position: "relative", display: "inline-block" }}>
+      <div
+        style={{
+          position: "relative",
+          display: "inline-block",
+          background: "white",
+        }}
+      >
         <SideDrawerComponent
           displayDrawer={showUpload}
           closeDrawer={closeImportDrawer}
@@ -100,45 +108,25 @@ boxShadow
 :
 '0 0 10px rgba(0, 0, 0, 0.2)'
 }}>
-  <Table
-    columns={columns}
-    dataSource={assetData}
-    className="mainTable"
-    pagination={false}
-    bordered={false}
-    scroll={{ x:1300, y: 600 }}
-    handleRowClick={handleRowClick}
-    style={{
-      fontSize: "50px",
-      borderColor:"white",
-      width:"29%"
-      
-    }}
-    
-   
-  rowKey={(record:DataType)=>record.key}
-    expandable={{
-      onExpand:(expanded,record)=>{if(expanded) return setSelectedAssetId(record.key); else return},
-      expandedRowRender: (record, index, indent, expanded) => {return memoizedRowRender(record, expanded);},
-    }}
-
-    footer={() => (
-      <Pagination
-        pageSize={20}
-        showTotal={(total, range) =>
-          `${range[0]}-${range[1]} of ${total} assets`
-        }
-        total={totalItemCount}
-        onChange={(page, pageSize) => {
-          assetPageDataFetch(`&offset=${(page - 1) * pageSize}`);
-        }}
-        hideOnSinglePage={true}
-      />
-    )}
- 
-  />
- </div>
-</div>
+        <Table
+          columns={columns}
+          dataSource={assetData}
+          scroll={{ y: 600 }}
+          className="mainTable"
+          pagination={false}
+          bordered={false}
+          handleRowClick={handleRowClick}
+          style={{
+            fontSize: "50px",
+            borderColor:"white",
+            width:"29%"
+            
+          }}
+       
+       
+        />
+        </div>
+      </div>
       <DrawerViewRequest
         visible={drawerVisible}
         onClose={onCloseDrawer}
@@ -155,7 +143,7 @@ boxShadow
         )}
 
         {selectedRow && (
-          <DashBoardCardComponent
+          <CardComponent
             selectedAssetId={selectedAssetId}
             data={selectedRow}
             statusOptions={statusOptions}
@@ -170,8 +158,8 @@ boxShadow
           />
         )}
       </DrawerViewRequest>
-    </div>
+    </>
   );
 };
 
-export default React.memo(DasboardAssetTable);
+export default React.memo(AssetTable);

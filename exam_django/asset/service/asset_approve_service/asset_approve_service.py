@@ -3,7 +3,7 @@ from rest_framework import status
 
 from asset.models import Asset
 from asset.serializers.asset_serializer import AssetReadSerializer
-from notification.service.EmailService import EmailService
+from notification.service.email_service import EmailService
 
 
 class AssetApproveService:
