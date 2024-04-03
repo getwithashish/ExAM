@@ -12,18 +12,15 @@ import {
   message,
 } from "antd";
 import "./CardComponent.css";
-import { DataType } from "../AssetTable/types/index";
+import { DataType } from "../types";
 import { CardType } from "./types/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import axiosInstance from "../../config/AxiosConfig";
+import axiosInstance from "../../../../config/AxiosConfig";
 import { CommentOutlined } from "@ant-design/icons";
-import { Spin } from "antd";
-
 
 interface UpdateData {
   asset_uuid: string;
   data: Partial<DataType>; // Partial to allow updating only specific fields
-  isMyApprovalPage:boolean
 }
 const CardComponent: React.FC<CardType> = ({
   asset_uuid,
@@ -34,7 +31,6 @@ const CardComponent: React.FC<CardType> = ({
   locations,
   memoryData,
   assetTypeData,
-  isMyApprovalPage
 }) => {
   const uniqueStatusOptions = Array.from(new Set(statusOptions));
   const uniqueBusinessOptions = Array.from(new Set(businessUnitOptions));
@@ -53,11 +49,7 @@ const CardComponent: React.FC<CardType> = ({
   };
 
   const [updatedData, setUpdatedData] = useState<Partial<DataType>>({});
-  const [isLoading, setIsLoading] = useState(false);
-
   const handleUpdate = async () => {
-    setIsLoading(true); // Set loading to true when update starts
-
     console.log("Asset UUID:", data.key);
 
     try {
@@ -67,7 +59,7 @@ const CardComponent: React.FC<CardType> = ({
       };
 
       const response = await axiosInstance.patch(
-        "/asset/",
+        "/asset/update",
         updatePayload,
         {
           headers: {
@@ -84,36 +76,16 @@ const CardComponent: React.FC<CardType> = ({
       }, 1500);
     } catch (error) {
       console.error("Error updating data:", error);
-          message.error("Error updating asset details. Please try again.");
-
-
     }
-    setIsLoading(false); // Set loading to false when update completes
-
   };
 
-  // const handleUpdateChange = (field: string, value: any) => {
-  //   setUpdatedData((prevData) => ({
-  //     ...prevData,
-  //     [field]: value,
-  //   }));
-  // };
   const handleUpdateChange = (field: string, value: any) => {
-    if (field === "business_unit") {
-      // Map the business unit name to its primary key
-      const businessUnitPK = uniqueBusinessOptions.find(option => option.name === value)?.id;
-      setUpdatedData((prevData) => ({
-        ...prevData,
-        [field]: businessUnitPK,
-      }));
-    } else {
-      setUpdatedData((prevData) => ({
-        ...prevData,
-        [field]: value,
-      }));
-    }
+    setUpdatedData((prevData) => ({
+      ...prevData,
+      [field]: value,
+    }));
   };
-  
+
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -131,6 +103,7 @@ const CardComponent: React.FC<CardType> = ({
         >
           <b style={{ display: "block" }}>Asset Category: </b> <br></br>
           <Input
+          disabled
             defaultValue={data.asset_category}
             onChange={(e) =>
               handleUpdateChange("assetCategory", e.target.value)
@@ -152,6 +125,7 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>
           <Select
+          disabled
             variant="filled"
             defaultValue={data.asset_type}
             style={{
@@ -185,6 +159,7 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+          disabled
             defaultValue={data.version}
             onChange={(e) => handleUpdateChange("version", e.target.value)}
             style={inputStyle}
@@ -205,6 +180,7 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>
           <Select
+          disabled
             variant="filled"
             defaultValue={uniqueStatusOptions[0]}
             style={{
@@ -238,6 +214,7 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>
           <Select
+          disabled
             variant="filled"
             defaultValue={data.location}
             style={{
@@ -271,6 +248,7 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>
           <Select
+          disabled
             variant="filled"
             defaultValue={data.invoice_location}
             style={{
@@ -302,6 +280,8 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+          disabled
+
             defaultValue={data.os}
             onChange={(e) => handleUpdateChange("os", e.target.value)}
             style={inputStyle}
@@ -318,6 +298,8 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+          disabled
+
             defaultValue={data.os_version}
             onChange={(e) => handleUpdateChange("os version", e.target.value)}
             style={inputStyle}
@@ -334,6 +316,7 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+          disabled
             defaultValue={data.mobile_os}
             onChange={(e) => handleUpdateChange("mobile os", e.target.value)}
             style={inputStyle}
@@ -350,6 +333,7 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+          disabled
             defaultValue={data.processor}
             onChange={(e) => handleUpdateChange("processor", e.target.value)}
             style={inputStyle}
@@ -366,6 +350,8 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+          disabled
+
             defaultValue={data.Generation}
             onChange={(e) => handleUpdateChange("generation", e.target.value)}
             style={inputStyle}
@@ -381,6 +367,7 @@ const CardComponent: React.FC<CardType> = ({
           <b>Accessories:</b> <br></br>
           <br></br>{" "}
           <Input
+          disabled
             defaultValue={data.accessories}
             onChange={(e) => handleUpdateChange("accessories", e.target.value)}
             style={inputStyle}
@@ -396,6 +383,7 @@ const CardComponent: React.FC<CardType> = ({
           <b>Date of Purchase:</b> <br></br>
           <br></br>{" "}
           <Input
+          disabled
             defaultValue={formatDate(data.date_of_purchase.toString())}
             onChange={(e) =>
               handleUpdateChange("date of purchase", e.target.value)
@@ -414,6 +402,7 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+          disabled
             defaultValue={data.warranty_period}
             onChange={(e) =>
               handleUpdateChange("warranty period", e.target.value)
@@ -431,7 +420,8 @@ const CardComponent: React.FC<CardType> = ({
           <b>Asset Detail Status </b>
           <br></br>
           <br></br>{" "}
-          <Input
+          <Input 
+          disabled
             defaultValue={data.asset_detail_status}
             onChange={(e) =>
               handleUpdateChange("asset_detail_status", e.target.value)
@@ -450,6 +440,8 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+          disabled
+
             defaultValue={data.assign_status}
             onChange={(e) =>
               handleUpdateChange("assign_status", e.target.value)
@@ -487,6 +479,8 @@ const CardComponent: React.FC<CardType> = ({
           <b>Serial Number:</b> <br></br>
           <br></br>{" "}
           <Input
+          disabled
+
             defaultValue={data.serial_number}
             onChange={(e) =>
               handleUpdateChange("serail number", e.target.value)
@@ -505,6 +499,8 @@ const CardComponent: React.FC<CardType> = ({
           <b>Model Number:</b> <br></br>
           <br></br>{" "}
           <Input
+          disabled
+
             defaultValue={data.model_number}
             onChange={(e) => handleUpdateChange("model number", e.target.value)}
             style={inputStyle}
@@ -544,6 +540,8 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+          disabled
+
             defaultValue={data.owner}
             onChange={(e) => handleUpdateChange("owner", e.target.value)}
             style={inputStyle}
@@ -583,6 +581,8 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+          disabled
+
             defaultValue={data.product_name}
             onChange={(e) => handleUpdateChange("product name", e.target.value)}
             style={inputStyle}
@@ -603,6 +603,8 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>
           <Select
+          disabled
+
             variant="filled"
             defaultValue={uniqueBusinessOptions[0]}
             style={{
@@ -621,7 +623,7 @@ const CardComponent: React.FC<CardType> = ({
                 value={business_unit}
                 style={{ background: "#f0f0f0" }}
               >
-                {business_unit.business_unit_name}
+                {business_unit}
               </Select.Option>
             ))}
           </Select>
@@ -641,6 +643,8 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>
           <Select
+          disabled
+
             variant="filled"
             defaultValue={data.memory}
             style={{
@@ -671,6 +675,8 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+          disabled
+
             defaultValue={data.storage}
             onChange={(e) => handleUpdateChange("storage", e.target.value)}
             style={inputStyle}
@@ -687,6 +693,8 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+          disabled
+
             defaultValue={data.configuration}
             onChange={(e) =>
               handleUpdateChange("configuration", e.target.value)
@@ -748,6 +756,8 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
+          disabled
+
             defaultValue={data.notes}
             onChange={(e) => handleUpdateChange("comments", e.target.value)}
             style={{
@@ -821,49 +831,11 @@ const CardComponent: React.FC<CardType> = ({
             height: "30px",
             borderRadius: "5px",
             background: "#f0f0f0",
-            marginLeft: "58px",
+            marginLeft: "64px",
             padding: "20px",
           }}
         />
-       {/* {isMyApprovalPage && (
-  <Button
-    style={{
-      marginBottom: "0px",
-      marginTop: "0px",
-      color: "white",
-      border: "none",
-      background: "blue",
-      marginLeft: "600px",
-    }}
-    onClick={handleUpdate}
-  >
-    Update
-  </Button>
-)} */}
-
-{isMyApprovalPage && (
-  <>
-    {isLoading ? (
-      <Spin size="large" />
-    ) : (
-      <Button
-        style={{
-          marginBottom: "0px",
-          marginTop: "0px",
-          color: "white",
-          border: "none",
-          background: "blue",
-          marginLeft: "600px",
-        }}
-        onClick={handleUpdate}
-        disabled={isLoading} // Disable button while updating
-      >
-        Update
-      </Button>
-    )}
-  </>
-)}
-
+        
       </div>
       <div className="scrollable-content">
         <Form

@@ -1,4 +1,3 @@
-
 from asset.models import Asset, AssetType
 from django.db.models import Count
 from rest_framework import status

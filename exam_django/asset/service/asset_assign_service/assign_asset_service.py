@@ -1,8 +1,8 @@
 from response import APIResponse
-from asset.service.asset_assign_crud_service.asset_sysadmin_role_assignasset_service import (
+from asset.service.asset_assign_service.asset_sysadmin_role_assignasset_service import (
     AssetSysadminRoleAssignService,
 )
-from asset.service.asset_assign_crud_service.asset_lead_role_assignasset_service import (
+from asset.service.asset_assign_service.asset_lead_role_assignasset_service import (
     AssetLeadRoleAssignService,
 )
 from rest_framework import status
@@ -13,7 +13,7 @@ from messages import (
     ASSET_NOT_FOUND,
 )
 from asset.models import Employee
-from notification.service.EmailService import EmailService
+from notification.service.email_service import EmailService
 from rest_framework.renderers import JSONRenderer
 from asset.serializers import AssignAssetSerializer
 from asset.models import Asset
