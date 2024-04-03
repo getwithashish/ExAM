@@ -1,39 +1,41 @@
-import React, { FC, useState } from 'react';
-import { Drawer } from 'antd';
-import type { DrawerProps } from 'antd';
-import AssetTimelineHandler from './AssetTimelineHandler'; // Import your AssetTimelineHandler component
+import { FC, useState } from 'react';
+import { Button, Drawer } from 'antd';
+import { HiPencilAlt } from 'react-icons/hi';
+import AssetTimelineHandler from './AssetTimelineHandler';
 
-interface TimelineDrawerProps extends DrawerProps {
-    title: string;
-    onClose: () => void; 
-    assetUuid: string; // Add assetUuid as a prop
-}
-
-const TimelineDrawer: FC<TimelineDrawerProps> = ({ visible, title, onClose, assetUuid }) => {
-    const [assetLogsVisible, setAssetLogsVisible] = useState<boolean>(false); // State to manage visibility of asset logs
-    
-    // Handler function to toggle visibility of asset logs
-    const toggleAssetLogsVisibility = () => {
-        setAssetLogsVisible(!assetLogsVisible);
-    };
-
-    return (
-        <>
-            <Drawer
-                title={title}
-                onClose={onClose}
-                visible={visible}
-                width={1200}
-            >
-                {/* Render AssetTimelineHandler component only when asset logs visibility is true */}
-                {assetLogsVisible && <AssetTimelineHandler assetUuid={assetUuid} />}
-                {/* Button to toggle visibility of asset logs */}
-                <button onClick={toggleAssetLogsVisibility}>
-                    {assetLogsVisible ? 'Hide Asset Logs' : 'Show Asset Logs'}
-                </button>
-            </Drawer>
-        </>
-    );
+const TimelineDrawer: FC<{ assetUuid: string; onClose: () => void; visible: boolean }> = ({ assetUuid, onClose, visible }) => {
+  return (
+    <Drawer
+      title="View Asset Log"
+      placement="right"
+      onClose={onClose}
+      visible={visible}
+      width={1000}
+    >
+      <AssetTimelineHandler assetUuid={assetUuid} />
+    </Drawer>
+  );
 };
 
-export default TimelineDrawer;
+const TimelineButton: FC<{ assetUuid: string }> = ({ assetUuid }) => {
+  const [drawerVisible, setDrawerVisible] = useState(false);
+
+  const handleDrawerOpen = () => {
+    setDrawerVisible(true);
+  };
+
+  const handleDrawerClose = () => {
+    setDrawerVisible(false);
+  };
+
+  return (
+    <>
+      <Button color="primary" className="mx-5" onClick={handleDrawerOpen}>
+        <HiPencilAlt className="mr-2 text-lg font-display mx-2" />
+      </Button>
+      <TimelineDrawer assetUuid={assetUuid} onClose={handleDrawerClose} visible={drawerVisible} />
+    </>
+  );
+};
+
+export default TimelineButton;

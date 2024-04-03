@@ -43,7 +43,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookOpenReader, faBoxOpen, faPlus, faUsersViewfinder } from "@fortawesome/free-solid-svg-icons";
 import { HiPencilAlt } from "react-icons/hi";
 import AssetTimelineHandler from "../TimelineLog/AssetTimelineHandler";
-
+import TimelineModal from "../TimelineLog/TimelineDrawer";
+import TimelineButton from "../TimelineLog/TimelineDrawer";
 
 interface ExpandedDataType {
   key: React.Key;
@@ -1080,11 +1081,8 @@ const DasboardAssetHandler = () => {
       responsive: ['md'],
       fixed: 'right',
       width: 140,
-      render: (_, record) => (
-          <Button color="primary" className="mx-5" onClick={() => handleViewAssetLog(record.key)}>
-              <HiPencilAlt className="mr-2 text-lg font-display mx-2" />
-              <AssetTimelineHandler assetUuid={record.key} />
-          </Button>
+      render: (_,record) => (
+        <TimelineButton assetUuid={record.key} />
       ),
   },
     
