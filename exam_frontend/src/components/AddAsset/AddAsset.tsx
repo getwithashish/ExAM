@@ -1,11 +1,9 @@
-
  
- 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { message } from 'antd';
- 
+import { message ,Popover, Tooltip} from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons'; // 
 import axiosInstance from '../../config/AxiosConfig';
 import { AssetData } from './types';
 import {
@@ -27,6 +25,7 @@ type SizeType = Parameters<typeof Form>[0]['size'];
 const AddAsset: React.FC = () => {
   // State to store form data
   const [formData, setFormData] = useState<any>({});
+
  
   const [componentSize, setComponentSize] = useState<SizeType | 'default'>('default');
  
@@ -34,11 +33,97 @@ const AddAsset: React.FC = () => {
     setComponentSize(size);
   };
  
-  // Handle form input change and update form data state
+  
   const handleInputChange = (key: string, value: any) => {
     setFormData({ ...formData, [key]: value });
   };
- 
+
+  const [warningShown, setWarningShown] = useState(false);
+  // Validation function for warranty period
+  const validateWarrantyPeriod = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Check if the entered value is not numeric and the warning hasn't been shown before
+    if (!warningShown && isNaN(value as any)) {
+      // Display a warning message
+      message.warning('Warranty period should only contain digits.');
+      // Set the state to indicate that the warning has been shown
+      setWarningShown(true);
+    } else if (warningShown && !isNaN(value as any)) {
+      // Reset the warningShown state if the value becomes numeric again
+      setWarningShown(false);
+    }
+    // Call the existing handleInputChange function to update the form data
+    handleInputChange('warranty_period', value);
+  };
+
+  const validateOsVersion = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Check if the entered value is not numeric and the warning hasn't been shown before
+    if (!warningShown && isNaN(value as any)) {
+      // Display a warning message
+      message.warning('Os Version should only contain digits.');
+      // Set the state to indicate that the warning has been shown
+      setWarningShown(true);
+    } else if (warningShown && !isNaN(value as any)) {
+      // Reset the warningShown state if the value becomes numeric again
+      setWarningShown(false);
+    }
+    // Call the existing handleInputChange function to update the form data
+    handleInputChange('os_version', value);
+  };
+  const validateVersion = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Check if the entered value is not numeric and the warning hasn't been shown before
+    if (!warningShown && isNaN(value as any)) {
+      // Display a warning message
+      message.warning('Version should only contain digits.');
+      // Set the state to indicate that the warning has been shown
+      setWarningShown(true);
+    } else if (warningShown && !isNaN(value as any)) {
+      // Reset the warningShown state if the value becomes numeric again
+      setWarningShown(false);
+    }
+    // Call the existing handleInputChange function to update the form data
+    handleInputChange('version', value);
+  };
+
+  const [processorGenWarningShown, setProcessorGenWarningShown] = useState(false);
+
+  // Validation function for processor generation
+ // Validation function for processor generation
+ const validateProcessorGeneration = (value: string) => {
+  // Define a regular expression pattern to match the desired format (i followed by 5, 7, or 9)
+  const pattern = /^i[1-9]$/;
+
+  // Check if the value matches the pattern
+  if (value.length > 2 || (value.length === 2 && !['i'].includes(value))) {
+    // Display a warning message if the value does not match the pattern
+    message.warning('Processor generation should be i followed by digit');
+    // Set the state to indicate that the warning for processor generation has been shown
+    setProcessorGenWarningShown(true);
+  } else {
+    // Reset the processorGenWarningShown state if the value matches the pattern
+    setProcessorGenWarningShown(false);
+  }
+};
+const [accessoryValue, setAccessoryValue] = useState('');
+const [accessoryWarningShown, setAccessoryWarningShown] = useState(false);
+
+const handleAccessoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const value = e.target.value;
+  const accessories = value.split(',').map(accessory => accessory.trim()); // Split and trim accessories
+
+  if (accessories.length > 4 && !accessoryWarningShown) {
+    message.warning('Only four accessories are allowed');
+    setAccessoryWarningShown(true);
+  } else if (accessories.length <= 4 && accessoryWarningShown) {
+    setAccessoryWarningShown(false);
+  }
+
+  setAccessoryValue(value);
+};
+
+
  
     // Fetch the asset type details
   const { data: assetTypeData, isLoading: isAssetTypeLoading, isError: isAssetTypeError } = useQuery({
@@ -115,8 +200,6 @@ const AddAsset: React.FC = () => {
     }
   };
  
- 
- 
   return (
     <div className = "font-display">
     <div className={styles['container']}>
@@ -153,20 +236,39 @@ const AddAsset: React.FC = () => {
             placeholder="Enter Asset ID"
             className={styles['input']}
             onChange={(e) => handleInputChange('asset_id', e.target.value)}
+            suffix={
+              <Tooltip title="Asset Id should be in the format:e45f403c-4429-4406-9c8d-c42d972b65e4">
+              <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+            </Tooltip>
+            }
           />
         </Form.Item>
  
  
-       <Form.Item label="Version" className={styles['formItem']}>
+       {/* <Form.Item label="Version" className={styles['formItem']}>
   <InputNumber
     className={styles['input']}
     placeholder="Enter version number"
- 
+
     onChange={(value: number | null) => handleInputChange('version', value)}
   />
 </Form.Item>
- 
- 
+  */}
+
+<Form.Item label="Version" className={styles['formItem']}
+ >
+  <InputNumber
+    className={styles['input']}
+    placeholder="Enter version number"
+    onChange={(e) => validateVersion(e)}
+    suffix={
+      <Tooltip title="Enter the version number of the asset">
+        <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+      </Tooltip>
+    }
+  />
+</Form.Item>
+
        
  
 <Form.Item label="Asset Type" className={styles['formItem']}>
@@ -179,15 +281,36 @@ const AddAsset: React.FC = () => {
  
  
  
-         <Form.Item label="Product name" className={styles['formItem']}>
+         {/* <Form.Item label="Product name" className={styles['formItem']}>
         <Input placeholder="Enter Product name"className={styles['input']}
             onChange={(e) => handleInputChange('product_name', e.target.value)}/>
-         </Form.Item>
+         </Form.Item> */}
  
+ <Form.Item label="Product name" className={styles['formItem']}>
+  <Input
+    placeholder="Enter Product name"
+    className={styles['input']}
+    onChange={(e) => handleInputChange('product_name', e.target.value)}
+    suffix={
+      <Tooltip title="Enter the name of the product">
+        <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+      </Tooltip>
+    }
+  />
+</Form.Item>
  
        <Form.Item label="Model number" className={styles['formItem']}>
-        <Input placeholder="Enter Model number"className={styles['input']}
-            onChange={(e) => handleInputChange('model_number', e.target.value)}/>
+        <Input 
+        placeholder="Enter Model number"
+        className={styles['input']}
+            onChange={(e) => handleInputChange('model_number', e.target.value)}
+            suffix={
+              <Tooltip  placement="top" title="Model number should be alphanumeric eg:MN101">
+        <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+      </Tooltip>
+            }
+    
+            />
         </Form.Item>
  
  
@@ -215,8 +338,9 @@ const AddAsset: React.FC = () => {
  
  
         <Form.Item label="Warranty Period:" className={styles['formItem']}>
-        <InputNumber className={styles['input']}  placeholder="Enter warranty period"
-       onChange={(value) => handleInputChange('warranty_period', value)}/>
+        <Input className={styles['input']}  placeholder="Enter warranty period"
+      onChange={(e) => validateWarrantyPeriod(e)}
+      />
         </Form.Item>
  
  
@@ -270,7 +394,13 @@ const AddAsset: React.FC = () => {
  
         <Form.Item label="OS  version" className={styles['formItem']}>
          <Input placeholder="Enter OS version "className={styles['input']}
-  onChange={(e) => handleInputChange('os_version', e.target.value)}/>
+      onChange={(e) => validateOsVersion(e)}
+      suffix={
+    <Tooltip title="Enter OS version in X.Y.Z format">
+      <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+    </Tooltip>
+  }
+  />
         </Form.Item>
  
  
@@ -294,7 +424,10 @@ const AddAsset: React.FC = () => {
  
         <Form.Item label="Processor Gen:" className={styles['formItem']}>
          <Input placeholder="Enter processor generation"className={styles['input']}
- onChange={(e) => handleInputChange('processor_gen', e.target.value)}/>
+ onChange={(e) => {
+  validateProcessorGeneration(e.target.value);
+  handleInputChange('processor_gen', e.target.value);
+}}/>
         </Form.Item>
  
        
@@ -333,9 +466,10 @@ const AddAsset: React.FC = () => {
  
  
          
-         <Form.Item label="Accessory/s:" className={styles['formItem']}>
+         <Form.Item label="Accessories:" className={styles['formItem']}>
          <Input placeholder="Enter Accessory"className={styles['input']}
-             onChange={(e) => handleInputChange('accessories', e.target.value)}/>
+                   onChange={(e) => handleAccessoryChange(e)}
+                   />
          </Form.Item>
  
          <Form.Item label="Status:" className={styles['formItem']}>
