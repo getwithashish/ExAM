@@ -16,9 +16,7 @@ USERS_RETRIEVAL_UNSUCCESSFUL = (
 )
 USER_UNAUTHORIZED = "User does not have permission to perform this action"
 EMPLOYEE_NOT_FOUND_ERROR = "Employee is not found in the request. Please try again."
-EMPLOYEE_SUCCESSFULLY_CREATED = (
-    "Employee has been created successfully."
-)
+EMPLOYEE_SUCCESSFULLY_CREATED = "Employee has been created successfully."
 USER_UNAUTHORIZED = "User does not have permission to perform this action"
 EMPLOYEE_NOT_FOUND_ERROR = "Employee is not found in the request. Please try again."
 EMPLOYEE_CREATION_UNSUCCESSFUL = (
@@ -29,7 +27,7 @@ EMPLOYEE_CREATION_UNSUCCESSFUL = (
 USER_FOUND_SUCCESS = "User found. Success."
 USER_DETAILS_VALIDATED_SUCCESSFULLY = "The provided details match with the database."
 USERS_RETRIEVED_SUCCESSFULLY = "List of users retrieved successfully."
-PAGINATED_RESPONSE_RETRIEVED_SUCESSFULLY="Paginated response sucessfully retrieved."
+PAGINATED_RESPONSE_RETRIEVED_SUCESSFULLY = "Paginated response sucessfully retrieved."
 # Asset Management - Error Messages
 ASSET_NOT_FOUND = (
     "The requested asset could not be found. Please review the details and try again."
@@ -77,6 +75,7 @@ ASSET_SUCCESSFULLY_CREATED = "Asset successfully created."
 ASSET_SUCCESSFULLY_UPDATED = "Asset details successfully updated."
 ASSET_SUCCESSFULLY_ASSIGNED = "Asset assigned successfully."
 ASSET_SUCCESSFULLY_UNASSIGNED = "Asset unassigned successfully."
+ASSET_UNASSIGNING_PENDING = "Asset unassignment successfully added to pending state. Approval required to complete Asset Unassignment."
 ASSET_COUNT_SUCCESSFULLY_RETRIEVED = "Asset count is successfully retreived."
 ASSET_CREATE_PENDING_SUCCESSFUL = "Asset Creation successfully added to pending state. Approval required to complete Asset Creation."
 ASSET_UPDATE_PENDING_SUCCESSFUL = "Asset Updation successfully added to pending state. Approval required to complete Asset Updation."
@@ -123,15 +122,17 @@ MEMORY_SUCCESSFULLY_RETRIEVED = "Memory details sucessfully retrieved."
 BUSINESS_UNIT_CREATED_UNSUCCESSFUL = (
     "Error while creating business unit.Please try again later."
 )
-UNAUTHORIZED_NO_PERMISSION="Unauthorized. You do not have permission to assign assets."
-STATUS_EXPIRED_OR_DISPOSED="Cannot assign the asset. Status is expired or disposed."
+UNAUTHORIZED_NO_PERMISSION = (
+    "Unauthorized. You do not have permission to assign assets."
+)
+STATUS_EXPIRED_OR_DISPOSED = "Cannot assign the asset. Status is expired or disposed."
 # Business Unit Success Messages
 BUSINESS_UNIT_SUCCESSFULLY_CREATED = "Business unit sucessfully created."
 MEMORY_SUCCESSFULLY_CREATED = "Memory sucessfully created."
 BUSINESS_UNIT_SUCCESSFULLY_RETRIEVED = "Business Unit details sucessfully retrieved."
 MEMORY_SUCCESSFULLY_RETRIEVED = "Memory details sucessfully retrieved."
 EMPLOYEE_DETAILS_SUCCESSFULLY_RETRIEVED = "Employee details sucessfully retrieved"
-EMPLOYEE_DETAILS_FOUND="Employee details retrieved based on specified search criteria"
+EMPLOYEE_DETAILS_FOUND = "Employee details retrieved based on specified search criteria"
 # Asset Type -Success/Invalid Messages
 VALID_ASSET_TYPE = "You have entered a valid asset type."
 INVALID_ASSET_TYPE = "The given asset type is invalid."

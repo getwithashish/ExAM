@@ -3,44 +3,53 @@ import logging
 logger = logging.Logger("Exceptions")
 
 
-class NotFoundError(Exception):
-    pass
-
-
-class AlreadyExists(Exception):
-    pass
-
-
-class MethodNotAllowed(Exception):
-    pass
-
-
-class ValidationError(Exception):
-    pass
-
-
-class SerializerError(Exception):
-    pass
-
-
-class BadRequest(Exception):
-    pass
-
-
-class NotAcceptableOperation(Exception):
+class NotFoundException(Exception):
     def __init__(self, errors, message, status):
         super().__init__(errors)
         self.message = message
         self.status = status
 
 
-class ServiceUnavailable(Exception):
+class AlreadyExistsException(Exception):
     pass
 
 
-class PermissionDenied(Exception):
+class MethodNotAllowedException(Exception):
     pass
 
 
-class InternalServerError(Exception):
+class ValidationException(Exception):
+    pass
+
+
+class SerializerException(Exception):
+    def __init__(self, errors, message, status):
+        super().__init__(errors)
+        self.message = message
+        self.status = status
+
+
+class BadRequestException(Exception):
+    pass
+
+
+class NotAcceptableOperationException(Exception):
+    def __init__(self, errors, message, status):
+        super().__init__(errors)
+        self.message = message
+        self.status = status
+
+
+class ServiceUnavailableException(Exception):
+    pass
+
+
+class PermissionDeniedException(Exception):
+    def __init__(self, errors, message, status):
+        super().__init__(errors)
+        self.message = message
+        self.status = status
+
+
+class InternalServerException(Exception):
     pass

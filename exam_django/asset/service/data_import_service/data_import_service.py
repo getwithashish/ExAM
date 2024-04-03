@@ -1,7 +1,5 @@
 import csv
-from django.db.models import Q
 from asset.models import Asset, AssetType, BusinessUnit, Employee, Location, Memory
-from user_auth.models import User
 
 
 class AssetImportService:
@@ -39,11 +37,15 @@ class AssetImportService:
                 business_unit_name=row["business_unit"]
             )
             custodian = Employee.objects.filter(employee_name=row["custodian"]).first()
-            location,location_created = Location.objects.get_or_create(location_name=row["location"])
-            invoice_location,invoice_location_created = Location.objects.get_or_create(
+            location, location_created = Location.objects.get_or_create(
+                location_name=row["location"]
+            )
+            invoice_location, invoice_location_created = Location.objects.get_or_create(
                 location_name=row["invoice_location"]
             )
-            memory,memory_created = Memory.objects.get_or_create(memory_space=row["memory"])
+            memory, memory_created = Memory.objects.get_or_create(
+                memory_space=row["memory"]
+            )
 
             # Create a new Asset object with the data from the CSV row
             Asset.objects.create(

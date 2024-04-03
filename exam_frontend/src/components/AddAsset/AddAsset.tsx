@@ -38,8 +38,28 @@ const AddAsset: React.FC = () => {
   const handleInputChange = (key: string, value: any) => {
     setFormData({ ...formData, [key]: value });
   };
- 
- 
+  message.config({
+    top: 200,
+     // Adjust the top position of the message (in pixels)
+   // Set the duration of the message (in seconds)
+  });
+//   let warningShown = false;
+
+// const handleVersionInputChange = (e: React.KeyboardEvent<HTMLInputElement>) => {
+//   const inputValue = e.key;
+//   if (!warningShown && /[^0-9]/.test(inputValue)) {
+//     message.warning('Please enter only numbers.');
+//     warningShown = true;
+//   } else if (!/[^0-9]/.test(inputValue)) {
+//     warningShown = false; // Reset the flag when only numbers are entered
+//   }
+// };
+const handleVersionInputChange = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const inputValue = e.currentTarget.value;
+  if (/[^0-9]/.test(inputValue)) {
+    message.warning('Please enter only numbers.');
+  }
+};
     // Fetch the asset type details
   const { data: assetTypeData, isLoading: isAssetTypeLoading, isError: isAssetTypeError } = useQuery({
     queryKey: ['assetType'],
@@ -161,9 +181,8 @@ const AddAsset: React.FC = () => {
   <InputNumber
     className={styles['input']}
     placeholder="Enter version number"
- 
-    onChange={(value: number | null) => handleInputChange('version', value)}
-  />
+    onKeyDown={handleVersionInputChange}
+    onChange={(e) => handleInputChange('version', e.target.value)}  />
 </Form.Item>
  
  

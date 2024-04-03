@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from asset.models.AssetLog import AssetLog
+from asset.models.asset_log import AssetLog
 
 
 class AssetLogSerializer(serializers.ModelSerializer):
