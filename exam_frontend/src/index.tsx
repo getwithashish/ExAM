@@ -12,7 +12,7 @@ import Logout from "./pages/authentication/Logout";
 import RequestPage from "./pages/RequestPage/ModifcationRequests";
 import AssignPage from "./pages/RequestPage/AssignRequest";
 import ExamRoutes from "./ExamRoutes";
-import Assignableasset from "./pages/AssignAsset/assignableasset";
+import Assignableasset from "./pages/AssignAsset/Allocate";
 import { AuthProvider } from "./pages/authentication/AuthContext";
 
 
