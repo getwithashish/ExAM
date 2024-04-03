@@ -1,9 +1,9 @@
-from .asset import Asset
+from ._asset import Asset
 from .asset_type import AssetType
 from .business_unit import BusinessUnit
-from .employee import Employee
-from .location import Location
-from .memory import Memory
+from ._employee import Employee
+from ._location import Location
+from ._memory import Memory
 from .asset_log import AssetLog
 
 __all__ = [
