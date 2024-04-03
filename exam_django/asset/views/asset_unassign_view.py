@@ -6,7 +6,7 @@ from asset.models import Asset
 from exceptions import PermissionDeniedException, SerializerException
 from messages import ASSET_NOT_FOUND, INVALID_ASSET_DATA
 from response import APIResponse
-from asset.service.unassign_service.unassign_service import UnassignAssetService
+from asset.service.asset_unassign_service.asset_unassign_service import UnassignAssetService
 
 
 class UnassignAssetView(APIView):
