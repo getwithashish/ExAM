@@ -41,6 +41,10 @@ import {
 import DasboardAssetTable from "./DasboardAssetTable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookOpenReader, faBoxOpen, faPlus, faUsersViewfinder } from "@fortawesome/free-solid-svg-icons";
+import { HiPencilAlt } from "react-icons/hi";
+import AssetTimelineHandler from "../TimelineLog/AssetTimelineHandler";
+import TimelineModal from "../TimelineLog/TimelineDrawer";
+import TimelineButton from "../TimelineLog/TimelineDrawer";
 
 interface ExpandedDataType {
   key: React.Key;
@@ -317,6 +321,10 @@ const DasboardAssetHandler = () => {
       {record[dataIndex]}
     </div>
   );
+  const handleViewAssetLog = (assetId) => {
+    // Logic to handle viewing asset log for the selected asset ID
+    console.log("Viewing asset log for asset ID:", assetId);
+  };
 
   <div>
     <h1>Asset Overview</h1>
@@ -1068,21 +1076,15 @@ const DasboardAssetHandler = () => {
 
     },
     {
-      title: 'Asset Log',
+      title: 'View Asset Log',
       dataIndex: 'Accessories',
       responsive: ['md'],
-      fixed:"right",
-       width: 120,
-       
-       render: () => (
-        <span>
-          <FontAwesomeIcon icon={faBookOpenReader} className="plus-icon" /> {/* Plus button icon */}
-        </span>
+      fixed: 'right',
+      width: 140,
+      render: (_,record) => (
+        <TimelineButton assetUuid={record.key} />
       ),
-    
-     
- 
-    },
+  },
     
 
   ];
