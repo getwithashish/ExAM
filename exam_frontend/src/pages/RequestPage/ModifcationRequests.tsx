@@ -286,7 +286,7 @@ const ViewRequestModal: FC<{
       id: "assetId",
       label: "ASSET TYPE",
       name: "assetId",
-      value: asset.asset_type.asset_type_,
+      value: asset.asset_type.asset_type_name,
       disabled: true,
     },
     {
