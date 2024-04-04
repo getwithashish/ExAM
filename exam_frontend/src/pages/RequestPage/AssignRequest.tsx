@@ -280,13 +280,24 @@ const ViewRequestModal: FC<{
   handleReject: () => void;
   onClose: () => void;
 }> = function ({ assignRequest, handleApprove, handleReject, onClose }) {
-  const [comments, setComments] = useState("");
+  const [notes, setNotes] = useState(assignRequest.notes);
+  const [approverNotes, setApproverNotes] = useState(
+    assignRequest.approval_status_message
+  );
   const [modalOpen, setModalOpen] = useState(false);
   const [actionType, setActionType] = useState("");
 
   const toggleModal = (type: string) => {
     setActionType(type);
     setModalOpen(!modalOpen);
+  };
+
+  const handleNotesChange = (e) => {
+    setNotes(e.target.value);
+  };
+
+  const handleApproverNotesChange = (e) => {
+    setApproverNotes(e.target.value);
   };
 
   const assignRequestFields = [
@@ -495,25 +506,26 @@ const ViewRequestModal: FC<{
               ))}
               <div className="lg:col-span-5">
                 <Label htmlFor="notes">NOTES</Label>
-                <Textarea
-                  id="notes"
-                  name="notes"
-                  rows={1}
-                  value={assignRequest.notes}
-                  className="mt-1"
-                />
-              </div>
-              <div className="lg:col-span-5">
-                <Label htmlFor="approverNotes">APPROVER NOTES</Label>
-                <Textarea
-                  id="approverNotes"
-                  name="approverNotes"
-                  rows={1}
-                  value={assignRequest.approval_status_message}
-                  onChange={(e) => setComments(e.target.value)}
-                  className="mt-1"
-                />
-              </div>
+                  <Textarea
+                    id="notes"
+                    name="notes"
+                    rows={1}
+                    value={notes}
+                    onChange={handleNotesChange}
+                    className="mt-1"
+                  />
+                </div>
+                <div className="lg:col-span-5">
+                  <Label htmlFor="approverNotes">APPROVER NOTES</Label>
+                  <Textarea
+                    id="approverNotes"
+                    name="approverNotes"
+                    rows={1}
+                    value={approverNotes}
+                    onChange={handleApproverNotesChange}
+                    className="mt-1"
+                  />
+                </div>
             </div>
           </form>
         </div>
