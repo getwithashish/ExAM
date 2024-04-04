@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { ChangeEvent, FC, useEffect, useState } from "react";
 import { Button, Label, Table, Textarea, TextInput } from "flowbite-react";
 import { HiPencilAlt } from "react-icons/hi";
 import axiosInstance from "../../config/AxiosConfig";
@@ -284,13 +284,14 @@ const ViewRequestModal: FC<{
     setModalOpen(!modalOpen);
   };
 
-  const handleNotesChange = (e) => {
+  const handleNotesChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setNotes(e.target.value);
   };
 
-  const handleApproverNotesChange = (e) => {
+  const handleApproverNotesChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setApproverNotes(e.target.value);
   };
+
 
   const formFields = [
     {

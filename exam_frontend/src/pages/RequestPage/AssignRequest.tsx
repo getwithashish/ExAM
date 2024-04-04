@@ -4,6 +4,7 @@ import { HiPencilAlt } from "react-icons/hi";
 import axiosInstance from "../../config/AxiosConfig";
 import React from "react";
 import DrawerViewRequest from "./DrawerViewRequest";
+import { ChangeEvent } from "react";
 
 const AssignPage: FC = function () {
   const [assignRequests, setAssignRequests] = useState<any[]>([]);
@@ -292,11 +293,11 @@ const ViewRequestModal: FC<{
     setModalOpen(!modalOpen);
   };
 
-  const handleNotesChange = (e) => {
+  const handleNotesChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setNotes(e.target.value);
   };
 
-  const handleApproverNotesChange = (e) => {
+  const handleApproverNotesChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setApproverNotes(e.target.value);
   };
 
@@ -484,11 +485,7 @@ const ViewRequestModal: FC<{
           </li>
         </ol>
       </nav>
-      <DrawerViewRequest
-        title="Assign Details"
-        onClose={onClose}
-        open={true}
-      >
+      <DrawerViewRequest title="Assign Details" onClose={onClose} open={true}>
         <div>
           <form>
             <div className="grid font-display grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">
@@ -506,26 +503,26 @@ const ViewRequestModal: FC<{
               ))}
               <div className="lg:col-span-5">
                 <Label htmlFor="notes">NOTES</Label>
-                  <Textarea
-                    id="notes"
-                    name="notes"
-                    rows={1}
-                    value={notes}
-                    onChange={handleNotesChange}
-                    className="mt-1"
-                  />
-                </div>
-                <div className="lg:col-span-5">
-                  <Label htmlFor="approverNotes">APPROVER NOTES</Label>
-                  <Textarea
-                    id="approverNotes"
-                    name="approverNotes"
-                    rows={1}
-                    value={approverNotes}
-                    onChange={handleApproverNotesChange}
-                    className="mt-1"
-                  />
-                </div>
+                <Textarea
+                  id="notes"
+                  name="notes"
+                  rows={1}
+                  value={notes}
+                  onChange={handleNotesChange}
+                  className="mt-1"
+                />
+              </div>
+              <div className="lg:col-span-5">
+                <Label htmlFor="approverNotes">APPROVER NOTES</Label>
+                <Textarea
+                  id="approverNotes"
+                  name="approverNotes"
+                  rows={1}
+                  value={approverNotes}
+                  onChange={handleApproverNotesChange}
+                  className="mt-1"
+                />
+              </div>
             </div>
           </form>
         </div>
