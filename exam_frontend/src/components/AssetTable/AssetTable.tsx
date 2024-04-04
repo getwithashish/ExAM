@@ -118,7 +118,7 @@ boxShadow
  </div>
 </div>
       <DrawerViewRequest
-        visible={drawerVisible}
+        open={drawerVisible}
         onClose={onCloseDrawer}
         selectedRow={selectedRow}
         drawerTitle={drawerTitle}

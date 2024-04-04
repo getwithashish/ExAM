@@ -378,7 +378,7 @@ const ViewRequestModal: FC<{ asset: any; handleApprove: () => void; handleReject
   ];
 
   return (
-    <DrawerViewRequest title="Request Details" onClose={onClose} visible={true}>
+    <DrawerViewRequest title="Request Details" onClose={onClose} open={true}>
       <div>
       <form>
         <div className="grid font-display grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">

@@ -35,13 +35,13 @@ const ModificationRequests: FC = function () {
 
   const handleApprove = () => {
     if (selectedAsset) {
-      console.log("Asset UUID:", selectedAsset.asset_uuid); 
+      console.log("Asset UUID:", selectedAsset.asset_uuid);
       const approvalData = {
         approval_type: "ASSET_DETAIL_STATUS",
         asset_uuid: selectedAsset.asset_uuid,
         comments: selectedAsset.approverNotes,
       };
-  
+
       axiosInstance
         .post("/asset/approve_asset", approvalData)
         .then(() => {
@@ -56,7 +56,7 @@ const ModificationRequests: FC = function () {
 
   const handleReject = () => {
     if (selectedAsset) {
-      console.log("Asset UUID:", selectedAsset.asset_uuid); 
+      console.log("Asset UUID:", selectedAsset.asset_uuid);
       const rejectedData = {
         data: {
           approval_type: "ASSET_DETAIL_STATUS",
@@ -64,7 +64,7 @@ const ModificationRequests: FC = function () {
           comments: selectedAsset.approverNotes,
         },
       };
-  
+
       axiosInstance
         .delete("/asset/approve_asset", rejectedData)
         .then(() => {
@@ -227,12 +227,11 @@ const RequestTable: FC<{
   assets: any[];
   setSelectedAsset: (asset: any | null) => void;
 }> = function ({ assets, setSelectedAsset }) {
-
   const handleViewAsset = (asset: any) => {
     console.log("Asset UUID:", asset.asset_uuid);
     setSelectedAsset(asset);
   };
-  
+
   return (
     <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600 rounded-md mx-10 ">
       <Table.Head className="bg-gray-100 dark:bg-gray-700 font-display">
@@ -273,13 +272,24 @@ const ViewRequestModal: FC<{
   handleReject: () => void;
   onClose: () => void;
 }> = function ({ asset, handleApprove, handleReject, onClose }) {
-  const [comments, setComments] = useState("");
+  const [notes, setNotes] = useState(asset.notes);
+  const [approverNotes, setApproverNotes] = useState(
+    asset.approval_status_message
+  );
   const [modalOpen, setModalOpen] = useState(false);
   const [actionType, setActionType] = useState("");
 
   const toggleModal = (type: string) => {
     setActionType(type);
     setModalOpen(!modalOpen);
+  };
+
+  const handleNotesChange = (e) => {
+    setNotes(e.target.value);
+  };
+
+  const handleApproverNotesChange = (e) => {
+    setApproverNotes(e.target.value);
   };
 
   const formFields = [
@@ -433,7 +443,7 @@ const ViewRequestModal: FC<{
   ];
 
   return (
-    <DrawerViewRequest title="Request Details" onClose={onClose} visible={true}>
+    <DrawerViewRequest title="Request Details" onClose={onClose} open={true}>
       <div>
         <form>
           <div className="grid font-display grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">
@@ -449,13 +459,14 @@ const ViewRequestModal: FC<{
                 />
               </div>
             ))}
-            <div className="lg:col-span-5">
-              <Label htmlFor="notes">NOTES</Label>
+           <div className="lg:col-span-5">
+            <Label htmlFor="notes">NOTES</Label>
               <Textarea
                 id="notes"
                 name="notes"
                 rows={1}
-                value={asset.notes}
+                value={notes}
+                onChange={handleNotesChange}
                 className="mt-1"
               />
             </div>
@@ -465,8 +476,8 @@ const ViewRequestModal: FC<{
                 id="approverNotes"
                 name="approverNotes"
                 rows={1}
-                value={asset.approval_status_message}
-                onChange={(e) => setComments(e.target.value)}
+                value={approverNotes}
+                onChange={handleApproverNotesChange}
                 className="mt-1"
               />
             </div>

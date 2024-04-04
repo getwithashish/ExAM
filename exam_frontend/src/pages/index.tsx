@@ -7,14 +7,14 @@ import DrawerViewRequest from "./RequestPage/DrawerViewRequest";
 import { Button } from "flowbite-react";
 
 const DashboardPage: FC = function () {
-  const [visible, setVisible] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const showQueryBuilder = () => {
-    setVisible(true);
+    setOpen(true);
   };
 
   const closeQueryBuilder = () => {
-    setVisible(false);
+    setOpen(false);
   };
  
   return (
@@ -25,7 +25,7 @@ const DashboardPage: FC = function () {
       <DrawerViewRequest
         title="Assign"
         onClose={closeQueryBuilder}
-        visible={visible}
+        open={open}
       >
         <QueryBuilderComponent />
       </DrawerViewRequest>

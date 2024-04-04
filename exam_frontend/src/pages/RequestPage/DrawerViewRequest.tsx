@@ -7,14 +7,14 @@ interface DrawerViewRequestProps extends DrawerProps {
     onClose: () => void; 
 }
 
-const DrawerViewRequest: FC<DrawerViewRequestProps> = ({visible, title, onClose, children }) => {
+const DrawerViewRequest: FC<DrawerViewRequestProps> = ({open, title, onClose, children }) => {
     
     return (
         <>
             <Drawer
                 title={title}
                 onClose={onClose}
-                visible={visible}
+                open={open}
                 width={1200}
             >
                 {children}

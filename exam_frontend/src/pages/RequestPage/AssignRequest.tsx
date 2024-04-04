@@ -476,7 +476,7 @@ const ViewRequestModal: FC<{
       <DrawerViewRequest
         title="Assign Details"
         onClose={onClose}
-        visible={true}
+        open={true}
       >
         <div>
           <form>
