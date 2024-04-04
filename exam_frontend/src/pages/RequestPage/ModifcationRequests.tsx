@@ -35,12 +35,13 @@ const ModificationRequests: FC = function () {
 
   const handleApprove = () => {
     if (selectedAsset) {
+      console.log("Asset UUID:", selectedAsset.asset_uuid); 
       const approvalData = {
         approval_type: "ASSET_DETAIL_STATUS",
         asset_uuid: selectedAsset.asset_uuid,
         comments: selectedAsset.approverNotes,
       };
-
+  
       axiosInstance
         .post("/asset/approve_asset", approvalData)
         .then(() => {
@@ -55,6 +56,7 @@ const ModificationRequests: FC = function () {
 
   const handleReject = () => {
     if (selectedAsset) {
+      console.log("Asset UUID:", selectedAsset.asset_uuid); 
       const rejectedData = {
         data: {
           approval_type: "ASSET_DETAIL_STATUS",
@@ -62,7 +64,7 @@ const ModificationRequests: FC = function () {
           comments: selectedAsset.approverNotes,
         },
       };
-
+  
       axiosInstance
         .delete("/asset/approve_asset", rejectedData)
         .then(() => {
@@ -225,6 +227,12 @@ const RequestTable: FC<{
   assets: any[];
   setSelectedAsset: (asset: any | null) => void;
 }> = function ({ assets, setSelectedAsset }) {
+
+  const handleViewAsset = (asset: any) => {
+    console.log("Asset UUID:", asset.asset_uuid);
+    setSelectedAsset(asset);
+  };
+  
   return (
     <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600 rounded-md mx-10 ">
       <Table.Head className="bg-gray-100 dark:bg-gray-700 font-display">
@@ -246,7 +254,7 @@ const RequestTable: FC<{
             </Table.Cell>
             <Table.Cell className="space-x-2 whitespace-nowrap p-4">
               <div className="flex items-center gap-x-3">
-                <Button color="primary" onClick={() => setSelectedAsset(asset)}>
+                <Button color="primary" onClick={() => handleViewAsset(asset)}>
                   <HiPencilAlt className="mr-2 text-lg font-display" />
                   View
                 </Button>
