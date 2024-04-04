@@ -319,7 +319,7 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>{" "}
           <Input
             defaultValue={data.os_version}
-            onChange={(e) => handleUpdateChange("os version", e.target.value)}
+            onChange={(e) => handleUpdateChange("os_version", e.target.value)}
             style={inputStyle}
           />{" "}
         </Form.Item>
