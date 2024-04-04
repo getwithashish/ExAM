@@ -4,7 +4,6 @@ import { HiPencilAlt } from "react-icons/hi";
 import axiosInstance from "../../config/AxiosConfig";
 import React from "react";
 import DrawerViewRequest from "./DrawerViewRequest";
-import AssetTimelineHandler from "../../components/TimelineLog/AssetTimelineHandler";
 
 const ModificationRequests: FC = function () {
   const [assets, setAssets] = useState<any[]>([]);
@@ -191,7 +190,6 @@ const ModificationRequests: FC = function () {
             handleApprove={handleApprove}
             handleReject={handleReject}
             onClose={() => setSelectedAsset(null)}
-            updatedFields={updatedFields} // Pass the updatedFields here
           />
         )}
       </div>
@@ -266,8 +264,7 @@ const ViewRequestModal: FC<{
   handleApprove: () => void;
   handleReject: () => void;
   onClose: () => void;
-  updatedFields: string[]; // Define updatedFields prop
-}> = function ({ asset, handleApprove, handleReject, onClose, updatedFields }) {
+}> = function ({ asset, handleApprove, handleReject, onClose }) {
   const [comments, setComments] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [actionType, setActionType] = useState("");
@@ -275,10 +272,6 @@ const ViewRequestModal: FC<{
   const toggleModal = (type: string) => {
     setActionType(type);
     setModalOpen(!modalOpen);
-  };
-
-  const isFieldUpdated = (fieldName: string): boolean => {
-    return updatedFields.includes(fieldName);
   };
 
   const formFields = [
@@ -293,7 +286,7 @@ const ViewRequestModal: FC<{
       id: "assetId",
       label: "ASSET TYPE",
       name: "assetId",
-      value: asset.asset_type.asset_type_name,
+      value: asset.asset_type.asset_type_,
       disabled: true,
     },
     {
@@ -439,15 +432,12 @@ const ViewRequestModal: FC<{
             {formFields.map((field, index) => (
               <div key={index}>
                 <Label htmlFor={field.id}>{field.label}</Label>
-                {/* Apply styling if the field is updated */}
                 <TextInput
                   id={field.id}
                   name={field.name}
                   value={field.value}
                   disabled={field.disabled}
-                  className={`mt-1 font-display ${
-                    isFieldUpdated(field.name) ? "text-red-500" : ""
-                  }`}
+                  className="mt-1 font-display"
                 />
               </div>
             ))}
@@ -482,14 +472,14 @@ const ViewRequestModal: FC<{
         >
           Approve
         </button>
-  
+
         <button
           className="block font-display text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-6 py-3 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
           onClick={() => toggleModal("reject")}
         >
           Reject
         </button>
-  
+
         {modalOpen && (
           <div
             id="popup-modal"
@@ -539,8 +529,6 @@ const ViewRequestModal: FC<{
           </div>
         )}
       </div>
-      {/* Pass updatedFields to AssetTimelineHandler */}
-      <AssetTimelineHandler assetUuid={asset.asset_uuid} updatedFields={updatedFields} />
     </DrawerViewRequest>
   );
 };
