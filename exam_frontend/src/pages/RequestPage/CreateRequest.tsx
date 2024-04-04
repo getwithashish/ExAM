@@ -236,6 +236,13 @@ const ViewRequestModal: FC<{ asset: any; handleApprove: () => void; handleReject
       disabled: true
     },
     {
+      id: "assetId",
+      label: "ASSET TYPE",
+      name: "assetId",
+      value: asset.asset_type.asset_type_name,
+      disabled: true,
+    },
+    {
       id: "version",
       label: "VERSION",
       name: "version",
