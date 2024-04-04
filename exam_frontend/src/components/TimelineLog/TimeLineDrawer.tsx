@@ -17,7 +17,7 @@ const TimelineDrawer: FC<{ assetUuid: string; onClose: () => void; visible: bool
   );
 };
 
-const TimelineButton: FC<{ assetUuid: string }> = ({ assetUuid }) => {
+const TimelineViewDrawer: FC<{ assetUuid: string }> = ({ assetUuid }) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
 
   const handleDrawerOpen = () => {
@@ -38,4 +38,4 @@ const TimelineButton: FC<{ assetUuid: string }> = ({ assetUuid }) => {
   );
 };
 
-export default TimelineButton;
+export default TimelineViewDrawer;

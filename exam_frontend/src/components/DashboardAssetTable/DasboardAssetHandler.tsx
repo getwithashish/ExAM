@@ -44,7 +44,7 @@ import { faBookOpenReader, faBoxOpen, faPlus, faUsersViewfinder } from "@fortawe
 import { HiPencilAlt } from "react-icons/hi";
 import AssetTimelineHandler from "../TimelineLog/AssetTimelineHandler";
 import TimelineModal from "../TimelineLog/TimelineDrawer";
-import TimelineButton from "../TimelineLog/TimelineDrawer";
+import TimelineViewDrawer from "../TimelineLog/TimelineDrawer";
 
 interface ExpandedDataType {
   key: React.Key;
@@ -1082,7 +1082,7 @@ const DasboardAssetHandler = () => {
       fixed: 'right',
       width: 140,
       render: (_,record) => (
-        <TimelineButton assetUuid={record.key} />
+        <TimelineViewDrawer assetUuid={record.key} />
       ),
   },
     
