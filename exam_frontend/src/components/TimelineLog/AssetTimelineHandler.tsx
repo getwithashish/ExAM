@@ -35,18 +35,18 @@ export const AssetTimelineHandler = ({ assetUuid }: { assetUuid: string }) => {
 
             const fields = filteredLogs.flatMap((log: any) =>
                 Object.entries(log.changes)
-                    .filter(
-                        ([_, value]: [string, any]) =>
-                            value.old_value !== "None" &&
-                            value.old_value !== value.new_value
-                    )
-                    .map(([key, _]: [string, any]) => key)
+                .filter(
+                    ([_, value]: [string, any]) =>
+                    value.old_value !== "None" &&
+                    value.old_value !== value.new_value
+                )
+                .map(([key, _]: [string, any]) => key)
             );
 
             setUpdatedFields(fields);
             console.log(`Updated fields for assetUuid ${assetUuid}:`, fields);
 
-            setAssetLogs(filteredLogs); 
+            setAssetLogs(filteredLogs);
             } else {
             console.error("Invalid response data format");
             }

@@ -292,7 +292,6 @@ const ViewRequestModal: FC<{
     setApproverNotes(e.target.value);
   };
 
-
   const formFields = [
     {
       id: "assetId",
@@ -460,8 +459,8 @@ const ViewRequestModal: FC<{
                 />
               </div>
             ))}
-           <div className="lg:col-span-5">
-            <Label htmlFor="notes">NOTES</Label>
+            <div className="lg:col-span-5">
+              <Label htmlFor="notes">NOTES</Label>
               <Textarea
                 id="notes"
                 name="notes"
