@@ -32,6 +32,8 @@
 
 
 
+# export_service.py
+
 from django.http import HttpResponse
 import csv
 import openpyxl
@@ -41,10 +43,12 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 from asset.models import Asset
 
-
 class ExportService:
     @staticmethod
-    def export_asset(format='csv'):
+    def export_asset(request):
+        # Retrieve format from query parameters, default to CSV if not provided
+        format = request.GET.get('format', 'csv')
+
         # Retrieve all assets from the database
         assets = Asset.objects.all()
 
