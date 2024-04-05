@@ -112,9 +112,9 @@ const CreateRequestPage: FC = function () {
                 >
                   <path
                     stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     d="m1 9 4-4-4-4"
                   />
                 </svg>
@@ -137,9 +137,9 @@ const CreateRequestPage: FC = function () {
                 >
                   <path
                     stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     d="m1 9 4-4-4-4"
                   />
                 </svg>
@@ -283,7 +283,6 @@ const ViewRequestModal: FC<{
   const handleApproverNotesChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setApproverNotes(e.target.value);
   };
-
 
   const formFields = [
     {
@@ -452,28 +451,28 @@ const ViewRequestModal: FC<{
                 />
               </div>
             ))}
-             <div className="lg:col-span-5">
-                <Label htmlFor="notes">NOTES</Label>
-                  <Textarea
-                    id="notes"
-                    name="notes"
-                    rows={1}
-                    value={notes}
-                    onChange={handleNotesChange}
-                    className="mt-1"
-                  />
-                </div>
-                <div className="lg:col-span-5">
-                  <Label htmlFor="approverNotes">APPROVER NOTES</Label>
-                  <Textarea
-                    id="approverNotes"
-                    name="approverNotes"
-                    rows={1}
-                    value={approverNotes}
-                    onChange={handleApproverNotesChange}
-                    className="mt-1"
-                  />
-                </div>
+            <div className="lg:col-span-5">
+              <Label htmlFor="notes">NOTES</Label>
+              <Textarea
+                id="notes"
+                name="notes"
+                rows={1}
+                value={notes}
+                onChange={handleNotesChange}
+                className="mt-1"
+              />
+            </div>
+            <div className="lg:col-span-5">
+              <Label htmlFor="approverNotes">APPROVER NOTES</Label>
+              <Textarea
+                id="approverNotes"
+                name="approverNotes"
+                rows={1}
+                value={approverNotes}
+                onChange={handleApproverNotesChange}
+                className="mt-1"
+              />
+            </div>
           </div>
         </form>
       </div>

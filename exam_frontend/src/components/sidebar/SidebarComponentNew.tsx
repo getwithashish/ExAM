@@ -45,20 +45,20 @@ const SidebarComponentNew = ({ children }) => {
   const { userRole, setUserRole, login, logout } = useAuth();
 
   const handleDownload = async () => {
-    const fileUrl = '/static/asset_management_windows.exe';
-    
+    const fileUrl = "/static/asset_management_windows.exe";
+
     try {
       const response = await fetch(fileUrl);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(new Blob([blob]));
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
-      link.setAttribute('download', 'asset_management_windows.exe');
+      link.setAttribute("download", "asset_management_windows.exe");
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     } catch (error) {
-      console.error('Error downloading file:', error);
+      console.error("Error downloading file:", error);
     }
   };
 
@@ -193,7 +193,7 @@ const SidebarComponentNew = ({ children }) => {
                   </div>
                 )}
                 <div className="flex items-center gap-3 ml-5  -mt-10">
-                  <Dropdown overlay={menu} placement="bottomCenter" arrow>
+                  <Dropdown overlay={menu} placement="bottom" arrow>
                     <div className="cursor-pointer">
                       <Avatars />
                     </div>
@@ -319,7 +319,9 @@ const SidebarComponentNew = ({ children }) => {
                 <Menu.Item icon={<CloseCircleOutlined />}>
                   {/* For sysadmin */}
                   <ToolTip title="Show my Asset allocation Requests which have been rejected">
-                    <Link to="/exam/rejected_allocation">Rejected Allocation</Link>
+                    <Link to="/exam/rejected_allocation">
+                      Rejected Allocation
+                    </Link>
                   </ToolTip>
                 </Menu.Item>
               </SubMenu>
