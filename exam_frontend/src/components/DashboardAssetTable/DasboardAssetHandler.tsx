@@ -43,8 +43,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookOpenReader, faBoxOpen, faPlus, faUsersViewfinder } from "@fortawesome/free-solid-svg-icons";
 import { HiPencilAlt } from "react-icons/hi";
 import AssetTimelineHandler from "../TimelineLog/AssetTimelineHandler";
-import TimelineModal from "../TimelineLog/TimelineDrawer";
-import TimelineButton from "../TimelineLog/TimelineDrawer";
+
+import TimelineButton from "../TimelineLog/TimeLineDrawer"
 
 interface ExpandedDataType {
   key: React.Key;

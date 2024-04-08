@@ -25,7 +25,8 @@ type SizeType = Parameters<typeof Form>[0]['size'];
 const AddAsset: React.FC = () => {
   // State to store form data
   const [formData, setFormData] = useState<any>({});
-
+  const [requiredFields, setRequiredFields] = useState<string[]>(['asset_category', 'asset_id','product_name','serial_number','asset_type','location','invoice_location','business_unit','os','status']);
+  const [formSubmitted, setFormSubmitted] = useState(false);
  
   const [componentSize, setComponentSize] = useState<SizeType | 'default'>('default');
  
@@ -40,21 +41,39 @@ const AddAsset: React.FC = () => {
 
   const [warningShown, setWarningShown] = useState(false);
   // Validation function for warranty period
-  const validateWarrantyPeriod = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    // Check if the entered value is not numeric and the warning hasn't been shown before
-    if (!warningShown && isNaN(value as any)) {
-      // Display a warning message
-      message.warning('Warranty period should only contain digits.');
-      // Set the state to indicate that the warning has been shown
-      setWarningShown(true);
-    } else if (warningShown && !isNaN(value as any)) {
-      // Reset the warningShown state if the value becomes numeric again
-      setWarningShown(false);
-    }
-    // Call the existing handleInputChange function to update the form data
-    handleInputChange('warranty_period', value);
-  };
+  // const validateWarrantyPeriod = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const value = e.target.value;
+  //   // Check if the entered value is not numeric and the warning hasn't been shown before
+  //   if (!warningShown && isNaN(value as any)) {
+  //     // Display a warning message
+  //     message.warning('Warranty period should only contain digits.');
+  //     // Set the state to indicate that the warning has been shown
+  //     setWarningShown(true);
+  //   } else if (warningShown && !isNaN(value as any)) {
+  //     // Reset the warningShown state if the value becomes numeric again
+  //     setWarningShown(false);
+  //   }
+  //   // Call the existing handleInputChange function to update the form data
+  //   handleInputChange('warranty_period', value);
+  // };
+
+  // const validateWarrantyPeriod = (): boolean => {
+  //   const value = formData.warranty_period.trim();
+    
+  //   // Check if the form is submitted and the warranty period is non-empty
+  //   if (formSubmitted && value !== '') {
+  //     // Check if the entered value contains non-digit characters
+  //     if (!/^\d+$/.test(value)) {
+  //       // Display a warning message
+  //       message.warning('Warranty period should only contain digits.');
+  //       return false;
+  //     }
+  //   }
+  //   return true; // Allow form submission if the validation passes or if the field is empty
+  // };
+  
+  
+  
 
   const validateOsVersion = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -92,15 +111,17 @@ const AddAsset: React.FC = () => {
   // Validation function for processor generation
  // Validation function for processor generation
  const validateProcessorGeneration = (value: string) => {
-  // Define a regular expression pattern to match the desired format (i followed by 5, 7, or 9)
-  const pattern = /^i[1-9]$/;
+  // Define a regular expression pattern to match alphanumeric characters
+  const pattern = /^[a-zA-Z0-9]+$/;
 
   // Check if the value matches the pattern
-  if (value.length > 2 || (value.length === 2 && !['i'].includes(value))) {
-    // Display a warning message if the value does not match the pattern
-    message.warning('Processor generation should be i followed by digit');
-    // Set the state to indicate that the warning for processor generation has been shown
-    setProcessorGenWarningShown(true);
+  if (!pattern.test(value)) {
+    // Display a warning message if the value does not match the pattern and the warning hasn't been shown before
+    if (!processorGenWarningShown) {
+      message.warning('Processor generation should be alphanumeric');
+      // Set the state to indicate that the warning for processor generation has been shown
+      setProcessorGenWarningShown(true);
+    }s
   } else {
     // Reset the processorGenWarningShown state if the value matches the pattern
     setProcessorGenWarningShown(false);
@@ -175,9 +196,29 @@ const handleAccessoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     name: item.location_name,
   }));
   // Fetch data queries...
- 
+
+
   const handleSubmit = async () => {
+
+   
+    setFormSubmitted(true);
+    if (!formData.warranty_period) {
+      // If warranty_period is undefined, set it to an empty string
+      formData.warranty_period = '';
+    }
+    const warrantyPeriodValue = formData.warranty_period.trim();
+    if (warrantyPeriodValue !== '' && !/^\d+$/.test(warrantyPeriodValue)) {
+      // Display a warning message if warranty period is not a digit
+      message.error('Warranty period should be a valid integer.');
+      return; // Exit function if validation fails
+    }
+  
+    // if (!formData.asset_category || !formData.asset_id || !formData.product_name|| !formData.serial_number || !formData.asset_type || !formData.location || !formData.invoice_location || !formData.business_unit || !formData.os || !formData.status) {
+    //   message.error('Please fill in all mandatory fields.');
+    //   return; // Exit function if mandatory fields are not filled
+    // }
     try {
+      console.log('Attempting to submit form data:', formData);
       // Send a POST request to your backend API with the form data
       const response = await axiosInstance.post('http://localhost:8000/api/v1/asset/', formData);
       console.log('Form Data Posted:', response.data);
@@ -188,10 +229,6 @@ const handleAccessoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTimeout(() => {
       window.location.reload();
     }, 1500); // 1500 milliseconds (1.5 seconds) delay before reloading
- 
- 
-       
- 
        
       // Optionally, you can handle success or show a success message here
     } catch (error) {
@@ -219,7 +256,13 @@ const handleAccessoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         {/* Form items... */}
  
         {/* Category */}
-        <Form.Item label="Category" className={styles['formItem']}>
+        <Form.Item   label={
+    <span>
+      Category<span className={styles['star']}>*</span>
+    </span>
+  } className={styles['formItem']}
+            validateStatus={!formData.asset_category && requiredFields.includes('asset_category') && formSubmitted ? 'error' : ''}
+            help={!formData.asset_category && requiredFields.includes('asset_category') && formSubmitted ? 'Required' : ''}>
           <Select
             className={styles['input']}
             placeholder="Select asset category"
@@ -231,13 +274,19 @@ const handleAccessoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         </Form.Item>
  
         {/* Asset ID */}
-        <Form.Item label="Asset ID" className={styles['formItem']}>
+        <Form.Item   label={
+    <span>
+      Asset ID<span className={styles['star']}>*</span>
+    </span>
+  }  className={styles['formItem']}
+         validateStatus={!formData.asset_id && requiredFields.includes('asset_id') && formSubmitted ? 'error' : ''}
+         help={!formData.asset_id && requiredFields.includes('asset_id') && formSubmitted ? 'Required' : ''}>
           <Input
             placeholder="Enter Asset ID"
             className={styles['input']}
             onChange={(e) => handleInputChange('asset_id', e.target.value)}
             suffix={
-              <Tooltip title="Asset Id should be in the format:e45f403c-4429-4406-9c8d-c42d972b65e4">
+              <Tooltip title="Asset Id should be alphanumeric Eg:ASS101">
               <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
             </Tooltip>
             }
@@ -255,14 +304,18 @@ const handleAccessoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 </Form.Item>
   */}
 
-<Form.Item label="Version" className={styles['formItem']}
+<Form.Item  label={
+    <span>
+      Version<span className={styles['star']}>*</span>
+    </span>
+  }   className={styles['formItem']}
  >
-  <InputNumber
+  <Input
     className={styles['input']}
     placeholder="Enter version number"
     onChange={(e) => validateVersion(e)}
     suffix={
-      <Tooltip title="Enter the version number of the asset">
+      <Tooltip title="Version number should be digit eg:2,3">
         <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
       </Tooltip>
     }
@@ -271,7 +324,13 @@ const handleAccessoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
        
  
-<Form.Item label="Asset Type" className={styles['formItem']}>
+<Form.Item label={
+    <span>
+      Asset Type<span className={styles['star']}>*</span>
+    </span>
+  }   className={styles['formItem']}
+   validateStatus={!formData.asset_type && requiredFields.includes('asset_type') && formSubmitted ? 'error' : ''}
+   help={!formData.asset_type && requiredFields.includes('asset_type') && formSubmitted ? 'Required' : ''}>
     <Select className={styles['input']} placeholder="Select asset type"
     onChange={(value) => handleInputChange('asset_type', value)}
     options={asset_type}
@@ -286,26 +345,36 @@ const handleAccessoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             onChange={(e) => handleInputChange('product_name', e.target.value)}/>
          </Form.Item> */}
  
- <Form.Item label="Product name" className={styles['formItem']}>
+ <Form.Item label={
+    <span>
+      Product Name<span className={styles['star']}>*</span>
+    </span>
+  }   className={styles['formItem']}
+ validateStatus={!formData.product_name && requiredFields.includes('product_name') && formSubmitted ? 'error' : ''}
+ help={!formData.product_name && requiredFields.includes('product_name') && formSubmitted ? 'Required' : ''}>
   <Input
     placeholder="Enter Product name"
     className={styles['input']}
     onChange={(e) => handleInputChange('product_name', e.target.value)}
     suffix={
-      <Tooltip title="Enter the name of the product">
+      <Tooltip title="Product name should not exceed 20 characters">
         <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
       </Tooltip>
     }
   />
 </Form.Item>
  
-       <Form.Item label="Model number" className={styles['formItem']}>
+       <Form.Item label={
+    <span>
+      Model Number<span className={styles['star']}>*</span>
+    </span>
+  }   className={styles['formItem']}>
         <Input 
         placeholder="Enter Model number"
         className={styles['input']}
             onChange={(e) => handleInputChange('model_number', e.target.value)}
             suffix={
-              <Tooltip  placement="top" title="Model number should be alphanumeric eg:MN101">
+              <Tooltip  placement="top" title="Model number should be alphanumeric Eg:MN101">
         <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
       </Tooltip>
             }
@@ -314,9 +383,20 @@ const handleAccessoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         </Form.Item>
  
  
-        <Form.Item label="Serial Number" className={styles['formItem']}>
+        <Form.Item label={
+    <span>
+      Serial Number<span className={styles['star']}>*</span>
+    </span>
+  }   className={styles['formItem']}
+        validateStatus={!formData.serial_number && requiredFields.includes('serial_number') && formSubmitted ? 'error' : ''}
+        help={!formData.serial_number && requiredFields.includes('serial_number') && formSubmitted ? 'Required' : ''}>
         <Input placeholder="Enter serial number"className={styles['input']}
-        onChange={(e) => handleInputChange('serial_number', e.target.value)} />
+        onChange={(e) => handleInputChange('serial_number', e.target.value)}
+        suffix={
+          <Tooltip  placement="top" title="Serial number should be alphanumeric and should not exceed 30 characters Eg:ABC123DEF456">
+    <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+  </Tooltip>
+        } />
         </Form.Item>
  
  
@@ -340,11 +420,22 @@ const handleAccessoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         <Form.Item label="Warranty Period:" className={styles['formItem']}>
         <Input className={styles['input']}  placeholder="Enter warranty period"
       onChange={(e) => validateWarrantyPeriod(e)}
+      suffix={
+        <Tooltip  placement="top" title="Warranty period should be digit Eg:2,3">
+  <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+</Tooltip>
+      }
       />
         </Form.Item>
  
  
-        <Form.Item label="Product location:" className={styles['formItem']}>
+        <Form.Item label={
+    <span>
+      Product Location<span className={styles['star']}>*</span>
+    </span>
+  }   className={styles['formItem']}
+         validateStatus={!formData.location && requiredFields.includes('location') && formSubmitted ? 'error' : ''}
+         help={!formData.location && requiredFields.includes('location') && formSubmitted ? 'Required' : ''}>
           <Select className={styles['input']} placeholder="Select product location"
            onChange={(value) => handleInputChange('location', value)}>
            {locations.map((location: any) => (
@@ -356,7 +447,13 @@ const handleAccessoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
  
        
  
-        <Form.Item label="Invoice location:" className={styles['formItem']}>
+        <Form.Item label={
+    <span>
+      Invoice Location<span className={styles['star']}>*</span>
+    </span>
+  }   className={styles['formItem']}
+         validateStatus={!formData.invoice_location && requiredFields.includes('invoice_location') && formSubmitted ? 'error' : ''}
+         help={!formData.invoice_location && requiredFields.includes('invoice_location') && formSubmitted ? 'Required' : ''}>
           <Select className={styles['input']} placeholder="Select invoice location"
            onChange={(value) => handleInputChange('invoice_location', value)}>
             {locations.map((location: any) => (
@@ -366,7 +463,9 @@ const handleAccessoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         </Form.Item>
  
  
-                <Form.Item label="Business Unit" className={styles['formItem']}>
+                <Form.Item label="Business Unit" className={styles['formItem']}
+                 validateStatus={!formData.business_unit && requiredFields.includes('business_unit') && formSubmitted ? 'error' : ''}
+                 help={!formData.business_unit && requiredFields.includes('business_unit') && formSubmitted ? 'Required' : ''}>
         <Select className={styles['input']} placeholder="Select business unit"
          onChange={(value) => handleInputChange('business_unit', value)}>
           {business_units.map((item: any) => (
@@ -376,7 +475,9 @@ const handleAccessoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         </Form.Item>
    
  
-        <Form.Item label="OS:" className={styles['formItem']}>
+        <Form.Item label="OS:" className={styles['formItem']}
+         validateStatus={!formData.business_unit && requiredFields.includes('business_unit') && formSubmitted ? 'error' : ''}
+                 help={!formData.business_unit && requiredFields.includes('business_unit') && formSubmitted ? 'Required' : ''}>
            <Select className={styles['input']}  placeholder="Select OS"
                 onChange={(value) => handleInputChange('os', value)}>
              <Option value="WINDOWS">Windows</Option>
@@ -472,11 +573,11 @@ const handleAccessoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                    />
          </Form.Item>
  
-         <Form.Item label="Status:" className={styles['formItem']}>
+         <Form.Item label="Status:" className={styles['formItem']}
+         >
            <Select className={styles['input']} defaultValue="in store" placeholder="Select Approval"
                 onChange={(value) => handleInputChange('status', value)}>
              <Option value="in store">IN-STORE</Option>
-           
              <Option value="in repair">IN-REPAIR</Option>
              <Option value="expired">EXPIRED</Option>
              <Option value="disposed">DISPOSED</Option>
