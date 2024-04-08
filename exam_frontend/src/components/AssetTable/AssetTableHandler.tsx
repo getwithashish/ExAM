@@ -57,180 +57,7 @@ const AssetTableHandler = ({
   heading,
   isMyApprovalPage,
 }) => {
-  const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null); // State to store the selected asset ID
-
-  const {
-    data: logsData,
-    error,
-    isLoading,
-    isSuccess,
-    isFetching,
-    isRefetchError,
-    refetch,
-  } = useQuery<LogData[], Error>({
-    queryKey: ["assetLogsData", selectedAssetId], // Include selectedAssetId in the query key
-    queryFn: () => getAssetLog(selectedAssetId),
-  });
-
-  const expandedRowRender = useCallback(
-    (assetId: string) => {
-      let logsDataExpanded: readonly any[] | undefined = [];
-      const columnsLog: TableColumnsType<ExpandedDataType> = [
-        { title: "timestamp", dataIndex: "timestamp", key: "timestamp" },
-        {
-          title: "asset_category",
-          dataIndex: "asset_category",
-          key: "asset_category",
-        },
-        {
-          title: "asset_detail_status",
-          key: "asset_detail_status",
-          dataIndex: "asset_detail_status",
-        },
-        {
-          title: "assign_status",
-          dataIndex: "assign_status",
-          key: "assign_status",
-        },
-        { title: "created_at", dataIndex: "created_at", key: "created_at" },
-        {
-          title: "product_name",
-          dataIndex: "product_name",
-          key: "product_name",
-        },
-        { title: "updated_at", dataIndex: "updated_at", key: "updated_at" },
-        {
-          title: "date_of_purchase",
-          dataIndex: "date_of_purchase",
-          key: "date_of_purchase",
-        },
-        {
-          title: "model_number",
-          dataIndex: "model_number",
-          key: "model_number",
-        },
-        { title: "Asset Type", dataIndex: "asset_type", key: "asset_type" },
-
-        { title: "Location", dataIndex: "location", key: "location" },
-        {
-          title: "Invoice Location",
-          dataIndex: "invoice_location",
-          key: "invoice_location",
-        },
-        {
-          title: "Warranty Period",
-          dataIndex: "warranty_period",
-          key: "warranty_period",
-        },
-        {
-          title: "Version",
-          dataIndex: "version",
-          key: "version",
-        },
-        {
-          title: "Configuration",
-          dataIndex: "configuration",
-          key: "configuration",
-        },
-        {
-          title: "Storage",
-          dataIndex: "storage",
-          key: "storage",
-        },
-        {
-          title: "Os",
-          dataIndex: "os",
-          key: "os",
-        },
-        {
-          title: "Owner",
-          dataIndex: "owner",
-          key: "owner",
-        },
-        {
-          title: "Notes",
-          dataIndex: "notes",
-          key: "notes",
-        },
-      ];
-
-      console.log("logsdata", logsData);
-      if (isSuccess && !isLoading && logsData?.length) {
-        for (let i = 0; logsData && i < (logsData as LogData[]).length; i++) {
-          let { asset_log }: LogData = (logsData as LogData[])[i];
-          const timestamp =
-            logsData !== undefined &&
-            logsData?.timestamp &&
-            new Date(logsData!.timestamp);
-          // Convert timestamp to Date object
-          const formattedTimestamp = timestamp?.toLocaleString(); // Format the timestamp as a string in the local time zone
-
-          const createdAt = new Date(asset_log?.created_at); // Convert created_at timestamp to Date object
-          const formattedCreatedAt = createdAt.toLocaleString(); // Format the created_at timestamp
-
-          const updatedAt = new Date(asset_log?.updated_at); // Convert updated_at timestamp to Date object
-          const formattedUpdatedAt = updatedAt.toLocaleString();
-
-          logsDataExpanded = [
-            ...logsDataExpanded,
-            {
-              ...asset_log,
-              key: asset_log.asset_id,
-              timestamp: formattedTimestamp,
-              asset_category: asset_log.asset_category,
-              asset_detail_status: asset_log.asset_detail_status,
-              assign_status: asset_log.assign_status,
-              created_at: formattedCreatedAt,
-              product_name: asset_log.product_name,
-              updated_at: formattedUpdatedAt,
-              date_of_purchase: asset_log.date_of_purchase,
-              date: asset_log.date_of_purchase,
-              asset_type: asset_log.asset_type.asset_type_name,
-              location: asset_log.location.location_name,
-              invoice_location:
-                asset_log.invoice_location.invoice_location_name,
-              warranty_period: asset_log.warranty_period,
-              version: asset_log.version,
-              configuration: asset_log.configuration,
-              storage: asset_log.storage,
-              os: asset_log.os,
-              owner: asset_log.owner,
-              notes: asset_log.notes,
-              name: asset_log.product_name,
-              upgradeNum: asset_log.assign_status,
-            },
-          ];
-        }
-        console.log("logsDataexpanded", logsDataExpanded);
-        return (
-          <Table
-            columns={columnsLog}
-            dataSource={logsDataExpanded}
-            pagination={false}
-            style={{
-              maxHeight: 300,
-              overflowY: "auto",
-              maxWidth: "100%",
-              scrollbarWidth: "none",
-              msOverflowStyle: "none",
-            }}
-          />
-        );
-      } else return <>no data</>;
-    },
-    [selectedAssetId, isSuccess, logsData]
-  );
-
-  // const nestedcolumns: TableColumnsType<DataType> = [];
-
-  // const nesteddata: DataType[] = [];
-  // for (let i = 0; i < 1; ++i) {
-  //   nesteddata.push({
-  //     key: i.toString(),
-
-  //   });
-  // }
-
+  
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
 
@@ -712,23 +539,7 @@ const AssetTableHandler = ({
       render: renderClickableColumn("Accessories", "accessories"),
     },
     
-    {
-      title: 'Asset Log',
-      dataIndex: 'Accessories',
-      responsive: ['md'],
-      fixed:"right",
-       width: 120,
-       
-       render: () => (
-        <span>
-          <FontAwesomeIcon icon={faBookOpenReader} className="plus-icon" /> {/* Plus button icon */}
-        </span>
-      ),
-    
-     
- 
-    },
-    
+   
 
 
     ...(isRejectedPage
@@ -847,34 +658,24 @@ const AssetTableHandler = ({
 
   const button = <Button type="primary"></Button>;
 
-  useEffect(() => {
-    if (selectedAssetId) {
-      refetch();
-    }
-  }, [selectedAssetId]);
 
   return (
     <AssetTable
       heading={heading}
       // drawerTitle={drawerTitle}
-      logsData={logsData}
-      isLoading={isLoading}
-      isSuccess={isSuccess}
-      selectedAssetId={selectedAssetId && selectedAssetId}
-      setSelectedAssetId={setSelectedAssetId}
+     
       handleRowClick={handleRowClick}
       onCloseDrawer={onCloseDrawer}
       selectedRow={selectedRow}
       drawerVisible={drawerVisible}
       assetData={data}
       columns={columns}
-      expandedRowRender={expandedRowRender}
+    
       memoryData={memoryData}
       assetTypeData={assetTypeData}
       locations={locations}
       isMyApprovalPage={isMyApprovalPage}
       statusOptions={statusOptions}
-      asset_uuid={selectedAssetId}
       businessUnitOptions={businessUnitOptions}
       handleUpdateData={function (updatedData: { key: any }): void {
         throw new Error("Function not implemented.");
