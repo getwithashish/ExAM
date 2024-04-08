@@ -46,7 +46,6 @@ import AssetTimelineHandler from "../TimelineLog/AssetTimelineHandler";
 
 import TimelineButton from "../TimelineLog/TimeLineDrawer"
 
-
 interface ExpandedDataType {
   key: React.Key;
   date: string;
