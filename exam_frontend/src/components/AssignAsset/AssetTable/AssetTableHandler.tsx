@@ -710,22 +710,6 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => (
       render: renderClickableColumn("Accessories", "accessories"),
     },
     
-    {
-      title: 'Asset Log',
-      dataIndex: 'Accessories',
-      responsive: ['md'],
-      fixed:"right",
-       width: 120,
-       
-       render: () => (
-        <span>
-          <FontAwesomeIcon icon={faBookOpenReader} className="plus-icon" /> {/* Plus button icon */}
-        </span>
-      ),
-    
-     
- 
-    },
   
     {
       title: "Assign Asset",
