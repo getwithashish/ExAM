@@ -1,14 +1,10 @@
 import React from "react";
-import {
-  DownloadOutlined,
-  UploadOutlined,
-  CloudDownloadOutlined,
-} from "@ant-design/icons";
+import { DownloadOutlined, UploadOutlined, CloudDownloadOutlined } from "@ant-design/icons";
 import axiosInstance from "../../config/AxiosConfig";
 import GlobalSearch from "../GlobalSearch/GlobalSearch";
 import styles from "./TableNavbar.module.css";
 import DropDown from "../DropDown/DropDown";
- 
+
 const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
   const decodeJWT = (token: string) => {
     try {
@@ -28,7 +24,7 @@ const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
       return null;
     }
   };
- 
+
   const getUserScope = () => {
     const jwtToken = localStorage.getItem("jwt");
     console.log(jwtToken);
@@ -37,95 +33,104 @@ const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
       return payload.user_scope;
     }
   };
- 
-  // Function to handle import button click
+
   const handleImportClick = () => {
     setShowUpload(true);
   };
- 
-  // Function to handle export button click
-  const handleExport = () => {
-    axiosInstance
-      .get("http://localhost:8000/api/v1/asset/export")
-      .then((response) => {
-        const blob = new Blob([response.data], { type: "text/csv" });
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", "assets.csv");
-        document.body.appendChild(link);
-        link.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(link);
-      })
-      .catch((error) => {
-        console.error("Error exporting assets:", error);
+
+  const handleExport = async (format: 'csv' | 'xlsx' | 'pdf') => {
+    try {
+      // Make an API call to the backend to export assets
+      const response = await axiosInstance.get(`/export/assets?format=${format}`, {
+        responseType: 'blob' // Receive response as a binary blob
       });
+
+      // Create a temporary URL for the blob response
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      // Create a link element to trigger the download
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `assets.${format}`);
+
+      // Append the link to the document body and trigger the download
+      document.body.appendChild(link);
+      link.click();
+
+      // Clean up the URL and link
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error(`Error exporting assets as ${format.toUpperCase()}:`, error);
+    }
   };
- 
-  // Function to handle template download button click
+
   const handleTemplateDownload = () => {
     // Use the direct URL of the static file
     const filePath = "/static/sample_asset_download_template.csv";
- 
+
     // Create a new link element to trigger the download
     const link = document.createElement("a");
     link.href = filePath;
     link.setAttribute("download", "sample_asset_download_template.csv");
     document.body.appendChild(link);
- 
+
     // Trigger the download
     link.click();
- 
+
     // Cleanup
     document.body.removeChild(link);
   };
- 
-  // Function to handle dropdown item selection
+
   const handleDropDownSelect = (key: string) => {
     if (key === "import") {
       handleImportClick();
     } else if (key === "downloadTemplate") {
       handleTemplateDownload();
+    } else {
+      handleExport(key as 'csv' | 'xlsx' | 'pdf');
     }
   };
- 
-  // Define the items for the dropdown with icons
-  const items = [
-    { label: "Import Files", key: "import", icon: <DownloadOutlined /> },
-    {
-      label: "Download Template",
-      key: "downloadTemplate",
-      icon: <CloudDownloadOutlined />,
-    },
+
+  // Define the items for the import dropdown with icons
+  const importItems = [
+    { label: "Import as csv", key: "import", icon: <DownloadOutlined /> },
+    { label: "Download Template", key: "downloadTemplate", icon: <CloudDownloadOutlined /> },
+    { label: "Import as xlsx", key: "xlsx", icon: <DownloadOutlined /> },
   ];
- 
+
+  // Define the items for the export dropdown with icons
+  const exportItems = [
+    { label: "Export as CSV", key: "csv", icon: <UploadOutlined /> },
+    { label: "Export as XLSX", key: "xlsx", icon: <UploadOutlined /> },
+    { label: "Export as PDF", key: "pdf", icon: <UploadOutlined /> },
+  ];
+
   function handleSearch(_searchTerm: string): void {
     console.log("Global Search Term: ", _searchTerm);
     assetDataRefetch(`&global_search=${_searchTerm}`);
   }
- 
+
   return (
     <nav className={styles["navbar"]}>
-      {getUserScope() == "LEAD" ? (
+      {getUserScope() === "LEAD" && (
         <DropDown
           onSelect={handleDropDownSelect}
-          items={items}
+          items={importItems}
           buttonLabel="Import"
         />
-      ) : (
-        ""
       )}
-     
+      <DropDown
+        onSelect={handleDropDownSelect}
+        items={exportItems}
+        buttonLabel="Export"
+      />
       <GlobalSearch
         onSearch={handleSearch}
         assetDataRefetch={assetDataRefetch}
       />
-      <button onClick={handleExport} className={styles["button"]}>
-        <UploadOutlined /> Export
-      </button>
     </nav>
   );
 };
- 
+
 export default TableNavbar;

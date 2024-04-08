@@ -23,7 +23,7 @@ const UploadComponent: React.FC = () => {
     name: "file",
     multiple: true,
     fileList,
-    action: "https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188",
+    action: "http://localhost:8000/api/v1/asset/import-csv/", // Backend endpoint
     onChange(info) {
       const { status } = info.file;
       if (status !== "uploading") {
