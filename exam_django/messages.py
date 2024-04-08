@@ -104,6 +104,7 @@ ASSET_TYPE_RETRIEVE_SUCCESS = "Asset type was successfully retrieved."
 
 # Asset Log Exception Messages
 ASSET_LOG_ERROR = "Something went wrong while adding data to the asset log."
+NO_ASSET_LOGS_IN_TIMELINE = "No assets were found in the given timeline."
 
 # Asset Log Success Messages
 ASSET_LOG_FOUND = "Asset log found successfully."
