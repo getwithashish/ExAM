@@ -45,9 +45,9 @@ from asset.models import Asset
 
 class ExportService:
     @staticmethod
-    def export_asset(request):
-        # Retrieve format from query parameters, default to CSV if not provided
-        format = request.GET.get('format', 'csv')
+    def export_asset(format):
+        
+      
 
         # Retrieve all assets from the database
         assets = Asset.objects.all()
