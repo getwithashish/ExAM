@@ -29,26 +29,19 @@ class AssetLogService:
 
             if recency == "latest":
                 latest_log = asset_logs.first()
-                second_latest_log = asset_logs[1] if len(asset_logs) > 1 else None
 
-                if latest_log and second_latest_log:
-                    latest_log_data = json.loads(latest_log.asset_log)
-                    second_latest_log_data = json.loads(second_latest_log.asset_log)
+                if latest_log:
+                    asset_log_json = json.loads(latest_log.asset_log)
 
-                    changes = {}
-                    for key, value in latest_log_data.items():
-                        if key in second_latest_log_data and second_latest_log_data[key] != value:
-                            # Fetch actual values instead of IDs if available
-                            value = AssetLogService.get_actual_value(key, value)
-                            changes[key] = value
+                  
+                    asset_log_json = AssetLogService.populate_asset_details(asset_log_json)
 
-                    if changes:
-                        log_data = {
-                            "id": latest_log.id,
-                            "timestamp": latest_log.timestamp,
-                            "asset_log": changes,
-                        }
-                        response_data["logs"].append(log_data)
+                    log_data = {
+                        "id": latest_log.id,
+                        "timestamp": latest_log.timestamp,
+                        "asset_log": asset_log_json,
+                    }
+                    response_data["logs"].append(log_data)
                 else:
                     return APIResponse(
                         data=[],
