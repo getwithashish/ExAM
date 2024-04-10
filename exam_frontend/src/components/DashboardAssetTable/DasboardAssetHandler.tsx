@@ -40,7 +40,7 @@ import {
 } from "../DashboardAssetTable/api/getDasboardAssetDetails";
 import DasboardAssetTable from "./DasboardAssetTable";
 
-import TimelineButton from "../TimelineLog/TimeLineDrawer"
+import TimelineViewDrawer from "../TimelineLog/TimeLineDrawer"
 
 interface ExpandedDataType {
   key: React.Key;
