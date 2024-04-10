@@ -12,7 +12,12 @@ from asset.service.asset_crud_service.asset_lead_role_mutation_service import (
 from asset.service.asset_crud_service.asset_sysadmin_role_mutation_service import (
     AssetSysadminRoleMutationService,
 )
-from asset.service.asset_crud_service.asset_query_service import AssetQueryService
+from asset.service.asset_crud_service.asset_normal_query_service import (
+    AssetNormalQueryService,
+)
+from asset.service.asset_crud_service.asset_advanced_query_service_with_json_logic import (
+    AssetAdvancedQueryServiceWithJsonLogic,
+)
 from exceptions import NotAcceptableOperationException, PermissionDeniedException
 from response import APIResponse
 from messages import (
@@ -37,8 +42,20 @@ class AssetView(APIView):
     def get(self, request, *args, **kwargs):
         try:
             serializer = self.serializer_class
-            asset_query_service = AssetQueryService()
-            return asset_query_service.get_asset_details(serializer, request)
+
+            if request.query_params.get("json_logic"):
+                asset_query_service = AssetAdvancedQueryServiceWithJsonLogic()
+            else:
+                asset_query_service = AssetNormalQueryService()
+
+            data, message, http_status = asset_query_service.get_asset_details(
+                serializer, request
+            )
+            return APIResponse(
+                data=data,
+                message=message,
+                status=http_status,
+            )
 
         except Exception as e:
             print("Error: ", e)
