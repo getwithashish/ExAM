@@ -33,7 +33,7 @@ export const QueryBuilderComponent = ({assetDataRefetch}) => {
     console.log( "formatted query",formattedQuery)
     formattedQuery = JSON.stringify(formattedQuery);
     // Make a get request to the backend endpointa
-    let queryParam = `json_logic=${formattedQuery}`
+    let queryParam = `&json_logic=${formattedQuery}`
     assetDataRefetch(queryParam)
    
   };
