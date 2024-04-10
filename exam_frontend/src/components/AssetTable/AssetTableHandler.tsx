@@ -40,6 +40,7 @@ import {
 } from "./api/getAssetDetails";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookOpenReader } from "@fortawesome/free-solid-svg-icons";
+import { Notes } from "@mui/icons-material";
 
 interface ExpandedDataType {
   key: React.Key;
@@ -56,8 +57,9 @@ const AssetTableHandler = ({
   queryParamProp,
   heading,
   isMyApprovalPage,
-}) => {
-  
+}) =>
+   {
+   
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
 
@@ -292,67 +294,7 @@ const AssetTableHandler = ({
 
 
     },
-    {
-      title: "Custodian",
-      dataIndex: "custodian",
-      responsive: ["md"],
-      width: 120,
-      filterIcon: <SearchOutlined />,
-      filterDropdown: ({
-        setSelectedKeys,
-        selectedKeys,
-        confirm,
-        clearFilters,
-      }: {
-        setSelectedKeys: (keys: React.ReactText[]) => void;
-        selectedKeys: React.ReactText[];
-        confirm: () => void;
-        clearFilters: () => void;
-      }) => (
-        <div style={{ padding: 8 }}>
-          <Input
-            placeholder="Search Custodian"
-            value={selectedKeys[0]}
-            onChange={(e) =>
-              setSelectedKeys(e.target.value ? [e.target.value] : [])
-            }
-            onPressEnter={() => confirm()}
-            style={{ marginBottom: 8, display: "block" }}
-          />
-          <Space>
-            <button
-              type="button"
-              onClick={confirm}
-              style={{ width: 90, fontSize: "16px" }}
-            >
-              Search
-            </button>
-            <button
-              type="button"
-              onClick={clearFilters}
-              style={{ width: 90, fontSize: "16px" }}
-            >
-              Reset
-            </button>
-          </Space>
-        </div>
-      ),
-      onFilter: (
-        value: string | any[],
-        record: { custodian: string | any[] }
-      ) => {
-        // Check if record.custodian is defined before accessing it
-        if (record.custodian) {
-          if (Array.isArray(value)) {
-            return value.includes(record.custodian);
-          }
-          return record.custodian.indexOf(value.toString()) === 0;
-        }
-        return false; // Return false if custodian is undefined
-      },
-      render: renderClickableColumn("Custodian", "custodian"),
-
-    },
+ 
     {
       title: "Asset Type",
       dataIndex: "asset_type",
@@ -538,6 +480,76 @@ const AssetTableHandler = ({
       width: 120,
       render: renderClickableColumn("Accessories", "accessories"),
     },
+    {
+      title: 'Comments',
+      dataIndex: 'notes',
+      responsive: ['md'],
+      width: 120,
+      render: renderClickableColumn("notes", "notes"),
+
+    },
+    {
+      title: "Custodian",
+      dataIndex: "custodian",
+      responsive: ["md"],
+      width: 120,
+      fixed:"right",
+      filterIcon: <SearchOutlined />,
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }: {
+        setSelectedKeys: (keys: React.ReactText[]) => void;
+        selectedKeys: React.ReactText[];
+        confirm: () => void;
+        clearFilters: () => void;
+      }) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            placeholder="Search Custodian"
+            value={selectedKeys[0]}
+            onChange={(e) =>
+              setSelectedKeys(e.target.value ? [e.target.value] : [])
+            }
+            onPressEnter={() => confirm()}
+            style={{ marginBottom: 8, display: "block" }}
+          />
+          <Space>
+            <button
+              type="button"
+              onClick={confirm}
+              style={{ width: 90, fontSize: "16px" }}
+            >
+              Search
+            </button>
+            <button
+              type="button"
+              onClick={clearFilters}
+              style={{ width: 90, fontSize: "16px" }}
+            >
+              Reset
+            </button>
+          </Space>
+        </div>
+      ),
+      onFilter: (
+        value: string | any[],
+        record: { custodian: string | any[] }
+      ) => {
+        // Check if record.custodian is defined before accessing it
+        if (record.custodian) {
+          if (Array.isArray(value)) {
+            return value.includes(record.custodian);
+          }
+          return record.custodian.indexOf(value.toString()) === 0;
+        }
+        return false; // Return false if custodian is undefined
+      },
+      render: renderClickableColumn("Custodian", "custodian"),
+
+    },
     
    
 
@@ -587,6 +599,7 @@ const AssetTableHandler = ({
 
   const data = assetData?.map(
     (result: {
+      notes: any;
       asset_uuid: any;
       asset_id: any;
       asset_category: any;
@@ -651,6 +664,7 @@ const AssetTableHandler = ({
       AssignAsset: "assign",
       created_at: result.created_at,
       updated_at: result.updated_at,
+      comments:result.notes
     })
   );
 
@@ -670,7 +684,6 @@ const AssetTableHandler = ({
       drawerVisible={drawerVisible}
       assetData={data}
       columns={columns}
-    
       memoryData={memoryData}
       assetTypeData={assetTypeData}
       locations={locations}
