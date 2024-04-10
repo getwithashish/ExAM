@@ -227,8 +227,14 @@ const RequestTable: FC<{
   assets: any[];
   setSelectedAsset: (asset: any | null) => void;
 }> = function ({ assets, setSelectedAsset }) {
-  const handleViewAsset = (asset: any) => {
-    console.log("Asset UUID:", asset.asset_uuid);
+  const handleViewAsset = async (asset: any) => {
+    try {
+      const response = await axiosInstance.get(`/asset/asset_logs/${asset.asset_uuid}?recency=latest`);
+      console.log("Response from server:", response.data.data.logs);
+      console.log("Asset UUID:", asset.asset_uuid);
+    } catch (error) {
+      console.error("Error fetching asset details:", error);
+    }
     setSelectedAsset(asset);
   };
 
