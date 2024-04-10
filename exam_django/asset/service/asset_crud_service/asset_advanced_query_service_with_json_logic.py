@@ -28,6 +28,7 @@ class AssetAdvancedQueryServiceWithJsonLogic(AssetQueryAbstract):
         q_objects = self.convert_json_logic_to_django_q(logic_data)
 
         queryset = Asset.objects.all()
+        queryset = queryset.filter(is_deleted=False)
         queryset = queryset.filter(q_objects)
 
         page = self.pagination.paginate_queryset(queryset, request)

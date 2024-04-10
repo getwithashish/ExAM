@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Field, QueryBuilder, RuleGroupType, formatQuery } from 'react-querybuilder';
 import 'react-querybuilder/dist/query-builder.css';
 import axiosInstance from '../../config/AxiosConfig';
-
+import querybuilder from './QueryBuilder.css'
 
 const fields: Field[] = [
   { name: 'product_name', label: 'product_name' },
@@ -44,9 +44,9 @@ export const QueryBuilderComponent = () => {
   };
 
   return (
-    <div>
-      <QueryBuilder fields={fields} query={query} onQueryChange={setQuery} />
-      <button onClick={handleQueryButtonClick} className='m-2 p-2 h-50 w-50 '>Get Assets</button>
+    <div className="querybuilder">
+      <QueryBuilder fields={fields} query={query} onQueryChange={setQuery}  />
+      <button onClick={handleQueryButtonClick} className='m-2 p-2 h-50 w-50 text-white'>Get Assets</button>
     </div>
   );
 };
