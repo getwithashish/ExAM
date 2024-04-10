@@ -22,15 +22,13 @@ export const AssetTimelineHandler = ({ assetUuid }: { assetUuid: string }) => {
           response.data.data &&
           Array.isArray(response.data.data.logs)
         ) {
-          const filteredLogs = response.data.data.logs.map(
-            (log: any) => {
-              const filteredChanges = Object.entries(log.changes).filter(
-                ([key, _]: [string, any]) =>
-                  key !== "updated_at" && key !== "asset_detail_status"
-              );
-              return { ...log, changes: Object.fromEntries(filteredChanges) };
-            }
-          );
+          const filteredLogs = response.data.data.logs.map((log: any) => {
+            const filteredChanges = Object.entries(log.changes).filter(
+              ([key, _]: [string, any]) =>
+                key !== "updated_at" && key !== "asset_detail_status"
+            );
+            return { ...log, changes: Object.fromEntries(filteredChanges) };
+          });
 
           const fields = filteredLogs.flatMap((log: any) =>
             Object.entries(log.changes)

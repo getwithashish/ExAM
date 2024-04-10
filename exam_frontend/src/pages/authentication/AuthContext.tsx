@@ -3,7 +3,9 @@ import { createContext, useContext, useEffect, useState } from "react";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [authenticated, setAuthenticated] = useState(localStorage.getItem("jwt") ? true : false);
+  const [authenticated, setAuthenticated] = useState(
+    localStorage.getItem("jwt") ? true : false
+  );
   const [userRole, setUserRole] = useState("None");
 
   const login = () => {

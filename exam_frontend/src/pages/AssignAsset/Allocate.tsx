@@ -10,11 +10,11 @@ const Assignableasset = () => {
 
   const showAssignDrawer = (record: DataType | null) => {
     setRecord(record);
-    setOpen(true); 
+    setOpen(true);
   };
 
   const closeAssignDrawer = () => {
-    setOpen(false); 
+    setOpen(false);
   };
 
   return (
@@ -68,12 +68,13 @@ const Assignableasset = () => {
 
       <AssetTableHandler showAssignDrawer={showAssignDrawer} />
 
-      <DrawerViewRequest
-        title="assign"
-        onClose={closeAssignDrawer}
-        open={open}
-      >
-        {record && <AssignmentHandler record={record} closeAssignDrawer={closeAssignDrawer} />}
+      <DrawerViewRequest title="assign" onClose={closeAssignDrawer} open={open}>
+        {record && (
+          <AssignmentHandler
+            record={record}
+            closeAssignDrawer={closeAssignDrawer}
+          />
+        )}
       </DrawerViewRequest>
     </div>
   );
