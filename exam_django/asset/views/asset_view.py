@@ -46,7 +46,14 @@ class AssetView(APIView):
             else:
                 asset_query_service = AssetNormalQueryService()
 
-            return asset_query_service.get_asset_details(serializer, request)
+            data, message, http_status = asset_query_service.get_asset_details(
+                serializer, request
+            )
+            return APIResponse(
+                data=data,
+                message=message,
+                status=http_status,
+            )
 
         except Exception as e:
             print("Error: ", e)
