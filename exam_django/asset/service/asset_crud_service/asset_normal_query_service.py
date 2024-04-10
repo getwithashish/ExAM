@@ -4,15 +4,16 @@ from rest_framework import status
 from rest_framework.pagination import LimitOffsetPagination
 
 from asset.serializers.asset_serializer import AssetReadSerializer
+from asset.service.asset_crud_service.asset_query_abstract import AssetQueryAbstract
 from messages import ASSET_LIST_SUCCESSFULLY_RETRIEVED
-from response import APIResponse
 
 
-class AssetQueryService:
+class AssetNormalQueryService(AssetQueryAbstract):
 
     def get_asset_details(self, serializer, request):
         self.pagination = LimitOffsetPagination()
         queryset = Asset.objects.all()
+        queryset = queryset.filter(is_deleted=False)
 
         global_search = request.query_params.get("global_search")
 
@@ -72,18 +73,14 @@ class AssetQueryService:
         if page is not None:
             serializer = AssetReadSerializer(page, many=True)
             paginated_data = self.pagination.get_paginated_response(serializer.data)
-            return APIResponse(
-                data=paginated_data.data,
-                message=ASSET_LIST_SUCCESSFULLY_RETRIEVED,
-                status=status.HTTP_200_OK,
+            return (
+                paginated_data.data,
+                ASSET_LIST_SUCCESSFULLY_RETRIEVED,
+                status.HTTP_200_OK,
             )
 
-        serializer = AssetReadSerializer(queryset, many=True)  # Moved assignment here
-        return APIResponse(
-            data=serializer.data,
-            message=ASSET_LIST_SUCCESSFULLY_RETRIEVED,
-            status=status.HTTP_200_OK,
-        )
+        serializer = AssetReadSerializer(queryset, many=True)
+        return serializer.data, ASSET_LIST_SUCCESSFULLY_RETRIEVED, status.HTTP_200_OK
 
     def get_queryset_from_global_search(self, global_search, queryset):
         query = Q()
