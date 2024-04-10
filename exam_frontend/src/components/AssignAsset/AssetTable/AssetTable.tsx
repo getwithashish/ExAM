@@ -103,11 +103,7 @@ const AssetTable = ({
         >
           <UploadComponent />
         </SideDrawerComponent>
-        <div className="rounded-lg bg-gray-50 shadow-md dark:bg-gray-800 mx-10" style={{
-boxShadow
-:
-'0 0 10px rgba(0, 0, 0, 0.2)'
-}}>
+        
         <Table
           columns={columns}
           dataSource={assetData}
@@ -119,13 +115,16 @@ boxShadow
           style={{
             fontSize: "50px",
             borderColor:"white",
-            width:"29%"
+            width:"29%",
+            marginLeft:"1%",
+            boxShadow:"0 0 10px rgba(0, 0, 0, 0.2)",
+            marginRight:"120px"
             
           }}
        
        
         />
-        </div>
+       
       </div>
       <DrawerViewRequest
         visible={drawerVisible}

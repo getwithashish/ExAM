@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.views import APIView
 from asset.serializers import AssetReadSerializer, AssetWriteSerializer
@@ -19,6 +20,7 @@ from messages import (
     ASSET_LIST_RETRIEVAL_UNSUCCESSFUL,
     ASSET_NOT_FOUND,
     USER_UNAUTHORIZED,
+    ASSET_DELETION_UNSUCCESSFUL
 )
 
 
@@ -128,7 +130,26 @@ class AssetView(APIView):
                 message=e.message,
                 status=e.status,
             )
+   
+    def delete(self, request):
+        asset_uuid = request.data.get("asset_uuid")
+        try:
+            asset = get_object_or_404(Asset, asset_uuid=asset_uuid)
+            asset.is_deleted = True
+            asset.save()
+            return APIResponse(
+                data={"asset_uuid": asset_uuid},
+                message="Asset deleted successfully.",
+                status=status.HTTP_200_OK,
+            )
 
+        except Exception as e:
+            print("Error: ", e)
+            return APIResponse(
+                data={},
+                message="Error occurred while deleting asset.",
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 class UserAgentAssetView(APIView):
     permission_classes = [AllowAny]

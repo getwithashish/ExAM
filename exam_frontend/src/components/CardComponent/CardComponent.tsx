@@ -10,6 +10,7 @@ import {
   Row,
   Col,
   message,
+  Modal,
 } from "antd";
 import "./CardComponent.css";
 import { DataType } from "../AssetTable/types/index";
@@ -19,11 +20,10 @@ import axiosInstance from "../../config/AxiosConfig";
 import { CommentOutlined } from "@ant-design/icons";
 import { Spin } from "antd";
 
-
 interface UpdateData {
   asset_uuid: string;
   data: Partial<DataType>; // Partial to allow updating only specific fields
-  isMyApprovalPage:boolean
+  isMyApprovalPage: boolean;
 }
 const CardComponent: React.FC<CardType> = ({
   asset_uuid,
@@ -34,7 +34,7 @@ const CardComponent: React.FC<CardType> = ({
   locations,
   memoryData,
   assetTypeData,
-  isMyApprovalPage
+  isMyApprovalPage,
 }) => {
   const uniqueStatusOptions = Array.from(new Set(statusOptions));
   const uniqueBusinessOptions = Array.from(new Set(businessUnitOptions));
@@ -66,15 +66,11 @@ const CardComponent: React.FC<CardType> = ({
         data: updatedData,
       };
 
-      const response = await axiosInstance.patch(
-        "/asset/",
-        updatePayload,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axiosInstance.patch("/asset/", updatePayload, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       console.log("Updated data:", response.data);
       message.success("Asset Details successfully updated");
@@ -84,12 +80,9 @@ const CardComponent: React.FC<CardType> = ({
       }, 1500);
     } catch (error) {
       console.error("Error updating data:", error);
-          message.error("Error updating asset details. Please try again.");
-
-
+      message.error("Error updating asset details. Please try again.");
     }
     setIsLoading(false); // Set loading to false when update completes
-
   };
 
   // const handleUpdateChange = (field: string, value: any) => {
@@ -101,7 +94,9 @@ const CardComponent: React.FC<CardType> = ({
   const handleUpdateChange = (field: string, value: any) => {
     if (field === "business_unit") {
       // Map the business unit name to its primary key
-      const businessUnitPK = uniqueBusinessOptions.find(option => option.name === value)?.id;
+      const businessUnitPK = uniqueBusinessOptions.find(
+        (option) => option.name === value
+      )?.id;
       setUpdatedData((prevData) => ({
         ...prevData,
         [field]: businessUnitPK,
@@ -113,7 +108,7 @@ const CardComponent: React.FC<CardType> = ({
       }));
     }
   };
-  
+
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -160,7 +155,7 @@ const CardComponent: React.FC<CardType> = ({
               width: "170px",
               height: "40px",
               borderRadius: "5px",
-              background:"#f0f0f0"
+              background: "#f0f0f0",
             }}
             onChange={(value) => handleUpdateChange("asset_type", value)}
           >
@@ -213,7 +208,7 @@ const CardComponent: React.FC<CardType> = ({
               width: "180px",
               height: "40px",
               borderRadius: "5px",
-              background:"#f0f0f0"
+              background: "#f0f0f0",
             }}
             onChange={(value) => handleUpdateChange("status", value)} // Pass only the value
           >
@@ -246,7 +241,7 @@ const CardComponent: React.FC<CardType> = ({
               width: "170px",
               height: "40px",
               borderRadius: "5px",
-              background:"#f0f0f0"
+              background: "#f0f0f0",
             }}
             onChange={(value) => handleUpdateChange("location", value)}
           >
@@ -279,7 +274,7 @@ const CardComponent: React.FC<CardType> = ({
               width: "180px",
               height: "40px",
               borderRadius: "5px",
-              background:"#f0f0f0"
+              background: "#f0f0f0",
             }}
             onChange={(value) => handleUpdateChange("invoice_location", value)} // Pass only the value
           >
@@ -524,13 +519,14 @@ const CardComponent: React.FC<CardType> = ({
             disabled
             defaultValue={data.custodian}
             onChange={(e) => handleUpdateChange("model number", e.target.value)}
-          style={{border: "0.5px solid #d3d3d3",
-          width: "180px",
-          boxShadow: "none",
-          textAlign: "left",
-          background: " #f0f0f0",
-          borderRadius: "5px",
-          }}
+            style={{
+              border: "0.5px solid #d3d3d3",
+              width: "180px",
+              boxShadow: "none",
+              textAlign: "left",
+              background: " #f0f0f0",
+              borderRadius: "5px",
+            }}
           />{" "}
         </Form.Item>
       ),
@@ -563,12 +559,14 @@ const CardComponent: React.FC<CardType> = ({
             disabled
             defaultValue={data.requester}
             onChange={(e) => handleUpdateChange("requester", e.target.value)}
-            style={{border: "0.5px solid #d3d3d3",
-            width: "180px",
-            boxShadow: "none",
-            textAlign: "left",
-            background: " #f0f0f0",
-            borderRadius: "5px",}}
+            style={{
+              border: "0.5px solid #d3d3d3",
+              width: "180px",
+              boxShadow: "none",
+              textAlign: "left",
+              background: " #f0f0f0",
+              borderRadius: "5px",
+            }}
           />{" "}
         </Form.Item>
       ),
@@ -611,7 +609,7 @@ const CardComponent: React.FC<CardType> = ({
               width: "180px",
               height: "40px",
               borderRadius: "5px",
-              background:"#f0f0f0"
+              background: "#f0f0f0",
             }}
             onChange={(value) => handleUpdateChange("business_unit", value)} // Pass only the value
           >
@@ -649,7 +647,7 @@ const CardComponent: React.FC<CardType> = ({
               width: "180px",
               height: "40px",
               borderRadius: "5px",
-              background:"#f0f0f0"
+              background: "#f0f0f0",
             }}
             onChange={(value) => handleUpdateChange("memory", value)} // Pass only the value
           >
@@ -707,12 +705,14 @@ const CardComponent: React.FC<CardType> = ({
           <Input
             disabled
             defaultValue={formatDate(data.created_at)}
-            style={{border: "0.5px solid #d3d3d3",
-            width: "180px",
-            boxShadow: "none",
-            textAlign: "left",
-            background: " #f0f0f0",
-            borderRadius: "5px",}}
+            style={{
+              border: "0.5px solid #d3d3d3",
+              width: "180px",
+              boxShadow: "none",
+              textAlign: "left",
+              background: " #f0f0f0",
+              borderRadius: "5px",
+            }}
           />
         </Form.Item>
       ),
@@ -728,12 +728,13 @@ const CardComponent: React.FC<CardType> = ({
           <Input
             disabled
             defaultValue={formatDate(data.updated_at)}
-            style={{border: "0.5px solid #d3d3d3",
-            width: "180px",
-            boxShadow: "none",
-            textAlign: "left",
-            background: " #f0f0f0",
-            borderRadius: "5px",
+            style={{
+              border: "0.5px solid #d3d3d3",
+              width: "180px",
+              boxShadow: "none",
+              textAlign: "left",
+              background: " #f0f0f0",
+              borderRadius: "5px",
             }}
           />
         </Form.Item>
@@ -781,8 +782,8 @@ const CardComponent: React.FC<CardType> = ({
     rowGap: "-10px",
   };
   const formItemStyle = {
-    flex: "0 0 calc(16.66% - 20px)", // Six items in one row (adjust margin)
-    margin: "10px", // Adjust margin as needed
+    flex: "0 0 calc(16.66% - 20px)",
+    margin: "10px",
     boxSizing: "border-box",
   };
 
@@ -806,6 +807,24 @@ const CardComponent: React.FC<CardType> = ({
     }
     return date.toLocaleDateString();
   }
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const handleDeleteClick = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleDelete = () => {
+    // Proceed with the deletion logic here
+    console.log("Asset deletion confirmed.");
+    // You can call an API or perform any other action for deletion here
+
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    console.log("Asset deletion cancelled.");
+    setIsModalVisible(false);
+  };
 
   return (
     <div>
@@ -825,7 +844,7 @@ const CardComponent: React.FC<CardType> = ({
             padding: "20px",
           }}
         />
-       {/* {isMyApprovalPage && (
+        {/* {isMyApprovalPage && (
   <Button
     style={{
       marginBottom: "0px",
@@ -841,29 +860,56 @@ const CardComponent: React.FC<CardType> = ({
   </Button>
 )} */}
 
-{isMyApprovalPage && (
-  <>
-    {isLoading ? (
-      <Spin size="large" />
-    ) : (
-      <Button
-        style={{
-          marginBottom: "0px",
-          marginTop: "0px",
-          color: "white",
-          border: "none",
-          background: "blue",
-          marginLeft: "600px",
-        }}
-        onClick={handleUpdate}
-        disabled={isLoading} // Disable button while updating
-      >
-        Update
-      </Button>
-    )}
-  </>
-)}
+        {isMyApprovalPage && (
+          <>
+            {isLoading ? (
+              <Spin size="large" />
+            ) : (
+              <Button
+                style={{
+                  marginBottom: "0px",
+                  marginTop: "0px",
+                  color: "white",
+                  border: "none",
+                  background: "blue",
+                  marginLeft: "200px",
+                }}
+                onClick={handleUpdate}
+                disabled={isLoading} // Disable button while updating
+              >
+                Update
+              </Button>
+            )}
+          </>
+        )}
 
+        <Button
+          type="primary"
+          danger
+          onClick={handleDeleteClick}
+          style={{
+            marginLeft: "290px",
+          }}
+        >
+          Delete Asset
+        </Button>
+        <Modal
+          title="Delete Asset"
+          visible={isModalVisible}
+          onCancel={handleCancel}
+          footer={[
+            <Button key="cancel" onClick={handleCancel}>
+              Cancel
+            </Button>,
+            <Button key="delete" type="primary" danger onClick={handleDelete}>
+              Delete
+            </Button>,
+          ]}
+          width={400}
+          centered
+        >
+          <p>Are you sure you want to delete the asset?</p>
+        </Modal>
       </div>
       <div className="scrollable-content">
         <Form
