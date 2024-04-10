@@ -8,7 +8,6 @@ import axiosInstance from "../../config/AxiosConfig";
 import GlobalSearch from "../GlobalSearch/GlobalSearch";
 import styles from "./TableNavbar.module.css";
 import DropDown from "../DropDown/DropDown";
-import { Button } from "flowbite-react"
 import DrawerViewRequest from "./DrawerViewRequest";
 import { QueryBuilderComponent } from "../QueryBuilder/QueryBuilder";
  
@@ -129,19 +128,19 @@ const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
       ) : (
         ""
       )}
-      <Button onClick={showQueryBuilder} className="w-100 h-50 bg-blue-600 m-1 p-1">QueryBuilder</Button>
+      
+      <GlobalSearch
+        onSearch={handleSearch}
+        assetDataRefetch={assetDataRefetch}
+      />
+      <button onClick={showQueryBuilder} className={styles["button"]} >Advanced Search</button>
       <DrawerViewRequest
-        title="Assign"
+        title="Advanced Search"
         onClose={closeQueryBuilder}
         visible={visible}
       >
         <QueryBuilderComponent assetDataRefetch={assetDataRefetch}/>
       </DrawerViewRequest>
-      <GlobalSearch
-        onSearch={handleSearch}
-        assetDataRefetch={assetDataRefetch}
-      />
-        
        
 
       <button onClick={handleExport} className={styles["button"]}>
