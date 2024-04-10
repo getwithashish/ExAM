@@ -25,7 +25,7 @@ from messages import (
     ASSET_LIST_RETRIEVAL_UNSUCCESSFUL,
     ASSET_NOT_FOUND,
     USER_UNAUTHORIZED,
-    ASSET_DELETION_UNSUCCESSFUL
+    ASSET_DELETION_SUCCESSFUL
 )
 
 
@@ -156,7 +156,7 @@ class AssetView(APIView):
             asset.save()
             return APIResponse(
                 data={"asset_uuid": asset_uuid},
-                message="Asset deleted successfully.",
+                message=ASSET_DELETION_SUCCESSFUL,
                 status=status.HTTP_200_OK,
             )
 

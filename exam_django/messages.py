@@ -172,4 +172,4 @@ MEMORY_CREATION_UNSUCCESSFUL = "Memory creation is unsuccessful"
 MEMORY_SUCCESSFULLY_RETRIEVED = "Memory retrieved succesfully"
 MEMORY_EXISTS = "Memory already exists"
 
-ASSET_DELETION_UNSUCCESSFUL="Asset Deletion is sucessful"
+ASSET_DELETION_SUCCESSFUL="Asset Deletion is sucessful"
