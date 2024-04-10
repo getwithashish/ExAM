@@ -1,5 +1,13 @@
 import json
-from asset.models import AssetLog, Location, BusinessUnit, Memory, AssetType, Employee, Asset
+from asset.models import (
+    AssetLog,
+    Location,
+    BusinessUnit,
+    Memory,
+    AssetType,
+    Employee,
+    Asset,
+)
 from user_auth.models import User
 from response import APIResponse
 from messages import ASSET_NOT_FOUND, ASSET_LOG_FOUND, NO_ASSET_LOGS_IN_TIMELINE
@@ -12,11 +20,16 @@ from typing import Optional
 from datetime import datetime
 import urllib.parse
 
+
 class AssetLogService:
     @staticmethod
-    def get_asset_logs(asset_uuid: str, recency: Optional[str] = None, timeline: Optional[str] = None) -> APIResponse:
+    def get_asset_logs(
+        asset_uuid: str, recency: Optional[str] = None, timeline: Optional[str] = None
+    ) -> APIResponse:
         try:
-            asset_logs = AssetLog.objects.filter(asset_uuid=asset_uuid).order_by('-timestamp')
+            asset_logs = AssetLog.objects.filter(asset_uuid=asset_uuid).order_by(
+                "-timestamp"
+            )
 
             if not asset_logs.exists():
                 return APIResponse(
@@ -33,8 +46,9 @@ class AssetLogService:
                 if latest_log:
                     asset_log_json = json.loads(latest_log.asset_log)
 
-                  
-                    asset_log_json = AssetLogService.populate_asset_details(asset_log_json)
+                    asset_log_json = AssetLogService.populate_asset_details(
+                        asset_log_json
+                    )
 
                     log_data = {
                         "id": latest_log.id,
@@ -51,9 +65,15 @@ class AssetLogService:
 
             elif timeline:
                 try:
-                    decoded_timeline = urllib.parse.unquote(timeline)  # Decode the URL-encoded datetime string
-                    timeline_datetime = datetime.strptime(decoded_timeline, "%Y-%m-%dT%H:%M:%S.%fZ")
-                    asset_logs_in_timeline = asset_logs.filter(timestamp=timeline_datetime)
+                    decoded_timeline = urllib.parse.unquote(
+                        timeline
+                    )  # Decode the URL-encoded datetime string
+                    timeline_datetime = datetime.strptime(
+                        decoded_timeline, "%Y-%m-%dT%H:%M:%S.%fZ"
+                    )
+                    asset_logs_in_timeline = asset_logs.filter(
+                        timestamp=timeline_datetime
+                    )
                 except ValueError:
                     return APIResponse(
                         data=[],
@@ -66,7 +86,9 @@ class AssetLogService:
                         asset_log_json = json.loads(log.asset_log)
 
                         # Populate asset details
-                        asset_log_json = AssetLogService.populate_asset_details(asset_log_json)
+                        asset_log_json = AssetLogService.populate_asset_details(
+                            asset_log_json
+                        )
 
                         log_data = {
                             "id": log.id,
@@ -86,7 +108,9 @@ class AssetLogService:
                     asset_log_json = json.loads(log.asset_log)
 
                     # Populate asset details
-                    asset_log_json = AssetLogService.populate_asset_details(asset_log_json)
+                    asset_log_json = AssetLogService.populate_asset_details(
+                        asset_log_json
+                    )
 
                     log_data = {
                         "id": log.id,
@@ -114,11 +138,17 @@ class AssetLogService:
         if key in ["location_id", "invoice_location_id"]:
             location_obj = Location.objects.filter(id=value).first()
             if location_obj:
-                return {"id": location_obj.id, "location_name": location_obj.location_name}
+                return {
+                    "id": location_obj.id,
+                    "location_name": location_obj.location_name,
+                }
         elif key == "business_unit_id":
             business_unit_obj = BusinessUnit.objects.filter(id=value).first()
             if business_unit_obj:
-                return {"id": business_unit_obj.id, "business_unit_name": business_unit_obj.business_unit_name}
+                return {
+                    "id": business_unit_obj.id,
+                    "business_unit_name": business_unit_obj.business_unit_name,
+                }
         elif key == "memory_id":
             memory_obj = Memory.objects.filter(id=value).first()
             if memory_obj:
@@ -126,19 +156,31 @@ class AssetLogService:
         elif key == "asset_type_id":
             asset_type_obj = AssetType.objects.filter(id=value).first()
             if asset_type_obj:
-                return {"id": asset_type_obj.id, "asset_type_name": asset_type_obj.asset_type_name}
+                return {
+                    "id": asset_type_obj.id,
+                    "asset_type_name": asset_type_obj.asset_type_name,
+                }
         elif key == "conceder_id":
             conceder_obj = User.objects.filter(id=value).first()
             if conceder_obj:
-                return {"id": conceder_obj.id, "conceder_name": f"{conceder_obj.first_name} {conceder_obj.last_name}"}
+                return {
+                    "id": conceder_obj.id,
+                    "conceder_name": f"{conceder_obj.first_name} {conceder_obj.last_name}",
+                }
         elif key == "custodian_id":
             custodian_obj = Employee.objects.filter(id=value).first()
             if custodian_obj:
-                return {"id": custodian_obj.id, "employee_name": custodian_obj.employee_name}
+                return {
+                    "id": custodian_obj.id,
+                    "employee_name": custodian_obj.employee_name,
+                }
         elif key == "requester_id":
             requester_obj = User.objects.filter(id=value).first()
             if requester_obj:
-                return {"id": requester_obj.id, "requester_name": f"{requester_obj.first_name} {requester_obj.last_name}"}
+                return {
+                    "id": requester_obj.id,
+                    "requester_name": f"{requester_obj.first_name} {requester_obj.last_name}",
+                }
         else:
             return value  # Return the value unchanged if no special handling is needed
 
@@ -158,9 +200,7 @@ class AssetLogService:
         # Search business unit name if it exists
         business_unit_id = asset_log_json.pop("business_unit_id", None)
         if business_unit_id:
-            business_unit_obj = BusinessUnit.objects.filter(
-                id=business_unit_id
-            ).first()
+            business_unit_obj = BusinessUnit.objects.filter(id=business_unit_id).first()
             if business_unit_obj:
                 asset_log_json["business_unit"] = {
                     "id": business_unit_obj.id,
@@ -190,9 +230,7 @@ class AssetLogService:
         # Search invoice location name if it exists
         invoice_location_id = asset_log_json.pop("invoice_location_id", None)
         if invoice_location_id:
-            location_obj = Location.objects.filter(
-                id=invoice_location_id
-            ).first()
+            location_obj = Location.objects.filter(id=invoice_location_id).first()
             if location_obj:
                 asset_log_json["invoice_location"] = {
                     "id": location_obj.id,
@@ -231,11 +269,18 @@ class AssetLogService:
 
         return asset_log_json
 
+
 @receiver(pre_save, sender=Asset)
 def log_asset_changes(sender, instance, **kwargs):
     old_instance = Asset.objects.filter(pk=instance.pk).values().first()
+    # if (
+    #     old_instance
+    #     or instance.asset_detail_status == "UPDATED"
+    #     or instance.asset_detail_status == "ASSIGNED"
+    #     or instance.asset_detail_status == "UNASSIGNED"
+    # ):
     if (
-        old_instance
+        instance.asset_detail_status == "CREATED"
         or instance.asset_detail_status == "UPDATED"
         or instance.asset_detail_status == "ASSIGNED"
         or instance.asset_detail_status == "UNASSIGNED"
