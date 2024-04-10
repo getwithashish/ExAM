@@ -27,7 +27,7 @@ const ModificationRequests: FC = function () {
       })
       .catch((error) => {
         console.error("Error fetching assets:", error);
-      })
+      }) 
       .finally(() => {
         setLoading(false);
       });
