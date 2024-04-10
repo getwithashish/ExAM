@@ -116,11 +116,6 @@ boxShadow
     }}
     
    
-  rowKey={(record:DataType)=>record.key}
-    expandable={{
-      onExpand:(expanded,record)=>{if(expanded) return setSelectedAssetId(record.key); else return},
-      expandedRowRender: (record, index, indent, expanded) => {return memoizedRowRender(record, expanded);},
-    }}
 
     footer={() => (
       <Pagination

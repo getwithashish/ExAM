@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import {
   DownloadOutlined,
   UploadOutlined,
@@ -8,8 +8,12 @@ import axiosInstance from "../../config/AxiosConfig";
 import GlobalSearch from "../GlobalSearch/GlobalSearch";
 import styles from "./TableNavbar.module.css";
 import DropDown from "../DropDown/DropDown";
+import { Button } from "flowbite-react"
+import DrawerViewRequest from "./DrawerViewRequest";
+import { QueryBuilderComponent } from "../QueryBuilder/QueryBuilder";
  
 const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
+  const [visible, setVisible] = useState(false);
   const decodeJWT = (token: string) => {
     try {
       const base64Url = token.split(".")[1];
@@ -105,6 +109,15 @@ const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
     assetDataRefetch(`&global_search=${_searchTerm}`);
   }
  
+ 
+
+  const showQueryBuilder = () => {
+    setVisible(true);
+  };
+
+  const closeQueryBuilder = () => {
+    setVisible(false);
+  };
   return (
     <nav className={styles["navbar"]}>
       {getUserScope() == "LEAD" ? (
@@ -116,11 +129,21 @@ const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
       ) : (
         ""
       )}
-     
+      <Button onClick={showQueryBuilder} className="w-100 h-50 bg-blue-600 m-1 p-1">QueryBuilder</Button>
+      <DrawerViewRequest
+        title="Assign"
+        onClose={closeQueryBuilder}
+        visible={visible}
+      >
+        <QueryBuilderComponent />
+      </DrawerViewRequest>
       <GlobalSearch
         onSearch={handleSearch}
         assetDataRefetch={assetDataRefetch}
       />
+        
+       
+
       <button onClick={handleExport} className={styles["button"]}>
         <UploadOutlined /> Export
       </button>
