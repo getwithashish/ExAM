@@ -6,7 +6,6 @@ import axios from "axios";
 import axiosInstance from "../../config/AxiosConfig";
 
 const { Dragger } = AntUpload;
-
 const UploadComponent: React.FC = () => {
   const [fileList, setFileList] = useState<UploadFile<any>[]>([]);
   const [token, setToken] = useState<string | null>(null);
@@ -56,7 +55,7 @@ const UploadComponent: React.FC = () => {
         .post("http://localhost:8000/api/v1/asset/import-csv/", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`, // Send JWT token in the Authorization header
+           
           },
         })
         .then((response) => {

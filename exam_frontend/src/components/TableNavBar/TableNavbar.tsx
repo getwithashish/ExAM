@@ -5,8 +5,12 @@ import GlobalSearch from "../GlobalSearch/GlobalSearch";
 import styles from "./TableNavbar.module.css";
 import DropDown from "../DropDown/DropDown";
 
-const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
-  const decodeJWT = (token: string) => {
+const TableNavbar: React.FC<{
+  showUpload: boolean;
+  setShowUpload: React.Dispatch<React.SetStateAction<boolean>>;
+  assetDataRefetch: Function;
+}> = ({ showUpload, setShowUpload, assetDataRefetch }) => {
+  const decodeJWT = (token: string): any => {
     try {
       const base64Url = token.split(".")[1];
       const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
@@ -25,33 +29,34 @@ const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
     }
   };
 
-  const getUserScope = () => {
+  const getUserScope = (): string | null => {
     const jwtToken = localStorage.getItem("jwt");
     console.log(jwtToken);
     if (jwtToken) {
       const payload = decodeJWT(jwtToken);
       return payload.user_scope;
     }
+    return null;
   };
 
-  const handleImportClick = () => {
+  const handleImportClick = (): void => {
     setShowUpload(true);
   };
 
-  const handleExport = async (format: 'csv' | 'xlsx' | 'pdf') => {
+  const handleExport = async (format: "csv" | "xlsx" | "pdf"): Promise<void> => {
     try {
       // Make an API call to the backend to export assets
-      const response = await axiosInstance.get(`/export/assets?format=${format}`, {
-        responseType: 'blob' // Receive response as a binary blob
+      const response = await axiosInstance.get(`asset/export?export_format=${format}`, {
+        responseType: "blob", // Receive response as a binary blob
       });
 
       // Create a temporary URL for the blob response
       const url = window.URL.createObjectURL(new Blob([response.data]));
 
       // Create a link element to trigger the download
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
-      link.setAttribute('download', `assets.${format}`);
+      link.setAttribute("download", `assets.${format}`);
 
       // Append the link to the document body and trigger the download
       document.body.appendChild(link);
@@ -65,7 +70,7 @@ const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
     }
   };
 
-  const handleTemplateDownload = () => {
+  const handleTemplateDownload = (): void => {
     // Use the direct URL of the static file
     const filePath = "/static/sample_asset_download_template.csv";
 
@@ -82,13 +87,13 @@ const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
     document.body.removeChild(link);
   };
 
-  const handleDropDownSelect = (key: string) => {
+  const handleDropDownSelect = (key: string): void => {
     if (key === "import") {
       handleImportClick();
     } else if (key === "downloadTemplate") {
       handleTemplateDownload();
     } else {
-      handleExport(key as 'csv' | 'xlsx' | 'pdf');
+      handleExport(key as "csv" | "xlsx" | "pdf");
     }
   };
 
@@ -120,15 +125,16 @@ const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
           buttonLabel="Import"
         />
       )}
+      <GlobalSearch
+        onSearch={handleSearch}
+        assetDataRefetch={assetDataRefetch}
+      />
       <DropDown
         onSelect={handleDropDownSelect}
         items={exportItems}
         buttonLabel="Export"
       />
-      <GlobalSearch
-        onSearch={handleSearch}
-        assetDataRefetch={assetDataRefetch}
-      />
+    
     </nav>
   );
 };
