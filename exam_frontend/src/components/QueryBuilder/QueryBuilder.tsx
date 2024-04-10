@@ -22,7 +22,7 @@ const fields: Field[] = [
   
 ];
 
-export const QueryBuilderComponent = () => {
+export const QueryBuilderComponent = ({assetDataRefetch}) => {
   const [query, setQuery] = useState<RuleGroupType>({
     combinator: 'and',
     rules: [
@@ -35,13 +35,9 @@ export const QueryBuilderComponent = () => {
     console.log( "formatted query",formattedQuery)
     formattedQuery = JSON.stringify(formattedQuery);
     // Make a get request to the backend endpointa
-    axiosInstance.get(`/asset/?json_logic=${formattedQuery}`)
-      .then(response => {
-        console.log('Response:', response.data.data);
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
+    let queryParam = `json_logic=${formattedQuery}`
+    assetDataRefetch(queryParam)
+   
   };
 
   return (

@@ -61,7 +61,7 @@ const DasboardAssetHandler = () => {
     queryFn: () => getAssetDetails(`${queryParam}`),
   });
 
-  const refetchAssetData = (queryParam = "") => {
+   const refetchAssetData = (queryParam = "") => {
     setQueryParam(queryParam);
     assetDataRefetch({ force: true });
   };
