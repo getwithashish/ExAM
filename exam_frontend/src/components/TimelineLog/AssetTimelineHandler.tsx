@@ -23,13 +23,11 @@ export const AssetTimelineHandler = ({ assetUuid }: { assetUuid: string }) => {
           Array.isArray(response.data.data.logs)
         ) {
           const filteredLogs = response.data.data.logs.map(
-            (log: any, index: number) => {
+            (log: any) => {
               const filteredChanges = Object.entries(log.changes).filter(
-                ([key, value]: [string, any]) => key !== "updated_at"
+                ([key, _]: [string, any]) =>
+                  key !== "updated_at" && key !== "asset_detail_status"
               );
-              if (index === 0 && log.operation === "UPDATED") {
-                log.operation = "CREATED";
-              }
               return { ...log, changes: Object.fromEntries(filteredChanges) };
             }
           );
