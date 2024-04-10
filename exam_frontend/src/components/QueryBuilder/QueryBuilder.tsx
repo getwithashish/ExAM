@@ -31,12 +31,13 @@ export const QueryBuilderComponent = () => {
     ],
   });
   const handleQueryButtonClick = () => {
-    const formattedQuery = formatQuery(query, 'jsonlogic');
-    console.log("query", formattedQuery)
-    // Make a POST request to the backend endpointa
-    axiosInstance.post('/asset/queryBuilder', { cel_query: formattedQuery })
+    let formattedQuery = formatQuery(query, 'jsonlogic');
+    console.log( "formatted query",formattedQuery)
+    formattedQuery = JSON.stringify(formattedQuery);
+    // Make a get request to the backend endpointa
+    axiosInstance.get(`/asset/?json_logic=${formattedQuery}`)
       .then(response => {
-        console.log('Response:', response.data.result);
+        console.log('Response:', response.data.data);
       })
       .catch(error => {
         console.error('Error:', error);
