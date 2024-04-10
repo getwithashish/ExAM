@@ -18,7 +18,7 @@ const CreateRequestPage: FC = function () {
   const fetchAssets = () => {
     setLoading(true);
     axiosInstance
-      .get("/asset/?limit=10&asset_detail_status=CREATE_PENDING")
+      .get("/asset/?limit=100&asset_detail_status=CREATE_PENDING")
       .then((response) => {
         const createPendingAssets = response.data.data.results;
         console.log("createPendingAssets", createPendingAssets);
