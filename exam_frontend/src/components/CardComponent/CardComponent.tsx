@@ -129,7 +129,7 @@ const CardComponent: React.FC<CardType> = ({
           <Input
             defaultValue={data.asset_category}
             onChange={(e) =>
-              handleUpdateChange("assetCategory", e.target.value)
+              handleUpdateChange("asset_category", e.target.value)
             }
             style={inputStyle}
           />{" "}
@@ -292,8 +292,10 @@ const CardComponent: React.FC<CardType> = ({
     {
       label: "OS",
       name: "os",
+      
       value: (
-        <Form.Item name="os">
+        <Form.Item name="os"
+        >
           <b>OS: </b>
           <br></br>
           <br></br>{" "}
@@ -331,7 +333,7 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>{" "}
           <Input
             defaultValue={data.mobile_os}
-            onChange={(e) => handleUpdateChange("mobile os", e.target.value)}
+            onChange={(e) => handleUpdateChange("mobile_os", e.target.value)}
             style={inputStyle}
           />{" "}
         </Form.Item>
@@ -363,7 +365,7 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>{" "}
           <Input
             defaultValue={data.Generation}
-            onChange={(e) => handleUpdateChange("generation", e.target.value)}
+            onChange={(e) => handleUpdateChange("processor_gen", e.target.value)}
             style={inputStyle}
           />{" "}
         </Form.Item>
@@ -394,7 +396,7 @@ const CardComponent: React.FC<CardType> = ({
           <Input
             defaultValue={formatDate(data.date_of_purchase.toString())}
             onChange={(e) =>
-              handleUpdateChange("date of purchase", e.target.value)
+              handleUpdateChange("date_of_purchase", e.target.value)
             }
             style={inputStyle}
           />{" "}
@@ -412,7 +414,7 @@ const CardComponent: React.FC<CardType> = ({
           <Input
             defaultValue={data.warranty_period}
             onChange={(e) =>
-              handleUpdateChange("warranty period", e.target.value)
+              handleUpdateChange("warranty_period", e.target.value)
             }
             style={inputStyle}
           />{" "}
@@ -468,7 +470,7 @@ const CardComponent: React.FC<CardType> = ({
             disabled
             defaultValue={data.conceder}
             onChange={(e) =>
-              handleUpdateChange("serail number", e.target.value)
+              handleUpdateChange("conceder", e.target.value)
             }
             style={inputStyle}
           />{" "}
@@ -485,7 +487,7 @@ const CardComponent: React.FC<CardType> = ({
           <Input
             defaultValue={data.serial_number}
             onChange={(e) =>
-              handleUpdateChange("serail number", e.target.value)
+              handleUpdateChange("serial_number", e.target.value)
             }
             style={inputStyle}
           />{" "}
@@ -502,7 +504,7 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>{" "}
           <Input
             defaultValue={data.model_number}
-            onChange={(e) => handleUpdateChange("model number", e.target.value)}
+            onChange={(e) => handleUpdateChange("model_number", e.target.value)}
             style={inputStyle}
           />{" "}
         </Form.Item>
@@ -519,7 +521,7 @@ const CardComponent: React.FC<CardType> = ({
           <Input
             disabled
             defaultValue={data.custodian}
-            onChange={(e) => handleUpdateChange("model number", e.target.value)}
+            onChange={(e) => handleUpdateChange("custodian", e.target.value)}
             style={{
               border: "0.5px solid #d3d3d3",
               width: "180px",
@@ -583,7 +585,7 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>{" "}
           <Input
             defaultValue={data.product_name}
-            onChange={(e) => handleUpdateChange("product name", e.target.value)}
+            onChange={(e) => handleUpdateChange("product_name", e.target.value)}
             style={inputStyle}
           />{" "}
         </Form.Item>

@@ -40,6 +40,7 @@ import {
 } from "./api/getAssetDetails";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookOpenReader } from "@fortawesome/free-solid-svg-icons";
+import { Notes } from "@mui/icons-material";
 
 interface ExpandedDataType {
   key: React.Key;
@@ -480,6 +481,14 @@ const AssetTableHandler = ({
       render: renderClickableColumn("Accessories", "accessories"),
     },
     {
+      title: 'Comments',
+      dataIndex: 'notes',
+      responsive: ['md'],
+      width: 120,
+      render: renderClickableColumn("notes", "notes"),
+
+    },
+    {
       title: "Custodian",
       dataIndex: "custodian",
       responsive: ["md"],
@@ -590,6 +599,7 @@ const AssetTableHandler = ({
 
   const data = assetData?.map(
     (result: {
+      notes: any;
       asset_uuid: any;
       asset_id: any;
       asset_category: any;
@@ -654,6 +664,7 @@ const AssetTableHandler = ({
       AssignAsset: "assign",
       created_at: result.created_at,
       updated_at: result.updated_at,
+      comments:result.notes
     })
   );
 
