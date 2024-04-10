@@ -101,6 +101,7 @@ const AssetTable = ({
         
       />
       </div>
+      <br></br>
       <div
         style={{
           position: "relative",
