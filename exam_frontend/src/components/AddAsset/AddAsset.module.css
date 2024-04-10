@@ -73,3 +73,14 @@ button{
 /* .ant-input-number-input::placeholder {
   font-family: 'Poppins';
 } */
+.required {
+  border: 1px solid red; /* Red border for required fields */
+}
+
+.required label::after {
+  content: ' (Required)';
+  color: red; /* Text color for the "Required" label */
+}
+.star{
+  color: red;
+}
