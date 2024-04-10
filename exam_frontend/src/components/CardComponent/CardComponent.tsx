@@ -35,6 +35,7 @@ const CardComponent: React.FC<CardType> = ({
   memoryData,
   assetTypeData,
   isMyApprovalPage,
+  onDelete,
 }) => {
   const uniqueStatusOptions = Array.from(new Set(statusOptions));
   const uniqueBusinessOptions = Array.from(new Set(businessUnitOptions));
@@ -813,12 +814,40 @@ const CardComponent: React.FC<CardType> = ({
     setIsModalVisible(true);
   };
 
-  const handleDelete = () => {
-    // Proceed with the deletion logic here
-    console.log("Asset deletion confirmed.");
-    // You can call an API or perform any other action for deletion here
+  const [tableData, setTableData] = useState([]);
+  const handleDelete = async () => {
+    onDelete(data.asset_uuid);
+    try {
+      setIsLoading(true);
+      const deletePayload = {
+        asset_uuid: data.key,
+      };
+      const response = await axiosInstance.delete("/asset/", {
+        data: deletePayload,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-    setIsModalVisible(false);
+      if (response.status === 200) {
+        // Filter out the deleted asset from the table data
+        setTableData((prevData) =>
+          prevData.filter((item) => item.key !== data.key)
+        );
+
+        message.success("Asset successfully deleted");
+        setIsModalVisible(false);
+      } else {
+        console.error("Failed to delete asset");
+        message.error("Failed to delete asset. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error deleting asset:", error);
+      message.error("Error deleting asset. Please try again.");
+    } finally {
+      setIsLoading(false);
+      setIsModalVisible(false);
+    }
   };
 
   const handleCancel = () => {
@@ -826,73 +855,89 @@ const CardComponent: React.FC<CardType> = ({
     setIsModalVisible(false);
   };
 
+  const decodeJWT = (token: string) => {
+    try {
+      const base64Url = token.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split("")
+          .map(function (c) {
+            return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+          })
+          .join("")
+      );
+      return JSON.parse(jsonPayload);
+    } catch (error) {
+      console.error("Error decoding JWT:", error);
+      return null;
+    }
+  };
+  const getUserScope = () => {
+    const jwtToken = localStorage.getItem("jwt");
+    console.log(jwtToken);
+    if (jwtToken) {
+      const payload = decodeJWT(jwtToken);
+      return payload.user_scope;
+    }
+  };
   return (
     <div>
-      <div className="fixed-header">
-        <Input
-          placeholder="Search fields"
-          onChange={handleChange}
-          style={{
-            border: "0.5px solid #d3d3d3",
-            marginTop: "0px",
-            marginBottom: "30px",
-            width: "300px",
-            height: "30px",
-            borderRadius: "5px",
-            background: "#f0f0f0",
-            marginLeft: "58px",
-            padding: "20px",
-          }}
-        />
-        {/* {isMyApprovalPage && (
-  <Button
-    style={{
-      marginBottom: "0px",
-      marginTop: "0px",
-      color: "white",
-      border: "none",
-      background: "blue",
-      marginLeft: "600px",
-    }}
-    onClick={handleUpdate}
-  >
-    Update
-  </Button>
-)} */}
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <div className="fixed-header">
+          <Input
+            placeholder="Search fields"
+            onChange={handleChange}
+            style={{
+              border: "0.5px solid #d3d3d3",
+              marginTop: "0px",
+              marginBottom: "30px",
+              width: "300px",
+              height: "30px",
+              borderRadius: "5px",
+              background: "#f0f0f0",
+              marginLeft: "58px",
+              padding: "20px",
+            }}
+          />
 
-        {isMyApprovalPage && (
-          <>
-            {isLoading ? (
-              <Spin size="large" />
-            ) : (
-              <Button
-                style={{
-                  marginBottom: "0px",
-                  marginTop: "0px",
-                  color: "white",
-                  border: "none",
-                  background: "blue",
-                  marginLeft: "200px",
-                }}
-                onClick={handleUpdate}
-                disabled={isLoading} // Disable button while updating
-              >
-                Update
-              </Button>
-            )}
-          </>
-        )}
+          {isMyApprovalPage && (
+            <>
+              {isLoading ? (
+                <Spin size="large" />
+              ) : (
+                <Button
+                  style={{
+                    marginBottom: "0px",
+                    marginTop: "0px",
+                    color: "white",
+                    border: "none",
+                    background: "blue",
+                    marginLeft: "200px",
+                  }}
+                  onClick={handleUpdate}
+                  disabled={isLoading} // Disable button while updating
+                >
+                  Update
+                </Button>
+              )}
+            </>
+          )}
+          {getUserScope() === "LEAD" && (
+            <Button
+              type="primary"
+              danger
+              onClick={handleDeleteClick}
+              style={{
+                marginLeft: "290px",
 
-        <Button
-          type="primary"
-          danger
-          onClick={handleDeleteClick}
-          style={{
-            marginLeft: "290px",
-          }}
-        >
-          Delete Asset
-        </Button>
+                marginTop: "0px",
+              }}
+            >
+              Delete Asset
+            </Button>
+          )}
+        </div>
         <Modal
           title="Delete Asset"
           visible={isModalVisible}

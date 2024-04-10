@@ -35,6 +35,7 @@ import TableNavbar from "../../TableNavBar/TableNavbar";
 import SideDrawerComponent from "../../SideDrawerComponent/SideDrawerComponent";
 import UploadComponent from "../../Upload/UploadComponent";
 import DrawerViewRequest from "../../../pages/RequestPage/DrawerViewRequest";
+import GlobalSearch from "../../GlobalSearch/GlobalSearch";
 
 interface ExpandedDataType {
   key: React.Key;
@@ -69,6 +70,7 @@ const AssetTable = ({
   memoryData,
   assetTypeData,
   expandedRowRender,
+  assetDataRefetch
 }: AssetTableProps) => {
   const rowRender = (record, expanded) => {
     if (isSuccess) {
@@ -83,13 +85,22 @@ const AssetTable = ({
   const closeImportDrawer = () => {
     setShowUpload(false);
   };
-
+  function handleSearch(_searchTerm: string): void {
+    console.log("Global Search Term: ", _searchTerm);
+    assetDataRefetch(`&global_search=${_searchTerm}`);
+  }
   return (
     <>
       <div className="mainHeading" style={{ background: "white" }}>
         <div className=" font-display">Allocate Assets</div>
       </div>
-
+      <div style={{ marginLeft: '40px' }}>
+        <GlobalSearch
+        onSearch={handleSearch}
+        assetDataRefetch={assetDataRefetch}
+        
+      />
+      </div>
       <div
         style={{
           position: "relative",

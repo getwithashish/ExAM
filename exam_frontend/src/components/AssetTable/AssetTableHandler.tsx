@@ -56,8 +56,9 @@ const AssetTableHandler = ({
   queryParamProp,
   heading,
   isMyApprovalPage,
-}) => {
-  
+}) =>
+   {
+   
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
 
@@ -672,7 +673,6 @@ const AssetTableHandler = ({
       drawerVisible={drawerVisible}
       assetData={data}
       columns={columns}
-    
       memoryData={memoryData}
       assetTypeData={assetTypeData}
       locations={locations}
