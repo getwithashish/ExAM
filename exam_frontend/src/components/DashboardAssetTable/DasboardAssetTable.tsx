@@ -116,7 +116,6 @@ const DasboardAssetTable = ({
       
     }}
     
-   
 
     footer={() => (
       <Pagination

@@ -35,6 +35,7 @@ const CardComponent: React.FC<CardType> = ({
   memoryData,
   assetTypeData,
   isMyApprovalPage,
+  onClose,
   onDelete,
 }) => {
   const uniqueStatusOptions = Array.from(new Set(statusOptions));
@@ -76,9 +77,7 @@ const CardComponent: React.FC<CardType> = ({
       console.log("Updated data:", response.data);
       message.success("Asset Details successfully updated");
 
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
+
     } catch (error) {
       console.error("Error updating data:", error);
       message.error("Error updating asset details. Please try again.");
@@ -86,12 +85,7 @@ const CardComponent: React.FC<CardType> = ({
     setIsLoading(false); // Set loading to false when update completes
   };
 
-  // const handleUpdateChange = (field: string, value: any) => {
-  //   setUpdatedData((prevData) => ({
-  //     ...prevData,
-  //     [field]: value,
-  //   }));
-  // };
+ 
   const handleUpdateChange = (field: string, value: any) => {
     if (field === "business_unit") {
       // Map the business unit name to its primary key
@@ -817,7 +811,7 @@ const CardComponent: React.FC<CardType> = ({
 
   const [tableData, setTableData] = useState([]);
   const handleDelete = async () => {
-    onDelete(data.asset_uuid);
+
     try {
       setIsLoading(true);
       const deletePayload = {

@@ -60,16 +60,21 @@ const AssetTableHandler = ({
 }) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
-
-  const { data: assetData } = useQuery({
-    queryKey: ["assetList"],
-    queryFn: () => getAssetDetails(queryParamProp),
+  const [queryParam, setQueryParam] = useState("");
+  const { data: assetData, refetch: assetDataRefetch } = useQuery({
+    queryKey: ["assetList", queryParam],
+    queryFn: () => getAssetDetails(`${queryParam}`),
   });
 
+   const refetchAssetData = (queryParam = "") => {
+    setQueryParam(queryParam);
+    assetDataRefetch({ force: true });
+  };
+
   const statusOptions =
-    assetData?.map((item: AssetResult) => item.status) || [];
+    assetData?.results?.map((item: AssetResult) => item.status) || [];
   const businessUnitOptions =
-    assetData?.map(
+    assetData?.results?.map(
       (item: AssetResult) => item.business_unit.business_unit_name
     ) || [];
 
@@ -570,76 +575,40 @@ const AssetTableHandler = ({
     setDrawerVisible(true);
   };
 
-  const data = assetData?.map(
-    (result: {
-      notes: any;
-      asset_uuid: any;
-      asset_id: any;
-      asset_category: any;
-      asset_type: { asset_type_name: any };
-      version: any;
-      status: any;
-      location: { location_name: any };
-      invoice_location: { location_name: any };
-      business_unit: { business_unit_name: any };
-      os: any;
-      os_version: any;
-      mobile_os: any;
-      processor: any;
-      processor_gen: any;
-      accessories: any;
-      date_of_purchase: any;
-      warranty_period: any;
-      asset_detail_status: any;
-      assign_status: any;
-      conceder: { username: any };
-      model_number: any;
-      serial_number: any;
-      memory: { memory_space: any };
-      storage: any;
-      configuration: any;
-      custodian: { employee_name: any };
-      product_name: any;
-      owner: any;
-      requester: { username: any };
-      created_at: any;
-      updated_at: any;
-    }) => ({
-      key: result.asset_uuid,
-      asset_id: result.asset_id,
-      asset_category: result.asset_category,
-      asset_type: result.asset_type?.asset_type_name,
-      version: result.version,
-      status: result.status,
-      location: result.location?.location_name,
-      invoice_location: result.invoice_location?.location_name,
-      business_unit: result.business_unit?.business_unit_name,
-      os: result.os,
-      os_version: result.os_version,
-      mobile_os: result.mobile_os,
-      processor: result.processor,
-      Generation: result.processor_gen,
-      accessories: result.accessories,
-      date_of_purchase: result.date_of_purchase,
-      warranty_period: result.warranty_period,
-      asset_detail_status: result.asset_detail_status,
-      assign_status: result.assign_status,
-      conceder: result.conceder?.username,
-      model_number: result.model_number,
-      serial_number: result.serial_number,
-      memory: result.memory?.memory_space,
-      storage: result.storage,
-      configuration: result.configuration,
-      custodian: result.custodian?.employee_name,
-      product_name: result.product_name,
-      owner: result.owner,
-      requester: result.requester?.username,
-      AssignAsset: "assign",
-      created_at: result.created_at,
-      updated_at: result.updated_at,
-      comments: result.notes,
-    })
-  );
+  const data = assetData?.results?.map((result) => ({
+    key: result.asset_uuid,
+    asset_id: result.asset_id,
+    asset_category: result.asset_category,
+    asset_type: result.asset_type.asset_type_name,
+    version: result.version,
+    status: result.status,
+    location: result.location?.location_name,
+    invoice_location: result.invoice_location?.location_name,
+    business_unit: result.business_unit.business_unit_name,
+    os: result.os,
+    os_version: result.os_version,
+    mobile_os: result.mobile_os,
+    processor: result.processor,
+    Generation: result.processor_gen,
+    accessories: result.accessories,
+    date_of_purchase: result.date_of_purchase,
+    warranty_period: result.warranty_period,
+    asset_detail_status: result.asset_detail_status,
+    assign_status: result.assign_status,
+    approved_by: result.approved_by?.username,
+    model_number: result.model_number,
+    serial_number: result.serial_number,
+    memory: result.memory?.memory_space,
+    storage: result.storage,
+    configuration: result.configuration,
+    custodian: result.custodian?.employee_name,
+    product_name: result.product_name,
+    owner: result.owner,
+    requester: result.requester?.username,
+    AssignAsset: "assign",
+    created_at: result.created_at,
+    updated_at: result.updated_at,
+  }));
 
   const drawerTitle = "Asset Details";
 
@@ -649,7 +618,8 @@ const AssetTableHandler = ({
     <AssetTable
       heading={heading}
       // drawerTitle={drawerTitle}
-
+      totalItemCount={assetData?.count}
+      assetPageDataFetch={setQueryParam}
       handleRowClick={handleRowClick}
       onCloseDrawer={onCloseDrawer}
       selectedRow={selectedRow}
@@ -661,6 +631,7 @@ const AssetTableHandler = ({
       locations={locations}
       isMyApprovalPage={isMyApprovalPage}
       statusOptions={statusOptions}
+      assetDataRefetch={refetchAssetData}
       businessUnitOptions={businessUnitOptions}
       handleUpdateData={function (updatedData: { key: any }): void {
         throw new Error("Function not implemented.");
