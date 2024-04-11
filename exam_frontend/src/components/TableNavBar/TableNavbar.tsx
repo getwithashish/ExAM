@@ -1,11 +1,47 @@
-import React from 'react';
-import { DownloadOutlined, UploadOutlined, CloudDownloadOutlined } from '@ant-design/icons';
-import axiosInstance from '../../config/AxiosConfig';
-import GlobalSearch from '../GlobalSearch/GlobalSearch';
-import styles from './TableNavbar.module.css';
-import DropDown from '../DropDown/DropDown';
-
+import React,{useState} from "react";
+import {
+  DownloadOutlined,
+  UploadOutlined,
+  CloudDownloadOutlined,
+} from "@ant-design/icons";
+import axiosInstance from "../../config/AxiosConfig";
+import GlobalSearch from "../GlobalSearch/GlobalSearch";
+import styles from "./TableNavbar.module.css";
+import DropDown from "../DropDown/DropDown";
+import DrawerViewRequest from "./DrawerViewRequest";
+import { QueryBuilderComponent } from "../QueryBuilder/QueryBuilder";
+ 
 const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
+  const [visible, setVisible] = useState(false);
+  const decodeJWT = (token: string) => {
+    try {
+      const base64Url = token.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split("")
+          .map(function (c) {
+            return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+          })
+          .join("")
+      );
+      return JSON.parse(jsonPayload);
+    } catch (error) {
+      console.error("Error decoding JWT:", error);
+      return null;
+    }
+  };
+ 
+  const getUserScope = () => {
+    const jwtToken = localStorage.getItem("jwt");
+    console.log(jwtToken);
+    if (jwtToken) {
+      const payload = decodeJWT(jwtToken);
+      return payload.user_scope;
+    }
+  };
+ 
+  // Function to handle import button click
   const handleImportClick = () => {
     setShowUpload(true);
   };
@@ -79,12 +115,45 @@ const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
     console.log("Global Search Term: ", _searchTerm);
     assetDataRefetch(`&global_search=${_searchTerm}`);
   }
+ 
+ 
 
+  const showQueryBuilder = () => {
+    setVisible(true);
+  };
+
+  const closeQueryBuilder = () => {
+    setVisible(false);
+  };
   return (
-    <nav className={styles['navbar']}>
-      <DropDown onSelect={handleDropDownSelect} items={importItems} buttonLabel="Import" />
-      <GlobalSearch onSearch={handleSearch} assetDataRefetch={assetDataRefetch} />
-      <DropDown onSelect={handleDropDownSelect} items={exportItems} buttonLabel="Export" />
+    <nav className={styles["navbar"]}>
+      {getUserScope() == "LEAD" ? (
+        <DropDown
+          onSelect={handleDropDownSelect}
+          items={items}
+          buttonLabel="Import"
+        />
+      ) : (
+        ""
+      )}
+      
+      <GlobalSearch
+        onSearch={handleSearch}
+        assetDataRefetch={assetDataRefetch}
+      />
+      <button onClick={showQueryBuilder} className={styles["button"]} >Advanced Search</button>
+      <DrawerViewRequest
+        title="Advanced Search"
+        onClose={closeQueryBuilder}
+        visible={visible}
+      >
+        <QueryBuilderComponent assetDataRefetch={assetDataRefetch}/>
+      </DrawerViewRequest>
+       
+
+      <button onClick={handleExport} className={styles["button"]}>
+        <UploadOutlined /> Export
+      </button>
     </nav>
   );
 };

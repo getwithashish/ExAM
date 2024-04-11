@@ -95,11 +95,8 @@ const DasboardAssetTable = ({
         >
           <UploadComponent />
         </SideDrawerComponent>
-        <div className="rounded-lg bg-gray-50 shadow-md dark:bg-gray-800 mx-10" style={{
-boxShadow
-:
-'0 0 10px rgba(0, 0, 0, 0.2)'
-}}>
+<br></br>
+<br></br>
   <Table
     columns={columns}
     dataSource={assetData}
@@ -111,16 +108,15 @@ boxShadow
     style={{
       fontSize: "50px",
       borderColor:"white",
-      width:"29%"
+      width:"29%",
+      marginLeft:"1%",
+      boxShadow:"0 0 10px rgba(0, 0, 0, 0.2)",
+      marginRight:"32px"
+    
       
     }}
     
    
-  rowKey={(record:DataType)=>record.key}
-    expandable={{
-      onExpand:(expanded,record)=>{if(expanded) return setSelectedAssetId(record.key); else return},
-      expandedRowRender: (record, index, indent, expanded) => {return memoizedRowRender(record, expanded);},
-    }}
 
     footer={() => (
       <Pagination
@@ -137,7 +133,7 @@ boxShadow
     )}
  
   />
- </div>
+
 </div>
       <DrawerViewRequest
         visible={drawerVisible}
