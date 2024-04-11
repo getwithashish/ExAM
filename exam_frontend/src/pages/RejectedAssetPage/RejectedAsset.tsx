@@ -1,5 +1,5 @@
-import React from 'react'
-import AssetTableHandler from '../../components/AssetTable/AssetTableHandler'
+import React from "react";
+import AssetTableHandler from "../../components/AssetTable/AssetTableHandler";
 
 const RejectedAsset = () => {
   const decodeJWT = (token: string) => {
@@ -26,12 +26,11 @@ const RejectedAsset = () => {
     console.log(jwtToken);
     if (jwtToken) {
       const payload = decodeJWT(jwtToken);
-      return payload.user_id
+      return payload.user_id;
     }
   };
 
-  let queryParamProp =
-    `&asset_detail_status=UPDATE_REJECTED|CREATE_REJECTED&requester_id=${getUserId()}`;
+  let queryParamProp = `&asset_detail_status=UPDATE_REJECTED|CREATE_REJECTED&requester_id=${getUserId()}`;
   let heading = "My Rejected Request";
 
   return (
@@ -45,4 +44,4 @@ const RejectedAsset = () => {
   );
 };
 
-export default RejectedAsset
+export default RejectedAsset;

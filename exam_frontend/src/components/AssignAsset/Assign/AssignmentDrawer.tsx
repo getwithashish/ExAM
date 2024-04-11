@@ -1,13 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import AssignDrawerProps from './types';
-import { Drawer } from 'antd';
-import type { DrawerProps } from 'antd';
+import React, { useState, useEffect } from "react";
+import AssignDrawerProps from "./types";
+import { Drawer } from "antd";
+import type { DrawerProps } from "antd";
 
-const AssignmentDrawer: React.FC<AssignDrawerProps> = ({ children, closeAssignDrawer, isAssign }) => {
-  const [size, setSize] = useState<DrawerProps['size']>('default');
+const AssignmentDrawer: React.FC<AssignDrawerProps> = ({
+  children,
+  closeAssignDrawer,
+  isAssign,
+}) => {
+  const [size, setSize] = useState<DrawerProps["size"]>("default");
 
   const showAssignDrawer = () => {
-    setSize('default');
+    setSize("default");
   };
 
   useEffect(() => {
@@ -28,7 +32,7 @@ const AssignmentDrawer: React.FC<AssignDrawerProps> = ({ children, closeAssignDr
       open={isAssign}
       style={{ borderRadius: "10px" }}
     >
-      {children} 
+      {children}
     </Drawer>
   );
 };

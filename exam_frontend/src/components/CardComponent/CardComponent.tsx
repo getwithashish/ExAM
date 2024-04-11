@@ -292,10 +292,9 @@ const CardComponent: React.FC<CardType> = ({
     {
       label: "OS",
       name: "os",
-      
+
       value: (
-        <Form.Item name="os"
-        >
+        <Form.Item name="os">
           <b>OS: </b>
           <br></br>
           <br></br>{" "}
@@ -365,7 +364,9 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>{" "}
           <Input
             defaultValue={data.Generation}
-            onChange={(e) => handleUpdateChange("processor_gen", e.target.value)}
+            onChange={(e) =>
+              handleUpdateChange("processor_gen", e.target.value)
+            }
             style={inputStyle}
           />{" "}
         </Form.Item>
@@ -469,9 +470,7 @@ const CardComponent: React.FC<CardType> = ({
           <Input
             disabled
             defaultValue={data.conceder}
-            onChange={(e) =>
-              handleUpdateChange("conceder", e.target.value)
-            }
+            onChange={(e) => handleUpdateChange("conceder", e.target.value)}
             style={inputStyle}
           />{" "}
         </Form.Item>
