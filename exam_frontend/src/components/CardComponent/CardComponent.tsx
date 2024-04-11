@@ -811,7 +811,6 @@ const CardComponent: React.FC<CardType> = ({
 
   const [tableData, setTableData] = useState([]);
   const handleDelete = async () => {
-
     try {
       setIsLoading(true);
       const deletePayload = {
@@ -895,42 +894,43 @@ const CardComponent: React.FC<CardType> = ({
               padding: "20px",
             }}
           />
-
+  
           {isMyApprovalPage && (
             <>
               {isLoading ? (
                 <Spin size="large" />
               ) : (
-                <Button
-                  style={{
-                    marginBottom: "0px",
-                    marginTop: "0px",
-                    color: "white",
-                    border: "none",
-                    background: "blue",
-                    marginLeft: "200px",
-                  }}
-                  onClick={handleUpdate}
-                  disabled={isLoading} // Disable button while updating
-                >
-                  Update
-                </Button>
+                <>
+                  <Button
+                    style={{
+                      marginBottom: "0px",
+                      marginTop: "0px",
+                      color: "white",
+                      border: "none",
+                      background: "blue",
+                      marginLeft: "200px",
+                    }}
+                    onClick={handleUpdate}
+                    disabled={isLoading} // Disable button while updating
+                  >
+                    Update
+                  </Button>
+                  {getUserScope() === "LEAD" && (
+                    <Button
+                      type="primary"
+                      danger
+                      onClick={handleDeleteClick}
+                      style={{
+                        marginLeft: "290px",
+                        marginTop: "0px",
+                      }}
+                    >
+                      Delete Asset
+                    </Button>
+                  )}
+                </>
               )}
             </>
-          )}
-          {getUserScope() === "LEAD" && (
-            <Button
-              type="primary"
-              danger
-              onClick={handleDeleteClick}
-              style={{
-                marginLeft: "290px",
-
-                marginTop: "0px",
-              }}
-            >
-              Delete Asset
-            </Button>
           )}
         </div>
         <Modal
@@ -951,6 +951,7 @@ const CardComponent: React.FC<CardType> = ({
           <p>Are you sure you want to delete the asset?</p>
         </Modal>
       </div>
+  
       <div className="scrollable-content">
         <Form
           key={data.asset_id}
@@ -965,11 +966,11 @@ const CardComponent: React.FC<CardType> = ({
               </div>
             </Form.Item>
           ))}
-
+  
           <div className="rowone"></div>
         </Form>
       </div>
     </div>
   );
-};
+};  
 export default CardComponent;
