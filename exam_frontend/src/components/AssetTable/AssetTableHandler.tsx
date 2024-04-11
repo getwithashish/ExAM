@@ -60,6 +60,7 @@ const AssetTableHandler = ({
 }) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
+  
   const [queryParam, setQueryParam] = useState("");
   const { data: assetData, refetch: assetDataRefetch } = useQuery({
     queryKey: ["assetList", queryParam],
