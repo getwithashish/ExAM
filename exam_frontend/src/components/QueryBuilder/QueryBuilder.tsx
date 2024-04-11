@@ -36,18 +36,12 @@ export const QueryBuilderComponent:React.FC<QueryBuilderComponentProps> = ({asse
     // Make a get request to the backend endpointa
     let queryParam = `&json_logic=${formattedQuery}`
     assetDataRefetch(queryParam)
-   
-    let formattedQuery = formatQuery(query, 'jsonlogic');
-    console.log( "formatted query",formattedQuery)
-    formattedQuery = JSON.stringify(formattedQuery);
-    // Make a get request to the backend endpointa
-    let queryParam = `&json_logic=${formattedQuery}`
-    assetDataRefetch(queryParam)
+  
    
   };
 
   return (
-    <div className={styles['queryBuilder']}>
+    <div className={styles.ruleGroup}>
       <QueryBuilder fields={fields} query={query} onQueryChange={setQuery}  />
       <button onClick={handleQueryButtonClick} className='m-2 p-2 h-50 w-50 text-white'>Search</button>
     </div>
