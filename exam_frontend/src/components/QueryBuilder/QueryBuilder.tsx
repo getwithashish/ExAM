@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { Field, QueryBuilder, RuleGroupType, formatQuery } from 'react-querybuilder';
 import 'react-querybuilder/dist/query-builder.css';
-import axiosInstance from '../../config/AxiosConfig';
-
 
 const fields: Field[] = [
   { name: 'product_name', label: 'product_name' },
@@ -22,33 +20,28 @@ const fields: Field[] = [
   
 ];
 
-export const QueryBuilderComponent = () => {
+export const QueryBuilderComponent = ({assetDataRefetch}) => {
   const [query, setQuery] = useState<RuleGroupType>({
     combinator: 'and',
     rules: [
       { field: 'product_name', operator: '=', value: '' },
       
-      
-      
     ],
   });
   const handleQueryButtonClick = () => {
-    const formattedQuery = formatQuery(query, 'cel');
-    console.log("query", formattedQuery)
-    // Make a POST request to the backend endpoint
-    axiosInstance.post('/asset/queryBuilder', { cel_query: formattedQuery })
-      .then(response => {
-        console.log('Response:', response.data.result);
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
+    let formattedQuery = formatQuery(query, 'jsonlogic');
+    console.log( "formatted query",formattedQuery)
+    formattedQuery = JSON.stringify(formattedQuery);
+    // Make a get request to the backend endpointa
+    let queryParam = `&json_logic=${formattedQuery}`
+    assetDataRefetch(queryParam)
+   
   };
 
   return (
-    <div>
-      <QueryBuilder fields={fields} query={query} onQueryChange={setQuery} />
-      <button onClick={handleQueryButtonClick} className='m-2 p-2 h-50 w-50 '>Get Assets</button>
+    <div className="querybuilder">
+      <QueryBuilder fields={fields} query={query} onQueryChange={setQuery}  />
+      <button onClick={handleQueryButtonClick} className='m-2 p-2 h-50 w-50 text-white'>Search</button>
     </div>
   );
 };

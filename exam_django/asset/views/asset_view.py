@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.views import APIView
 from asset.serializers import AssetReadSerializer, AssetWriteSerializer
@@ -11,7 +12,12 @@ from asset.service.asset_crud_service.asset_lead_role_mutation_service import (
 from asset.service.asset_crud_service.asset_sysadmin_role_mutation_service import (
     AssetSysadminRoleMutationService,
 )
-from asset.service.asset_crud_service.asset_query_service import AssetQueryService
+from asset.service.asset_crud_service.asset_normal_query_service import (
+    AssetNormalQueryService,
+)
+from asset.service.asset_crud_service.asset_advanced_query_service_with_json_logic import (
+    AssetAdvancedQueryServiceWithJsonLogic,
+)
 from exceptions import NotAcceptableOperationException, PermissionDeniedException
 from response import APIResponse
 from messages import (
@@ -19,6 +25,7 @@ from messages import (
     ASSET_LIST_RETRIEVAL_UNSUCCESSFUL,
     ASSET_NOT_FOUND,
     USER_UNAUTHORIZED,
+    ASSET_DELETION_SUCCESSFUL
 )
 
 
@@ -35,8 +42,20 @@ class AssetView(APIView):
     def get(self, request, *args, **kwargs):
         try:
             serializer = self.serializer_class
-            asset_query_service = AssetQueryService()
-            return asset_query_service.get_asset_details(serializer, request)
+
+            if request.query_params.get("json_logic"):
+                asset_query_service = AssetAdvancedQueryServiceWithJsonLogic()
+            else:
+                asset_query_service = AssetNormalQueryService()
+
+            data, message, http_status = asset_query_service.get_asset_details(
+                serializer, request
+            )
+            return APIResponse(
+                data=data,
+                message=message,
+                status=http_status,
+            )
 
         except Exception as e:
             print("Error: ", e)
@@ -128,7 +147,26 @@ class AssetView(APIView):
                 message=e.message,
                 status=e.status,
             )
+   
+    def delete(self, request):
+        asset_uuid = request.data.get("asset_uuid")
+        try:
+            asset = get_object_or_404(Asset, asset_uuid=asset_uuid)
+            asset.is_deleted = True
+            asset.save()
+            return APIResponse(
+                data={"asset_uuid": asset_uuid},
+                message=ASSET_DELETION_SUCCESSFUL,
+                status=status.HTTP_200_OK,
+            )
 
+        except Exception as e:
+            print("Error: ", e)
+            return APIResponse(
+                data={},
+                message="Error occurred while deleting asset.",
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 class UserAgentAssetView(APIView):
     permission_classes = [AllowAny]

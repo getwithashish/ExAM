@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import {
   DownloadOutlined,
   UploadOutlined,
@@ -8,8 +8,11 @@ import axiosInstance from "../../config/AxiosConfig";
 import GlobalSearch from "../GlobalSearch/GlobalSearch";
 import styles from "./TableNavbar.module.css";
 import DropDown from "../DropDown/DropDown";
+import DrawerViewRequest from "./DrawerViewRequest";
+import { QueryBuilderComponent } from "../QueryBuilder/QueryBuilder";
  
 const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
+  const [visible, setVisible] = useState(false);
   const decodeJWT = (token: string) => {
     try {
       const base64Url = token.split(".")[1];
@@ -105,6 +108,15 @@ const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
     assetDataRefetch(`&global_search=${_searchTerm}`);
   }
  
+ 
+
+  const showQueryBuilder = () => {
+    setVisible(true);
+  };
+
+  const closeQueryBuilder = () => {
+    setVisible(false);
+  };
   return (
     <nav className={styles["navbar"]}>
       {getUserScope() == "LEAD" ? (
@@ -116,11 +128,21 @@ const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
       ) : (
         ""
       )}
-     
+      
       <GlobalSearch
         onSearch={handleSearch}
         assetDataRefetch={assetDataRefetch}
       />
+      <button onClick={showQueryBuilder} className={styles["button"]} >Advanced Search</button>
+      <DrawerViewRequest
+        title="Advanced Search"
+        onClose={closeQueryBuilder}
+        visible={visible}
+      >
+        <QueryBuilderComponent assetDataRefetch={assetDataRefetch}/>
+      </DrawerViewRequest>
+       
+
       <button onClick={handleExport} className={styles["button"]}>
         <UploadOutlined /> Export
       </button>

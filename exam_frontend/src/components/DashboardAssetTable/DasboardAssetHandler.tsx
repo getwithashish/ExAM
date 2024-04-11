@@ -39,10 +39,6 @@ import {
   getMemoryOptions,
 } from "../DashboardAssetTable/api/getDasboardAssetDetails";
 import DasboardAssetTable from "./DasboardAssetTable";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBookOpenReader, faBoxOpen, faPlus, faUsersViewfinder } from "@fortawesome/free-solid-svg-icons";
-import { HiPencilAlt } from "react-icons/hi";
-import AssetTimelineHandler from "../TimelineLog/AssetTimelineHandler";
 
 import TimelineButton from "../TimelineLog/TimeLineDrawer"
 
@@ -65,7 +61,7 @@ const DasboardAssetHandler = () => {
     queryFn: () => getAssetDetails(`${queryParam}`),
   });
 
-  const refetchAssetData = (queryParam = "") => {
+   const refetchAssetData = (queryParam = "") => {
     setQueryParam(queryParam);
     assetDataRefetch({ force: true });
   };
