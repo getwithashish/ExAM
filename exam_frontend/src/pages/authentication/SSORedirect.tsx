@@ -27,7 +27,6 @@ const SSORedirect = () => {
     }
   };
 
-
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const refresh_token = queryParams.get("refresh_token");
