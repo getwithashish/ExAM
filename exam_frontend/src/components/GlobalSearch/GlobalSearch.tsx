@@ -1,23 +1,25 @@
-import React, { useState } from 'react';
-import { SearchOutlined } from '@ant-design/icons';
-import styles from './GlobalSearch.module.css';
+import React, { useState } from "react";
+import { SearchOutlined } from "@ant-design/icons";
+import styles from "./GlobalSearch.module.css";
 
 interface GlobalSearchProps {
   onSearch: (searchTerm: string) => void;
   assetDataRefetch: (queryParam: string) => void;
 }
 
-const GlobalSearch: React.FC<GlobalSearchProps> = ({ onSearch, assetDataRefetch }) => {
-  const [searchTerm, setSearchTerm] = useState<string>('');
+const GlobalSearch: React.FC<GlobalSearchProps> = ({
+  onSearch,
+  assetDataRefetch,
+}) => {
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if(event.target.value === ""){
+    if (event.target.value === "") {
       setSearchTerm(event.target.value);
-      assetDataRefetch(``)
-    }
-    else{
+      assetDataRefetch(``);
+    } else {
       setSearchTerm(event.target.value);
-      assetDataRefetch(`&global_search=${event.target.value}`)
+      assetDataRefetch(`&global_search=${event.target.value}`);
     }
   };
 
@@ -31,13 +33,13 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ onSearch, assetDataRefetch 
   };
 
   return (
-    <form className={styles['global-search-form']} onSubmit={handleSubmit}>
+    <form className={styles["global-search-form"]} onSubmit={handleSubmit}>
       <input
         type="text"
         placeholder="Search..."
         value={searchTerm}
         onChange={handleChange}
-        className={styles['global-search-input']}
+        className={styles["global-search-input"]}
       />
       {/* <button type="button" className={styles['global-search-button']} onClick={handleSearchButtonClick}>
         <SearchOutlined />

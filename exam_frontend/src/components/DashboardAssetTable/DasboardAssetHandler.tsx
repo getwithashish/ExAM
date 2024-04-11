@@ -40,7 +40,7 @@ import {
 } from "../DashboardAssetTable/api/getDasboardAssetDetails";
 import DasboardAssetTable from "./DasboardAssetTable";
 
-import TimelineButton from "../TimelineLog/TimeLineDrawer"
+import TimelineViewDrawer from "../TimelineLog/TimeLineDrawer"
 
 interface ExpandedDataType {
   key: React.Key;
@@ -581,7 +581,7 @@ const DasboardAssetHandler = () => {
       fixed: 'right',
       width: 140,
       render: (_,record) => (
-        <TimelineButton assetUuid={record.key} />
+        <TimelineViewDrawer assetUuid={record.key} />
       ),
   },
     
