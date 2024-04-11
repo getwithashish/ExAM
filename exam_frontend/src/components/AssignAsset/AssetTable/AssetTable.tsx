@@ -70,7 +70,7 @@ const AssetTable = ({
   memoryData,
   assetTypeData,
   expandedRowRender,
-  assetDataRefetch
+  assetDataRefetch,
 }: AssetTableProps) => {
   const rowRender = (record, expanded) => {
     if (isSuccess) {
@@ -94,12 +94,11 @@ const AssetTable = ({
       <div className="mainHeading" style={{ background: "white" }}>
         <div className=" font-display">Allocate Assets</div>
       </div>
-      <div style={{ marginLeft: '40px' }}>
+      <div style={{ marginLeft: "40px" }}>
         <GlobalSearch
-        onSearch={handleSearch}
-        assetDataRefetch={assetDataRefetch}
-        
-      />
+          onSearch={handleSearch}
+          assetDataRefetch={assetDataRefetch}
+        />
       </div>
       <br></br>
       <div
@@ -115,7 +114,7 @@ const AssetTable = ({
         >
           <UploadComponent />
         </SideDrawerComponent>
-        
+
         <Table
           columns={columns}
           dataSource={assetData}
@@ -126,20 +125,16 @@ const AssetTable = ({
           handleRowClick={handleRowClick}
           style={{
             fontSize: "50px",
-            borderColor:"white",
-            width:"29%",
-            marginLeft:"1%",
-            boxShadow:"0 0 10px rgba(0, 0, 0, 0.2)",
-            marginRight:"120px"
-            
+            borderColor: "white",
+            width: "29%",
+            marginLeft: "1%",
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+            marginRight: "120px",
           }}
-       
-       
         />
-       
       </div>
       <DrawerViewRequest
-        visible={drawerVisible}
+        open={drawerVisible}
         onClose={onCloseDrawer}
         selectedRow={selectedRow}
         drawerTitle={drawerTitle}

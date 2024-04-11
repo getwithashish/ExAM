@@ -48,9 +48,7 @@ interface ExpandedDataType {
   upgradeNum: string;
 }
 
-const AssetTableHandler = ({showAssignDrawer}) => {
- 
-
+const AssetTableHandler = ({ showAssignDrawer }) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
 
@@ -118,21 +116,22 @@ const AssetTableHandler = ({showAssignDrawer}) => {
     <h1>Asset Overview</h1>
   </div>;
 
-const renderClickableColumn = (columnName, dataIndex) => (_, record) => (
-  <div
-    data-column-name={columnName}
-    onClick={() => handleColumnClick(record, columnName)}
-    style={{ cursor: "pointer" }}
-  >
-    {record[dataIndex]}
-  </div>
-);
+  const renderClickableColumn = (columnName, dataIndex) => (_, record) =>
+    (
+      <div
+        data-column-name={columnName}
+        onClick={() => handleColumnClick(record, columnName)}
+        style={{ cursor: "pointer" }}
+      >
+        {record[dataIndex]}
+      </div>
+    );
   const columns = [
     {
       title: "Product Name",
       dataIndex: "product_name",
       fixed: "left",
-       width: 120,
+      width: 120,
       responsive: ["md"],
       filterIcon: <SearchOutlined />,
       filterDropdown: ({
@@ -187,7 +186,6 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => (
         a.product_name.localeCompare(b.product_name),
       sortDirections: ["ascend", "descend"],
       render: renderClickableColumn("Product Name", "product_name"),
-
     },
     {
       title: "Serial Number",
@@ -247,7 +245,6 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => (
         a.serial_number.localeCompare(b.serial_number),
       sortDirections: ["ascend", "descend"],
       render: renderClickableColumn("Serial Number", "serial_number"),
-
     },
     {
       title: "Location",
@@ -281,10 +278,8 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => (
         }
         return record.location.indexOf(value.toString()) === 0;
       },
-    
+
       render: renderClickableColumn("Invoice Location", "invoice_location"),
-
-
     },
     {
       title: "Custodian",
@@ -345,7 +340,6 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => (
         return false; // Return false if custodian is undefined
       },
       render: renderClickableColumn("Custodian", "custodian"),
-
     },
     {
       title: "Asset Type",
@@ -363,7 +357,6 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => (
         return record.asset_type.indexOf(value.toString()) === 0;
       },
       render: renderClickableColumn("Asset Type", "asset_type"),
-
     },
     {
       title: "Asset Category",
@@ -373,172 +366,155 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => (
       render: renderClickableColumn("Asset Category", "asset_category"),
     },
     {
-      title: 'Version',
-      dataIndex: 'Version',
-      responsive: ['md'],
+      title: "Version",
+      dataIndex: "Version",
+      responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Version", "version"),
-
     },
     {
-      title: 'Asset Status',
-      dataIndex: 'Status',
-      responsive: ['md'],
+      title: "Asset Status",
+      dataIndex: "Status",
+      responsive: ["md"],
       width: 140,
       render: renderClickableColumn("Asset Status", "status"),
-
     },
     {
-      title: 'Business Unit',
-      dataIndex: 'BusinessUnit',
-      responsive: ['md'],
+      title: "Business Unit",
+      dataIndex: "BusinessUnit",
+      responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Business Unit", "business_unit"),
-
     },
     {
-      title: 'Os',
-      dataIndex: 'os',
-      responsive: ['md'],
+      title: "Os",
+      dataIndex: "os",
+      responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Os", "os"),
-
     },
     {
-      title: 'Os Version',
-      dataIndex: 'os_version',
-      responsive: ['md'],
-       width: 120,
+      title: "Os Version",
+      dataIndex: "os_version",
+      responsive: ["md"],
+      width: 120,
       render: renderClickableColumn("Os Version", "os_version"),
-
     },
     {
-      title: 'Processor',
-      dataIndex: 'processor',
-      responsive: ['md'],
+      title: "Processor",
+      dataIndex: "processor",
+      responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Processor", "processor"),
-
     },
     {
-      title: 'Generation',
-      dataIndex: 'processor_gen',
-      responsive: ['md'],
+      title: "Generation",
+      dataIndex: "processor_gen",
+      responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Asset Status", "processor_gen"),
-
     },
     {
-      title: 'Date Of Purchase',
-      dataIndex: 'DateOfPurchase',
-      responsive: ['md'],
+      title: "Date Of Purchase",
+      dataIndex: "DateOfPurchase",
+      responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Asset Status", "date_of_purchase"),
-
     },
     {
-      title: 'Warranty Period',
-      dataIndex: 'WarrantyPeriod',
-      responsive: ['md'],
+      title: "Warranty Period",
+      dataIndex: "WarrantyPeriod",
+      responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Asset Status", "warranty_period"),
-
     },
     {
-      title: 'Model Number',
-      dataIndex: 'ModelNumber', // Corrected dataIndex
-      responsive: ['md'],
+      title: "Model Number",
+      dataIndex: "ModelNumber", // Corrected dataIndex
+      responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Asset Status", "model_number"),
-
     },
     {
-      title: 'Memory',
-      dataIndex: 'Memory',
-      responsive: ['md'],
+      title: "Memory",
+      dataIndex: "Memory",
+      responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Asset Status", "memory"),
-
     },
     {
-      title: 'Storage',
-      dataIndex: 'storage',
-      responsive: ['md'],
+      title: "Storage",
+      dataIndex: "storage",
+      responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Storage", "storage"),
-
     },
     {
-      title: 'Owner',
-      dataIndex: 'owner',
-      responsive: ['md'],
+      title: "Owner",
+      dataIndex: "owner",
+      responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Owner", "owner"),
-
     },
     {
-      title: 'Approved By',
-      dataIndex: 'approved_by',
-      responsive: ['md'],
+      title: "Approved By",
+      dataIndex: "approved_by",
+      responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Approved By", "approved_by"),
-
     },
     {
-      title: 'Requester',
-      dataIndex: 'requester',
-      responsive: ['md'],
+      title: "Requester",
+      dataIndex: "requester",
+      responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Requester", "requester"),
-
     },
     {
-      title: 'Asset Detail Status',
-      dataIndex: 'asset_detail_status',
-      responsive: ['md'],
+      title: "Asset Detail Status",
+      dataIndex: "asset_detail_status",
+      responsive: ["md"],
       width: 140,
-      render: renderClickableColumn("Asset Detail Status", "asset_detail_status"),
-
+      render: renderClickableColumn(
+        "Asset Detail Status",
+        "asset_detail_status"
+      ),
     },
     {
-      title: 'Asset Assign Status',
-      dataIndex: 'assign_status',
-      responsive: ['md'],
+      title: "Asset Assign Status",
+      dataIndex: "assign_status",
+      responsive: ["md"],
       width: 140,
       render: renderClickableColumn("Asset Assign Status", "assign_status"),
-
     },
     {
-      title: 'Created At',
-      dataIndex: 'created_at',
-      responsive: ['md'],
+      title: "Created At",
+      dataIndex: "created_at",
+      responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Accessories", "created_at"),
-
     },
     {
-      title: 'Updated At',
-      dataIndex: 'updated_at',
-      responsive: ['md'],
+      title: "Updated At",
+      dataIndex: "updated_at",
+      responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Accessories", "updated_at"),
-
     },
- 
+
     {
-      title: 'Accessories',
-      dataIndex: 'Accessories',
-      responsive: ['md'],
+      title: "Accessories",
+      dataIndex: "Accessories",
+      responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Accessories", "accessories"),
     },
-    
-  
+
     {
       title: "Assign Asset",
       dataIndex: "AssignAsset",
       fixed: "right",
-       width: 120,
+      width: 120,
       render: (_data, record) => (
         <Button
           ghost
@@ -548,20 +524,18 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => (
             color: "black",
           }}
           onClick={() => {
-            console.log("button clicked ")
+            console.log("button clicked ");
             if (record.custodian == null || record.custodian == undefined) {
               showAssignDrawer(record);
             } else {
               alert("Already assigned");
             }
           }}
-          
         >
           +
         </Button>
       ),
-    }
-  
+    },
   ];
 
   const handleColumnClick = (record: string[], columnName: string) => {
@@ -614,11 +588,8 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => (
 
   const button = <Button type="primary"></Button>;
 
-  
-
   return (
     <AssetTable
-     
       handleRowClick={handleRowClick}
       onCloseDrawer={onCloseDrawer}
       selectedRow={selectedRow}

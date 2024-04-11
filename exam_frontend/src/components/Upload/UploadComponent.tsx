@@ -90,13 +90,11 @@ const UploadComponent: React.FC = () => {
           <InboxOutlined />
         </p>
         <p className="ant-upload-text">Click here to upload a csv file</p>
-        <p className="ant-upload-hint">
-          Support for a single or bulk upload. 
-        </p>
+        <p className="ant-upload-hint">Support for a single or bulk upload.</p>
       </Dragger>
       <Button
         style={{
-          marginTop: 20
+          marginTop: 20,
         }}
         onClick={handleSubmit}
       >

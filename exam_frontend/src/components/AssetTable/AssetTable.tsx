@@ -10,6 +10,7 @@ import {
   Button,
   Dropdown,
   Input,
+  Pagination,
   Space,
   Table,
   TableColumnsType,
@@ -55,6 +56,8 @@ const AssetTable = ({
   selectedRow,
   drawerVisible,
   assetData,
+  totalItemCount,
+  assetPageDataFetch,
   columns,
   handleUpdateData,
   drawerTitle,
@@ -91,12 +94,11 @@ const AssetTable = ({
       <div className="mainHeading" font-display>
         <h1>{heading}</h1>
       </div>
-      <div style={{ marginLeft: '40px' }}>
+      <div style={{ marginLeft: "40px" }}>
         <GlobalSearch
-        onSearch={handleSearch}
-        assetDataRefetch={assetDataRefetch}
-        
-      />
+          onSearch={handleSearch}
+          assetDataRefetch={assetDataRefetch}
+        />
       </div>
 
       <div style={{ position: "relative", display: "inline-block" }}>
@@ -117,10 +119,24 @@ const AssetTable = ({
             boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
             marginRight: "200px",
           }}
+
+          footer={() => (
+            <Pagination
+              pageSize={20}
+              showTotal={(total, range) =>
+                `${range[0]}-${range[1]} of ${total} assets`
+              }
+              total={totalItemCount}
+              onChange={(page, pageSize) => {
+                assetPageDataFetch(`&offset=${(page - 1) * pageSize}`);
+              }}
+              hideOnSinglePage={true}
+            />
+          )}
         />
       </div>
       <DrawerViewRequest
-        visible={drawerVisible}
+        open={drawerVisible}
         onClose={onCloseDrawer}
         selectedRow={selectedRow}
         drawerTitle={drawerTitle}
