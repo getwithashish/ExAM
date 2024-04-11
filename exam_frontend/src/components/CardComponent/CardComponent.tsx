@@ -811,6 +811,7 @@ const CardComponent: React.FC<CardType> = ({
 
   const [tableData, setTableData] = useState([]);
   const handleDelete = async () => {
+ 
     try {
       setIsLoading(true);
       const deletePayload = {
