@@ -31,7 +31,7 @@ const AddAsset: React.FC = () => {
     "version",
     "warranty_period",
     "date_of_purchase",
-    "model_number"
+    "model_number",
   ]);
   const [formSubmitted, setFormSubmitted] = useState(false);
 
@@ -60,8 +60,6 @@ const AddAsset: React.FC = () => {
     handleInputChange("warranty_period", value);
   };
 
-  
-
   const validateOsVersion = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     if (!warningShown && isNaN(value as any)) {
@@ -86,70 +84,71 @@ const AddAsset: React.FC = () => {
   const [processorGenWarningShown, setProcessorGenWarningShown] =
     useState(false);
 
-
   const validateProcessorGeneration = (value: string) => {
     const alphanumericPattern = /^[a-zA-Z0-9]+$/;
     const digitPattern = /^\d+$/;
     const alphabetPattern = /^[a-zA-Z]+$/;
 
     if (digitPattern.test(value)) {
-        if (!processorGenWarningShown) {
-            message.warning("Processor generation should not contain only digits");
-            setProcessorGenWarningShown(true);
-        }
-    }
-    else if (alphabetPattern.test(value)) {
-        if (!processorGenWarningShown) {
-            message.warning("Processor generation should not contain only alphabets");
-            setProcessorGenWarningShown(true);
-        }
-    }
-    else if (!alphanumericPattern.test(value)) {
-        if (!processorGenWarningShown) {
-            message.warning("Processor generation should be alphanumeric");
-            setProcessorGenWarningShown(true);
-        }
+      if (!processorGenWarningShown) {
+        message.warning("Processor generation should not contain only digits");
+        setProcessorGenWarningShown(true);
+      }
+    } else if (alphabetPattern.test(value)) {
+      if (!processorGenWarningShown) {
+        message.warning(
+          "Processor generation should not contain only alphabets"
+        );
+        setProcessorGenWarningShown(true);
+      }
+    } else if (!alphanumericPattern.test(value)) {
+      if (!processorGenWarningShown) {
+        message.warning("Processor generation should be alphanumeric");
+        setProcessorGenWarningShown(true);
+      }
     } else {
-        setProcessorGenWarningShown(false);
+      setProcessorGenWarningShown(false);
     }
-};
+  };
 
+  const [maxLengthWarningShown, setMaxLengthWarningShown] = useState(false);
+  const [touched, setTouched] = useState(false); // Track if the input field has been touched
 
-const [maxLengthWarningShown, setMaxLengthWarningShown] = useState(false);
-    const [touched, setTouched] = useState(false); // Track if the input field has been touched
+  const validateStorage = (value: string) => {
+    if (!value.trim()) {
+      setTouched(false); // Reset touched state if input is empty
+      return; // Exit validation
+    }
 
-    const validateStorage = (value: string) => {
-        if (!value.trim()) {
-            setTouched(false); // Reset touched state if input is empty
-            return; // Exit validation
-        }
+    setTouched(true);
 
-        setTouched(true);
+    const formatPattern = /^\d{1,3}GB$/;
 
-        const formatPattern = /^\d{1,3}GB$/;
+    const maxLength = 5;
 
-        const maxLength = 5;
+    if (value.length > maxLength) {
+      if (!maxLengthWarningShown) {
+        message.warning(
+          `Storage length should not exceed ${maxLength} characters.`
+        );
+        setMaxLengthWarningShown(true);
+      }
+    } else {
+      setMaxLengthWarningShown(false);
+    }
 
-        if (value.length > maxLength) {
-            if (!maxLengthWarningShown) {
-                message.warning(`Storage length should not exceed ${maxLength} characters.`);
-                setMaxLengthWarningShown(true);
-            }
-        } else {
-            setMaxLengthWarningShown(false);
-        }
-
-        if (!formatPattern.test(value)) {
-            if (!warningShown && touched) { // Only show warning if the field has been touched
-                message.warning('Storage should be in the format "###GB", where ### is any one to three digits.');
-                setWarningShown(true);
-            }
-        } else {
-            setWarningShown(false);
-        }
-    };
-
-
+    if (!formatPattern.test(value)) {
+      if (!warningShown && touched) {
+        // Only show warning if the field has been touched
+        message.warning(
+          'Storage should be in the format "###GB", where ### is any one to three digits.'
+        );
+        setWarningShown(true);
+      }
+    } else {
+      setWarningShown(false);
+    }
+  };
 
   const [accessoryValue, setAccessoryValue] = useState("");
   const [accessoryWarningShown, setAccessoryWarningShown] = useState(false);
@@ -269,11 +268,10 @@ const [maxLengthWarningShown, setMaxLengthWarningShown] = useState(false);
       !formData.date_of_purchase
     ) {
       message.error("Please fill in all mandatory fields.");
-      return; 
+      return;
     }
     const warrantyPeriodValue = formData.warranty_period.trim();
     if (warrantyPeriodValue !== "" && !/^\d+$/.test(warrantyPeriodValue)) {
- 
       message.error("Warranty period should be a valid integer.");
       return;
     }
@@ -287,23 +285,28 @@ const [maxLengthWarningShown, setMaxLengthWarningShown] = useState(false);
       message.error("OS version should only contain digits.");
       return;
     }
-    const storageValue = formData.storage?.trim(); 
-    const formatPattern = /^\d{1,3}GB$/; 
+    const storageValue = formData.storage?.trim();
+    const formatPattern = /^\d{1,3}GB$/;
 
     if (storageValue && !formatPattern.test(storageValue)) {
-        message.error('Storage should be in the format "###GB", where ### is any one to three digits.');
-        return; 
+      message.error(
+        'Storage should be in the format "###GB", where ### is any one to three digits.'
+      );
+      return;
     }
-    const processorValue = formData.processor?.trim(); 
-    const processorGenValue = formData.processor_gen?.trim(); 
-    const alphanumericPattern = /^[a-zA-Z0-9]+$/; 
+    const processorValue = formData.processor?.trim();
+    const processorGenValue = formData.processor_gen?.trim();
+    const alphanumericPattern = /^[a-zA-Z0-9]+$/;
 
-    if ((processorValue && !alphanumericPattern.test(processorValue)) || 
-        (processorGenValue && !alphanumericPattern.test(processorGenValue))) {
-        message.error('Processor and Processor Generation should be alphanumeric.');
-        return; 
+    if (
+      (processorValue && !alphanumericPattern.test(processorValue)) ||
+      (processorGenValue && !alphanumericPattern.test(processorGenValue))
+    ) {
+      message.error(
+        "Processor and Processor Generation should be alphanumeric."
+      );
+      return;
     }
-  
 
     console.log("Attempting to submit form data:", formData);
     const response = await axiosInstance.post(
@@ -315,8 +318,7 @@ const [maxLengthWarningShown, setMaxLengthWarningShown] = useState(false);
 
     setTimeout(() => {
       window.location.reload();
-    }, 1500); 
-
+    }, 1500);
   };
 
   return (
@@ -332,7 +334,7 @@ const [maxLengthWarningShown, setMaxLengthWarningShown] = useState(false);
           size={componentSize as SizeType}
           labelAlign="left"
           style={{ padding: "20px", overflowX: "hidden" }}
-          className={styles["formContainer"]} 
+          className={styles["formContainer"]}
         >
           {/* Form items... */}
 
@@ -467,7 +469,6 @@ const [maxLengthWarningShown, setMaxLengthWarningShown] = useState(false);
               options={asset_type}
             />
           </Form.Item>
-
 
           <Form.Item
             label={
@@ -826,7 +827,6 @@ const [maxLengthWarningShown, setMaxLengthWarningShown] = useState(false);
               placeholder="Enter processor generation"
               className={styles["input"]}
               onChange={(e) => {
-                
                 validateProcessorGeneration(e.target.value);
                 handleInputChange("processor_gen", e.target.value);
               }}
@@ -849,25 +849,22 @@ const [maxLengthWarningShown, setMaxLengthWarningShown] = useState(false);
             </Select>
           </Form.Item>
 
-
-<Form.Item label="Storage:" className={styles["formItem"]}>
-    <Input
-        placeholder="Enter Storage"
-        className={styles["input"]}
-        onChange={(e) => {
-            const value = e.target.value;
-            validateStorage(value); // Validate the storage input
-            handleInputChange("storage", value); // Update the form data
-            
-        }}
-        suffix={
-          <Tooltip title="Storage should be in the format ###GB Eg:512GB">
-            <InfoCircleOutlined style={{ color: "rgba(0,0,0,.45)" }} />
-          </Tooltip>
-        }
-
-    />
-</Form.Item>
+          <Form.Item label="Storage:" className={styles["formItem"]}>
+            <Input
+              placeholder="Enter Storage"
+              className={styles["input"]}
+              onChange={(e) => {
+                const value = e.target.value;
+                validateStorage(value); // Validate the storage input
+                handleInputChange("storage", value); // Update the form data
+              }}
+              suffix={
+                <Tooltip title="Storage should be in the format ###GB Eg:512GB">
+                  <InfoCircleOutlined style={{ color: "rgba(0,0,0,.45)" }} />
+                </Tooltip>
+              }
+            />
+          </Form.Item>
 
           <Form.Item label="Configuration:" className={styles["formItem"]}>
             <Input

@@ -154,5 +154,7 @@ export interface AssetTableProps {
   asset_uuid: string;
   heading:string
   assetDataRefetch: (queryParam: string) => void;
+  setTableData:any
+  handleDelete:any
 }
 

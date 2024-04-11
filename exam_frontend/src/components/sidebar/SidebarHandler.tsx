@@ -1,7 +1,7 @@
 //src/components/sidebar/SidebarHandler.tsx
 
-import { useState, useEffect } from 'react';
-import ExamSidebar from './sidebar';
+import { useState, useEffect } from "react";
+import ExamSidebar from "./sidebar";
 
 export const SidebarHandler = ({ addAsset }: { addAsset: () => void }) => {
   const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(true);
@@ -14,9 +14,9 @@ export const SidebarHandler = ({ addAsset }: { addAsset: () => void }) => {
   };
 
   useEffect(() => {
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -28,18 +28,18 @@ export const SidebarHandler = ({ addAsset }: { addAsset: () => void }) => {
   const openSidebar = () => {
     console.log("clicked");
     // setIsClicked(true);
-    setIsSidebarVisible(true)
+    setIsSidebarVisible(true);
   };
 
   return (
     // <div style={{ backgroundColor: 'white' }} >
-      <ExamSidebar
-        isSidebarVisible={isSidebarVisible}
-        isClicked={isClicked}
-        openSidebar={openSidebar}
-        closeSidebar={closeSidebar}
-        addAsset={addAsset}
-      />
+    <ExamSidebar
+      isSidebarVisible={isSidebarVisible}
+      isClicked={isClicked}
+      openSidebar={openSidebar}
+      closeSidebar={closeSidebar}
+      addAsset={addAsset}
+    />
     // </div>
   );
 };

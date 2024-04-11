@@ -87,15 +87,14 @@ export default function Login() {
             className="absolute inset-0 bg-cover bg-bottom rounded-lg"
             style={{
               backgroundImage: `url('../../../public/images/Experion.jpg')`,
-              filter: 'blur(1px)',
+              filter: "blur(1px)",
             }}
           ></div>
         </div>
 
-
         <Card
           horizontal
-          className="w-full lg:w-full md:max-w-screen-sm md:[&>*]:w-full md:[&>*]:p-8 z-10 absolute right-10" 
+          className="w-full lg:w-full md:max-w-screen-sm md:[&>*]:w-full md:[&>*]:p-8 z-10 absolute right-10"
         >
           <div className="flex justify-center lg:my-0 text-sm">
             <span className="font-normal dark:text-white md:text-3xl text-center">
@@ -144,12 +143,15 @@ export default function Login() {
                 <Button
                   type="button"
                   className="w-full bg-blue-500 text-white hover:bg-blue-700 font-display"
-                  onClick={() => window.location.href = "http://localhost:8000/auth/sign_in"}
+                  onClick={() =>
+                    (window.location.href =
+                      "http://localhost:8000/auth/sign_in")
+                  }
                 >
                   <img
                     src="../../../public/images/Microsoft logo.png"
                     alt="Microsoft logo"
-                    className="w-30 h-6 ml-2 mx-3" 
+                    className="w-30 h-6 ml-2 mx-3"
                   />
                   Sign in with Microsoft
                 </Button>

@@ -4,12 +4,10 @@ import axiosInstance from "../../config/AxiosConfig";
 import { message } from "antd";
 
 const Deallocate = () => {
- 
-
   const unassign = async (record: DataType | null) => {
     try {
-      console.log("record",record)
-      const data = {asset_uuid : record?.key}
+      console.log("record", record);
+      const data = { asset_uuid: record?.key };
       const res = await axiosInstance.post("/asset/unassign_asset", data);
       message.success("Asset successfully deallocated");
       console.log(res);
@@ -17,7 +15,7 @@ const Deallocate = () => {
       message.error("Asset deallocation failed");
     }
   };
- 
+
   return (
     <div style={{ background: "white" }}>
       <nav className="flex mb-4 mx-4 my-0 py-4" aria-label="Breadcrumb">
@@ -50,9 +48,9 @@ const Deallocate = () => {
               >
                 <path
                   stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="m1 9 4-4-4-4"
                 />
               </svg>
@@ -66,10 +64,8 @@ const Deallocate = () => {
           </li>
         </ol>
       </nav>
-      
-      <AssetTableHandler unassign={unassign} />
 
-      
+      <AssetTableHandler unassign={unassign} />
     </div>
   );
 };
