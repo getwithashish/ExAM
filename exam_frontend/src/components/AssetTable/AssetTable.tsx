@@ -102,7 +102,7 @@ const AssetTable = ({
       </div>
 
       <div style={{ position: "relative", display: "inline-block" }}>
-        \
+        
         <Table
           columns={columns}
           dataSource={assetData}
