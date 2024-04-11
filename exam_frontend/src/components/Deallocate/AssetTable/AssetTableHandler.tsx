@@ -48,11 +48,11 @@ interface ExpandedDataType {
   name: string;
   upgradeNum: string;
 }
-interface AssetTableHandlerProps{
-  unassign:(record:DataType)=>void
-}
+// interface AssetTableHandlerProps{
+//   queryParamProp:(record:DataType)=>void
+// }
 
-const AssetTableHandler = ({unassign}:AssetTableHandlerProps) => {
+const AssetTableHandler = ({queryParamProp}) => {
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null); // State to store the selected asset ID
 
   const {
@@ -234,16 +234,42 @@ const AssetTableHandler = ({unassign}:AssetTableHandlerProps) => {
 
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
-
-  const { data: assetData } = useQuery({
-    queryKey: ["assetList"],
-    queryFn: () => getAssetDetails(),
+  const [queryParam, setQueryParam] = useState("");
+  const { data: assetData, refetch: assetDataRefetch } = useQuery({
+    queryKey: ["assetList", queryParam],
+    queryFn: () => getAssetDetails(`${queryParamProp + queryParam}`),
   });
 
+  const refetchAssetData = (queryParamArg = "") => {
+    let editedQueryParam = "";
+    var offsetIndex = queryParam.indexOf("&offset=");
+    if (offsetIndex !== -1) {
+      var nextAmpersandIndex = queryParam.indexOf("&", offsetIndex + 1);
+      if (nextAmpersandIndex !== -1) {
+        var substrBeforeOffset = queryParam.substring(0, offsetIndex);
+        var substrAfterOffset = queryParam.substring(nextAmpersandIndex);
+        editedQueryParam =
+          substrBeforeOffset + queryParamArg + substrAfterOffset;
+      } else {
+        var substrBeforeOffset = queryParam.substring(0, offsetIndex);
+        editedQueryParam = substrBeforeOffset + queryParamArg;
+      }
+    } else {
+      var offsetRegex = /&offset=\d+/;
+      var offsetMatch = queryParam.match(offsetRegex);
+      var offsetString = offsetMatch ? offsetMatch[0] : "";
+      editedQueryParam = offsetString + queryParamArg;
+    }
+
+    // setQueryParam(queryParam);
+    setQueryParam(editedQueryParam);
+    assetDataRefetch({ force: true });
+  };
+
   const statusOptions =
-    assetData?.map((item: AssetResult) => item.status) || [];
+    assetData?.results?.map((item: AssetResult) => item.status) || [];
   const businessUnitOptions =
-    assetData?.map(
+    assetData?.results?.map(
       (item: AssetResult) => item.business_unit.business_unit_name
     ) || [];
 
@@ -773,7 +799,7 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => (
     setDrawerVisible(true);
   };
 
-  const data = assetData?.map((result) => ({
+  const data = assetData?.results?.map((result) => ({
     key: result.asset_uuid,
     asset_id: result.asset_id,
     asset_category: result.asset_category,
@@ -820,7 +846,9 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => (
 
   return (
     <AssetTable
+      totalItemCount={assetData?.count}
       drawerTitle={drawerTitle}
+      assetPageDataFetch={refetchAssetData}
       logsData={logsData}
       isLoading={isLoading}
       isSuccess={isSuccess}
@@ -837,6 +865,7 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => (
       assetTypeData={assetTypeData}
       locations={locations}
       statusOptions={statusOptions}
+      assetDataRefetch={refetchAssetData}
       asset_uuid={selectedAssetId}
       businessUnitOptions={businessUnitOptions}
       handleUpdateData={function (updatedData: { key: any }): void {
