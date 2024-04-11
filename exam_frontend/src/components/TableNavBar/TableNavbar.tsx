@@ -1,18 +1,11 @@
-import React,{useState} from "react";
-import {
-  DownloadOutlined,
-  UploadOutlined,
-  CloudDownloadOutlined,
-} from "@ant-design/icons";
+import React from "react";
+import { DownloadOutlined, UploadOutlined, CloudDownloadOutlined } from "@ant-design/icons";
 import axiosInstance from "../../config/AxiosConfig";
 import GlobalSearch from "../GlobalSearch/GlobalSearch";
 import styles from "./TableNavbar.module.css";
 import DropDown from "../DropDown/DropDown";
-import DrawerViewRequest from "./DrawerViewRequest";
-import { QueryBuilderComponent } from "../QueryBuilder/QueryBuilder";
- 
+
 const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
-  const [visible, setVisible] = useState(false);
   const decodeJWT = (token: string) => {
     try {
       const base64Url = token.split(".")[1];
@@ -31,7 +24,7 @@ const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
       return null;
     }
   };
- 
+
   const getUserScope = () => {
     const jwtToken = localStorage.getItem("jwt");
     console.log(jwtToken);
@@ -40,16 +33,16 @@ const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
       return payload.user_scope;
     }
   };
- 
-  // Function to handle import button click
+
   const handleImportClick = () => {
     setShowUpload(true);
   };
 
-  const handleExport = async (format) => {
+  const handleExport = async (format: 'csv' | 'xlsx' | 'pdf') => {
     try {
-      const response = await axiosInstance.get(`asset/export?export_format=${format}`, {
-        responseType: 'blob', // Receive response as a binary blob
+      // Make an API call to the backend to export assets
+      const response = await axiosInstance.get(`/asset/export?export_format=${format}`, {
+        responseType: 'blob' // Receive response as a binary blob
       });
 
       // Create a temporary URL for the blob response
@@ -74,12 +67,12 @@ const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
 
   const handleTemplateDownload = () => {
     // Use the direct URL of the static file
-    const filePath = '/static/sample_asset_download_template.csv';
+    const filePath = "/static/sample_asset_download_template.csv";
 
     // Create a new link element to trigger the download
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = filePath;
-    link.setAttribute('download', 'sample_asset_download_template.csv');
+    link.setAttribute("download", "sample_asset_download_template.csv");
     document.body.appendChild(link);
 
     // Trigger the download
@@ -89,71 +82,53 @@ const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
     document.body.removeChild(link);
   };
 
-  const handleDropDownSelect = (key) => {
-    if (key === 'import') {
+  const handleDropDownSelect = (key: string) => {
+    if (key === "import") {
       handleImportClick();
-    } else if (key === 'downloadTemplate') {
+    } else if (key === "downloadTemplate") {
       handleTemplateDownload();
     } else {
-      handleExport(key);
+      handleExport(key as 'csv' | 'xlsx' | 'pdf');
     }
   };
 
+  // Define the items for the import dropdown with icons
   const importItems = [
-    { label: 'Import as csv', key: 'import', icon: <DownloadOutlined /> },
-    { label: 'Download Template', key: 'downloadTemplate', icon: <CloudDownloadOutlined /> },
-    { label: 'Import as xlsx', key: 'xlsx', icon: <DownloadOutlined /> },
+    { label: "Import as csv", key: "import", icon: <DownloadOutlined /> },
+    { label: "Download Template", key: "downloadTemplate", icon: <CloudDownloadOutlined /> },
+    { label: "Import as xlsx", key: "xlsx", icon: <DownloadOutlined /> },
   ];
 
+  // Define the items for the export dropdown with icons
   const exportItems = [
-    { label: 'Export as CSV', key: 'csv', icon: <UploadOutlined /> },
-    { label: 'Export as XLSX', key: 'xlsx', icon: <UploadOutlined /> },
-    { label: 'Export as PDF', key: 'pdf', icon: <UploadOutlined /> },
+    { label: "Export as CSV", key: "csv", icon: <UploadOutlined /> },
+    { label: "Export as XLSX", key: "xlsx", icon: <UploadOutlined /> },
+    { label: "Export as PDF", key: "pdf", icon: <UploadOutlined /> },
   ];
 
-  function handleSearch(_searchTerm) {
+  function handleSearch(_searchTerm: string): void {
     console.log("Global Search Term: ", _searchTerm);
     assetDataRefetch(`&global_search=${_searchTerm}`);
   }
- 
- 
 
-  const showQueryBuilder = () => {
-    setVisible(true);
-  };
-
-  const closeQueryBuilder = () => {
-    setVisible(false);
-  };
   return (
     <nav className={styles["navbar"]}>
-      {getUserScope() == "LEAD" ? (
+      {getUserScope() === "LEAD" && (
         <DropDown
           onSelect={handleDropDownSelect}
-          items={items}
+          items={importItems}
           buttonLabel="Import"
         />
-      ) : (
-        ""
       )}
-      
+      <DropDown
+        onSelect={handleDropDownSelect}
+        items={exportItems}
+        buttonLabel="Export"
+      />
       <GlobalSearch
         onSearch={handleSearch}
         assetDataRefetch={assetDataRefetch}
       />
-      <button onClick={showQueryBuilder} className={styles["button"]} >Advanced Search</button>
-      <DrawerViewRequest
-        title="Advanced Search"
-        onClose={closeQueryBuilder}
-        visible={visible}
-      >
-        <QueryBuilderComponent assetDataRefetch={assetDataRefetch}/>
-      </DrawerViewRequest>
-       
-
-      <button onClick={handleExport} className={styles["button"]}>
-        <UploadOutlined /> Export
-      </button>
     </nav>
   );
 };
