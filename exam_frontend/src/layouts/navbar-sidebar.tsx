@@ -21,7 +21,6 @@ const NavbarSidebarLayout: FC<PropsWithChildren<NavbarSidebarLayoutProps>> =
           <MainContent isFooter={isFooter}>{children}</MainContent>
         </div>
       </>
-      
     );
   };
 

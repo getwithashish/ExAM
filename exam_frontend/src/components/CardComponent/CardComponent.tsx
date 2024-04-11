@@ -35,6 +35,7 @@ const CardComponent: React.FC<CardType> = ({
   memoryData,
   assetTypeData,
   isMyApprovalPage,
+  onClose,
   onDelete,
 }) => {
   const uniqueStatusOptions = Array.from(new Set(statusOptions));
@@ -76,9 +77,7 @@ const CardComponent: React.FC<CardType> = ({
       console.log("Updated data:", response.data);
       message.success("Asset Details successfully updated");
 
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
+
     } catch (error) {
       console.error("Error updating data:", error);
       message.error("Error updating asset details. Please try again.");
@@ -86,12 +85,7 @@ const CardComponent: React.FC<CardType> = ({
     setIsLoading(false); // Set loading to false when update completes
   };
 
-  // const handleUpdateChange = (field: string, value: any) => {
-  //   setUpdatedData((prevData) => ({
-  //     ...prevData,
-  //     [field]: value,
-  //   }));
-  // };
+ 
   const handleUpdateChange = (field: string, value: any) => {
     if (field === "business_unit") {
       // Map the business unit name to its primary key
@@ -292,10 +286,9 @@ const CardComponent: React.FC<CardType> = ({
     {
       label: "OS",
       name: "os",
-      
+
       value: (
-        <Form.Item name="os"
-        >
+        <Form.Item name="os">
           <b>OS: </b>
           <br></br>
           <br></br>{" "}
@@ -365,7 +358,9 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>{" "}
           <Input
             defaultValue={data.Generation}
-            onChange={(e) => handleUpdateChange("processor_gen", e.target.value)}
+            onChange={(e) =>
+              handleUpdateChange("processor_gen", e.target.value)
+            }
             style={inputStyle}
           />{" "}
         </Form.Item>
@@ -469,9 +464,7 @@ const CardComponent: React.FC<CardType> = ({
           <Input
             disabled
             defaultValue={data.conceder}
-            onChange={(e) =>
-              handleUpdateChange("conceder", e.target.value)
-            }
+            onChange={(e) => handleUpdateChange("conceder", e.target.value)}
             style={inputStyle}
           />{" "}
         </Form.Item>
@@ -818,7 +811,6 @@ const CardComponent: React.FC<CardType> = ({
 
   const [tableData, setTableData] = useState([]);
   const handleDelete = async () => {
-    onDelete(data.asset_uuid);
     try {
       setIsLoading(true);
       const deletePayload = {
@@ -902,42 +894,43 @@ const CardComponent: React.FC<CardType> = ({
               padding: "20px",
             }}
           />
-
+  
           {isMyApprovalPage && (
             <>
               {isLoading ? (
                 <Spin size="large" />
               ) : (
-                <Button
-                  style={{
-                    marginBottom: "0px",
-                    marginTop: "0px",
-                    color: "white",
-                    border: "none",
-                    background: "blue",
-                    marginLeft: "200px",
-                  }}
-                  onClick={handleUpdate}
-                  disabled={isLoading} // Disable button while updating
-                >
-                  Update
-                </Button>
+                <>
+                  <Button
+                    style={{
+                      marginBottom: "0px",
+                      marginTop: "0px",
+                      color: "white",
+                      border: "none",
+                      background: "blue",
+                      marginLeft: "200px",
+                    }}
+                    onClick={handleUpdate}
+                    disabled={isLoading} // Disable button while updating
+                  >
+                    Update
+                  </Button>
+                  {getUserScope() === "LEAD" && (
+                    <Button
+                      type="primary"
+                      danger
+                      onClick={handleDeleteClick}
+                      style={{
+                        marginLeft: "290px",
+                        marginTop: "0px",
+                      }}
+                    >
+                      Delete Asset
+                    </Button>
+                  )}
+                </>
               )}
             </>
-          )}
-          {getUserScope() === "LEAD" && (
-            <Button
-              type="primary"
-              danger
-              onClick={handleDeleteClick}
-              style={{
-                marginLeft: "290px",
-
-                marginTop: "0px",
-              }}
-            >
-              Delete Asset
-            </Button>
           )}
         </div>
         <Modal
@@ -958,6 +951,7 @@ const CardComponent: React.FC<CardType> = ({
           <p>Are you sure you want to delete the asset?</p>
         </Modal>
       </div>
+  
       <div className="scrollable-content">
         <Form
           key={data.asset_id}
@@ -972,11 +966,11 @@ const CardComponent: React.FC<CardType> = ({
               </div>
             </Form.Item>
           ))}
-
+  
           <div className="rowone"></div>
         </Form>
       </div>
     </div>
   );
-};
+};  
 export default CardComponent;

@@ -3,19 +3,20 @@ import { DataType } from "../../components/AssetTable/types";
 import AssetTableHandler from "../../components/AssignAsset/AssetTable/AssetTableHandler";
 import DrawerViewRequest from "../RequestPage/DrawerViewRequest";
 import { AssignmentHandler } from "../../components/AssignAsset/Assign/AssignmentHandler";
+
 const Assignableasset = () => {
   const [record, setRecord] = useState<DataType | null>(null);
-  const [visible,setVisible] = useState<boolean>(false)
+  const [open, setOpen] = useState<boolean>(false);
+
   const showAssignDrawer = (record: DataType | null) => {
-    console.log("Hello");
-    console.log("uuid", record);
     setRecord(record);
-    setVisible(true);
-    console.log("visible",visible)
+    setOpen(true);
   };
+
   const closeAssignDrawer = () => {
-    setVisible(false);
+    setOpen(false);
   };
+
   return (
     <div style={{ background: "white" }}>
       <nav className="flex mb-4 mx-4 my-0 py-4" aria-label="Breadcrumb">
@@ -48,9 +49,9 @@ const Assignableasset = () => {
               >
                 <path
                   stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="m1 9 4-4-4-4"
                 />
               </svg>
@@ -64,15 +65,16 @@ const Assignableasset = () => {
           </li>
         </ol>
       </nav>
-      
+
       <AssetTableHandler showAssignDrawer={showAssignDrawer} />
 
-      <DrawerViewRequest
-        title="assign"
-        onClose={closeAssignDrawer}
-        visible={visible}
-      >
-        { <AssignmentHandler record={record} closeAssignDrawer={closeAssignDrawer}/>}
+      <DrawerViewRequest title="assign" onClose={closeAssignDrawer} open={open}>
+        {record && (
+          <AssignmentHandler
+            record={record}
+            closeAssignDrawer={closeAssignDrawer}
+          />
+        )}
       </DrawerViewRequest>
     </div>
   );

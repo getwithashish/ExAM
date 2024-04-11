@@ -40,7 +40,7 @@ import {
 } from "../DashboardAssetTable/api/getDasboardAssetDetails";
 import DasboardAssetTable from "./DasboardAssetTable";
 
-import TimelineButton from "../TimelineLog/TimeLineDrawer"
+import TimelineViewDrawer from "../TimelineLog/TimeLineDrawer"
 
 interface ExpandedDataType {
   key: React.Key;
@@ -355,16 +355,6 @@ const DasboardAssetHandler = () => {
       dataIndex: "asset_category",
       responsive: ["md"],
       width: 140,
-      filters: assetTypeFilters,
-      onFilter: (
-        value: string | number | boolean | React.ReactText[] | Key,
-        record: DataType
-      ) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.asset_category);
-        }
-        return record.asset_category.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Asset Category", "asset_category"),
     },
     {
@@ -380,24 +370,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'Status',
       responsive: ['md'],
       width: 140,
-      filters: [
-        {
-          text: 'In Use ',
-          value: 'In Use',
-        },
-        {
-          text: 'In Store',
-          value: 'In Store',
-        },
-      ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-     
-        if (Array.isArray(value)) {
-          return value.includes(record.status);
-        }
-        return record.status.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Asset Status", "status"),
 
     },
@@ -406,31 +378,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'BusinessUnit',
       responsive: ['md'],
       width: 120,
-      // filters: [
-      //   {
-      //     text: 'du1 ',
-      //     value: 'du1',
-      //   },
-      //   {
-      //     text: 'du2',
-      //     value: 'du2',
-      //   },
-      //   {
-      //     text: 'du3 ',
-      //     value: 'du3',
-      //   },
-      //   {
-      //     text: 'du4',
-      //     value: 'du4',
-      //   },
-      // ],
-     
-      // onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-      //   if (Array.isArray(value)) {
-      //     return value.includes(record.business_unit);
-      //   }
-      //   return record.business_unit.indexOf(value.toString()) === 0;
-      // },
       render: renderClickableColumn("Business Unit", "business_unit"),
 
     },
@@ -439,23 +386,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'os',
       responsive: ['md'],
       width: 120,
-      filters: [
-        {
-          text: 'Linux ',
-          value: 'Linux',
-        },
-        {
-          text: 'Windows',
-          value: 'Windows',
-        },
-      ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.os);
-        }
-        return record.os.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Os", "os"),
 
     },
@@ -464,23 +394,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'os_version',
       responsive: ['md'],
        width: 120,
-      filters: [
-        {
-          text: '11',
-          value: '11',
-        },
-        {
-          text: '12',
-          value: '12',
-        }
-      ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.os_version);
-        }
-        return record.os_version.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Os Version", "os_version"),
 
     },
@@ -489,23 +402,7 @@ const DasboardAssetHandler = () => {
       dataIndex: 'processor',
       responsive: ['md'],
       width: 120,
-      filters: [
-        {
-          text: 'i5',
-          value: 'i5',
-        },
-        {
-          text: 'i3',
-          value: 'i3',
-        },
-      ],
      
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.processor);
-        }
-        return record.processor.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Processor", "processor"),
 
     },
@@ -514,23 +411,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'processor_gen',
       responsive: ['md'],
       width: 120,
-      filters: [
-        {
-          text: 'In Use ',
-          value: 'In Use',
-        },
-        {
-          text: 'In Store',
-          value: 'In Store',
-        },
-      ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.Generation);
-        }
-        return record.Generation.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Asset Status", "processor_gen"),
 
     },
@@ -539,27 +419,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'DateOfPurchase',
       responsive: ['md'],
       width: 120,
-
-      filters: [
-        {
-          text: '02/03/24 ',
-          value: '02/03/24 ',
-        },
-        {
-          text: '03/03/24 ',
-          value: '03/03/24 ',
-        },
-      ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        const dateValue = new Date(value as string).getTime(); // Convert filter value to timestamp
-        const recordDate = record.date_of_purchase.getTime(); // Get timestamp of record's date
-    
-        if (Array.isArray(value)) {
-          return value.includes(record.date_of_purchase);
-        }
-        return recordDate === dateValue;
-      },
       render: renderClickableColumn("Asset Status", "date_of_purchase"),
 
     },
@@ -568,24 +427,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'WarrantyPeriod',
       responsive: ['md'],
       width: 120,
-
-      filters: [
-        {
-          text: ' 2Years',
-          value: '2Years',
-        },
-        {
-          text: '3Years',
-          value: '3Years',
-        },
-      ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.warranty_period);
-        }
-        return record.warranty_period.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Asset Status", "warranty_period"),
 
     },
@@ -664,23 +505,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'storage',
       responsive: ['md'],
       width: 120,
-      filters: [
-        {
-          text: '16Gb',
-          value: '16Gb',
-        },
-        {
-          text: '128Gb',
-          value: '128Gb',
-        },
-      ],
-      
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.storage);
-        }
-        return record.storage.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Storage", "storage"),
 
     },
@@ -689,23 +513,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'owner',
       responsive: ['md'],
       width: 120,
-      filters: [
-        {
-          text: '16Gb',
-          value: '16Gb',
-        },
-        {
-          text: '128Gb',
-          value: '128Gb',
-        },
-      ],
-      
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.owner);
-        }
-        return record.owner.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Owner", "owner"),
 
     },
@@ -714,23 +521,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'approved_by',
       responsive: ['md'],
       width: 120,
-      filters: [
-        {
-          text: 'Sfm Lead',
-          value: 'Sfm Lead',
-        },
-        {
-          text: 'Sfm Manager',
-          value: 'Sfm Manager',
-        },
-      ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.approved_by);
-        }
-        return record.approved_by.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Approved By", "approved_by"),
 
     },
@@ -739,23 +529,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'requester',
       responsive: ['md'],
       width: 120,
-      filters: [
-        {
-          text: 'Sfm Lead',
-          value: 'Sfm Lead',
-        },
-        {
-          text: 'Sfm Manager',
-          value: 'Sfm Manager',
-        },
-      ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.requester);
-        }
-        return record.requester.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Requester", "requester"),
 
     },
@@ -764,23 +537,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'asset_detail_status',
       responsive: ['md'],
       width: 140,
-      filters: [
-        {
-          text: 'Sfm Lead',
-          value: 'Sfm Lead',
-        },
-        {
-          text: 'Sfm Manager',
-          value: 'Sfm Manager',
-        },
-      ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.asset_detail_status);
-        }
-        return record.asset_detail_status.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Asset Detail Status", "asset_detail_status"),
 
     },
@@ -789,23 +545,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'assign_status',
       responsive: ['md'],
       width: 140,
-      filters: [
-        {
-          text: 'Sfm Lead',
-          value: 'Sfm Lead',
-        },
-        {
-          text: 'Sfm Manager',
-          value: 'Sfm Manager',
-        },
-      ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.assign_status);
-        }
-        return record.assign_status.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Asset Assign Status", "assign_status"),
 
     },
@@ -814,46 +553,15 @@ const DasboardAssetHandler = () => {
       dataIndex: 'created_at',
       responsive: ['md'],
       width: 120,
-      filters: [
-        {
-          text: 'Sfm Lead',
-          value: 'Sfm Lead',
-        },
-        {
-          text: 'Sfm Manager',
-          value: 'Sfm Manager',
-        },
-      ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.created_at);
-        }
-        return record.created_at.indexOf(value.toString()) === 0;
-      },
+      render: renderClickableColumn("Accessories", "updated_at"),
+
+    
     },
     {
       title: 'Updated At',
       dataIndex: 'updated_at',
       responsive: ['md'],
       width: 120,
-      filters: [
-        {
-          text: 'Sfm Lead',
-          value: 'Sfm Lead',
-        },
-        {
-          text: 'Sfm Manager',
-          value: 'Sfm Manager',
-        },
-      ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.updated_at);
-        }
-        return record.updated_at.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Accessories", "updated_at"),
 
     },
@@ -863,23 +571,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'Accessories',
       responsive: ['md'],
       width: 120,
-      filters: [
-        {
-          text: 'In Use ',
-          value: 'In Use',
-        },
-        {
-          text: 'In Store',
-          value: 'In Store',
-        },
-      ],
-     
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.accessories);
-        }
-        return record.accessories.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Accessories", "accessories"),
 
     },
@@ -890,7 +581,7 @@ const DasboardAssetHandler = () => {
       fixed: 'right',
       width: 140,
       render: (_,record) => (
-        <TimelineButton assetUuid={record.key} />
+        <TimelineViewDrawer assetUuid={record.key} />
       ),
   },
     
