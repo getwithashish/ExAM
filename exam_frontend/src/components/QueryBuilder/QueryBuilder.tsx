@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Field, QueryBuilder, RuleGroupType, formatQuery } from 'react-querybuilder';
 import 'react-querybuilder/dist/query-builder.css';
+import styles from './QueryBuilder.css'
 
 const fields: Field[] = [
   { name: 'product_name', label: 'product_name' },
@@ -20,7 +21,11 @@ const fields: Field[] = [
   
 ];
 
-export const QueryBuilderComponent = ({assetDataRefetch}) => {
+interface QueryBuilderComponentProps {
+ assetDataRefetch: (queryParam:string) => void
+}
+
+export const QueryBuilderComponent:React.FC<QueryBuilderComponentProps> = ({assetDataRefetch}) => {
   const [query, setQuery] = useState<RuleGroupType>({
     combinator: 'and',
     rules: [
@@ -39,7 +44,7 @@ export const QueryBuilderComponent = ({assetDataRefetch}) => {
   };
 
   return (
-    <div className="querybuilder">
+    <div className={styles['queryBuilder']}>
       <QueryBuilder fields={fields} query={query} onQueryChange={setQuery}  />
       <button onClick={handleQueryButtonClick} className='m-2 p-2 h-50 w-50 text-white'>Search</button>
     </div>
