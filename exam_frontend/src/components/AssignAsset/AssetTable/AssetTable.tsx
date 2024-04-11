@@ -35,6 +35,7 @@ import TableNavbar from "../../TableNavBar/TableNavbar";
 import SideDrawerComponent from "../../SideDrawerComponent/SideDrawerComponent";
 import UploadComponent from "../../Upload/UploadComponent";
 import DrawerViewRequest from "../../../pages/RequestPage/DrawerViewRequest";
+import GlobalSearch from "../../GlobalSearch/GlobalSearch";
 
 interface ExpandedDataType {
   key: React.Key;
@@ -69,6 +70,7 @@ const AssetTable = ({
   memoryData,
   assetTypeData,
   expandedRowRender,
+  assetDataRefetch,
 }: AssetTableProps) => {
   const rowRender = (record, expanded) => {
     if (isSuccess) {
@@ -83,13 +85,22 @@ const AssetTable = ({
   const closeImportDrawer = () => {
     setShowUpload(false);
   };
-
+  function handleSearch(_searchTerm: string): void {
+    console.log("Global Search Term: ", _searchTerm);
+    assetDataRefetch(`&global_search=${_searchTerm}`);
+  }
   return (
     <>
       <div className="mainHeading" style={{ background: "white" }}>
         <div className=" font-display">Allocate Assets</div>
       </div>
-
+      <div style={{ marginLeft: "40px" }}>
+        <GlobalSearch
+          onSearch={handleSearch}
+          assetDataRefetch={assetDataRefetch}
+        />
+      </div>
+      <br></br>
       <div
         style={{
           position: "relative",
@@ -103,11 +114,7 @@ const AssetTable = ({
         >
           <UploadComponent />
         </SideDrawerComponent>
-        <div className="rounded-lg bg-gray-50 shadow-md dark:bg-gray-800 mx-10" style={{
-boxShadow
-:
-'0 0 10px rgba(0, 0, 0, 0.2)'
-}}>
+
         <Table
           columns={columns}
           dataSource={assetData}
@@ -118,17 +125,16 @@ boxShadow
           handleRowClick={handleRowClick}
           style={{
             fontSize: "50px",
-            borderColor:"white",
-            width:"29%"
-            
+            borderColor: "white",
+            width: "29%",
+            marginLeft: "1%",
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+            marginRight: "120px",
           }}
-       
-       
         />
-        </div>
       </div>
       <DrawerViewRequest
-        visible={drawerVisible}
+        open={drawerVisible}
         onClose={onCloseDrawer}
         selectedRow={selectedRow}
         drawerTitle={drawerTitle}

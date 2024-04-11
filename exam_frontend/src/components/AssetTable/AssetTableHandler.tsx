@@ -40,6 +40,7 @@ import {
 } from "./api/getAssetDetails";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookOpenReader } from "@fortawesome/free-solid-svg-icons";
+import { Notes } from "@mui/icons-material";
 
 interface ExpandedDataType {
   key: React.Key;
@@ -57,19 +58,45 @@ const AssetTableHandler = ({
   heading,
   isMyApprovalPage,
 }) => {
-  
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
-
-  const { data: assetData } = useQuery({
-    queryKey: ["assetList"],
-    queryFn: () => getAssetDetails(queryParamProp),
+  const [queryParam, setQueryParam] = useState("");
+  const { data: assetData, refetch: assetDataRefetch } = useQuery({
+    queryKey: ["assetList", queryParam],
+    queryFn: () => getAssetDetails(`${queryParamProp + queryParam}`),
   });
 
+  const refetchAssetData = (queryParamArg = "") => {
+    let editedQueryParam = "";
+
+    var offsetIndex = queryParam.indexOf("&offset=");
+    if (offsetIndex !== -1) {
+      var nextAmpersandIndex = queryParam.indexOf("&", offsetIndex + 1);
+      if (nextAmpersandIndex !== -1) {
+        var substrBeforeOffset = queryParam.substring(0, offsetIndex);
+        var substrAfterOffset = queryParam.substring(nextAmpersandIndex);
+        editedQueryParam =
+          substrBeforeOffset + queryParamArg + substrAfterOffset;
+      } else {
+        var substrBeforeOffset = queryParam.substring(0, offsetIndex);
+        editedQueryParam = substrBeforeOffset + queryParamArg;
+      }
+    } else {
+      var offsetRegex = /&offset=\d+/;
+      var offsetMatch = queryParam.match(offsetRegex);
+      var offsetString = offsetMatch ? offsetMatch[0] : "";
+      editedQueryParam = offsetString + queryParamArg;
+    }
+
+    // setQueryParam(queryParam);
+    setQueryParam(editedQueryParam);
+    assetDataRefetch({ force: true });
+  };
+
   const statusOptions =
-    assetData?.map((item: AssetResult) => item.status) || [];
+    assetData?.results?.map((item: AssetResult) => item.status) || [];
   const businessUnitOptions =
-    assetData?.map(
+    assetData?.results?.map(
       (item: AssetResult) => item.business_unit.business_unit_name
     ) || [];
 
@@ -124,21 +151,22 @@ const AssetTableHandler = ({
   <div>
     <h1>Asset Overview</h1>
   </div>;
- const renderClickableColumn = (columnName, dataIndex) => (_, record) => (
-  <div
-    data-column-name={columnName}
-    onClick={() => handleColumnClick(record, columnName)}
-    style={{ cursor: "pointer" }}
-  >
-    {record[dataIndex]}
-  </div>
-);
+  const renderClickableColumn = (columnName, dataIndex) => (_, record) =>
+    (
+      <div
+        data-column-name={columnName}
+        onClick={() => handleColumnClick(record, columnName)}
+        style={{ cursor: "pointer" }}
+      >
+        {record[dataIndex]}
+      </div>
+    );
   const columns = [
     {
       title: "Product Name",
       dataIndex: "product_name",
       fixed: "left",
-       width: 120,
+      width: 120,
       responsive: ["md"],
       filterIcon: <SearchOutlined />,
       filterDropdown: ({
@@ -193,7 +221,6 @@ const AssetTableHandler = ({
         a.product_name.localeCompare(b.product_name),
       sortDirections: ["ascend", "descend"],
       render: renderClickableColumn("Product Name", "product_name"),
-
     },
     {
       title: "Serial Number",
@@ -253,7 +280,6 @@ const AssetTableHandler = ({
         a.serial_number.localeCompare(b.serial_number),
       sortDirections: ["ascend", "descend"],
       render: renderClickableColumn("Serial Number", "serial_number"),
-
     },
     {
       title: "Location",
@@ -287,16 +313,191 @@ const AssetTableHandler = ({
         }
         return record.location.indexOf(value.toString()) === 0;
       },
-    
+
       render: renderClickableColumn("Invoice Location", "invoice_location"),
+    },
 
+    {
+      title: "Asset Type",
+      dataIndex: "asset_type",
+      responsive: ["md"],
+      width: 120,
+      filters: assetTypeFilters,
+      onFilter: (
+        value: string | number | boolean | React.ReactText[] | Key,
+        record: DataType
+      ) => {
+        if (Array.isArray(value)) {
+          return value.includes(record.asset_type);
+        }
+        return record.asset_type.indexOf(value.toString()) === 0;
+      },
+      render: renderClickableColumn("Asset Type", "asset_type"),
+    },
+    {
+      title: "Asset Category",
+      dataIndex: "asset_category",
+      responsive: ["md"],
+      width: 140,
+      render: renderClickableColumn("Asset Category", "asset_category"),
+    },
+    {
+      title: "Version",
+      dataIndex: "Version",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Version", "version"),
+    },
+    {
+      title: "Asset Status",
+      dataIndex: "Status",
+      responsive: ["md"],
+      width: 140,
+      render: renderClickableColumn("Asset Status", "status"),
+    },
+    {
+      title: "Business Unit",
+      dataIndex: "BusinessUnit",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Business Unit", "business_unit"),
+    },
+    {
+      title: "Os",
+      dataIndex: "os",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Os", "os"),
+    },
+    {
+      title: "Os Version",
+      dataIndex: "os_version",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Os Version", "os_version"),
+    },
+    {
+      title: "Processor",
+      dataIndex: "processor",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Processor", "processor"),
+    },
+    {
+      title: "Generation",
+      dataIndex: "processor_gen",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Asset Status", "processor_gen"),
+    },
+    {
+      title: "Date Of Purchase",
+      dataIndex: "DateOfPurchase",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Asset Status", "date_of_purchase"),
+    },
+    {
+      title: "Warranty Period",
+      dataIndex: "WarrantyPeriod",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Asset Status", "warranty_period"),
+    },
+    {
+      title: "Model Number",
+      dataIndex: "ModelNumber", // Corrected dataIndex
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Asset Status", "model_number"),
+    },
+    {
+      title: "Memory",
+      dataIndex: "Memory",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Asset Status", "memory"),
+    },
+    {
+      title: "Storage",
+      dataIndex: "storage",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Storage", "storage"),
+    },
+    {
+      title: "Owner",
+      dataIndex: "owner",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Owner", "owner"),
+    },
+    {
+      title: "Approved By",
+      dataIndex: "approved_by",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Approved By", "approved_by"),
+    },
+    {
+      title: "Requester",
+      dataIndex: "requester",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Requester", "requester"),
+    },
+    {
+      title: "Asset Detail Status",
+      dataIndex: "asset_detail_status",
+      responsive: ["md"],
+      width: 140,
+      render: renderClickableColumn(
+        "Asset Detail Status",
+        "asset_detail_status"
+      ),
+    },
+    {
+      title: "Asset Assign Status",
+      dataIndex: "assign_status",
+      responsive: ["md"],
+      width: 140,
+      render: renderClickableColumn("Asset Assign Status", "assign_status"),
+    },
+    {
+      title: "Created At",
+      dataIndex: "created_at",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Accessories", "created_at"),
+    },
+    {
+      title: "Updated At",
+      dataIndex: "updated_at",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Accessories", "updated_at"),
+    },
 
+    {
+      title: "Accessories",
+      dataIndex: "Accessories",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Accessories", "accessories"),
+    },
+    {
+      title: "Comments",
+      dataIndex: "notes",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("notes", "notes"),
     },
     {
       title: "Custodian",
       dataIndex: "custodian",
       responsive: ["md"],
       width: 120,
+      fixed: "right",
       filterIcon: <SearchOutlined />,
       filterDropdown: ({
         setSelectedKeys,
@@ -351,196 +552,7 @@ const AssetTableHandler = ({
         return false; // Return false if custodian is undefined
       },
       render: renderClickableColumn("Custodian", "custodian"),
-
     },
-    {
-      title: "Asset Type",
-      dataIndex: "asset_type",
-      responsive: ["md"],
-      width: 120,
-      filters: assetTypeFilters,
-      onFilter: (
-        value: string | number | boolean | React.ReactText[] | Key,
-        record: DataType
-      ) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.asset_type);
-        }
-        return record.asset_type.indexOf(value.toString()) === 0;
-      },
-      render: renderClickableColumn("Asset Type", "asset_type"),
-
-    },
-    {
-      title: "Asset Category",
-      dataIndex: "asset_category",
-      responsive: ["md"],
-      width: 140,
-      render: renderClickableColumn("Asset Category", "asset_category"),
-    },
-    {
-      title: 'Version',
-      dataIndex: 'Version',
-      responsive: ['md'],
-      width: 120,
-      render: renderClickableColumn("Version", "version"),
-
-    },
-    {
-      title: 'Asset Status',
-      dataIndex: 'Status',
-      responsive: ['md'],
-      width: 140,
-      render: renderClickableColumn("Asset Status", "status"),
-
-    },
-    {
-      title: 'Business Unit',
-      dataIndex: 'BusinessUnit',
-      responsive: ['md'],
-      width: 120,
-      render: renderClickableColumn("Business Unit", "business_unit"),
-
-    },
-    {
-      title: 'Os',
-      dataIndex: 'os',
-      responsive: ['md'],
-      width: 120,
-      render: renderClickableColumn("Os", "os"),
-
-    },
-    {
-      title: 'Os Version',
-      dataIndex: 'os_version',
-      responsive: ['md'],
-       width: 120,
-      render: renderClickableColumn("Os Version", "os_version"),
-
-    },
-    {
-      title: 'Processor',
-      dataIndex: 'processor',
-      responsive: ['md'],
-      width: 120,
-      render: renderClickableColumn("Processor", "processor"),
-
-    },
-    {
-      title: 'Generation',
-      dataIndex: 'processor_gen',
-      responsive: ['md'],
-      width: 120,
-      render: renderClickableColumn("Asset Status", "processor_gen"),
-
-    },
-    {
-      title: 'Date Of Purchase',
-      dataIndex: 'DateOfPurchase',
-      responsive: ['md'],
-      width: 120,
-      render: renderClickableColumn("Asset Status", "date_of_purchase"),
-
-    },
-    {
-      title: 'Warranty Period',
-      dataIndex: 'WarrantyPeriod',
-      responsive: ['md'],
-      width: 120,
-      render: renderClickableColumn("Asset Status", "warranty_period"),
-
-    },
-    {
-      title: 'Model Number',
-      dataIndex: 'ModelNumber', // Corrected dataIndex
-      responsive: ['md'],
-      width: 120,
-      render: renderClickableColumn("Asset Status", "model_number"),
-
-    },
-    {
-      title: 'Memory',
-      dataIndex: 'Memory',
-      responsive: ['md'],
-      width: 120,
-      render: renderClickableColumn("Asset Status", "memory"),
-
-    },
-    {
-      title: 'Storage',
-      dataIndex: 'storage',
-      responsive: ['md'],
-      width: 120,
-      render: renderClickableColumn("Storage", "storage"),
-
-    },
-    {
-      title: 'Owner',
-      dataIndex: 'owner',
-      responsive: ['md'],
-      width: 120,
-      render: renderClickableColumn("Owner", "owner"),
-
-    },
-    {
-      title: 'Approved By',
-      dataIndex: 'approved_by',
-      responsive: ['md'],
-      width: 120,
-      render: renderClickableColumn("Approved By", "approved_by"),
-
-    },
-    {
-      title: 'Requester',
-      dataIndex: 'requester',
-      responsive: ['md'],
-      width: 120,
-      render: renderClickableColumn("Requester", "requester"),
-
-    },
-    {
-      title: 'Asset Detail Status',
-      dataIndex: 'asset_detail_status',
-      responsive: ['md'],
-      width: 140,
-      render: renderClickableColumn("Asset Detail Status", "asset_detail_status"),
-
-    },
-    {
-      title: 'Asset Assign Status',
-      dataIndex: 'assign_status',
-      responsive: ['md'],
-      width: 140,
-      render: renderClickableColumn("Asset Assign Status", "assign_status"),
-
-    },
-    {
-      title: 'Created At',
-      dataIndex: 'created_at',
-      responsive: ['md'],
-      width: 120,
-      render: renderClickableColumn("Accessories", "created_at"),
-
-    },
-    {
-      title: 'Updated At',
-      dataIndex: 'updated_at',
-      responsive: ['md'],
-      width: 120,
-      render: renderClickableColumn("Accessories", "updated_at"),
-
-    },
- 
-    {
-      title: 'Accessories',
-      dataIndex: 'Accessories',
-      responsive: ['md'],
-      width: 120,
-      render: renderClickableColumn("Accessories", "accessories"),
-    },
-    
-   
-
 
     ...(isRejectedPage
       ? [
@@ -585,97 +597,64 @@ const AssetTableHandler = ({
     setDrawerVisible(true);
   };
 
-  const data = assetData?.map(
-    (result: {
-      asset_uuid: any;
-      asset_id: any;
-      asset_category: any;
-      asset_type: { asset_type_name: any };
-      version: any;
-      status: any;
-      location: { location_name: any };
-      invoice_location: { location_name: any };
-      business_unit: { business_unit_name: any };
-      os: any;
-      os_version: any;
-      mobile_os: any;
-      processor: any;
-      processor_gen: any;
-      accessories: any;
-      date_of_purchase: any;
-      warranty_period: any;
-      asset_detail_status: any;
-      assign_status: any;
-      conceder: { username: any };
-      model_number: any;
-      serial_number: any;
-      memory: { memory_space: any };
-      storage: any;
-      configuration: any;
-      custodian: { employee_name: any };
-      product_name: any;
-      owner: any;
-      requester: { username: any };
-      created_at: any;
-      updated_at: any;
-    }) => ({
-      key: result.asset_uuid,
-      asset_id: result.asset_id,
-      asset_category: result.asset_category,
-      asset_type: result.asset_type?.asset_type_name,
-      version: result.version,
-      status: result.status,
-      location: result.location?.location_name,
-      invoice_location: result.invoice_location?.location_name,
-      business_unit: result.business_unit?.business_unit_name,
-      os: result.os,
-      os_version: result.os_version,
-      mobile_os: result.mobile_os,
-      processor: result.processor,
-      Generation: result.processor_gen,
-      accessories: result.accessories,
-      date_of_purchase: result.date_of_purchase,
-      warranty_period: result.warranty_period,
-      asset_detail_status: result.asset_detail_status,
-      assign_status: result.assign_status,
-      conceder: result.conceder?.username,
-      model_number: result.model_number,
-      serial_number: result.serial_number,
-      memory: result.memory?.memory_space,
-      storage: result.storage,
-      configuration: result.configuration,
-      custodian: result.custodian?.employee_name,
-      product_name: result.product_name,
-      owner: result.owner,
-      requester: result.requester?.username,
-      AssignAsset: "assign",
-      created_at: result.created_at,
-      updated_at: result.updated_at,
-    })
-  );
+  const data = assetData?.results?.map((result) => ({
+    key: result.asset_uuid,
+    asset_id: result.asset_id,
+    asset_category: result.asset_category,
+    asset_type: result.asset_type.asset_type_name,
+    version: result.version,
+    status: result.status,
+    location: result.location?.location_name,
+    invoice_location: result.invoice_location?.location_name,
+    business_unit: result.business_unit.business_unit_name,
+    os: result.os,
+    os_version: result.os_version,
+    mobile_os: result.mobile_os,
+    processor: result.processor,
+    Generation: result.processor_gen,
+    accessories: result.accessories,
+    date_of_purchase: result.date_of_purchase,
+    warranty_period: result.warranty_period,
+    asset_detail_status: result.asset_detail_status,
+    assign_status: result.assign_status,
+    approved_by: result.approved_by?.username,
+    model_number: result.model_number,
+    serial_number: result.serial_number,
+    memory: result.memory?.memory_space,
+    storage: result.storage,
+    configuration: result.configuration,
+    custodian: result.custodian?.employee_name,
+    product_name: result.product_name,
+    owner: result.owner,
+    requester: result.requester?.username,
+    AssignAsset: "assign",
+    created_at: result.created_at,
+    updated_at: result.updated_at,
+  }));
 
   const drawerTitle = "Asset Details";
 
   const button = <Button type="primary"></Button>;
 
-
   return (
     <AssetTable
       heading={heading}
       // drawerTitle={drawerTitle}
-     
+      totalItemCount={assetData?.count}
+      // assetPageDataFetch={setQueryParam}
+      assetPageDataFetch={refetchAssetData}
       handleRowClick={handleRowClick}
       onCloseDrawer={onCloseDrawer}
       selectedRow={selectedRow}
       drawerVisible={drawerVisible}
       assetData={data}
       columns={columns}
-    
       memoryData={memoryData}
       assetTypeData={assetTypeData}
       locations={locations}
       isMyApprovalPage={isMyApprovalPage}
       statusOptions={statusOptions}
+      assetDataRefetch={refetchAssetData}
       businessUnitOptions={businessUnitOptions}
       handleUpdateData={function (updatedData: { key: any }): void {
         throw new Error("Function not implemented.");

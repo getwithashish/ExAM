@@ -145,6 +145,7 @@ export interface AssetTableProps {
   locations:string[],
   memoryData:string[],
   assetTypeData:string[],
+  assetDataRefetch: (queryParam: string) => void;
   handleUpdateData: (updatedData: {
     key: any;
 }) => void,

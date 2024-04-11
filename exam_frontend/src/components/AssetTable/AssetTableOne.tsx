@@ -1,19 +1,27 @@
 import React, { Key, SetStateAction, useState } from "react";
-import { Badge, Button, Dropdown, Input, Space, Table, TableColumnsType } from "antd";
+import {
+  Badge,
+  Button,
+  Dropdown,
+  Input,
+  Space,
+  Table,
+  TableColumnsType,
+} from "antd";
 import DrawerComponent from "../DrawerComponent/DrawerComponent";
 import { SearchOutlined } from "@ant-design/icons";
 import "./AssetTable.css";
-import CardComponent from "../CardComponent/CardComponent"
+import CardComponent from "../CardComponent/CardComponent";
 import { CloseOutlined } from "@ant-design/icons";
 import axiosInstance from "../../config/AxiosConfig";
 import { useQuery } from "@tanstack/react-query";
 import { DataType } from "../AssetTable/types";
 import { ColumnFilterItem } from "../AssetTable/types";
 import { AssetResult } from "../AssetTable/types";
-import {FilterDropdownProps} from "../AssetTable/types";
-import { useInfiniteQuery } from 'react-query';
+import { FilterDropdownProps } from "../AssetTable/types";
+import { useInfiniteQuery } from "react-query";
 
-import { DownOutlined } from '@ant-design/icons';
+import { DownOutlined } from "@ant-design/icons";
 
 interface ExpandedDataType {
   key: React.Key;
@@ -22,34 +30,52 @@ interface ExpandedDataType {
   upgradeNum: string;
 }
 const items = [
-  { key: '1', label: 'Action 1' },
-  { key: '2', label: 'Action 2' },
+  { key: "1", label: "Action 1" },
+  { key: "2", label: "Action 2" },
 ];
 
 interface AssetTableOneProps {
-  showAssignDrawer:(record:DataType)=>void
+  showAssignDrawer: (record: DataType) => void;
 }
-const AssetTableOne = ({showAssignDrawer}:AssetTableOneProps) => {
+const AssetTableOne = ({ showAssignDrawer }: AssetTableOneProps) => {
   const { data: logsData } = useQuery({
-    queryKey: ['assetLogsData'],
+    queryKey: ["assetLogsData"],
     queryFn: () =>
-      axiosInstance.get('asset/asset_logs/3059600b50cf4c53a9237525b34fd1f4').then((response) => {
-        console.log('Returned Log Data: ', response.data.data.logs);
-        return response.data.data.logs;
-      }),
+      axiosInstance
+        .get("asset/asset_logs/3059600b50cf4c53a9237525b34fd1f4")
+        .then((response) => {
+          console.log("Returned Log Data: ", response.data.data.logs);
+          return response.data.data.logs;
+        }),
   });
   const expandedRowRender = () => {
     const columns: TableColumnsType<ExpandedDataType> = [
-      { title: 'timestamp', dataIndex: 'timestamp', key: 'timestamp' },
-      { title: 'asset_category', dataIndex: 'asset_category', key: 'asset_category' },
-      {title: 'asset_detail_status',key: 'asset_detail_status',dataIndex:'asset_detail_status'},
-      { title: 'assign_status', dataIndex: 'assign_status', key: 'assign_status' },
-      { title: 'created_at', dataIndex: 'created_at',key: 'created_at',},
-      {title: 'product_name',dataIndex: 'product_name',key: 'product_name',},
-      {title: 'updated_at',dataIndex: 'updated_at',key: 'updated_at',},
-      { title: 'date_of_purchase', dataIndex: 'date_of_purchase', key: 'date_of_purchase', },
-      {title: 'model_number',dataIndex: 'model_number', key: 'model_number',},
-      { title: 'updated_at', dataIndex: 'updated_at', key: 'updated_at',},
+      { title: "timestamp", dataIndex: "timestamp", key: "timestamp" },
+      {
+        title: "asset_category",
+        dataIndex: "asset_category",
+        key: "asset_category",
+      },
+      {
+        title: "asset_detail_status",
+        key: "asset_detail_status",
+        dataIndex: "asset_detail_status",
+      },
+      {
+        title: "assign_status",
+        dataIndex: "assign_status",
+        key: "assign_status",
+      },
+      { title: "created_at", dataIndex: "created_at", key: "created_at" },
+      { title: "product_name", dataIndex: "product_name", key: "product_name" },
+      { title: "updated_at", dataIndex: "updated_at", key: "updated_at" },
+      {
+        title: "date_of_purchase",
+        dataIndex: "date_of_purchase",
+        key: "date_of_purchase",
+      },
+      { title: "model_number", dataIndex: "model_number", key: "model_number" },
+      { title: "updated_at", dataIndex: "updated_at", key: "updated_at" },
     ];
 
     const logsDataExpanded = [];
@@ -58,23 +84,33 @@ const AssetTableOne = ({showAssignDrawer}:AssetTableOneProps) => {
         key: i.toString(),
         timestamp: logsData[i].timestamp,
         asset_category: logsData[i].asset_log.asset_category,
-        asset_detail_status:logsData[i].asset_log.asset_detail_status,
-        assign_status:logsData[i].asset_log.assign_status,
-        created_at:logsData[i].asset_log.created_at,
-        product_name:logsData[i].asset_log.product_name,
-        updated_at:logsData[i].asset_log.updated_at,
-        date_of_purchase:logsData[i].asset_log.date_of_purchase,
+        asset_detail_status: logsData[i].asset_log.asset_detail_status,
+        assign_status: logsData[i].asset_log.assign_status,
+        created_at: logsData[i].asset_log.created_at,
+        product_name: logsData[i].asset_log.product_name,
+        updated_at: logsData[i].asset_log.updated_at,
+        date_of_purchase: logsData[i].asset_log.date_of_purchase,
         // model_number:logsData[i].asset_logs.model_number,
-
-
       });
     }
     // return <Table columns={columns} dataSource={logsData}  pagination={false} style={{ maxHeight: 300, overflowY: 'auto', maxWidth: '100%', scrollbarWidth: 'none', msOverflowStyle: 'none' }} />;
-    return <Table columns={columns} dataSource={logsDataExpanded}  pagination={false} style={{ maxHeight: 300, overflowY: 'auto', maxWidth: '100%', scrollbarWidth: 'none', msOverflowStyle: 'none' }} />;
-    
+    return (
+      <Table
+        columns={columns}
+        dataSource={logsDataExpanded}
+        pagination={false}
+        style={{
+          maxHeight: 300,
+          overflowY: "auto",
+          maxWidth: "100%",
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+        }}
+      />
+    );
   };
 
- const nestedcolumns: TableColumnsType<DataType> = [
+  const nestedcolumns: TableColumnsType<DataType> = [
     // { title: 'timestamp', dataIndex: 'timestamp', key: 'timestamp' },
     // { title: 'Platform', dataIndex: 'platform', key: 'platform' },
     // { title: 'Version', dataIndex: 'version', key: 'version' },
@@ -86,16 +122,15 @@ const AssetTableOne = ({showAssignDrawer}:AssetTableOneProps) => {
   for (let i = 0; i < 1; ++i) {
     nesteddata.push({
       key: i.toString(),
-      name: 'Screen',
-      platform: 'iOS',
-      version: '10.3.4.5654',
+      name: "Screen",
+      platform: "iOS",
+      version: "10.3.4.5654",
       upgradeNum: 500,
-      creator: 'Jack',
-      createdAt: '2014-12-24 23:12:00',
+      creator: "Jack",
+      createdAt: "2014-12-24 23:12:00",
     });
   }
 
-  
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
 
@@ -111,53 +146,53 @@ const AssetTableOne = ({showAssignDrawer}:AssetTableOneProps) => {
         return res.data;
       }),
   });
-  
+
   const statusOptions =
-    assetData?.data.results.map((item:AssetResult) => item.status) || [];
+    assetData?.data.results.map((item: AssetResult) => item.status) || [];
   const businessUnitOptions =
     assetData?.data.results.map(
-      (item:AssetResult) => item.business_unit.business_unit_name
+      (item: AssetResult) => item.business_unit.business_unit_name
     ) || [];
 
-    const { data: locationData } = useQuery({
-      queryKey: ['assetDrawerlocation'],
-      queryFn: () => axiosInstance.get('/asset/location').then((res) => res.data.data),
-    });
-    console.log(locationData)
-    
-    const locationFilters = locationData?.map(location => ({
-      text:location.location_name,
-      value: location.location_name
+  const { data: locationData } = useQuery({
+    queryKey: ["assetDrawerlocation"],
+    queryFn: () =>
+      axiosInstance.get("/asset/location").then((res) => res.data.data),
+  });
+  console.log(locationData);
+
+  const locationFilters =
+    locationData?.map((location) => ({
+      text: location.location_name,
+      value: location.location_name,
     })) ?? [];
-    console.log(locationFilters)
-  
-    const { data: memoryData } = useQuery({
-      queryKey: ['memorySpace'],
-      queryFn: () => axiosInstance.get('/asset/memory_list').then((res) => res.data.data),
-    });
+  console.log(locationFilters);
+
+  const { data: memoryData } = useQuery({
+    queryKey: ["memorySpace"],
+    queryFn: () =>
+      axiosInstance.get("/asset/memory_list").then((res) => res.data.data),
+  });
 
   const { data: assetTypeData } = useQuery({
-    queryKey: ['assetDrawerassetType'],
-    queryFn: () => axiosInstance.get('/asset/asset_type').then((res) => res.data.data),
+    queryKey: ["assetDrawerassetType"],
+    queryFn: () =>
+      axiosInstance.get("/asset/asset_type").then((res) => res.data.data),
   });
-  console.log(assetTypeData)
-  const assetTypeFilters = assetTypeData?.map(assetType => ({
-    text: assetType.asset_type_name,
-    value: assetType.asset_type_name
-  })) ?? [];
+  console.log(assetTypeData);
+  const assetTypeFilters =
+    assetTypeData?.map((assetType) => ({
+      text: assetType.asset_type_name,
+      value: assetType.asset_type_name,
+    })) ?? [];
 
-  
-
-// if (isLoading) return <div className="spin"> <Spin /></div>;
+  // if (isLoading) return <div className="spin"> <Spin /></div>;
   // if (isError) return <div>Error fetching data</div>;
   // //  const assetListData = assetData?.data.data.map.map((item:  DataType) => ({
   // //   value: item.asset_type
   // // }));
   const assetDataList = assetData?.data.results;
   console.log("Testing on 65:", assetDataList ? assetDataList[0].results : []);
-
-
-  
 
   let uniqueAssetCategories = [];
   if (assetData && assetData.data && assetData.data.results) {
@@ -193,8 +228,6 @@ const AssetTableOne = ({showAssignDrawer}:AssetTableOneProps) => {
     );
   };
 
-
-  
   <div>
     <h1>Asset Overview</h1>
   </div>;
@@ -343,7 +376,7 @@ const AssetTableOne = ({showAssignDrawer}:AssetTableOneProps) => {
       dataIndex: "location",
       responsive: ["md"],
       width: 180,
-      filters:locationFilters,
+      filters: locationFilters,
       onFilter: (value, record) => {
         if (Array.isArray(value)) {
           return value.includes(record.location);
@@ -421,7 +454,7 @@ const AssetTableOne = ({showAssignDrawer}:AssetTableOneProps) => {
       title: "Asset Type",
       dataIndex: "asset_type",
       responsive: ["md"],
-      
+
       filters: assetTypeFilters,
       onFilter: (
         value: string | number | boolean | React.ReactText[] | Key,
@@ -461,7 +494,6 @@ const AssetTableOne = ({showAssignDrawer}:AssetTableOneProps) => {
               alert("Already assigned");
             }
           }}
-          
         >
           +
         </Button>
@@ -469,20 +501,17 @@ const AssetTableOne = ({showAssignDrawer}:AssetTableOneProps) => {
     },
   ];
 
-  
   const handleColumnClick = (record: string[], columnName: string) => {
     if (columnName !== "Assign Asset") {
       handleOtherColumnClick(record);
     }
   };
 
-  
-const handleOtherColumnClick = (record: SetStateAction<null>) => {
-  setSelectedRow(record);
-  setDrawerVisible(true);
-};
+  const handleOtherColumnClick = (record: SetStateAction<null>) => {
+    setSelectedRow(record);
+    setDrawerVisible(true);
+  };
   const handleAssignAssetClick = (record: DataType) => {
-
     // Your implementation for handling clicks on "Assign Asset" column
   };
 
@@ -511,7 +540,8 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
         }
         return record.asset_id.indexOf(value.toString()) === 0;
       },
-      sorter: (a: { asset_id: string; }, b: { asset_id: any; }) => a.asset_id.localeCompare(b.asset_id),
+      sorter: (a: { asset_id: string }, b: { asset_id: any }) =>
+        a.asset_id.localeCompare(b.asset_id),
       sortDirections: ["ascend", "descend"],
     },
     {
@@ -558,7 +588,8 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
         }
         return record.version === value;
       },
-      sorter: (a: { version: number; }, b: { version: number; }) => a.version - b.version,
+      sorter: (a: { version: number }, b: { version: number }) =>
+        a.version - b.version,
       sortDirections: ["ascend", "descend"],
     },
     {
@@ -827,7 +858,10 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
           return false;
         }
       },
-      sorter: (a: { date_of_purchase: string | number | Date; }, b: { date_of_purchase: string | number | Date; }) => {
+      sorter: (
+        a: { date_of_purchase: string | number | Date },
+        b: { date_of_purchase: string | number | Date }
+      ) => {
         const dateA = new Date(a.date_of_purchase).getTime();
         const dateB = new Date(b.date_of_purchase).getTime();
         return dateA - dateB;
@@ -858,7 +892,10 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
           record.warranty_period.toString().indexOf(value.toString()) === 0
         );
       },
-      sorter: (a: { warranty_period: string | number | Date; }, b: { warranty_period: string | number | Date; }) => {
+      sorter: (
+        a: { warranty_period: string | number | Date },
+        b: { warranty_period: string | number | Date }
+      ) => {
         const dateA = new Date(a.warranty_period).getTime();
         const dateB = new Date(b.warranty_period).getTime();
         return dateA - dateB;
@@ -885,7 +922,9 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
         if (Array.isArray(value)) {
           return value.includes(record.WarrantyCountdown);
         }
-        return record.WarrantyCountdown.toString().indexOf(value.toString()) === 0;
+        return (
+          record.WarrantyCountdown.toString().indexOf(value.toString()) === 0
+        );
       },
     },
     {
@@ -953,7 +992,7 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
         selectedKeys,
         confirm,
         clearFilters,
-      }:FilterDropdownProps) => (
+      }: FilterDropdownProps) => (
         <div style={{ padding: 8 }}>
           <Input
             placeholder="Search Model Number"
@@ -1134,7 +1173,10 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
           return false;
         }
       },
-      sorter: (a: { created_at: string | number | Date; }, b: { created_at: string | number | Date; }) => {
+      sorter: (
+        a: { created_at: string | number | Date },
+        b: { created_at: string | number | Date }
+      ) => {
         const dateA = new Date(a.created_at).getTime();
         const dateB = new Date(b.created_at).getTime();
         return dateA - dateB;
@@ -1176,7 +1218,10 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
           return false;
         }
       },
-      sorter: (a: { updated_at: string | number | Date; }, b: { updated_at: string | number | Date; }) => {
+      sorter: (
+        a: { updated_at: string | number | Date },
+        b: { updated_at: string | number | Date }
+      ) => {
         const dateA = new Date(a.updated_at).getTime();
         const dateB = new Date(b.updated_at).getTime();
         return dateA - dateB;
@@ -1233,33 +1278,32 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
         <h1>Asset Details</h1>
       </div>
 
-      <div style={{ position: 'relative', display: 'inline-block' }}>
-  <Table
-    assetdetails={assetdetails}
-    columns={columns}
-    dataSource={data}
-    scroll={{ x: "max-content" }}
-    className="mainTable"
-    pagination={false}
-    bordered={false}
-    style={{
-      borderRadius: 10,
-      padding: 20,
-      boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-      fontSize: "50px",
-    }}
-
-    nestedcolumns={nestedcolumns}
-    expandable={{ expandedRowRender, defaultExpandedRowKeys: ['0'] }}
-    nesteddataSource={nesteddata}
-  />
-     {/* <Table
+      <div style={{ position: "relative", display: "inline-block" }}>
+        <Table
+          assetdetails={assetdetails}
+          columns={columns}
+          dataSource={data}
+          scroll={{ x: "max-content" }}
+          className="mainTable"
+          pagination={false}
+          bordered={false}
+          style={{
+            borderRadius: 10,
+            padding: 20,
+            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+            fontSize: "50px",
+          }}
+          nestedcolumns={nestedcolumns}
+          expandable={{ expandedRowRender, defaultExpandedRowKeys: ["0"] }}
+          nesteddataSource={nesteddata}
+        />
+        {/* <Table
         columns={nestedcolumns}
         expandable={{ expandedRowRender, defaultExpandedRowKeys: ['0'] }}
         dataSource={nesteddata}
       /> */}
-   
-  {/* <a
+
+        {/* <a
      href="../../AssetDetailView/AssetDetailView"
     style={{
       position: 'absolute',
@@ -1272,7 +1316,7 @@ const handleOtherColumnClick = (record: SetStateAction<null>) => {
   >
     View more details
   </a> */}
-</div>
+      </div>
       <DrawerComponent
         visible={drawerVisible}
         onClose={onCloseDrawer}

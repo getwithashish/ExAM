@@ -10,5 +10,10 @@ export interface CardType{
     onUpdate: (updatedData: DataType) => void;
     asset_uuid:string;
     selectedAssetId:string;
-    isMyApprovalPage:boolean
+    isMyApprovalPage:boolean;
+    selectedRow:string;
+    onDelete:any
+    onClose:any
+    
+
 }
