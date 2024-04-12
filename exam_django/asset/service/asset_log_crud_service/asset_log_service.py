@@ -14,10 +14,9 @@ from user_auth.models import User
 from response import APIResponse
 from messages import ASSET_NOT_FOUND, ASSET_LOG_FOUND, NO_ASSET_LOGS_IN_TIMELINE
 from rest_framework import status
-from django.db.models.signals import pre_save,post_save
+from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.db import transaction
-from rest_framework.request import Request
 from typing import Optional
 from datetime import datetime
 import urllib.parse
@@ -276,14 +275,6 @@ class AssetLogService:
 def log_asset_changes(sender, instance, **kwargs):
     # Convert the instance to a dictionary
     old_instance = model_to_dict(instance)
-    # old_instance = Asset.objects.filter(pk=instance.pk).values().first()
-    # old_instance=instance
-    # if (
-    #     old_instance
-    #     or instance.asset_detail_status == "UPDATED"
-    #     or instance.asset_detail_status == "ASSIGNED"
-    #     or instance.asset_detail_status == "UNASSIGNED"
-    # ):
     if (
         instance.asset_detail_status == "CREATED"
         or instance.asset_detail_status == "UPDATED"
@@ -302,7 +293,9 @@ def log_asset_changes(sender, instance, **kwargs):
                 if instance.asset_detail_status == "CREATED":
                     asset_instance = instance
                 else:
-                    asset_instance = Asset.objects.select_for_update().get(pk=instance.pk)
+                    asset_instance = Asset.objects.select_for_update().get(
+                        pk=instance.pk
+                    )
                 asset_log_entry = AssetLog.objects.create(
                     asset_uuid=asset_instance,
                     asset_log=asset_log_data,
