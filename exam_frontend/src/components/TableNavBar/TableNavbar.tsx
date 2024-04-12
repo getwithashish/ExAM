@@ -34,8 +34,43 @@ const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
     }
   };
 
-  const handleImportClick = () => {
+  const handleImportClick =async () => {
     setShowUpload(true);
+    try {
+      // Make a POST request to the backend API endpoint
+      const response = await axiosInstance.post("/asset/import-csv", FormData, {
+        responseType: "blob" // Receive response as a binary blob
+      });
+  
+      // Check if the response contains data
+      if (response.data) {
+        // Create a temporary URL for the blob response
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+  
+        // Create a link element to trigger the download
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "wronged_assets.csv"); // Set default filename
+  
+        // Append the link to the document body
+        document.body.appendChild(link);
+  
+        // Wait for the link to be appended before triggering the download
+        await new Promise((resolve) => setTimeout(resolve, 100));
+  
+        // Trigger the download by clicking the link
+        link.click();
+  
+        // Clean up the URL and link
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(link);
+      } else {
+        // Indicate successful import if no data returned
+        console.log("Import successful!");
+      }
+    } catch (error) {
+      console.error("Error importing CSV:", error);
+    }
   };
 
   const handleExport = async (format: 'csv' | 'xlsx' | 'pdf') => {
@@ -82,6 +117,8 @@ const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
     document.body.removeChild(link);
   };
 
+
+
   const handleDropDownSelect = (key: string) => {
     if (key === "import") {
       handleImportClick();
@@ -91,12 +128,11 @@ const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
       handleExport(key as 'csv' | 'xlsx' | 'pdf');
     }
   };
-
   // Define the items for the import dropdown with icons
   const importItems = [
     { label: "Import as csv", key: "import", icon: <DownloadOutlined /> },
     { label: "Download Template", key: "downloadTemplate", icon: <CloudDownloadOutlined /> },
-    { label: "Import as xlsx", key: "xlsx", icon: <DownloadOutlined /> },
+    { label: "Import as xlsx", key: "import-xlsx", icon: <DownloadOutlined /> },
   ];
 
   // Define the items for the export dropdown with icons
