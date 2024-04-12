@@ -6,7 +6,7 @@ const getAssetDetails = async () => {
   try {
     const res = await axiosInstance.get("/asset/?limit=20&assign_status=ASSIGNED&status=IN USE");
     console.log("Returned Data: ", res.data.data.results);
-    return res.data.data.results;
+    return res.data.data;
   } catch (error) {
     console.error("Error fetching asset details:", error);
     return [];
