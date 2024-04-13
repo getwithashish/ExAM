@@ -156,6 +156,7 @@ LOCATION_CREATION_FAILED = "Duplicate value cannot be inserted "
 
 FILE_NOT_FOUND = "File is not found"
 FILE_FOUND = "File found"
+INVALID_FILE_TYPE = "Invalid file type. Give a valid file type"
 # Parse messages
 
 VALID_CSV_FILE_TYPE = "Valid csv file type."

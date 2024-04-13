@@ -1,15 +1,24 @@
-# asset/service/data_import_service.py
-
 import csv
 import io
+import pandas as pd
 from datetime import datetime
 from django.forms import ValidationError
 from asset.models import Asset, AssetType, BusinessUnit, Employee, Location, Memory
 
 class AssetImportService:
     @staticmethod
-    def parse_and_add_assets(file_content, user):
-        csv_reader = csv.DictReader(file_content.decode("utf-8").splitlines())
+    def parse_and_add_assets(file_content, user, file_type):
+        if file_type == "csv":
+            csv_reader = csv.DictReader(file_content.decode("utf-8").splitlines())
+        elif file_type == "xlsx":
+            # Read XLSX file using pandas library
+            df = pd.read_excel(io.BytesIO(file_content))
+            # Convert DataFrame to dictionary
+            data = df.to_dict(orient='records')
+            # Convert dictionary to list of dictionaries for consistency with CSV
+            csv_reader = [dict(row) for row in data]
+        else:
+            raise ValueError("Invalid file type. Must be 'csv' or 'xlsx'.")
 
         existing_asset_ids = set(Asset.objects.values_list("asset_id", flat=True))
         existing_serial_numbers = set(Asset.objects.values_list("serial_number", flat=True))
@@ -18,7 +27,7 @@ class AssetImportService:
         skipped_assets_count = 0
         missing_fields_assets = []
 
-        new_assets = []  # List to hold new assets for CSV output
+        new_assets = []  # List to hold new assets for bulk creation
 
         for row in csv_reader:
             asset_id = row.get("asset_id", "")
@@ -28,15 +37,15 @@ class AssetImportService:
                 skipped_assets_count += 1
                 continue
 
-            mandatory_fields = ["asset_category", "asset_id", "version", "asset_type", "product_name", "serial_number", "model_number", "owner", "purchase_date", "warranty_period", "invoice_location", "business_unit"]
-            if any(row.get(field, "").strip() == "" for field in mandatory_fields):
+            mandatory_fields = ["asset_category", "asset_id", "version", "asset_type", "product_name", "serial_number", "model_number", "owner", "date_of_purchase", "warranty_period", "invoice_location", "business_unit"]
+            if any(str(row.get(field, "")).strip() == "" for field in mandatory_fields):
                 missing_fields_assets.append(row)
                 continue
 
             try:
                 purchase_date = datetime.strptime(row["date_of_purchase"], "%Y-%m-%d").date()
             except ValueError:
-                raise ValidationError("Purchase date has an invalid format. It must be in YYYY-MM-DD format.")
+                raise ValidationError("Date of purchase has an invalid format. It must be in YYYY-MM-DD format.")
 
             asset_type, asset_type_created = AssetType.objects.get_or_create(asset_type_name=row["asset_type"])
             business_unit, business_unit_created = BusinessUnit.objects.get_or_create(business_unit_name=row["business_unit"])
@@ -48,7 +57,7 @@ class AssetImportService:
             asset = Asset(
                 asset_id=asset_id,
                 version=row["version"],
-                asset_category=row["category"],
+                asset_category=row["asset_category"],
                 product_name=row["product_name"],
                 model_number=row["model_number"],
                 serial_number=serial_number,
@@ -81,12 +90,9 @@ class AssetImportService:
             )
 
             new_assets.append(asset)
-
-            existing_asset_ids.add(asset_id)
-            existing_serial_numbers.add(serial_number)
             added_assets_count += 1
 
-        Asset.objects.bulk_create(new_assets)  # Bulk create new assets
+        Asset.objects.bulk_create(new_assets)
 
         return AssetImportService._prepare_import_summary(
             added_assets_count, skipped_assets_count, missing_fields_assets
