@@ -60,14 +60,37 @@ const AssetTableHandler = ({
 }) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
+  
   const [queryParam, setQueryParam] = useState("");
   const { data: assetData, refetch: assetDataRefetch } = useQuery({
     queryKey: ["assetList", queryParam],
-    queryFn: () => getAssetDetails(`${queryParam}`),
+    queryFn: () => getAssetDetails(`${queryParamProp + queryParam}`),
   });
 
-   const refetchAssetData = (queryParam = "") => {
-    setQueryParam(queryParam);
+  const refetchAssetData = (queryParamArg = "") => {
+    let editedQueryParam = "";
+
+    var offsetIndex = queryParam.indexOf("&offset=");
+    if (offsetIndex !== -1) {
+      var nextAmpersandIndex = queryParam.indexOf("&", offsetIndex + 1);
+      if (nextAmpersandIndex !== -1) {
+        var substrBeforeOffset = queryParam.substring(0, offsetIndex);
+        var substrAfterOffset = queryParam.substring(nextAmpersandIndex);
+        editedQueryParam =
+          substrBeforeOffset + queryParamArg + substrAfterOffset;
+      } else {
+        var substrBeforeOffset = queryParam.substring(0, offsetIndex);
+        editedQueryParam = substrBeforeOffset + queryParamArg;
+      }
+    } else {
+      var offsetRegex = /&offset=\d+/;
+      var offsetMatch = queryParam.match(offsetRegex);
+      var offsetString = offsetMatch ? offsetMatch[0] : "";
+      editedQueryParam = offsetString + queryParamArg;
+    }
+
+    // setQueryParam(queryParam);
+    setQueryParam(editedQueryParam);
     assetDataRefetch({ force: true });
   };
 
@@ -619,7 +642,8 @@ const AssetTableHandler = ({
       heading={heading}
       // drawerTitle={drawerTitle}
       totalItemCount={assetData?.count}
-      assetPageDataFetch={setQueryParam}
+      // assetPageDataFetch={setQueryParam}
+      assetPageDataFetch={refetchAssetData}
       handleRowClick={handleRowClick}
       onCloseDrawer={onCloseDrawer}
       selectedRow={selectedRow}

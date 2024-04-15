@@ -10,6 +10,7 @@ import {
   Button,
   Dropdown,
   Input,
+  Pagination,
   Space,
   Table,
   TableColumnsType,
@@ -61,6 +62,8 @@ const AssetTable = ({
   selectedRow,
   drawerVisible,
   assetData,
+  totalItemCount,
+  assetPageDataFetch,
   columns,
   handleUpdateData,
   drawerTitle,
@@ -131,6 +134,20 @@ const AssetTable = ({
             boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
             marginRight: "120px",
           }}
+
+          footer={() => (
+            <Pagination
+              pageSize={20}
+              showTotal={(total, range) =>
+                `${range[0]}-${range[1]} of ${total} assets`
+              }
+              total={totalItemCount}
+              onChange={(page, pageSize) => {
+                assetPageDataFetch(`&offset=${(page - 1) * pageSize}`);
+              }}
+              hideOnSinglePage={true}
+            />
+          )}
         />
       </div>
       <DrawerViewRequest
