@@ -51,7 +51,7 @@ django_sercret_key = config("DJANGO_SECRET_KEY")
 SECRET_KEY = "django-insecure-" + django_sercret_key
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config("DEBUG_STATUS", cast=bool)
 
 # ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 ALLOWED_HOSTS = config(
