@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Field, QueryBuilder, RuleGroupType, formatQuery } from 'react-querybuilder';
 import 'react-querybuilder/dist/query-builder.css';
-import styles from './QueryBuilder.css'
+import * as styles from './QueryBuilder.css'
 
 const fields: Field[] = [
   { name: "product_name", label: "product_name" },
