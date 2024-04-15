@@ -48,19 +48,52 @@ interface ExpandedDataType {
   upgradeNum: string;
 }
 
-const AssetTableHandler = ({ showAssignDrawer }) => {
+const AssetTableHandler = ({ showAssignDrawer,queryParamProp }) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  const { data: assetData } = useQuery({
-    queryKey: ["assetList"],
-    queryFn: () => getAssetDetails(),
+  // const { data: assetData } = useQuery({
+  //   queryKey: ["assetList"],
+  //   queryFn: () => getAssetDetails(),
+  // });
+
+  const [queryParam, setQueryParam] = useState("");
+  const { data: assetData, refetch: assetDataRefetch } = useQuery({
+    queryKey: ["assetList", queryParam],
+    queryFn: () => getAssetDetails(`${queryParamProp + queryParam}`),
   });
 
+  const refetchAssetData = (queryParamArg = "") => {
+    let editedQueryParam = "";
+
+    var offsetIndex = queryParam.indexOf("&offset=");
+    if (offsetIndex !== -1) {
+      var nextAmpersandIndex = queryParam.indexOf("&", offsetIndex + 1);
+      if (nextAmpersandIndex !== -1) {
+        var substrBeforeOffset = queryParam.substring(0, offsetIndex);
+        var substrAfterOffset = queryParam.substring(nextAmpersandIndex);
+        editedQueryParam =
+          substrBeforeOffset + queryParamArg + substrAfterOffset;
+      } else {
+        var substrBeforeOffset = queryParam.substring(0, offsetIndex);
+        editedQueryParam = substrBeforeOffset + queryParamArg;
+      }
+    } else {
+      var offsetRegex = /&offset=\d+/;
+      var offsetMatch = queryParam.match(offsetRegex);
+      var offsetString = offsetMatch ? offsetMatch[0] : "";
+      editedQueryParam = offsetString + queryParamArg;
+    }
+
+    // setQueryParam(queryParam);
+    setQueryParam(editedQueryParam);
+    assetDataRefetch({ force: true });
+  };
+
   const statusOptions =
-    assetData?.map((item: AssetResult) => item.status) || [];
+    assetData?.results?.map((item: AssetResult) => item.status) || [];
   const businessUnitOptions =
-    assetData?.map(
+    assetData?.results?.map(
       (item: AssetResult) => item.business_unit.business_unit_name
     ) || [];
 
@@ -549,7 +582,7 @@ const AssetTableHandler = ({ showAssignDrawer }) => {
     setDrawerVisible(true);
   };
 
-  const data = assetData?.map((result) => ({
+  const data = assetData?.results?.map((result) => ({
     key: result.asset_uuid,
     asset_id: result.asset_id,
     asset_category: result.asset_category,
@@ -590,7 +623,10 @@ const AssetTableHandler = ({ showAssignDrawer }) => {
 
   return (
     <AssetTable
+     totalItemCount={assetData?.count}
       handleRowClick={handleRowClick}
+      assetPageDataFetch={refetchAssetData}
+
       onCloseDrawer={onCloseDrawer}
       selectedRow={selectedRow}
       drawerVisible={drawerVisible}
@@ -600,6 +636,7 @@ const AssetTableHandler = ({ showAssignDrawer }) => {
       assetTypeData={assetTypeData}
       locations={locations}
       statusOptions={statusOptions}
+      assetDataRefetch={refetchAssetData}
       businessUnitOptions={businessUnitOptions}
       handleUpdateData={function (updatedData: { key: any }): void {
         throw new Error("Function not implemented.");

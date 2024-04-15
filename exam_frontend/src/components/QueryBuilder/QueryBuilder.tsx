@@ -1,13 +1,7 @@
-import { useState } from "react";
-import {
-  Field,
-  QueryBuilder,
-  RuleGroupType,
-  formatQuery,
-} from "react-querybuilder";
-import "react-querybuilder/dist/query-builder.css";
-import axiosInstance from "../../config/AxiosConfig";
-import querybuilder from "./QueryBuilder.css";
+import { useState } from 'react';
+import { Field, QueryBuilder, RuleGroupType, formatQuery } from 'react-querybuilder';
+import 'react-querybuilder/dist/query-builder.css';
+import styles from './QueryBuilder.css'
 
 const fields: Field[] = [
   { name: "product_name", label: "product_name" },
@@ -26,7 +20,11 @@ const fields: Field[] = [
   { name: "assign_status", label: "assign_status" },
 ];
 
-export const QueryBuilderComponent = ({assetDataRefetch}) => {
+interface QueryBuilderComponentProps {
+ assetDataRefetch: (queryParam:string) => void
+}
+
+export const QueryBuilderComponent:React.FC<QueryBuilderComponentProps> = ({assetDataRefetch}) => {
   const [query, setQuery] = useState<RuleGroupType>({
     combinator: "and",
     rules: [{ field: "product_name", operator: "=", value: "" }],
@@ -38,11 +36,12 @@ export const QueryBuilderComponent = ({assetDataRefetch}) => {
     // Make a get request to the backend endpointa
     let queryParam = `&json_logic=${formattedQuery}`
     assetDataRefetch(queryParam)
+  
    
   };
 
   return (
-    <div className="querybuilder">
+    <div className={styles.ruleGroup}>
       <QueryBuilder fields={fields} query={query} onQueryChange={setQuery}  />
       <button onClick={handleQueryButtonClick} className='m-2 p-2 h-50 w-50 text-white'>Search</button>
     </div>
