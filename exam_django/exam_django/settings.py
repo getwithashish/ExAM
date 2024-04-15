@@ -1,14 +1,37 @@
+import os
 from pathlib import Path
-from decouple import config
-from typing import List
+import pathlib
+import decouple
+from decouple import RepositoryEnv
 from datetime import timedelta
-from corsheaders.defaults import default_headers
-from supertokens_python import init, InputAppInfo, SupertokensConfig
-from supertokens_python.recipe import emailpassword, session
-from supertokens_python import get_all_cors_headers
 
 from ms_identity_web.configuration import AADConfig
 from ms_identity_web import IdentityWebPython
+
+ENVIRONMENT = os.getenv("ENVIRONMENT", default="DEVELOPMENT")
+
+
+def get_env_config() -> decouple.Config:
+    """
+    Creates and returns a Config object based on the environment setting.
+    It uses .env for development and .prod.env for production.
+    """
+    env_files = {
+        "DEVELOPMENT": ".env",
+        "PRODUCTION": ".prod.env",
+    }
+
+    app_dir_path = pathlib.Path(__file__).resolve().parent.parent
+    env_file_name = env_files.get(ENVIRONMENT, ".env")
+    file_path = app_dir_path / env_file_name
+
+    if not file_path.is_file():
+        raise FileNotFoundError(f"Environment file not found: {file_path}")
+
+    return decouple.Config(RepositoryEnv(file_path))
+
+
+config = get_env_config()
 
 AAD_CONFIG = AADConfig.parse_json(file_path="aad.config.json")
 MS_IDENTITY_WEB = IdentityWebPython(AAD_CONFIG)
@@ -24,30 +47,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-373%1sgr9u57wh6shc@e%7)@9vgy5&ckst9cj2f9p5(ur!1jfl"
+django_sercret_key = config("DJANGO_SECRET_KEY")
+SECRET_KEY = "django-insecure-" + django_sercret_key
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
-
-
-# Supertokens Initialization
-init(
-    app_info=InputAppInfo(
-        app_name="exam",
-        api_domain="http://localhost:8000",
-        website_domain="http://localhost:3000",
-        api_base_path="/auth",
-        website_base_path="/auth",
-    ),
-    supertokens_config=SupertokensConfig(
-        connection_uri=config("SUPERTOKENS_URL"),
-        # api_key=<API_KEY(if configured)>
-    ),
-    framework="django",
-    recipe_list=[session.init(), emailpassword.init()],  # initializes session features
-    mode="wsgi",  # use wsgi if you are running django server in sync mode
+# ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = config(
+    "ALLOWED_HOSTS", cast=lambda v: [item.strip() for item in v.split(",")]
 )
 
 
@@ -57,13 +65,12 @@ CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = ["http://localhost:5173"]
 
-CORS_ALLOW_HEADERS: List[str] = (
-    list(default_headers) + ["Content-Type"] + get_all_cors_headers()
-)
+# CORS_ALLOW_HEADERS: List[str] = (
+#     list(default_headers) + ["Content-Type"] + get_all_cors_headers()
+# )
 
 
 # Application definition
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -75,7 +82,6 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "django_rest_passwordreset",
     "corsheaders",
-    "supertokens_python",
     "user_auth",
     "asset",
     "drf_yasg",
@@ -90,7 +96,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "supertokens_python.framework.django.django_middleware.middleware",
     "ms_identity_web.django.middleware.MsalMiddleware",
 ]
 
@@ -115,9 +120,6 @@ TEMPLATES = [
 ]
 
 REST_FRAMEWORK = {
-    # "DEFAULT_AUTHENTICATION_CLASSES": [
-    #     "sampleapp.authentication.SupertokensAuthentication",
-    # ],
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
@@ -208,6 +210,7 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Email Settings
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_HOST_USER = config("EMAIL_HOST_USER")
