@@ -12,6 +12,7 @@ import DrawerViewRequest from "./DrawerViewRequest";
 import { QueryBuilderComponent } from "../QueryBuilder/QueryBuilder";
 
 const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
+  const [visible, setVisible] = useState(false);
   const decodeJWT = (token: string) => {
     try {
       const base64Url = token.split(".")[1];
@@ -177,6 +178,14 @@ const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
         onSearch={handleSearch}
         assetDataRefetch={assetDataRefetch}
       />
+      <button onClick={showQueryBuilder} className={styles["button"]} >Advanced Search</button>
+      <DrawerViewRequest
+        title="Advanced Search"
+        onClose={closeQueryBuilder}
+        visible={visible}
+      >
+        <QueryBuilderComponent assetDataRefetch={assetDataRefetch}/>
+      </DrawerViewRequest>
       <DropDown
         onSelect={handleDropDownSelect}
         items={exportItems}
