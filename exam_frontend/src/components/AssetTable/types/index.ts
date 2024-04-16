@@ -156,5 +156,6 @@ export interface AssetTableProps {
   assetDataRefetch: (queryParam: string) => void;
   setTableData:any
   handleDelete:any
+  reset:()=> void;
 }
 
