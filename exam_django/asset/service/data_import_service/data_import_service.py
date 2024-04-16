@@ -1,3 +1,5 @@
+# data_import_service.py
+
 import csv
 import io
 import pandas as pd
@@ -11,11 +13,8 @@ class AssetImportService:
         if file_type == "csv":
             csv_reader = csv.DictReader(file_content.decode("utf-8").splitlines())
         elif file_type == "xlsx":
-            # Read XLSX file using pandas library
             df = pd.read_excel(io.BytesIO(file_content))
-            # Convert DataFrame to dictionary
             data = df.to_dict(orient='records')
-            # Convert dictionary to list of dictionaries for consistency with CSV
             csv_reader = [dict(row) for row in data]
         else:
             raise ValueError("Invalid file type. Must be 'csv' or 'xlsx'.")
@@ -27,7 +26,7 @@ class AssetImportService:
         skipped_assets_count = 0
         missing_fields_assets = []
 
-        new_assets = []  # List to hold new assets for bulk creation
+        new_assets = []
 
         for row in csv_reader:
             asset_id = row.get("asset_id", "")
@@ -128,3 +127,14 @@ class AssetImportService:
                 csv_writer.writerow(asset.values())
 
         return output.getvalue()
+
+    @staticmethod
+    def generate_missing_fields_xlsx(missing_fields_assets):
+        if missing_fields_assets:
+            df = pd.DataFrame(missing_fields_assets)
+            output = io.BytesIO()
+            df.to_excel(output, index=False)
+            output.seek(0)
+            return output.getvalue()
+        else:
+            return None

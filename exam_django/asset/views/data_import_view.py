@@ -1,11 +1,11 @@
-import csv
+# views.py
+
 import io
 import pandas as pd
 
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework import status
-from asset.models.asset import Asset
 from asset.service.data_import_service.data_import_service import AssetImportService
 from user_auth.rbac import IsLead
 from response import APIResponse
@@ -35,19 +35,17 @@ class DataImportView(APIView):
 
             result = AssetImportService.parse_and_add_assets(file.read(), user, file_type)
 
-            if result["missing_fields_assets"]:
+            if isinstance(result, bytes):  # If result is bytes, it's an XLSX file
+                response = HttpResponse(result, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+                response['Content-Disposition'] = 'attachment; filename="missing_fields.xlsx"'
+                return response
+            elif result["missing_fields_assets"]:
                 if file_type == "csv":
-                    csv_data = AssetImportService.generate_missing_fields_csv(result["missing_fields_assets"])
-                    missing_fields_data = io.StringIO(csv_data)
+                    missing_fields_data = AssetImportService.generate_missing_fields_csv(result["missing_fields_assets"])
                     content_type = 'text/csv'
-                    filename = "missing_fields.csv"
                 elif file_type == "xlsx":
-                    df = pd.DataFrame(result["missing_fields_assets"])
-                    missing_fields_data = io.BytesIO()
-                    df.to_excel(missing_fields_data, index=False)
-                    missing_fields_data.seek(0)
+                    missing_fields_data = AssetImportService.generate_missing_fields_xlsx(result["missing_fields_assets"])
                     content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-                    filename = "missing_fields.xlsx"
                 else:
                     return APIResponse(
                         data=[],
@@ -55,8 +53,8 @@ class DataImportView(APIView):
                         status=status.HTTP_400_BAD_REQUEST,
                     )
 
-                response = HttpResponse(missing_fields_data.getvalue(), content_type=content_type)
-                response['Content-Disposition'] = f'attachment; filename="{filename}"'
+                response = HttpResponse(missing_fields_data, content_type=content_type)
+                response['Content-Disposition'] = 'attachment; filename="missing_fields.xlsx"'
                 return response
             else:
                 return APIResponse(
