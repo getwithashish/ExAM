@@ -156,15 +156,16 @@ const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
           buttonLabel="Import"
         />
       )}
+       <GlobalSearch
+        onSearch={handleSearch}
+        assetDataRefetch={assetDataRefetch}
+      />
       <DropDown
         onSelect={handleDropDownSelect}
         items={exportItems}
         buttonLabel="Export"
       />
-      <GlobalSearch
-        onSearch={handleSearch}
-        assetDataRefetch={assetDataRefetch}
-      />
+     
     </nav>
   );
 };
