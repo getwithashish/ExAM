@@ -6,7 +6,10 @@ interface DropDownProps {
   onSelect: (key: string) => void;
   items?: { label: string; key: string; icon?: React.ReactNode }[];
   buttonLabel?: string;
+  menu: JSX.Element; // Define menu as a prop
 }
+
+const DropDown: React.FC<DropDownProps> = ({ menu, onSelect, buttonLabel = "Submit" }) => {
  
 const DropDown: React.FC<DropDownProps> = ({ onSelect, items = [], buttonLabel = "Submit" }) => {
   const [loadings, setLoadings] = useState<boolean[]>([]);
