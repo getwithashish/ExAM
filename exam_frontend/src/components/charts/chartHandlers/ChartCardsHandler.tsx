@@ -89,13 +89,13 @@ const AssetCountComponent = () => {
             <div className="my-2 bg-gradient-to-r from-blue-800 to-blue-800 hover:from-blue-900 hover:to-blue-900 rounded-lg p-3 shadow-md" style={{ boxShadow: '0 0 5px rgba(0, 0, 0, 0.5)' }}>
                 <div className="text-white text-lg sm:text-xl md:text-lg lg:text-xl xl:text-4xl font-display font-light mb-4 text-left">Remaining Approvals</div>
                 <div className=" font-semibold text-center flex-row gap-4">
-                    <div className="text-white text-xl sm:text-xl md:text-xl lg:text-2xl xl:text-4xl flex-1 mt-5">
+                    <div className="text-white text-xl sm:text-xl md:text-xl lg:text-2xl xl:text-3xl flex-1 mt-5">
                         Asset Approvals <br />
-                        <div className="text-white text-3xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">{pendingAssetsCount}</div>
+                        <div className="text-white text-3xl sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl">{pendingAssetsCount}</div>
                     </div>
-                    <div className=" text-white text-xl sm:text-xl md:text-xl lg:text-2xl xl:text-4xl flex-1 mt-5">
+                    <div className=" text-white text-xl sm:text-xl md:text-xl lg:text-2xl xl:text-3xl flex-1 mt-5">
                         Assign Approvals <br />
-                        <div className="text-white text-3xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">{pendingAssignsCount}</div>
+                        <div className="text-white text-3xl sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl">{pendingAssignsCount}</div>
                     </div>
                 </div>
             </div>
