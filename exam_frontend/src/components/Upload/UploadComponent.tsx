@@ -97,6 +97,7 @@ const UploadComponent: React.FC = () => {
       <Button
         style={{
           marginTop: 20,
+          marginTop: 20,
         }}
         onClick={handleSubmit}
       >

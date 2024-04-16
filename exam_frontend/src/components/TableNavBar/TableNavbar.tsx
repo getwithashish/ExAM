@@ -1,9 +1,15 @@
-import React from "react";
-import { DownloadOutlined, UploadOutlined, CloudDownloadOutlined } from "@ant-design/icons";
+import React, { useState } from "react";
+import {
+  DownloadOutlined,
+  UploadOutlined,
+  CloudDownloadOutlined,
+} from "@ant-design/icons";
 import axiosInstance from "../../config/AxiosConfig";
 import GlobalSearch from "../GlobalSearch/GlobalSearch";
 import styles from "./TableNavbar.module.css";
 import DropDown from "../DropDown/DropDown";
+import DrawerViewRequest from "./DrawerViewRequest";
+import { QueryBuilderComponent } from "../QueryBuilder/QueryBuilder";
 
 const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
   const decodeJWT = (token: string) => {
@@ -24,6 +30,7 @@ const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
       return null;
     }
   };
+
 
   const getUserScope = () => {
     const jwtToken = localStorage.getItem("jwt");
@@ -104,21 +111,23 @@ const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
     // Use the direct URL of the static file
     const filePath = "/static/sample_asset_download_template.csv";
 
+
     // Create a new link element to trigger the download
     const link = document.createElement("a");
     link.href = filePath;
     link.setAttribute("download", "sample_asset_download_template.csv");
     document.body.appendChild(link);
 
+
     // Trigger the download
     link.click();
+
 
     // Cleanup
     document.body.removeChild(link);
   };
 
-
-
+  // Function to handle dropdown item selection
   const handleDropDownSelect = (key: string) => {
     if (key === "import") {
       handleImportClick();
@@ -142,11 +151,19 @@ const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
     { label: "Export as PDF", key: "pdf", icon: <UploadOutlined /> },
   ];
 
+
   function handleSearch(_searchTerm: string): void {
     console.log("Global Search Term: ", _searchTerm);
     assetDataRefetch(`&global_search=${_searchTerm}`);
   }
 
+  const showQueryBuilder = () => {
+    setVisible(true);
+  };
+
+  const closeQueryBuilder = () => {
+    setVisible(false);
+  };
   return (
     <nav className={styles["navbar"]}>
       {getUserScope() === "LEAD" && (

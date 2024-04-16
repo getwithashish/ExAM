@@ -2,11 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../../../../config/AxiosConfig";
 import { AssetResult } from "../types";
 
-const getAssetDetails = async () => {
+const getAssetDetails = async (queryParam="") => {
   try {
-    const res = await axiosInstance.get("/asset/?limit=20&assign_status=UNASSIGNED|assign_status=REJECTED&status=IN STORE");
+    const res = await axiosInstance.get("/asset/?limit=20&assign_status=UNASSIGNED|REJECTED&status=IN STORE");
     console.log("Returned Data: ", res.data.data.results);
-    return res.data.data.results;
+    return res.data.data;
   } catch (error) {
     console.error("Error fetching asset details:", error);
     return [];

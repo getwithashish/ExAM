@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  mysql-db-service:
+    container_name: mysql-db
+    image: "mysql:latest"
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=experion@123
+      - MYSQL_DATABASE=asset_management_db
+    ports:
+      - 3307:3306
+      - 33070:33060
+
+  # Production Environment
+
+  prod-asset-management-backend-service:
+    container_name: prod-asset-management-backend
+    image: prod-asset-management-backend-image
+    build: ./exam_django/
+    ports:
+      - 8000:8000
+    restart: always
+    depends_on:
+      - mysql-db-service
+
+  prod-asset-management-frontend-service:
+    container_name: prod-asset-management-frontend
+    image: prod-asset-management-frontend-image
+    build: ./exam_frontend/
+    ports:
+      - 5173:5173
+    restart: always
+    depends_on:
+      - prod-asset-management-backend-service

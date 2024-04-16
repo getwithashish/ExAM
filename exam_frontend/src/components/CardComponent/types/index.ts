@@ -13,6 +13,7 @@ export interface CardType{
     isMyApprovalPage:boolean;
     selectedRow:string;
     onDelete:any
+    onClose:any
     
 
 }
