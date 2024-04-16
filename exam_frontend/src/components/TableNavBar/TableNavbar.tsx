@@ -49,7 +49,7 @@ const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
   // Function to handle export button click
   const handleExport = () => {
     axiosInstance
-      .get("http://localhost:8000/api/v1/asset/export")
+      .get("/asset/export")
       .then((response) => {
         const blob = new Blob([response.data], { type: "text/csv" });
         const url = window.URL.createObjectURL(blob);
@@ -135,7 +135,7 @@ const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
       <DrawerViewRequest
         title="Advanced Search"
         onClose={closeQueryBuilder}
-        visible={visible}
+        open={visible}
       >
         <QueryBuilderComponent assetDataRefetch={assetDataRefetch}/>
       </DrawerViewRequest>

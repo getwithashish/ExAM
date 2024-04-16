@@ -53,7 +53,7 @@ const UploadComponent: React.FC = () => {
     // Check if token is available
     if (token) {
       axiosInstance
-        .post("http://localhost:8000/api/v1/asset/import-csv/", formData, {
+        .post("/asset/import-csv/", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`, // Send JWT token in the Authorization header
