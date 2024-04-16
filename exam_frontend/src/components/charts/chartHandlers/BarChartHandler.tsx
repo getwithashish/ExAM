@@ -1,8 +1,16 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { fetchAssetData } from '../api/ChartApi';
-import { AxisConfig, BarChart } from '@mui/x-charts';
+import { AxisConfig, BarChart, LineChart } from '@mui/x-charts';
 import { AxiosError } from 'axios';
 import { MakeOptional } from '@mui/x-charts/models/helpers';
+import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
+import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box';
+import { ResponsiveChartContainer } from '@mui/x-charts/ResponsiveChartContainer';
+import { BarPlot } from '@mui/x-charts/BarChart';
+import { LinePlot, MarkPlot } from '@mui/x-charts/LineChart';
+import { ChartsXAxis } from '@mui/x-charts/ChartsXAxis';
 
 interface ErrorResponse {
   message: string;  
@@ -41,20 +49,33 @@ export default function BarChartHandler() {
   if (error) {
     return <div>Error fetching data</div>;
   }
-
-  const xAxis: MakeOptional<AxisConfig, "id">[] = [
-    { scaleType: "band", data: assetData.map(asset => asset.name) }
-  ];
-  const series = [{ data: assetData.map(asset => asset.count) }];
-
+  
   return (
-    <div>
-      <BarChart
-        xAxis={xAxis}
-        series={series}
-        width={1000}
-        height={300}
-      />
-    </div>
+    <Box sx={{ width: '100%', height: 280 }}>
+    <ResponsiveChartContainer
+      series={[
+        {
+          type: 'bar',
+          data: assetData.map(asset => asset.count),
+        },
+      ]}
+      xAxis={[
+        {
+          data: assetData.map(asset => asset.name) ,
+          scaleType: 'band',
+          id: 'x-axis-id',
+        },
+      ]}
+    >
+      <BarPlot />
+      <LinePlot />
+      <MarkPlot />
+      <ChartsXAxis 
+        label="Individual Asset Count" 
+        position="bottom" 
+        axisId="x-axis-id" 
+      />   
+    </ResponsiveChartContainer>
+  </Box>
   );
 }
