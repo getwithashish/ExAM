@@ -135,7 +135,7 @@ const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
       <DrawerViewRequest
         title="Advanced Search"
         onClose={closeQueryBuilder}
-        open={visible}
+        visible={visible}
       >
         <QueryBuilderComponent assetDataRefetch={assetDataRefetch}/>
       </DrawerViewRequest>
