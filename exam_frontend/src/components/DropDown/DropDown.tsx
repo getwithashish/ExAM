@@ -6,9 +6,10 @@ interface DropDownProps {
   onSelect: (key: string) => void;
   items?: { label: string; key: string; icon?: React.ReactNode }[];
   buttonLabel?: string;
+  menu: JSX.Element; // Define menu as a prop
 }
 
-const DropDown: React.FC<DropDownProps> = ({ onSelect, items = [], buttonLabel = "Submit" }) => {
+const DropDown: React.FC<DropDownProps> = ({ menu, onSelect, buttonLabel = "Submit" }) => {
   const [loadings, setLoadings] = useState<boolean[]>([]);
 
   const enterLoading = (index: number) => {
@@ -26,16 +27,6 @@ const DropDown: React.FC<DropDownProps> = ({ onSelect, items = [], buttonLabel =
       });
     }, 6000);
   };
-
-  const menu = (
-    <Menu>
-      {items.map((item) => (
-        <Menu.Item key={item.key} onClick={() => onSelect(item.key)} icon={item.icon}>
-          {item.label}
-        </Menu.Item>
-      ))}
-    </Menu>
-  );
 
   return (
     <Dropdown overlay={menu}>
