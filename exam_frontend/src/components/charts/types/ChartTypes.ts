@@ -1,8 +1,6 @@
 export interface AssetData{
   total_assets: number;
-  asset_status: {
-      [key: string]: number;
-    };
+  status_counts: { [key: string]: number };
     asset_detail_status:{
       [key: string]: number;
     };
