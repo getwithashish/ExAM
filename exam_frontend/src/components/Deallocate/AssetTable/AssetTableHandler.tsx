@@ -52,6 +52,7 @@ interface ExpandedDataType {
 //   queryParamProp:(record:DataType)=>void
 // }
 
+
 const AssetTableHandler = ({queryParamProp}) => {
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null); // State to store the selected asset ID
 
