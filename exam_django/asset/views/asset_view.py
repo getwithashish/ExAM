@@ -18,14 +18,21 @@ from asset.service.asset_crud_service.asset_normal_query_service import (
 from asset.service.asset_crud_service.asset_advanced_query_service_with_json_logic import (
     AssetAdvancedQueryServiceWithJsonLogic,
 )
-from exceptions import NotAcceptableOperationException, PermissionDeniedException
+from asset.service.asset_crud_service.asset_field_value_query_service import (
+    AssetFieldValueQueryService,
+)
+from exceptions import (
+    NotAcceptableOperationException,
+    NotFoundException,
+    PermissionDeniedException,
+)
 from response import APIResponse
 from messages import (
     ASSET_CREATED_UNSUCCESSFUL,
     ASSET_LIST_RETRIEVAL_UNSUCCESSFUL,
     ASSET_NOT_FOUND,
     USER_UNAUTHORIZED,
-    ASSET_DELETION_SUCCESSFUL
+    ASSET_DELETION_SUCCESSFUL,
 )
 
 
@@ -45,6 +52,8 @@ class AssetView(APIView):
 
             if request.query_params.get("json_logic"):
                 asset_query_service = AssetAdvancedQueryServiceWithJsonLogic()
+            elif request.query_params.get("asset_field_value_filter"):
+                asset_query_service = AssetFieldValueQueryService()
             else:
                 asset_query_service = AssetNormalQueryService()
 
@@ -57,10 +66,16 @@ class AssetView(APIView):
                 status=http_status,
             )
 
-        except Exception as e:
-            print("Error: ", e)
+        except NotFoundException as e:
             return APIResponse(
-                data={},
+                data=str(e),
+                message=ASSET_LIST_RETRIEVAL_UNSUCCESSFUL,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        except Exception as e:
+            return APIResponse(
+                data=str(e),
                 message=ASSET_LIST_RETRIEVAL_UNSUCCESSFUL,
                 status=status.HTTP_400_BAD_REQUEST,
             )
@@ -147,7 +162,7 @@ class AssetView(APIView):
                 message=e.message,
                 status=e.status,
             )
-   
+
     def delete(self, request):
         asset_uuid = request.data.get("asset_uuid")
         try:
@@ -167,6 +182,7 @@ class AssetView(APIView):
                 message="Error occurred while deleting asset.",
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
 
 class UserAgentAssetView(APIView):
     permission_classes = [AllowAny]
