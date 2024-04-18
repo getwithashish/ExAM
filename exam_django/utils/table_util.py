@@ -1,3 +1,6 @@
+from django.db import models
+
+
 class TableUtil:
 
     @classmethod
@@ -14,3 +17,11 @@ class TableUtil:
         object_keys = set(obj.keys())
         matching_keys = object_keys & set(expected_keys)
         return bool(matching_keys)
+
+    @classmethod
+    def field_exists_in_table(cls, model_class, field_name):
+        try:
+            model_class._meta.get_field(field_name)
+            return True
+        except models.fields.FieldDoesNotExist:
+            return False
