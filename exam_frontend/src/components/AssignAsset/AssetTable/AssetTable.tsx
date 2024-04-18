@@ -97,13 +97,13 @@ const AssetTable = ({
       <div className="mainHeading" style={{ background: "white" }}>
         <div className=" font-display">Allocate Assets</div>
       </div>
-      <div style={{ marginLeft: "40px" }}>
+      <div style={{ marginLeft: "40px",marginBottom:"30px" }}>
         <GlobalSearch
           onSearch={handleSearch}
           assetDataRefetch={assetDataRefetch}
         />
       </div>
-      <br></br>
+   
       <div
         style={{
           position: "relative",

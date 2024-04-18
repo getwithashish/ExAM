@@ -452,10 +452,8 @@ const AssetTableHandler = ({
       dataIndex: "asset_detail_status",
       responsive: ["md"],
       width: 140,
-      render: renderClickableColumn(
-        "Asset Detail Status",
-        "asset_detail_status"
-      ),
+      render: renderClickableColumn("Asset Detail Status", "asset_detail_status"),
+
     },
     {
       title: "Asset Assign Status",
