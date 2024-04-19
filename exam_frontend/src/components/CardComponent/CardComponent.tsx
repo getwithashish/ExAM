@@ -60,6 +60,99 @@ const CardComponent: React.FC<CardType> = ({
   const handleUpdate = async () => {
     setIsLoading(true); // Set loading to true when update starts
 
+    const fieldsToValidate = [
+      "os_version",
+      "version",
+      "warranty_period",
+      "processor",
+      "processor_gen",
+      "model_number",
+      "storage",
+      "configuration",
+    ];
+
+    // Map field names to display names for user-friendly error messages
+    const fieldDisplayNames = {
+      os_version: "OS Version",
+      version: "Version",
+      warranty_period: "Warranty Period",
+      processor: "Processor",
+      processor_gen: "Generation",
+      model_number: "Model Number",
+      storage: "Storage",
+      configuration: "Configuration",
+    };
+
+    // Validation regex for alphanumeric characters
+    const alphanumericRegex = /^[a-zA-Z0-9]*$/;
+
+    // Check if any of the fields to validate fail their respective validations
+    const invalidField = fieldsToValidate.find((field) => {
+      if (
+        field === "processor" ||
+        field == "processor_gen" ||
+        field == "model_number" ||
+        field == "storage" ||
+        field == "configuration"
+      ) {
+        return (
+          updatedData.hasOwnProperty(field) &&
+          !/^(?=.*[a-zA-Z])(?=.*[0-9])/.test(updatedData[field])
+        );
+      } else if (
+        field === "processor_gen" ||
+        field === "model_number" ||
+        field === "storage" ||
+        field == "configuration"
+      ) {
+        return (
+          updatedData.hasOwnProperty(field) &&
+          !alphanumericRegex.test(updatedData[field])
+        );
+      } else {
+        return (
+          updatedData.hasOwnProperty(field) && !/^\d+$/.test(updatedData[field])
+        );
+      }
+    });
+
+    if (invalidField) {
+      if (
+        invalidField === "processor" ||
+        invalidField === "processor_gen" ||
+        invalidField === "model_number" ||
+        invalidField === "storage" ||
+        (invalidField === "configuration" &&
+          !/^(?=.*[a-zA-Z])(?=.*[0-9])/.test(updatedData[invalidField]))
+      ) {
+        message.error(
+          `${fieldDisplayNames[invalidField]} must contain both letters and digits.`
+        );
+      } else if (
+        (invalidField === "processor_gen" ||
+          invalidField === "model_number" ||
+          invalidField === "storage" ||
+          invalidField === "configuration") &&
+        !alphanumericRegex.test(updatedData[invalidField])
+      ) {
+        message.error(
+          `${fieldDisplayNames[invalidField]} must be alphanumeric.`
+        );
+      } else {
+        const displayName = fieldDisplayNames[invalidField];
+        message.error(`${displayName} must contain only digits.`);
+      }
+      setIsLoading(false); // Set loading to false when update fails
+      return; // Exit the function without updating
+    }
+    if (
+      updatedData.hasOwnProperty("accessories") &&
+      updatedData.accessories.split(",").length > 3
+    ) {
+      message.error("Only a maximum of three accessories are allowed.");
+      setIsLoading(false); // Set loading to false when update fails
+      return; // Exit the function without updating
+    }
     console.log("Asset UUID:", data.key);
 
     try {
@@ -76,8 +169,6 @@ const CardComponent: React.FC<CardType> = ({
 
       console.log("Updated data:", response.data);
       message.success("Asset Details successfully updated");
-
-
     } catch (error) {
       console.error("Error updating data:", error);
       message.error("Error updating asset details. Please try again.");
@@ -85,7 +176,6 @@ const CardComponent: React.FC<CardType> = ({
     setIsLoading(false); // Set loading to false when update completes
   };
 
- 
   const handleUpdateChange = (field: string, value: any) => {
     if (field === "business_unit") {
       // Map the business unit name to its primary key
@@ -811,7 +901,6 @@ const CardComponent: React.FC<CardType> = ({
 
   const [tableData, setTableData] = useState([]);
   const handleDelete = async () => {
- 
     try {
       setIsLoading(true);
       const deletePayload = {
@@ -895,7 +984,7 @@ const CardComponent: React.FC<CardType> = ({
               padding: "20px",
             }}
           />
-  
+
           {isMyApprovalPage && (
             <>
               {isLoading ? (
@@ -952,7 +1041,7 @@ const CardComponent: React.FC<CardType> = ({
           <p>Are you sure you want to delete the asset?</p>
         </Modal>
       </div>
-  
+
       <div className="scrollable-content">
         <Form
           key={data.asset_id}
@@ -967,11 +1056,11 @@ const CardComponent: React.FC<CardType> = ({
               </div>
             </Form.Item>
           ))}
-  
+
           <div className="rowone"></div>
         </Form>
       </div>
     </div>
   );
-};  
+};
 export default CardComponent;
