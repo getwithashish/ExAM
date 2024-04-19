@@ -59,11 +59,15 @@ ALLOWED_HOSTS = config(
 )
 
 
-CORS_ORIGIN_WHITELIST = ["http://localhost:5173"]
+CORS_ORIGIN_WHITELIST = config(
+    "CORS_ORIGIN_WHITELIST", cast=lambda v: [item.strip() for item in v.split(",")]
+)
 
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOWED_ORIGINS = ["http://localhost:5173"]
+CORS_ALLOWED_ORIGINS = config(
+    "CORS_ALLOWED_ORIGINS", cast=lambda v: [item.strip() for item in v.split(",")]
+)
 
 # CORS_ALLOW_HEADERS: List[str] = (
 #     list(default_headers) + ["Content-Type"] + get_all_cors_headers()
