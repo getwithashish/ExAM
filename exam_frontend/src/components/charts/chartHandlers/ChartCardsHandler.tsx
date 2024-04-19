@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { fetchAssetData } from '../api/ChartApi';
+import BarChartHandler from './BarChartHandler';
 
 const AssetCountComponent = () => {
     const [totalAssets, setTotalAssets] = useState(0);
@@ -64,30 +65,45 @@ const AssetCountComponent = () => {
     }
 
     return ( 
-        <div className="grid grid-cols-2 gap-8 py-10 px-4">
-            <div className="bg-gradient-to-r from-purple-600 to-purple-600 hover:from-purple-700 hover:to-purple-700 rounded-3xl p-4 shadow-md" style={{boxShadow:'0 0 5px rgba(0, 0, 0, 0.5)'}}>
-                <div className="text-white text-2xl font-bold mb-6 text-center">Asset count:</div>
-                <div className="text-white text-4xl font-bold m-8 text-center">{totalAssets}</div>
-            </div>
-            <div className="bg-gradient-to-r from-green-400 to-green-400 hover:from-green-500 hover:to-green-500 rounded-3xl p-4 shadow-md" style={{boxShadow:'0 0 5px rgba(0, 0, 0, 0.5)'}}>
-                <div className="text-white text-2xl font-bold mb-10 text-center">Inventory:</div>
-                <div className="text-white text-2xl font-bold mt-2 text-center">{assetTypes[currentAssetIndex]}</div>
-            </div>
-            <div className="bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600 rounded-3xl p-4 shadow-md" style={{boxShadow:'0 0 5px rgba(0, 0, 0, 0.5)'}}>
-                <div className="text-white text-2xl font-bold mb-6 text-center">Asset Types:</div>
-                <div className="text-white text-4xl font-bold mt-8 text-center">{totalAssetTypes}</div>
-            </div>            
-            <div className="bg-gradient-to-r from-blue-500 to-blue-500 hover:from-blue-600 hover:to-indigo-500 rounded-3xl p-4 shadow-md"style={{boxShadow:'0 0 5px rgba(0, 0, 0, 0.5)'}}>
-                <div className="text-white text-2xl font-bold mb-6 text-center">Pending Approvals:</div>
-                <div className="text-white text-lg font-bold mx-4 text-center">
-                    Assets: {pendingAssetsCount}
-                    <br />
-                    Assigns: {pendingAssignsCount}
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 p-2">
+            <div className="w-auto">
+                <div className="my-2 bg-gradient-to-r from-purple-800 to-purple-800 hover:from-purple-900 hover:to-purple-900 rounded-lg p-3 shadow-md" style={{ boxShadow: '0 0 5px rgba(0, 0, 0, 0.5)' }}>
+                    <div className="text-white text-xs sm:text-xl md:text-lg lg:text-xl xl:text-4xl font-display font-light text-left">Asset count</div>
+                    <div className="text-white text-lg sm:text-2xl md:text-3xl lg:text-4xl xl:text-4xl font-black mx-4 text-right">
+                        {totalAssets}
+                    </div>
+                </div>
+                <div className="my-2 bg-gradient-to-r from-teal-700 to-teal-700 hover:from-teal-800 hover:to-teal-800 rounded-lg p-3 shadow-md mt-4 sm:mt-0 min-h-[100px]" style={{ boxShadow: '0 0 5px rgba(0, 0, 0, 0.5)' }}>
+                    <div className="text-white text-md sm:text-xl md:text-lg lg:text-xl xl:text-4xl font-display font-light text-left">Inventory</div>
+                    <div className="text-white text-xs sm:text-xl md:text-xl lg:text-2xl xl:text-4xl font-semibold mx-4 text-right">
+                        {assetTypes[currentAssetIndex]}
+                    </div>
+                </div>
+                <div className="my-2 bg-gradient-to-r from-cyan-700 to-cyan-700 hover:from-cyan-500 hover:to-cyan-600 rounded-lg p-3 shadow-md mt-4 sm:mt-0" style={{ boxShadow: '0 0 5px rgba(0, 0, 0, 0.5)' }}>
+                    <div className="text-white text-md sm:text-xl md:text-lg lg:text-xl xl:text-4xl font-display font-light text-left">Asset Types</div>
+                    <div className="text-white text-lg sm:text-2xl md:text-2xl lg:text-4xl xl:text-4xl font-black mx-4 text-right">
+                        {totalAssetTypes}
+                    </div>
                 </div>
             </div>
-        </div> 
-        
-        
+            <div className="my-2 bg-gradient-to-r from-blue-800 to-blue-800 hover:from-blue-900 hover:to-blue-900 rounded-lg p-3 shadow-md" style={{ boxShadow: '0 0 5px rgba(0, 0, 0, 0.5)' }}>
+                <div className="text-white text-lg sm:text-xl md:text-lg lg:text-xl xl:text-4xl font-display font-light mb-4 text-left">Remaining Approvals</div>
+                <div className=" font-semibold text-center flex-row gap-4">
+                    <div className="text-white text-xl sm:text-xl md:text-xl lg:text-2xl xl:text-3xl flex-1 mt-5">
+                        Asset Approvals <br />
+                        <div className="text-white text-3xl sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl">{pendingAssetsCount}</div>
+                    </div>
+                    <div className=" text-white text-xl sm:text-xl md:text-xl lg:text-2xl xl:text-3xl flex-1 mt-5">
+                        Assign Approvals <br />
+                        <div className="text-white text-3xl sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl">{pendingAssignsCount}</div>
+                    </div>
+                </div>
+            </div>
+            <div className="col-span-2 my-2 rounded-lg p-3 shadow-md" style={{ boxShadow: '0 0 5px rgba(0, 0, 0, 0.5)' }}>
+                <BarChartHandler/>
+            </div>
+        </div>
+   
     );
 };
 

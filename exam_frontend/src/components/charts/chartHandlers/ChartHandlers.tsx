@@ -7,7 +7,7 @@ import Stack from "@mui/material/Stack";
 import { fetchAssetData } from '../api/ChartApi';
 import { AssetData, AssetDetailData, ChartData, PieChartGraphProps } from '../types/ChartTypes';
 import axiosInstance from '../../../config/AxiosConfig';
-import Carousel from './ChartCarousel';
+import NoData from '../../NoData/NoData';
 
 
 const statusColors: { [key: string]: string } = {
@@ -42,6 +42,7 @@ const statusMapping: { [key: string]: string } = {
     UPDATED: 'UPDATED',
     CREATE_REJECTED: 'REJECTED',
     UPDATE_REJECTED: 'REJECTED',
+    'IN STORE': 'IN STOCK',
 };
 
 
@@ -77,7 +78,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
             .then(assetCountData => {
                 console.log("assetCountData", assetCountData);
                 const assetTypeData = Object.entries(assetCountData?.status_counts ?? {}).map(([label, value]) => ({
-                    label,
+                    label: statusMapping[label] ?? label,
                     value: value as number,
                     color: statusColors[label],
                 }));
@@ -223,25 +224,23 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
     
 
     return (
-    <Stack>
-        <div className='ml-24'>
-            <div className='mt-4 flex'>
-                <div className='flex-1 ml-8 mt-1 p-1'>
-                    <span className="text-black font-display font-semibold text-lg">Select an Asset: </span>
-                </div>
-                <div className='flex-1'>
-                    <select className="block bg-transparent font-display text-black-500 appearance-none dark:text-gray-400 dark:border-gray-200 focus:outline-none rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" onChange={handleSelectChange}>
-                        <option value="0" className="text-black font-display bg-white ">View all</option>
-                        {assetTypeData.map((assetType) => (
-                            <option key={assetType.id} value={assetType.id} className="text-black border-0 border-b-2 bg-white font-display">{assetType.asset_type_name}</option>
-                        ))}
-                    </select>
-                </div>               
-            </div>        
-        </div>               
-    <Stack direction="row">
-        <Carousel>
-        <div className='item pt-6 mt-4 mx-24'>
+    <Stack >        
+        <div className="flex justify-end">
+        <select className="block bg-transparent font-display text-xs text-black-500 appearance-none dark:text-gray-400 dark:border-gray-200 focus:outline-none rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" onChange={handleSelectChange}>
+            <option value="0" className="text-xs text-black font-display bg-white ">Select an asset type</option>
+            {assetTypeData.map((assetType) => (
+            <option key={assetType.id} value={assetType.id} className="text-xs text-black border-0 border-b-2 bg-white font-display">{assetType.asset_type_name}</option>
+            ))}
+        </select>
+        </div>                       
+        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }} className='ml-6'>
+        {assetFilteredChartData.length === 0 && detailFilteredChartData.length === 0 && assignFilteredChartData.length === 0 ? (
+            <div className="flex justify-center items-center h-full w-full">
+                <NoData/>
+            </div>
+        ) : (
+        <>
+        <div className='item pt-6 mt-4' style={{ flex: '1 0 300px' }}>
                 <div className='ml-20'>
                     <span className="font-semibold font-display leading-none text-gray-900 dark:text-white text-lg">
                         Asset Status
@@ -282,7 +281,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                     }}
                 />
             </div>
-            <div className='item pt-6 mt-4 mx-24'>
+            <div className='item pt-6 mt-4' style={{ flex: '1 0 300px' }}>
                 <div className='ml-20'>
                     <span className="font-semibold font-display leading-none text-gray-900 dark:text-white text-lg">
                         Approval Status
@@ -323,7 +322,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                     }}
                 />
             </div>
-            <div className='item pt-6 mt-4 mx-24'>
+            <div className='item pt-6 mt-4' style={{ flex: '1 0 300px' }}>
                 <div className='ml-20'>
                     <span className="font-semibold font-display leading-none text-gray-900 dark:text-white text-lg">
                         Allocation Status
@@ -364,7 +363,8 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                     }}
                 />
             </div>
-        </Carousel>    
+        </>
+        )}
     </Stack>                    
 </Stack>
 );
