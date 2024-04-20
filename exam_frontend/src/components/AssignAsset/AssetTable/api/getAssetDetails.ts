@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../../../../config/AxiosConfig";
 import { AssetResult } from "../types";
 
-const getAssetDetails = async (queryParam="") => {
+const getAssetDetails = async () => {
   try {
     const res = await axiosInstance.get("/asset/?limit=20&assign_status=UNASSIGNED|REJECTED&status=IN STORE");
     console.log("Returned Data: ", res.data.data.results);
