@@ -554,7 +554,6 @@ const DasboardAssetHandler = () => {
       responsive: ['md'],
       width: 120,
       render: renderClickableColumn("Accessories", "updated_at"),
-
     
     },
     {
@@ -632,6 +631,7 @@ const DasboardAssetHandler = () => {
     AssignAsset: "assign",
     created_at: result.created_at,
     updated_at: result.updated_at,
+    
   }));
 
   const drawerTitle = "Asset Details";
