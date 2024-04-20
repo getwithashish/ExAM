@@ -329,7 +329,7 @@ const SidebarComponentNew = ({ children }) => {
               ""
             )}
             <Menu.Item icon={<CarryOutOutlined />}>
-              <ToolTip title="Approve Assets that are pending to be allocated">
+              <ToolTip title="Download user agent">
                 <div onClick={handleDownload}>Download</div>
               </ToolTip>
             </Menu.Item>

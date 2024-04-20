@@ -1,37 +1,13 @@
-import os
 from pathlib import Path
-import pathlib
-import decouple
-from decouple import RepositoryEnv
 from datetime import timedelta
 
 from ms_identity_web.configuration import AADConfig
 from ms_identity_web import IdentityWebPython
 
-ENVIRONMENT = os.getenv("ENVIRONMENT", default="DEVELOPMENT")
+from utils.decouple_config_util import DecoupleConfigUtil
 
 
-def get_env_config() -> decouple.Config:
-    """
-    Creates and returns a Config object based on the environment setting.
-    It uses .env for development and .prod.env for production.
-    """
-    env_files = {
-        "DEVELOPMENT": ".env",
-        "PRODUCTION": ".prod.env",
-    }
-
-    app_dir_path = pathlib.Path(__file__).resolve().parent.parent
-    env_file_name = env_files.get(ENVIRONMENT, ".env")
-    file_path = app_dir_path / env_file_name
-
-    if not file_path.is_file():
-        raise FileNotFoundError(f"Environment file not found: {file_path}")
-
-    return decouple.Config(RepositoryEnv(file_path))
-
-
-config = get_env_config()
+config = DecoupleConfigUtil.get_env_config()
 
 AAD_CONFIG = AADConfig.parse_json(file_path="aad.config.json")
 MS_IDENTITY_WEB = IdentityWebPython(AAD_CONFIG)
@@ -59,11 +35,15 @@ ALLOWED_HOSTS = config(
 )
 
 
-CORS_ORIGIN_WHITELIST = ["http://localhost:5173"]
+CORS_ORIGIN_WHITELIST = config(
+    "CORS_ORIGIN_WHITELIST", cast=lambda v: [item.strip() for item in v.split(",")]
+)
 
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOWED_ORIGINS = ["http://localhost:5173"]
+CORS_ALLOWED_ORIGINS = config(
+    "CORS_ALLOWED_ORIGINS", cast=lambda v: [item.strip() for item in v.split(",")]
+)
 
 # CORS_ALLOW_HEADERS: List[str] = (
 #     list(default_headers) + ["Content-Type"] + get_all_cors_headers()
