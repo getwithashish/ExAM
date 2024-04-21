@@ -55,6 +55,7 @@ const DasboardAssetHandler = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
 
   const [queryParam, setQueryParam] = useState("");
+ 
 
   const { data: assetData, refetch: assetDataRefetch } = useQuery({
     queryKey: ["assetList", queryParam],
@@ -65,7 +66,10 @@ const DasboardAssetHandler = () => {
     setQueryParam(queryParam);
     assetDataRefetch({ force: true });
   };
-
+    const reset = () => {
+      setQueryParam(" ")
+      refetchAssetData()
+    }
   const statusOptions =
     assetData?.results?.map((item: AssetResult) => item.status) || [];
   const businessUnitOptions =
@@ -650,7 +654,7 @@ const DasboardAssetHandler = () => {
       totalItemCount={assetData?.count}
       assetPageDataFetch={setQueryParam}
       columns={columns}
-     
+      reset={reset}
       memoryData={memoryData}
       assetTypeData={assetTypeData}
       locations={locations}
