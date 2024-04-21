@@ -157,5 +157,6 @@ export interface AssetTableProps {
   setTableData:any
   handleDelete:any
   modifiedData:any
+  reset:()=> void;
 }
 
