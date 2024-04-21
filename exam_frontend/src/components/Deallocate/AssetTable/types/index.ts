@@ -150,5 +150,7 @@ export interface AssetTableProps {
 }) => void,
   drawerTitle:string
   asset_uuid: string;
+  assetDataRefetch: (queryParam: string) => void;
+
 }
 

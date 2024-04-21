@@ -20,30 +20,36 @@ const fields: Field[] = [
   { name: "assign_status", label: "assign_status" },
 ];
 
+
 interface QueryBuilderComponentProps {
- assetDataRefetch: (queryParam:string) => void
+  assetDataRefetch: (queryParam:string) => void
+  onClose : () => void
 }
 
-export const QueryBuilderComponent:React.FC<QueryBuilderComponentProps> = ({assetDataRefetch}) => {
-  const [query, setQuery] = useState<RuleGroupType>({
+export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({ assetDataRefetch, onClose }) => {
+  const initialQuery: RuleGroupType = {
     combinator: "and",
     rules: [{ field: "product_name", operator: "=", value: "" }],
-  });
+  };
+  const [query, setQuery] = useState<RuleGroupType>(initialQuery);
+
   const handleQueryButtonClick = () => {
     let formattedQuery = formatQuery(query, 'jsonlogic');
-    console.log( "formatted query",formattedQuery)
-    formattedQuery = JSON.stringify(formattedQuery);
-    // Make a get request to the backend endpointa
-    let queryParam = `&json_logic=${formattedQuery}`
-    assetDataRefetch(queryParam)
-  
-   
+    let queryString = JSON.stringify(formattedQuery);
+    let queryParam = `&json_logic=${queryString}`;
+    assetDataRefetch(queryParam);
+    onClose();
+  };
+
+  const handleReset = () => {
+    setQuery(initialQuery); // Reset the query to initial state
   };
 
   return (
-    <div className={styles.ruleGroup}>
-      <QueryBuilder fields={fields} query={query} onQueryChange={setQuery}  />
+    <div className={(styles as any).ruleGroup}>
+      <QueryBuilder fields={fields} query={query} onQueryChange={setQuery} />
       <button onClick={handleQueryButtonClick} className='m-2 p-2 h-50 w-50 text-white'>Search</button>
+      <button onClick={handleReset} className='m-2 p-2 h-50 w-50 text-white'>Reset</button>
     </div>
   );
 };
