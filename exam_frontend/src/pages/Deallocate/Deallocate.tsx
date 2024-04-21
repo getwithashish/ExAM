@@ -1,11 +1,15 @@
+import { useState } from "react";
 import { DataType } from "../../components/AssetTable/types";
 import AssetTableHandler from "../../components/Deallocate/AssetTable/AssetTableHandler";
 import axiosInstance from "../../config/AxiosConfig";
-import { message } from "antd";
+import { message , Spin} from "antd";
 
 const Deallocate = () => {
+  const [loading, setLoading] = useState(false)
+
   const unassign = async (record: DataType | null) => {
     try {
+      setLoading(true)
       console.log("record", record);
       const data = { asset_uuid: record?.key };
       const res = await axiosInstance.post("/asset/unassign_asset", data);
@@ -14,9 +18,13 @@ const Deallocate = () => {
     } catch (error) {
       message.error("Asset deallocation failed");
     }
+      finally {
+        setLoading(false)
+      }
   };
 
   return (
+    
     <div style={{ background: "white" }}>
       <nav className="flex mb-4 mx-4 my-0 py-4" aria-label="Breadcrumb">
         <ol className="inline-flex items-center space-x-1 md:space-x-3 rtl:space-x-reverse">
@@ -65,7 +73,9 @@ const Deallocate = () => {
         </ol>
       </nav>
 
-      <AssetTableHandler unassign={unassign} />
+      <Spin spinning={loading} >
+      <AssetTableHandler unassign={unassign} queryParamProp={NaN}/>
+      </Spin>
     </div>
   );
 };

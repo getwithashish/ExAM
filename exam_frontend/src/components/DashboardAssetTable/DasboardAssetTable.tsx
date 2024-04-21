@@ -1,36 +1,14 @@
 import React, {
-  Key,
-  SetStateAction,
-  useEffect,
   useMemo,
   useState,
 } from "react";
 import {
-  Badge,
-  Button,
-  Dropdown,
-  Input,
   Pagination,
-  Space,
   Table,
-  TableColumnsType,
 } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
 import "./DasboardAssetTable.css";
-import CardComponent from "../CardComponent/CardComponent";
 import { CloseOutlined } from "@ant-design/icons";
-import axiosInstance from "../../config/AxiosConfig";
-import { isError, useQuery } from "@tanstack/react-query";
-import { AssetTableProps, DataType, LogData } from "../AssetTable/types";
-import { ColumnFilterItem } from "../AssetTable/types";
-import { AssetResult } from "../AssetTable/types";
-import { FilterDropdownProps } from "../AssetTable/types";
-import { useInfiniteQuery } from "react-query";
-
-import { DownOutlined } from "@ant-design/icons";
-import ExportButton from "../Export/Export";
-
-import { AxiosError } from "axios";
+import { AssetTableProps } from "../AssetTable/types";
 import TableNavbar from "../TableNavBar/TableNavbar";
 import SideDrawerComponent from "../SideDrawerComponent/SideDrawerComponent";
 import UploadComponent from "../Upload/UploadComponent";
@@ -61,6 +39,7 @@ const DasboardAssetTable = ({
   assetTypeData,
   expandedRowRender,
   assetDataRefetch,
+  reset,
 }: AssetTableProps) => {
   const rowRender = (record: { key: string }, expanded: any) => {
     if (isSuccess) {
@@ -85,6 +64,7 @@ const DasboardAssetTable = ({
           showUpload={showUpload}
           setShowUpload={setShowUpload}
           assetDataRefetch={assetDataRefetch}
+          reset={reset}
         />
       </div>
 
