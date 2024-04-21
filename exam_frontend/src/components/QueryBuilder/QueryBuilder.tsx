@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from "../../config/AxiosConfig"
 import { Field } from "react-querybuilder"
+import { Autocomplete } from '@mui/material';
+import TextField from '@mui/material/TextField';
 import { Button, message } from 'antd';
 
 const fields: Field[] = [
@@ -20,6 +22,65 @@ const fields: Field[] = [
   { name: "assign_status", label: "Assign Status" },
 ];
 
+interface AutocompleteProps {
+  selectedFieldIndex: number;
+  field: string;
+  value: string;
+  onFieldChange: (event: React.ChangeEvent<HTMLSelectElement>, index: number) => void;
+  onInputChange: (event: React.ChangeEvent<{}>, newValue: string) => void;
+  setSelectedFields: React.Dispatch<React.SetStateAction<{ field: string; value: string }[]>>; // Add setSelectedFields prop
+}
+
+const CustomAutocomplete: React.FC<AutocompleteProps> = ({ selectedFieldIndex, field, value, onFieldChange, onInputChange, setSelectedFields }) => { // Add setSelectedFields to props
+  const [suggestion, setSuggestion] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (field && value) {
+        try {
+          const res = await axiosInstance.get(`/asset/?limit=20&${field}=${value}`);
+          const productNames = res.data.data.results.map(result => result.product_name);
+          setSuggestion([...productNames]);
+          message.success('Suggestions fetched successfully');
+        } catch (error) {
+          console.error("Error fetching asset details:", error);
+          message.error('Failed to fetch suggestions');
+        }
+      }
+    };
+
+    fetchSuggestions();
+  }, [field, value]);
+
+  const handleSuggestionClick = (suggestedValue: string | null) => {
+    setSelectedFields(prev => {
+      const updatedFields = [...prev];
+      updatedFields[selectedFieldIndex].value = suggestedValue;
+      return updatedFields;
+    });
+    setSuggestion([]); // Clear the suggestion array
+  };
+
+  return (
+    <Autocomplete
+      disablePortal
+      freeSolo
+      autoSelect
+      value={value}
+      inputValue={value}
+      onInputChange={onInputChange}
+      options={suggestion}
+      renderInput={params => (
+        <TextField
+          {...params}
+          margin='normal'
+        />
+      )}
+      onChange={(event, newValue) => handleSuggestionClick(newValue)}
+    />
+  );
+};
+
 interface QueryBuilderComponentProps {
   assetDataRefetch: (queryParam: string) => void
 }
@@ -27,54 +88,16 @@ interface QueryBuilderComponentProps {
 export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({ assetDataRefetch }) => {
   const [selectedFields, setSelectedFields] = useState<{ field: string; value: string }[]>([]);
   const [newFields, setNewFields] = useState<number[]>([]);
-  const [suggestion,setSuggestion] = useState<string []>([])
-  const [isClicked, setIsClicked] = useState<boolean>(false)
 
-  useEffect(() => {
-    const fetchSuggestions = async (index: number) => {
-      const { field, value } = selectedFields[index];
-      const suggestion_param=`&asset_field_value_filter={"${field}": "${value}"}`
-      if (field && value) {
-        try {
-          const res = await axiosInstance.get(`/asset/?limit=20${suggestion_param}`);
-          console.log("Returned Data: ", res.data.data.results);
-          
-          // Extract product names from the returned data and add them to suggestions array
-        const productNames = res.data.data.results.map(result => result.product_name);
-        setSuggestion([...productNames]);
-        message.success(suggestion)
-     
-        } catch (error) {
-          console.error("Error fetching asset details:", error);
-         
-        }
-      }
-    };
-
-    selectedFields.forEach((_, index) => fetchSuggestions(index));
-  }, [selectedFields]);
-
-  const handleQueryButtonClick = () => {
-    if (selectedFields.some(field => !field.field || !field.value)) {
-      message.error("Please select appropriate fields and values for all conditions.");
-      return;
-    }
-
-    const queryParams = selectedFields.map(field => `&selected_field=${field.field}&input_value=${field.value}`).join("");
-    message.success(queryParams);
-    assetDataRefetch(queryParams);
-  };
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const { value } = event.target;
+  const handleInputChange = (event: React.ChangeEvent<{}>, newValue: string, index: number) => {
     setSelectedFields(prev => {
       const updatedFields = [...prev];
-      updatedFields[index].value = value;
+      updatedFields[index].value = newValue;
       return updatedFields;
     });
   };
 
-  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
+  const handleFieldChange = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
     const { value } = event.target;
     setSelectedFields(prev => {
       const updatedFields = [...prev];
@@ -86,8 +109,6 @@ export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({ as
   const handleAddField = () => {
     setNewFields(prev => [...prev, prev.length]);
     setSelectedFields(prev => [...prev, { field: '', value: '' }]);
-    setIsClicked(false)
-    setSuggestion([])
   };
 
   const handleRemoveField = (index: number) => {
@@ -95,43 +116,47 @@ export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({ as
     setSelectedFields(prev => prev.filter((_, i) => i !== index));
   };
 
-  const handleSuggestionClick = (suggestedValue: string, index: number) => {
-    setSelectedFields(prev => {
-      const updatedFields = [...prev];
-      updatedFields[index].value = suggestedValue;
-      return updatedFields;
-    });
-    setSuggestion([]); // Clear the suggestion array
-    setIsClicked(true)
+  const handleQueryButtonClick = () => {
+    if (selectedFields.some(field => !field.field || !field.value)) {
+      message.error("Please select appropriate fields and values for all conditions.");
+      return;
+    }
+
+    const queryConditions = selectedFields.map(field => ({
+      "==": [{ "var": field.field }, field.value]
+    }));
+    const queryParams = `&{ "and" : {[${queryConditions}]}`
+    message.success(queryParams);
+    assetDataRefetch(queryParams);
   };
+
   return (
     <div>
       <button onClick={handleQueryButtonClick} disabled={!selectedFields.length || !selectedFields.every(field => field.field && field.value)} className='m-2 p-2 h-50 w-50 text-white'>Search</button>
       <Button onClick={handleAddField}>+</Button><br></br>
-      {newFields.map((_, index) => (
-        <div key={index}>
-          <select onChange={e => handleSelectChange(e, index)} value={selectedFields[index]?.field}>
-            <option value="">Select a field</option>
-            {fields.map(field => (
-              <option key={field.name} value={field.name}>{field.label}</option>
-            ))}
-          </select>
-          <input key={index} type="text" value={selectedFields[index]?.value} onChange={e => handleInputChange(e, index)} />
-          <Button onClick={() => handleRemoveField(index)}>X</Button>
-
-           {/* Suggestions list */}
-      
-        {suggestion && suggestion.length > 0 && (
-          <ul className={isClicked ? "bg-red-700" : "display-none"}>
-            {suggestion.map((item, idx) => (
-              <li key={idx} className={isClicked?"":"display-none"}onClick={() => handleSuggestionClick(item, index)}>{item}</li>
-            ))}
-          </ul>
-        )}
-     
-
-        </div>
-      ))}
+      <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
+        {newFields.map((_, index) => (
+          <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
+            <select onChange={e => handleFieldChange(e, index)} value={selectedFields[index]?.field} style={{ padding: '14.5px 10px' , marginTop : '7px' }}>
+              <option value="">Select a field</option>
+              {fields.map(field => (
+                <option key={field.name} value={field.name}>{field.label}</option>
+              ))}
+            </select>
+            <div style={{ width: '200px', marginLeft: '10px' }}>
+              <CustomAutocomplete
+                selectedFieldIndex={index}
+                field={selectedFields[index]?.field}
+                value={selectedFields[index]?.value}
+                onFieldChange={(event, index) => handleFieldChange(event, index)}
+                onInputChange={(event, newValue) => handleInputChange(event, newValue, index)}
+                setSelectedFields={setSelectedFields} // Pass setSelectedFields prop
+              />
+            </div>
+            <Button onClick={() => handleRemoveField(index)}>X</Button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
