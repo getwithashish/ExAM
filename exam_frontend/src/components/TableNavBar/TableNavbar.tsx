@@ -145,9 +145,9 @@ const TableNavbar :  React.FC<TableNavbarProps> = ({ showUpload, setShowUpload, 
       <DrawerViewRequest
         title="Advanced Search"
         onClose={closeQueryBuilder}
-        visible={visible}
+        open={visible}
       >
-        <QueryBuilderComponent assetDataRefetch={assetDataRefetch} onClose={closeQueryBuilder}/>
+        <QueryBuilderComponent assetDataRefetch={assetDataRefetch}/>
       </DrawerViewRequest>
        
       
