@@ -1,36 +1,8 @@
-import React, {
-  Key,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import {
-  Badge,
-  Button,
-  Dropdown,
-  Input,
-  Pagination,
-  Space,
-  Table,
-  TableColumnsType,
-} from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import React, { useMemo, useState } from "react";
+import { Pagination, Table } from "antd";
 import "./DasboardAssetTable.css";
-import CardComponent from "../CardComponent/CardComponent";
 import { CloseOutlined } from "@ant-design/icons";
-import axiosInstance from "../../config/AxiosConfig";
-import { isError, useQuery } from "@tanstack/react-query";
-import { AssetTableProps, DataType, LogData } from "../AssetTable/types";
-import { ColumnFilterItem } from "../AssetTable/types";
-import { AssetResult } from "../AssetTable/types";
-import { FilterDropdownProps } from "../AssetTable/types";
-import { useInfiniteQuery } from "react-query";
-
-import { DownOutlined } from "@ant-design/icons";
-import ExportButton from "../Export/Export";
-
-import { AxiosError } from "axios";
+import { AssetTableProps } from "../AssetTable/types";
 import TableNavbar from "../TableNavBar/TableNavbar";
 import SideDrawerComponent from "../SideDrawerComponent/SideDrawerComponent";
 import UploadComponent from "../Upload/UploadComponent";
@@ -61,6 +33,8 @@ const DasboardAssetTable = ({
   assetTypeData,
   expandedRowRender,
   assetDataRefetch,
+  reset,
+  isAssetDataLoading,
 }: AssetTableProps) => {
   const rowRender = (record: { key: string }, expanded: any) => {
     if (isSuccess) {
@@ -85,55 +59,50 @@ const DasboardAssetTable = ({
           showUpload={showUpload}
           setShowUpload={setShowUpload}
           assetDataRefetch={assetDataRefetch}
+          reset={reset}
         />
       </div>
 
-      <div style={{ position: "relative", display: "inline-block" }}>
+      <div style={{ position: "relative", display: "inline-block", width: "80vw" }}>
         <SideDrawerComponent
           displayDrawer={showUpload}
           closeDrawer={closeImportDrawer}
         >
           <UploadComponent />
         </SideDrawerComponent>
-<br></br>
-<br></br>
-  <Table
-    columns={columns}
-    dataSource={assetData}
-    className="mainTable"
-    pagination={false}
-    bordered={false}
-    scroll={{ x:1300, y: 600 }}
-    handleRowClick={handleRowClick}
-    style={{
-      fontSize: "50px",
-      borderColor:"white",
-      width:"29%",
-      marginLeft:"1%",
-      boxShadow:"0 0 10px rgba(0, 0, 0, 0.2)",
-      marginRight:"32px"
-    
-      
-    }}
-    
-
-    footer={() => (
-      <Pagination
-        pageSize={20}
-        showTotal={(total, range) =>
-          `${range[0]}-${range[1]} of ${total} assets`
-        }
-        total={totalItemCount}
-        onChange={(page, pageSize) => {
-          assetPageDataFetch(`&offset=${(page - 1) * pageSize}`);
-        }}
-        hideOnSinglePage={true}
-      />
-    )}
- 
-  />
-
-</div>
+        <br></br>
+        <br></br>
+        <Table
+          columns={columns}
+          dataSource={assetData}
+          className="mainTable"
+          loading={isAssetDataLoading}
+          pagination={false}
+          bordered={false}
+          scroll={{ x: 1300, y: 600 }}
+          handleRowClick={handleRowClick}
+          style={{
+            fontSize: "50px",
+            borderColor: "white",
+            // width: "fit-content",
+            marginLeft: "3.5%",
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+          }}
+          footer={() => (
+            <Pagination
+              pageSize={20}
+              showTotal={(total, range) =>
+                `${range[0]}-${range[1]} of ${total} assets`
+              }
+              total={totalItemCount}
+              onChange={(page, pageSize) => {
+                assetPageDataFetch(`&offset=${(page - 1) * pageSize}`);
+              }}
+              hideOnSinglePage={true}
+            />
+          )}
+        />
+      </div>
       <DrawerViewRequest
         open={drawerVisible}
         onClose={onCloseDrawer}

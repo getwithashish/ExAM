@@ -48,12 +48,13 @@ interface ExpandedDataType {
   name: string;
   upgradeNum: string;
 }
-// interface AssetTableHandlerProps{
-//   queryParamProp:(record:DataType)=>void
-// }
+interface AssetTableHandlerProps{
+  unassign:(record:DataType)=>void
+  queryParamProp:any
+}
 
 
-const AssetTableHandler = ({queryParamProp}) => {
+const AssetTableHandler:React.FC<AssetTableHandlerProps> = ({queryParamProp ,unassign}) => {
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null); // State to store the selected asset ID
 
   const {
