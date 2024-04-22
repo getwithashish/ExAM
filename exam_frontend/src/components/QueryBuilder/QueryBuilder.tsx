@@ -38,7 +38,7 @@ const CustomAutocomplete: React.FC<AutocompleteProps> = ({ selectedFieldIndex, f
     const fetchSuggestions = async () => {
       if (field && value) {
         try {
-          const res = await axiosInstance.get(`/asset/?limit=20&${field}=${value}`);
+          const res = await axiosInstance.get(`/asset/?limit=20&asset_field_value_filter={"${field}":"${value}"}`);
           const productNames = res.data.data.results.map(result => result.product_name);
           setSuggestion([...productNames]);
           message.success('Suggestions fetched successfully');
@@ -53,11 +53,16 @@ const CustomAutocomplete: React.FC<AutocompleteProps> = ({ selectedFieldIndex, f
   }, [field, value]);
 
   const handleSuggestionClick = (suggestedValue: string | null) => {
-    setSelectedFields(prev => {
-      const updatedFields = [...prev];
-      updatedFields[selectedFieldIndex].value = suggestedValue;
-      return updatedFields;
-    });
+    if(suggestedValue)
+      {
+        setSelectedFields(prev => {
+          const updatedFields = [...prev];
+          updatedFields[selectedFieldIndex].value = suggestedValue;
+          return updatedFields;
+        });
+
+      }
+   
     setSuggestion([]); // Clear the suggestion array
   };
 
@@ -89,13 +94,27 @@ export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({ as
   const [selectedFields, setSelectedFields] = useState<{ field: string; value: string }[]>([]);
   const [newFields, setNewFields] = useState<number[]>([]);
 
-  const handleInputChange = (event: React.ChangeEvent<{}>, newValue: string, index: number) => {
-    setSelectedFields(prev => {
-      const updatedFields = [...prev];
-      updatedFields[index].value = newValue;
-      return updatedFields;
-    });
-  };
+  const handleInputChange = (event: React.ChangeEvent<{}>, newValue: string | null, index: number) => {
+    if (newValue !== null) {
+       setSelectedFields(prev => {
+         const updatedFields = [...prev];
+         updatedFields[index].value = newValue; // Directly assign newValue if it's not null
+         return updatedFields;
+       });
+    } else {
+       // Handle the case where newValue is null (e.g., when the Autocomplete box is cleared)
+       // You might want to clear the value for the specific field or handle it differently
+       setSelectedFields(prev => {
+         const updatedFields = [...prev];
+         updatedFields[index].value = ''; // Clear the value for the specific field
+         return updatedFields;
+       });
+    }
+   };
+  
+  
+  
+  
 
   const handleFieldChange = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
     const { value } = event.target;
@@ -149,7 +168,7 @@ export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({ as
                 field={selectedFields[index]?.field}
                 value={selectedFields[index]?.value}
                 onFieldChange={(event, index) => handleFieldChange(event, index)}
-                onInputChange={(event, newValue) => handleInputChange(event, newValue, index)}
+                onInputChange={(event, newValue) => {if(newValue !== null) {handleInputChange(event, newValue, index)}} }
                 setSelectedFields={setSelectedFields} // Pass setSelectedFields prop
               />
             </div>
