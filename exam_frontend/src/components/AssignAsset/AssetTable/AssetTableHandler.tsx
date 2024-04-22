@@ -588,7 +588,7 @@ const AssetTableHandler = ({ showAssignDrawer,queryParamProp }) => {
     asset_category: result.asset_category,
     asset_type: result.asset_type?.asset_type_name,
     version: result.version,
-    status: result.status,
+    status: result.status === "IN STORE" ? "IN STOCK" : result.status,
     location: result.location?.location_name,
     invoice_location: result.invoice_location?.location_name,
     business_unit: result.business_unit?.business_unit_name,
