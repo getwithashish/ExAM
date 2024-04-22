@@ -5,6 +5,8 @@ import axiosInstance from "../../config/AxiosConfig";
 import React from "react";
 import DrawerViewRequest from "./DrawerViewRequest";
 import { ChangeEvent } from "react";
+import { Pagination } from "antd";
+import InfoIcon from '@mui/icons-material/Info';
 
 const AssignPage: FC = function () {
   const [assignRequests, setAssignRequests] = useState<any[]>([]);
@@ -13,18 +15,24 @@ const AssignPage: FC = function () {
   >(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10); 
 
   useEffect(() => {
     fetchAssignRequests();
-  }, []);
+  }, [currentPage, pageSize]);
 
   const fetchAssignRequests = () => {
     setLoading(true);
+    const offset = (currentPage - 1) * pageSize;
     axiosInstance
-      .get("/asset/?limit=10&assign_status=ASSIGN_PENDING")
+      .get(`/asset/?limit=${pageSize}&offset=${offset}&assign_status=ASSIGN_PENDING`)
       .then((response) => {
-        console.log("hi");
-        setAssignRequests(response.data.data.results);
+        const assignPendingAssets = response.data.data.results;
+        const totalAssets = response.data.data.count;
+        setAssignRequests(assignPendingAssets);
+        setTotalPages(Math.ceil(totalAssets / 10));
         console.log(response.data.data.results);
       })
       .catch((error) => {
@@ -78,8 +86,31 @@ const AssignPage: FC = function () {
   };
 
   const filteredAssigns = assignRequests.filter((assignRequest) =>
-    assignRequest.product_name.toLowerCase().includes(searchQuery.toLowerCase())
+    assignRequest.asset_type.asset_type_name.toLowerCase().includes(searchQuery.toLowerCase())||
+    String(assignRequest.version).toLowerCase().includes(searchQuery.toLowerCase()) ||
+    assignRequest.asset_category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    assignRequest.product_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    assignRequest.model_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    assignRequest.serial_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    assignRequest.owner.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    String(assignRequest.date_of_purchase).toLowerCase().includes(searchQuery.toLowerCase()) ||
+    String(assignRequest.warranty_period).toLowerCase().includes(searchQuery.toLowerCase()) ||
+    assignRequest.os.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    assignRequest.os_version.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    assignRequest.mobile_os.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    assignRequest.processor.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    assignRequest.processor_gen.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    assignRequest.storage.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    assignRequest.configuration.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    assignRequest.accessories.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    assignRequest.location.location_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    assignRequest.business_unit.business_unit_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const onShowSizeChange = (_: number, size: number) => {
+    setPageSize(size); 
+    setCurrentPage(1);
+  };
 
   return (
     <React.Fragment>
@@ -185,6 +216,14 @@ const AssignPage: FC = function () {
             )}
           </div>
         </div>
+        <Pagination
+            showSizeChanger
+            onShowSizeChange={onShowSizeChange}
+            pageSize={pageSize}
+            current={currentPage}
+            total={totalPages * pageSize}
+            onChange={setCurrentPage}
+          />
         {selectedAssignRequest && (
           <ViewRequestModal
             assignRequest={selectedAssignRequest}
@@ -201,26 +240,45 @@ const AssignPage: FC = function () {
 const SearchRequests: FC<{
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
 }> = function ({ setSearchQuery }) {
+  const [showInfo, setShowInfo] = useState(false);
+
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
 
   return (
-    <form className="mb-4 sm:mb-0 sm:pr-3" action="#" method="GET">
-      <Label htmlFor="search-request" className="sr-only font-display">
-        Search
-      </Label>
-      <div className="relative mt-1 lg:w-64 xl:w-96">
-        <TextInput
-          id="search-request"
-          name="search-request"
-          placeholder="Search by product name..."
-          onChange={handleSearchChange}
-        />
-      </div>
-    </form>
+    <form className="mb-4 sm:mb-0 sm:pr-3 relative " action="#" method="GET">
+  <Label htmlFor="search-request" className="sr-only font-display">
+    Search
+  </Label>
+  <div className="relative mt-1 lg:w-64 xl:w-96 ">
+    <TextInput
+      id="search-request"
+      name="search-request"
+      placeholder="Search for requests"
+      onChange={handleSearchChange}
+    />
+    <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+      {showInfo && (
+        <div className="absolute top-0 right-full w-max bg-gray-700 p-2 rounded-lg shadow-lg">
+          <p className="text-white text-xs">Works with a few fields only,<br/>will expand in future.
+          <ol></ol>
+          </p>
+        </div>
+      )}
+      <InfoIcon
+        className="h-5 w-5 text-gray-400 cursor-pointer"
+        aria-hidden="true"
+        onMouseEnter={() => setShowInfo(true)} 
+        onMouseLeave={() => setShowInfo(false)} 
+      />
+    </div>
+  </div>
+</form>
   );
 };
+
+
 const AssignRequestTable: FC<{
   assignRequests: any[];
   setSelectedAssignRequest: (assignRequest: any | null) => void;
