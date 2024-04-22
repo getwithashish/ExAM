@@ -42,6 +42,7 @@ const CustomAutocomplete: React.FC<AutocompleteProps> = ({ selectedFieldIndex, f
           const productNames = res.data.data.results.map(result => result.product_name);
           setSuggestion([...productNames]);
           message.success('Suggestions fetched successfully');
+          message.success([...productNames])
         } catch (error) {
           console.error("Error fetching asset details:", error);
           message.error('Failed to fetch suggestions');
@@ -93,6 +94,7 @@ interface QueryBuilderComponentProps {
 export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({ assetDataRefetch }) => {
   const [selectedFields, setSelectedFields] = useState<{ field: string; value: string }[]>([]);
   const [newFields, setNewFields] = useState<number[]>([]);
+  const initialState = { selectedFields: [], newFields: [] };
 
   const handleInputChange = (event: React.ChangeEvent<{}>, newValue: string | null, index: number) => {
     if (newValue !== null) {
@@ -162,11 +164,20 @@ export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({ as
     assetDataRefetch(queryParams);
   };
   
+  const handleReset = () => {
+    setSelectedFields([]);
+    setNewFields([]);
+    assetDataRefetch('')
+    message.success('Query builder reset successfully');
+  };
 
   return (
     <div>
-      <button onClick={handleQueryButtonClick} disabled={!selectedFields.length || !selectedFields.every(field => field.field && field.value)} className='m-2 p-2 h-50 w-50 text-white'>Search</button>
-      <Button onClick={handleAddField}>+</Button><br></br>
+       <button onClick={handleReset} className='m-5 p-2 h-50 w-50 text-white'>
+        Reset
+      </button>
+      <button onClick={handleQueryButtonClick} disabled={!selectedFields.length || !selectedFields.every(field => field.field && field.value)} className='m-5 p-2 h-50 w-50 text-white'>Search</button>
+      <Button onClick={handleAddField} className='m-5'>+</Button><br></br>
       <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
         {newFields.map((_, index) => (
           <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
