@@ -172,7 +172,7 @@ const CreateRequestPage: FC = function () {
                 <p>Loading...</p>
               </div>
             ) : (
-              <div className="inline-block w-full align-middle mx-2">
+              <div className="inline-block w-full align-middle">
                 <div className="overflow-hidden">
                   <RequestTable
                     assets={filteredAssets}
@@ -225,36 +225,40 @@ const RequestTable: FC<{
   setSelectedAsset: (asset: any | null) => void;
 }> = function ({ assets, setSelectedAsset }) {
   return (
-    <Table className="min-w-full divide-y font-display divide-gray-200 dark:divide-gray-600 mx-2 my-2 rounded-lg">
+     <Table className="min-w-full divide-y font-display divide-gray-200 dark:divide-gray-600 mx-2 my-2 rounded-lg">
       <Table.Head className="bg-gray-100 dark:bg-gray-700">
-      <Table.HeadCell>Asset</Table.HeadCell>
+        <Table.HeadCell>Asset Type</Table.HeadCell>
+        <Table.HeadCell>Product Name</Table.HeadCell>
         <Table.HeadCell>Requester</Table.HeadCell>
-        <Table.HeadCell>Request Date</Table.HeadCell>
+        <Table.HeadCell>Created at</Table.HeadCell>
         <Table.HeadCell>Actions</Table.HeadCell>
       </Table.Head>
-      <Table.Body className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800 font-display">
-        {assets.map((asset) => (
+      <Table.Body className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
+        {assets.map((assets) => (
           <Table.Row
-            key={asset.asset_uuid}
+            key={assets.asset_uuid}
             className="hover:bg-gray-100 dark:hover:bg-gray-700"
           >
             <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
-              <div className="text-base font-normal text-gray-900 deak:text-white">
-                {asset.asset_type.asset_type_name}
+              <div className="text-base font-normal text-gray-900 dark:text-white">
+                {assets.asset_type.asset_type_name}
               </div>
-              <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                {asset.product_name}
-              </div>
+              </Table.Cell>
+              <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
+                {assets.product_name}
             </Table.Cell>
-            <Table.Cell className="whitespace-nowrap p-4 text-base font-display font-md text-left text-gray-900 dark:text-white">
-              {asset.requester.username}
+            <Table.Cell className="whitespace-nowrap p-4 text-base font-md text-gray-900 dark:text-white">
+              {assets.requester.username}
             </Table.Cell>
-            <Table.Cell className="whitespace-nowrap p-4 text-base font-display font-xs text-gray-900 dark:text-white">
-              {new Date(asset.created_at).toLocaleDateString()}
+            <Table.Cell className="whitespace-nowrap p-4 text-base font-sm text-gray-900 dark:text-white">
+              {new Date(assets.created_at).toLocaleDateString()}
             </Table.Cell>
             <Table.Cell className="space-x-2 whitespace-nowrap p-4">
               <div className="flex items-center gap-x-3">
-                <Button color="primary" onClick={() => setSelectedAsset(asset)}>
+                <Button
+                  color="primary"
+                  onClick={() => setSelectedAsset(assets)}
+                >
                   <HiPencilAlt className="mr-2 text-lg font-display" />
                   View
                 </Button>
