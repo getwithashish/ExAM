@@ -14,7 +14,7 @@ class MemoryService:
     def retrieve_memories(query=None):
         try:
             if query:
-                memories = Memory.objects.filter(memory_space=query)
+                memories = Memory.objects.filter(memory_space__istartswith=query)
             else:
                 memories = Memory.objects.all()
 
