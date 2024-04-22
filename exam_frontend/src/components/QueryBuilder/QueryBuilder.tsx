@@ -34,24 +34,51 @@ interface AutocompleteProps {
 const CustomAutocomplete: React.FC<AutocompleteProps> = ({ selectedFieldIndex, field, value, onFieldChange, onInputChange, setSelectedFields }) => { // Add setSelectedFields to props
   const [suggestion, setSuggestion] = useState<string[]>([]);
 
+  const fieldEndpointMapping = {
+    "location": "/asset/location",
+    "invoice_location": "/asset/location",
+    "business_unit": "/asset/business_unit",
+    "memory": "/asset/memory",
+    "asset_type": "/asset/asset_type",
+    // ... define mappings for other relevant fields with separate endpoints
+  };
   useEffect(() => {
     const fetchSuggestions = async () => {
       if (field && value) {
         try {
-          const res = await axiosInstance.get(`/asset/?limit=20&asset_field_value_filter={"${field}":"${value}"}`);
-          const productNames = res.data.data.results.map(result => result.product_name);
-          setSuggestion([...productNames]);
+          const endpoint = fieldEndpointMapping[field];
+          let suggestions;
+   
+          const url = endpoint ? `${endpoint}?query=${value}` : `/asset/?limit=20&asset_field_value_filter={"${field}":"${value}"}`;
+   
+          const res = await axiosInstance.get(url);
+          console.warn(res)
+          if (res.data.data.results) {
+            suggestions = res.data.data.results.map(result => result.product_name);
+          } else if(res.data.data){
+            const data = res.data.data
+            console.error(data,"data")
+           
+            suggestions =data?.map(result => result.asset_type_name)
+            
+            console.warn(suggestions)
+          
+          
+        }
+   
+          setSuggestion(suggestions);
           message.success('Suggestions fetched successfully');
-          message.success([...productNames])
         } catch (error) {
           console.error("Error fetching asset details:", error);
           message.error('Failed to fetch suggestions');
         }
       }
-    };
-
+   };
+   
+   
     fetchSuggestions();
-  }, [field, value]);
+}, [field, value, axiosInstance]);
+
 
   const handleSuggestionClick = (suggestedValue: string | null) => {
     if(suggestedValue)
