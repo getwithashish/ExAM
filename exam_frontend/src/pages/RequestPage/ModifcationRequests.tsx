@@ -6,6 +6,7 @@ import React from "react";
 import DrawerViewRequest from "./DrawerViewRequest";
 import { styled } from "@mui/material/styles";
 import Tooltip, { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
+import InfoIcon from '@mui/icons-material/Info'; 
 
 const ModificationRequests: FC = function () {
   const [assets, setAssets] = useState<any[]>([]);
@@ -244,8 +245,8 @@ const SearchRequests: FC<{
     />
     <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
       {showInfo && (
-        <div className="absolute top-0 right-full w-max bg-gray-500 p-2 rounded-lg shadow-lg">
-          <p className="text-black-900 text-xs">Works with a few fields only,<br/>will expand in future.
+        <div className="absolute top-0 right-full w-max bg-gray-700 p-2 rounded-lg shadow-lg">
+          <p className="text-white text-xs">Works with a few fields only,<br/>will expand in future.
           <ol></ol>
           </p>
         </div>
