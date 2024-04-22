@@ -81,10 +81,27 @@ const ModificationRequests: FC = function () {
   };
 
   const filteredAssets = assets.filter((asset) =>
-    asset.asset_type.asset_type_name
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase())
+    asset.asset_type.asset_type_name.toLowerCase().includes(searchQuery.toLowerCase())||
+    String(asset.version).toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.asset_category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.product_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.model_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.serial_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.owner.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    String(asset.date_of_purchase).toLowerCase().includes(searchQuery.toLowerCase()) ||
+    String(asset.warranty_period).toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.os.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.os_version.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.mobile_os.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.processor.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.processor_gen.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.storage.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.configuration.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.accessories.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.location.location_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.business_unit.business_unit_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
   return (
     <React.Fragment>
       <div className="bg-white py-2">
@@ -207,24 +224,41 @@ const ModificationRequests: FC = function () {
 const SearchRequests: FC<{
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
 }> = function ({ setSearchQuery }) {
+  const [showInfo, setShowInfo] = useState(false); // State to manage visibility of info message
+
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
 
   return (
-    <form className="mb-4 sm:mb-0 sm:pr-3" action="#" method="GET">
-      <Label htmlFor="search-request" className="sr-only font-display">
-        Search
-      </Label>
-      <div className="relative mt-1 lg:w-64 xl:w-96">
-        <TextInput
-          id="search-request"
-          name="search-request"
-          placeholder="Search for requests"
-          onChange={handleSearchChange}
-        />
-      </div>
-    </form>
+    <form className="mb-4 sm:mb-0 sm:pr-3 relative " action="#" method="GET">
+  <Label htmlFor="search-request" className="sr-only font-display">
+    Search
+  </Label>
+  <div className="relative mt-1 lg:w-64 xl:w-96 ">
+    <TextInput
+      id="search-request"
+      name="search-request"
+      placeholder="Search for requests"
+      onChange={handleSearchChange}
+    />
+    <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+      {showInfo && (
+        <div className="absolute top-0 right-full w-max bg-gray-500 p-2 rounded-lg shadow-lg">
+          <p className="text-black-900 text-xs">Works with a few fields only,<br/>will expand in future.
+          <ol></ol>
+          </p>
+        </div>
+      )}
+      <InfoIcon
+        className="h-5 w-5 text-gray-400 cursor-pointer"
+        aria-hidden="true"
+        onMouseEnter={() => setShowInfo(true)} // Show info on mouse enter
+        onMouseLeave={() => setShowInfo(false)} // Hide info on mouse leave
+      />
+    </div>
+  </div>
+</form>
   );
 };
 
