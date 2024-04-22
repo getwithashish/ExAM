@@ -75,10 +75,27 @@ const CreateRequestPage: FC = function () {
   };
 
   const filteredAssets = assets.filter((asset) =>
-    asset.asset_type.asset_type_name
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase())
+    asset.asset_type.asset_type_name.toLowerCase().includes(searchQuery.toLowerCase())||
+    String(asset.version).toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.asset_category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.product_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.model_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.serial_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.owner.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    String(asset.date_of_purchase).toLowerCase().includes(searchQuery.toLowerCase()) ||
+    String(asset.warranty_period).toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.os.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.os_version.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.mobile_os.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.processor.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.processor_gen.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.storage.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.configuration.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.accessories.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.location.location_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.business_unit.business_unit_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+  
   return (
     <React.Fragment>
       <div className="bg-white py-2">
@@ -157,7 +174,7 @@ const CreateRequestPage: FC = function () {
           <div className="mb-1 w-full">
             <div className="mb-4">
               <h1 className="font-medium font-display mx-3 leading-none text-gray-900 dark:text-white text-3xl">
-                Asset Creation Approval Request
+                Asset creation requests
               </h1>
             </div>
             <div className="block items-center sm:flex">

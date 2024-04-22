@@ -163,7 +163,7 @@ const ModificationRequests: FC = function () {
           <div className="mb-1 w-full">
             <div className="mb-4">
               <h1 className="font-medium font-display mx-3 leading-none text-gray-900 dark:text-white text-3xl">
-                Asset Modification Requests
+                Asset modification requests
               </h1>
             </div>
             <div className="block items-center sm:flex">
