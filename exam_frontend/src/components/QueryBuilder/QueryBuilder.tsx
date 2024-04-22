@@ -140,14 +140,28 @@ export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({ as
       message.error("Please select appropriate fields and values for all conditions.");
       return;
     }
-
+  
+    // Construct an array of query conditions for each selected field
     const queryConditions = selectedFields.map(field => ({
       "==": [{ "var": field.field }, field.value]
     }));
-    const queryParams = `&{ "and" : {[${queryConditions}]}`
+  
+    // Construct the JSON logic expression for the 'and' operation
+    const jsonLogic = { "and": queryConditions };
+  
+    // Convert the JSON logic expression to a string
+    const jsonLogicString = JSON.stringify(jsonLogic);
+  
+    // Construct the query parameters with the JSON logic expression
+    const queryParams = `&json_logic=${encodeURIComponent(jsonLogicString)}`;
+  
+    // Display the constructed query parameters
     message.success(queryParams);
+  
+    // Call the assetDataRefetch function with the constructed query parameters
     assetDataRefetch(queryParams);
   };
+  
 
   return (
     <div>
