@@ -335,7 +335,7 @@ const SidebarComponentNew = ({ children }) => {
             </Menu.Item>
           </Menu>
         </Sider>
-        <Content>
+        <Content className="bg-white">
           {children}
           <SideDrawerComponent
             displayDrawer={displaydrawer}
