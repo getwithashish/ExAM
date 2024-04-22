@@ -1,11 +1,5 @@
-import React, {
-  useMemo,
-  useState,
-} from "react";
-import {
-  Pagination,
-  Table,
-} from "antd";
+import React, { useMemo, useState } from "react";
+import { Pagination, Table } from "antd";
 import "./DasboardAssetTable.css";
 import { CloseOutlined } from "@ant-design/icons";
 import { AssetTableProps } from "../AssetTable/types";
@@ -40,6 +34,7 @@ const DasboardAssetTable = ({
   expandedRowRender,
   assetDataRefetch,
   reset,
+  isAssetDataLoading,
 }: AssetTableProps) => {
   const rowRender = (record: { key: string }, expanded: any) => {
     if (isSuccess) {
@@ -68,52 +63,46 @@ const DasboardAssetTable = ({
         />
       </div>
 
-      <div style={{ position: "relative", display: "inline-block" }}>
+      <div style={{ position: "relative", display: "inline-block", width: "80vw" }}>
         <SideDrawerComponent
           displayDrawer={showUpload}
           closeDrawer={closeImportDrawer}
         >
           <UploadComponent />
         </SideDrawerComponent>
-<br></br>
-<br></br>
-  <Table
-    columns={columns}
-    dataSource={assetData}
-    className="mainTable"
-    pagination={false}
-    bordered={false}
-    scroll={{ x:1300, y: 600 }}
-    handleRowClick={handleRowClick}
-    style={{
-      fontSize: "50px",
-      borderColor:"white",
-      width:"29%",
-      marginLeft:"1%",
-      boxShadow:"0 0 10px rgba(0, 0, 0, 0.2)",
-      marginRight:"32px"
-    
-      
-    }}
-    
-
-    footer={() => (
-      <Pagination
-        pageSize={20}
-        showTotal={(total, range) =>
-          `${range[0]}-${range[1]} of ${total} assets`
-        }
-        total={totalItemCount}
-        onChange={(page, pageSize) => {
-          assetPageDataFetch(`&offset=${(page - 1) * pageSize}`);
-        }}
-        hideOnSinglePage={true}
-      />
-    )}
- 
-  />
-
-</div>
+        <br></br>
+        <br></br>
+        <Table
+          columns={columns}
+          dataSource={assetData}
+          className="mainTable"
+          loading={isAssetDataLoading}
+          pagination={false}
+          bordered={false}
+          scroll={{ x: 1300, y: 600 }}
+          handleRowClick={handleRowClick}
+          style={{
+            fontSize: "50px",
+            borderColor: "white",
+            // width: "fit-content",
+            marginLeft: "3.5%",
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+          }}
+          footer={() => (
+            <Pagination
+              pageSize={20}
+              showTotal={(total, range) =>
+                `${range[0]}-${range[1]} of ${total} assets`
+              }
+              total={totalItemCount}
+              onChange={(page, pageSize) => {
+                assetPageDataFetch(`&offset=${(page - 1) * pageSize}`);
+              }}
+              hideOnSinglePage={true}
+            />
+          )}
+        />
+      </div>
       <DrawerViewRequest
         open={drawerVisible}
         onClose={onCloseDrawer}
