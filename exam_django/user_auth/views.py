@@ -2,7 +2,6 @@ import jwt
 import secrets
 import string
 from django.shortcuts import redirect
-from django.http import JsonResponse
 from rest_framework import generics, status
 from rest_framework.response import Response
 from user_auth.models import User
@@ -11,13 +10,10 @@ from user_auth.serializers import (
     UsernameAndUserscopeTokenObtainPairSerializer,
     UserSerializer,
 )
+from django.db.models import Q
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from response import APIResponse
 from messages import (
-    USER_NOT_FOUND_ERROR,
-    INVALID_USER_DETAILS_ERROR,
     USERS_RETRIEVED_SUCCESSFULLY,
 )
 
@@ -33,8 +29,10 @@ class UserRetrievalView(generics.GenericAPIView):
         query_param = self.request.query_params.get("name")
         if query_param:
             queryset = queryset.filter(
-                first_name__icontains=query_param
-            ) | queryset.filter(last_name__icontains=query_param)
+                Q(first_name__icontains=query_param)
+                | Q(last_name__icontains=query_param)
+                | Q(username__icontains=query_param)
+            )
 
         serializer = UserSerializer(queryset, many=True)
         return APIResponse(
@@ -55,9 +53,11 @@ class UserRegistrationView(generics.GenericAPIView):
         # Check if a query parameter is provided
         query_param = self.request.query_params.get("name")
         if query_param:
-            queryset = queryset.filter(
-                first_name__icontains=query_param
-            ) | queryset.filter(last_name__icontains=query_param)
+            queryset = (
+                queryset.filter(first_name__icontains=query_param)
+                | queryset.filter(last_name__icontains=query_param)
+                | queryset.filter(username__icontains=query_param)
+            )
 
         serializer = UserSerializer(queryset, many=True)
         return Response(serializer.data)  # Return queryset as a response

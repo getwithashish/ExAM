@@ -342,13 +342,26 @@ const AssetTableHandler = ({
       width: 140,
       render: renderClickableColumn("Asset Category", "asset_category"),
     },
-    {
-      title: "Version",
-      dataIndex: "Version",
-      responsive: ["md"],
-      width: 120,
-      render: renderClickableColumn("Version", "version"),
-    },
+    // {
+    //   title: "Asset Status",
+    //   dataIndex: "Status",
+    //   responsive: ["md"],
+    //   width: 140,
+    //   render: (_, record) => {
+    //     const displayedStatus = record.Status === "IN STORE" ? "IN STOCK" : record.Status;
+    //     console.log("The displayed status is:"+displayedStatus)
+    //     return (
+    //       <div
+    //         data-column-name="Asset Status"
+    //         onClick={() => handleColumnClick(record, "Asset Status")}
+    //         style={{ cursor: "pointer" }}
+    //       >
+    //         {displayedStatus}
+    //       </div>
+    //     );
+    //   },
+    // },
+    
     {
       title: "Asset Status",
       dataIndex: "Status",
@@ -602,7 +615,7 @@ const AssetTableHandler = ({
     asset_category: result.asset_category,
     asset_type: result.asset_type.asset_type_name,
     version: result.version,
-    status: result.status,
+    status: result.status === "IN STORE" ? "IN STOCK" : result.status,
     location: result.location?.location_name,
     invoice_location: result.invoice_location?.location_name,
     business_unit: result.business_unit.business_unit_name,
