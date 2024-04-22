@@ -7,6 +7,8 @@ import DrawerViewRequest from "./DrawerViewRequest";
 import { styled } from "@mui/material/styles";
 import Tooltip, { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
 import InfoIcon from '@mui/icons-material/Info'; 
+import { Pagination } from 'antd';
+
 
 const ModificationRequests: FC = function () {
   const [assets, setAssets] = useState<any[]>([]);
@@ -14,20 +16,24 @@ const ModificationRequests: FC = function () {
   const [loading, setLoading] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [latestLogData, setLatestLogData] = useState<any | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10); 
+
 
   useEffect(() => {
     fetchAssets();
-  }, []);
+  }, [currentPage, pageSize]);
 
   const fetchAssets = () => {
     setLoading(true);
-    Promise.all([
-      axiosInstance.get("/asset/?limit=10&asset_detail_status=UPDATE_PENDING"),
-    ])
-      .then((responses) => {
-        const updatePendingAssets = responses[0].data.data.results;
+    const offset = (currentPage - 1) * pageSize;
+    axiosInstance.get(`/asset/?limit=${pageSize}&offset=${offset}&asset_detail_status=UPDATE_PENDING`)
+      .then((response) => {
+        const updatePendingAssets = response.data.data.results;
+        const totalAssets = response.data.data.count;
         setAssets(updatePendingAssets);
-        console.log("update pending assets", updatePendingAssets);
+        setTotalPages(Math.ceil(totalAssets / 10));
       })
       .catch((error) => {
         console.error("Error fetching assets:", error);
@@ -102,6 +108,12 @@ const ModificationRequests: FC = function () {
     asset.location.location_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     asset.business_unit.business_unit_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const onShowSizeChange = (_: number, size: number) => {
+    setPageSize(size);
+    setCurrentPage(1);
+  };
+
 
   return (
     <React.Fragment>
@@ -208,13 +220,21 @@ const ModificationRequests: FC = function () {
             )}
           </div>
         </div>
+        <Pagination
+            showSizeChanger
+            onShowSizeChange={onShowSizeChange}
+            pageSize={pageSize}
+            current={currentPage}
+            total={totalPages * pageSize}
+            onChange={setCurrentPage}
+          />
         {selectedAsset && (
           <ViewRequestModal
             asset={selectedAsset}
             handleApprove={handleApprove}
             handleReject={handleReject}
             onClose={() => setSelectedAsset(null)}
-            latestLogData={latestLogData} // Pass latest log data to the modal
+            latestLogData={latestLogData}
           />
         )}
       </div>
@@ -225,7 +245,7 @@ const ModificationRequests: FC = function () {
 const SearchRequests: FC<{
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
 }> = function ({ setSearchQuery }) {
-  const [showInfo, setShowInfo] = useState(false); // State to manage visibility of info message
+  const [showInfo, setShowInfo] = useState(false);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
