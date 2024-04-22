@@ -2,10 +2,10 @@ from asset.models import Asset
 from django.db.models import Q
 from rest_framework import status
 from rest_framework.pagination import LimitOffsetPagination
-
 from asset.serializers.asset_serializer import AssetReadSerializer
 from asset.service.asset_crud_service.asset_query_abstract import AssetQueryAbstract
 from messages import ASSET_LIST_SUCCESSFULLY_RETRIEVED
+
 
 
 class AssetNormalQueryService(AssetQueryAbstract):
@@ -110,8 +110,19 @@ class AssetNormalQueryService(AssetQueryAbstract):
             "approval_status_message",
             "created_at",
             "updated_at",
+            
         ]:
             query |= Q(**{f"{field}__icontains": global_search})
+
+        # Queries for FKs
+        query |= Q(custodian__employee_name__icontains=global_search)
+        query |= Q(location__location_name__icontains=global_search)
+        query |= Q(approved_by__username__icontains=global_search)
+        query |= Q(requester__username__icontains=global_search)
+        query |= Q(memory__memory_space__icontains=global_search)
+        query |= Q(business_unit__business_unit_name__icontains=global_search)
+        query |= Q(asset_type__asset_type_name__icontains=global_search)
+
 
         queryset = queryset.filter(query)
         return queryset
