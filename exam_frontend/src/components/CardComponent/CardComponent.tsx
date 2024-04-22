@@ -177,14 +177,21 @@ const CardComponent: React.FC<CardType> = ({
   };
 
   const handleUpdateChange = (field: string, value: any) => {
-    if (field === "business_unit") {
-      // Map the business unit name to its primary key
-      const businessUnitPK = uniqueBusinessOptions.find(
-        (option) => option.name === value
-      )?.id;
+     if (field === "business_unit") {
+    // Map the business unit name to its primary key
+    const businessUnitPK = uniqueBusinessOptions.find(
+      (option) => option.name === value
+    )?.id;
+    setUpdatedData((prevData) => ({
+      ...prevData,
+      [field]: businessUnitPK,
+    }));
+  } else {
+    if (field === "status" && value === "IN STORE") {
+      // Change the status to "IN STOCK" when the value is "IN STORE"
       setUpdatedData((prevData) => ({
         ...prevData,
-        [field]: businessUnitPK,
+        [field]: "IN STOCK",
       }));
     } else {
       setUpdatedData((prevData) => ({
@@ -192,6 +199,7 @@ const CardComponent: React.FC<CardType> = ({
         [field]: value,
       }));
     }
+  }
   };
 
   const [searchQuery, setSearchQuery] = useState("");
