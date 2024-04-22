@@ -4,6 +4,7 @@ import { HiPencilAlt } from "react-icons/hi";
 import axiosInstance from "../../config/AxiosConfig";
 import React from "react";
 import DrawerViewRequest from "./DrawerViewRequest";
+import InfoIcon from "@mui/icons-material/Info";
 
 const CreateRequestPage: FC = function () {
   const [assets, setAssets] = useState<any[]>([]);
@@ -74,11 +75,39 @@ const CreateRequestPage: FC = function () {
     }
   };
 
-  const filteredAssets = assets.filter((asset) =>
-    asset.asset_type.asset_type_name
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase())
+  const filteredAssets = assets.filter(
+    (asset) =>
+      asset.asset_type.asset_type_name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      String(asset.version).toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.asset_category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.product_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.model_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.serial_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.owner.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      String(asset.date_of_purchase)
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      String(asset.warranty_period)
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      asset.os.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.os_version.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.mobile_os.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.processor.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.processor_gen.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.storage.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.configuration.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.accessories.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.location.location_name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      asset.business_unit.business_unit_name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase())
   );
+
   return (
     <React.Fragment>
       <div className="bg-white py-2">
@@ -157,7 +186,7 @@ const CreateRequestPage: FC = function () {
           <div className="mb-1 w-full">
             <div className="mb-4">
               <h1 className="font-medium font-display mx-3 leading-none text-gray-900 dark:text-white text-3xl">
-                Asset Creation Approval Request
+                Asset creation requests
               </h1>
             </div>
             <div className="block items-center sm:flex">
@@ -199,22 +228,42 @@ const CreateRequestPage: FC = function () {
 const SearchRequests: FC<{
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
 }> = function ({ setSearchQuery }) {
+  const [showInfo, setShowInfo] = useState(false); // State to manage visibility of info message
+
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
 
   return (
-    <form className="mb-4 sm:mb-0 sm:pr-3" action="#" method="GET">
+    <form className="mb-4 sm:mb-0 sm:pr-3 relative " action="#" method="GET">
       <Label htmlFor="search-request" className="sr-only font-display">
         Search
       </Label>
-      <div className="relative mt-1 lg:w-64 xl:w-96">
+      <div className="relative mt-1 lg:w-64 xl:w-96 ">
         <TextInput
           id="search-request"
           name="search-request"
           placeholder="Search for requests"
           onChange={handleSearchChange}
         />
+        <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+          {showInfo && (
+            <div className="absolute top-0 right-full w-max bg-gray-700 p-2 rounded-lg shadow-lg">
+              <p className="text-white text-xs">
+                Works with a few fields only,
+                <br />
+                will expand in future.
+                <ol></ol>
+              </p>
+            </div>
+          )}
+          <InfoIcon
+            className="h-5 w-5 text-gray-400 cursor-pointer"
+            aria-hidden="true"
+            onMouseEnter={() => setShowInfo(true)} // Show info on mouse enter
+            onMouseLeave={() => setShowInfo(false)} // Hide info on mouse leave
+          />
+        </div>
       </div>
     </form>
   );
@@ -225,7 +274,8 @@ const RequestTable: FC<{
   setSelectedAsset: (asset: any | null) => void;
 }> = function ({ assets, setSelectedAsset }) {
   return (
-     <Table className="min-w-full divide-y font-display divide-gray-200 dark:divide-gray-600 mx-2 my-2 rounded-lg">
+    <Table className="min-w-full divide-y font-display divide-gray-200 dark:divide-gray-600 mx-2 my-2 rounded-lg">
+
       <Table.Head className="bg-gray-100 dark:bg-gray-700">
         <Table.HeadCell>Asset Type</Table.HeadCell>
         <Table.HeadCell>Product Name</Table.HeadCell>
@@ -243,9 +293,9 @@ const RequestTable: FC<{
               <div className="text-base font-normal text-gray-900 dark:text-white">
                 {assets.asset_type.asset_type_name}
               </div>
-              </Table.Cell>
-              <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
-                {assets.product_name}
+            </Table.Cell>
+            <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
+              {assets.product_name}
             </Table.Cell>
             <Table.Cell className="whitespace-nowrap p-4 text-base font-md text-gray-900 dark:text-white">
               {assets.requester.username}
