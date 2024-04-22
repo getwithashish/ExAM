@@ -291,32 +291,30 @@ const RequestTable: FC<{
         <Table.HeadCell>Actions</Table.HeadCell>
       </Table.Head>
       <Table.Body className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
-        {assets.map((assets) => (
+        {assets.map((asset) => ( // Changed 'assets' to 'asset' to avoid naming conflict
           <Table.Row
-            key={assets.asset_uuid}
+            key={asset.asset_uuid}
             className="hover:bg-gray-100 dark:hover:bg-gray-700"
           >
             <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
               <div className="text-base font-normal text-gray-900 dark:text-white">
-                {assets.asset_type.asset_type_name}
+                {asset.asset_type.asset_type_name}
               </div>
-              </Table.Cell>
-              <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
-                {assets.product_name}
+            </Table.Cell>
+            <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
+              {asset.product_name}
             </Table.Cell>
             <Table.Cell className="whitespace-nowrap p-4 text-base font-md text-gray-900 dark:text-white">
-              {assets.requester.username}
+              {asset.requester.username}
             </Table.Cell>
             <Table.Cell className="whitespace-nowrap p-4 text-base font-sm text-gray-900 dark:text-white">
-              {new Date(assets.created_at).toLocaleDateString()}
-            <Table.Cell className="whitespace-nowrap p-4 text-base font-sm text-gray-900 dark:text-white">
-              {new Date(assets.created_at).toLocaleDateString()}
+              {new Date(asset.created_at).toLocaleDateString()}
             </Table.Cell>
             <Table.Cell className="space-x-2 whitespace-nowrap p-4">
               <div className="flex items-center gap-x-3">
                 <Button
                   color="primary"
-                  onClick={() => setSelectedAsset(assets)}
+                  onClick={() => setSelectedAsset(asset)}
                 >
                   <HiPencilAlt className="mr-2 text-lg font-display" />
                   View
