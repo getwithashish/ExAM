@@ -85,14 +85,38 @@ export const AssetTimelineHandler = ({ assetUuid }: { assetUuid: string }) => {
                     <Timeline.Title>{log.operation}</Timeline.Title>
                     <Timeline.Body>
                       <ul>
-                        {Object.entries(log.changes).map(
-                          ([key, value]: [string, any]) =>
-                            value.old_value !== "None" && (
-                              <li key={key}>
-                                {key}:{value.old_value} to {value.new_value}
-                              </li>
-                            )
-                        )}
+                        {Object.entries(log.changes).map(([key, value]: [string, any]) => (
+                          <li key={key}>
+                          {key === "requester_id" ? (
+                            <span>Requester: {value.new_value}</span>
+                          ) : key === "custodian" ? (
+                            <>
+                              {value.old_value !== "None" && (
+                                <span>Prev custodian: {value.old_value}</span>
+                              )}
+                              {value.new_value && (
+                                <p>New custodian: {value.new_value}</p>
+                              )}
+                            </>
+                          ) : (
+                            <>
+                              {value.old_value !== "None" && value.new_value !== "None" ? (
+                                <>
+                                  {key}: {value.old_value} to {value.new_value}
+                                </>
+                              ) : value.old_value !== "None" ? (
+                                <>
+                                  {key}: {value.old_value} (removed)
+                                </>
+                              ) : (
+                                <>
+                                  {key}: {value.new_value} (added)
+                                </>
+                              )}
+                            </>
+                          )}
+                        </li>
+                        ))}
                       </ul>
                     </Timeline.Body>
                   </Timeline.Content>
@@ -113,3 +137,7 @@ export const AssetTimelineHandler = ({ assetUuid }: { assetUuid: string }) => {
 };
 
 export default AssetTimelineHandler;
+
+
+
+
