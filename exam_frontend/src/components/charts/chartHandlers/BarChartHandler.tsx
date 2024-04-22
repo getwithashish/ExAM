@@ -1,20 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import * as React from 'react';
+import { useState, useEffect } from 'react';
 import { fetchAssetData } from '../api/ChartApi';
-import { AxisConfig, BarChart, LineChart } from '@mui/x-charts';
+import { AxisConfig, BarChart } from '@mui/x-charts';
 import { AxiosError } from 'axios';
 import { MakeOptional } from '@mui/x-charts/models/helpers';
-import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import { ResponsiveChartContainer } from '@mui/x-charts/ResponsiveChartContainer';
-import { BarPlot } from '@mui/x-charts/BarChart';
-import { LinePlot, MarkPlot } from '@mui/x-charts/LineChart';
-import { ChartsXAxis } from '@mui/x-charts/ChartsXAxis';
+import CircularWithValueLabel from './circularProgessBar';
 
 interface ErrorResponse {
   message: string;  
-}
+} 
 
 type Error = AxiosError<ErrorResponse>;
 
@@ -32,10 +26,12 @@ export default function BarChartHandler() {
           count: count as number,
         }));
         setAssetData(assetDataArray);
-        setLoading(false);
       } catch (error: any) {
         setError(error);
-        setLoading(false);
+      } finally {
+        setTimeout(() => {
+          setLoading(false);
+        }, 0);
       }
     };
 
@@ -43,39 +39,26 @@ export default function BarChartHandler() {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <CircularWithValueLabel />;
   }
 
   if (error) {
     return <div>Error fetching data</div>;
   }
-  
+
+  const xAxis: MakeOptional<AxisConfig, "id">[] = [
+    { scaleType: "band", data: assetData.map(asset => asset.name) }
+  ];
+  const series = [{ data: assetData.map(asset => asset.count) }];
+
   return (
-    <Box sx={{ width: '100%', height: 280 }}>
-    <ResponsiveChartContainer
-      series={[
-        {
-          type: 'bar',
-          data: assetData.map(asset => asset.count),
-        },
-      ]}
-      xAxis={[
-        {
-          data: assetData.map(asset => asset.name) ,
-          scaleType: 'band',
-          id: 'x-axis-id',
-        },
-      ]}
-    >
-      <BarPlot />
-      <LinePlot />
-      <MarkPlot />
-      <ChartsXAxis 
-        label="Individual Asset Count" 
-        position="bottom" 
-        axisId="x-axis-id" 
-      />   
-    </ResponsiveChartContainer>
-  </Box>
+    <div style={{ maxWidth: '100%', width: '100%' }} className='text-center '>
+      <span className='font-bold text-lg sm:text-sm md:text-md lg:text-lg'>Individual Asset Count</span>
+      <BarChart
+        xAxis={xAxis}
+        series={series}
+        height={250}
+      />
+    </div>
   );
 }

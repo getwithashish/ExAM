@@ -1097,7 +1097,7 @@
     "@syncfusion/ej2-lists" "~25.1.35"
     "@syncfusion/ej2-popups" "~25.1.35"
 
-"@syncfusion/ej2-notifications@~25.1.35":
+"@syncfusion/ej2-notifications@25.1.35", "@syncfusion/ej2-notifications@~25.1.35":
   version "25.1.35"
   resolved "https://registry.yarnpkg.com/@syncfusion/ej2-notifications/-/ej2-notifications-25.1.35.tgz#f6dd01cb54fa596b120b87292fce50818c5cfd07"
   integrity sha512-ioSI36uCSA9hxB8fiUAvI0u7c2eIs1sw3kC0cfL2HbGHHOmhWjm4yoTIl13sKoXU6Sv2A2V3xsFAf97cBTjFvA==
@@ -1132,6 +1132,15 @@
   integrity sha512-chjK/THRwbRcQTKUL7NyP2VBjtS65uw6e0kieTsQvJ37c3ZZZ3/FpHt9jcqJisStrZ/xp4/y9uSPe6kqBGQBCg==
   dependencies:
     "@syncfusion/ej2-base" "~25.1.35"
+
+"@syncfusion/ej2-react-notifications@^25.1.35":
+  version "25.1.35"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-react-notifications/-/ej2-react-notifications-25.1.35.tgz#ad1893e8d9328557fb8842defcb33d45e06f2575"
+  integrity sha512-/1kzA7EWIKnbERttn5urncfKJQtxRpQNzxCQO0hXELQUphL2X3oBu39gQRGMQ5dvNGYSsPfBuOQvggcQU5yvBQ==
+  dependencies:
+    "@syncfusion/ej2-base" "~25.1.35"
+    "@syncfusion/ej2-notifications" "25.1.35"
+    "@syncfusion/ej2-react-base" "~25.1.35"
 
 "@syncfusion/ej2-react-querybuilder@^25.1.35":
   version "25.1.35"
@@ -4679,6 +4688,11 @@ react-is@^18.2.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.2.0.tgz#199431eeaaa2e09f86427efbb4f1473edb47609b"
   integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
+
+react-loading-skeleton@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/react-loading-skeleton/-/react-loading-skeleton-3.4.0.tgz#c71a3a17259d08e4064974aa0b07f150a09dfd57"
+  integrity sha512-1oJEBc9+wn7BbkQQk7YodlYEIjgeR+GrRjD+QXkVjwZN7LGIcAFHrx4NhT7UHGBxNY1+zax3c+Fo6XQM4R7CgA==
 
 react-querybuilder@^7.0.2:
   version "7.0.2"
