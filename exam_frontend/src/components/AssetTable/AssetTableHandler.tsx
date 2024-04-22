@@ -62,7 +62,7 @@ const AssetTableHandler = ({
   const [drawerVisible, setDrawerVisible] = useState(false);
   
   const [queryParam, setQueryParam] = useState("");
-  const { data: assetData, refetch: assetDataRefetch } = useQuery({
+  const { data: assetData, isLoading: isAssetDataLoading, refetch: assetDataRefetch } = useQuery({
     queryKey: ["assetList", queryParam],
     queryFn: () => getAssetDetails(`${queryParamProp + queryParam}`),
   });
@@ -638,6 +638,7 @@ const AssetTableHandler = ({
   return (
     <AssetTable
       heading={heading}
+      isAssetDataLoading={isAssetDataLoading}
       // drawerTitle={drawerTitle}
       totalItemCount={assetData?.count}
       // assetPageDataFetch={setQueryParam}

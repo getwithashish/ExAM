@@ -57,7 +57,7 @@ const DasboardAssetHandler = () => {
   const [queryParam, setQueryParam] = useState("");
  
 
-  const { data: assetData, refetch: assetDataRefetch } = useQuery({
+  const { data: assetData, isLoading: isAssetDataLoading, refetch: assetDataRefetch } = useQuery({
     queryKey: ["assetList", queryParam],
     queryFn: () => getAssetDetails(`${queryParam}`),
   });
@@ -645,7 +645,7 @@ const DasboardAssetHandler = () => {
   return (
     <DasboardAssetTable
       drawerTitle={drawerTitle}
-
+      isAssetDataLoading={isAssetDataLoading}
       handleRowClick={handleRowClick}
       onCloseDrawer={onCloseDrawer}
       selectedRow={selectedRow}
