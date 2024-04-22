@@ -225,8 +225,9 @@ const RequestTable: FC<{
   setSelectedAsset: (asset: any | null) => void;
 }> = function ({ assets, setSelectedAsset }) {
   return (
-    <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600 rounded-md mx-10 ">
-      <Table.Head className="bg-gray-100 dark:bg-gray-700 font-display">
+    <Table className="min-w-full divide-y font-display divide-gray-200 dark:divide-gray-600 mx-2 my-2 rounded-lg">
+      <Table.Head className="bg-gray-100 dark:bg-gray-700">
+      <Table.HeadCell>Asset</Table.HeadCell>
         <Table.HeadCell>Requester</Table.HeadCell>
         <Table.HeadCell>Request Date</Table.HeadCell>
         <Table.HeadCell>Actions</Table.HeadCell>
@@ -237,6 +238,14 @@ const RequestTable: FC<{
             key={asset.asset_uuid}
             className="hover:bg-gray-100 dark:hover:bg-gray-700"
           >
+            <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
+              <div className="text-base font-normal text-gray-900 deak:text-white">
+                {asset.asset_type.asset_type_name}
+              </div>
+              <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                {asset.product_name}
+              </div>
+            </Table.Cell>
             <Table.Cell className="whitespace-nowrap p-4 text-base font-display font-md text-left text-gray-900 dark:text-white">
               {asset.requester.username}
             </Table.Cell>

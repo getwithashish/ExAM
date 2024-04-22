@@ -5,6 +5,7 @@ import { AxisConfig, BarChart } from '@mui/x-charts';
 import { AxiosError } from 'axios';
 import { MakeOptional } from '@mui/x-charts/models/helpers';
 import CircularWithValueLabel from './circularProgessBar';
+import { axisClasses } from "@mui/x-charts";
 
 interface ErrorResponse {
   message: string;  
@@ -51,6 +52,14 @@ export default function BarChartHandler() {
   ];
   const series = [{ data: assetData.map(asset => asset.count) }];
 
+  const chartSetting = {
+    sx: {
+      [`.${axisClasses.bottom} .${axisClasses.tickLabel}`]: {
+        overflow: "visible ! important" 
+      }
+    }
+  }
+
   return (
     <div style={{ maxWidth: '100%', width: '100%' }} className='text-center '>
       <span className='font-bold text-lg sm:text-sm md:text-md lg:text-lg'>Individual Asset Count</span>
@@ -58,6 +67,7 @@ export default function BarChartHandler() {
         xAxis={xAxis}
         series={series}
         height={250}
+        {...chartSetting}      
       />
     </div>
   );
