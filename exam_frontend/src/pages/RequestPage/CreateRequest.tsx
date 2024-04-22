@@ -4,6 +4,7 @@ import { HiPencilAlt } from "react-icons/hi";
 import axiosInstance from "../../config/AxiosConfig";
 import React from "react";
 import DrawerViewRequest from "./DrawerViewRequest";
+import InfoIcon from '@mui/icons-material/Info'; 
 
 const CreateRequestPage: FC = function () {
   const [assets, setAssets] = useState<any[]>([]);
@@ -216,24 +217,41 @@ const CreateRequestPage: FC = function () {
 const SearchRequests: FC<{
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
 }> = function ({ setSearchQuery }) {
+  const [showInfo, setShowInfo] = useState(false); // State to manage visibility of info message
+
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
 
   return (
-    <form className="mb-4 sm:mb-0 sm:pr-3" action="#" method="GET">
-      <Label htmlFor="search-request" className="sr-only font-display">
-        Search
-      </Label>
-      <div className="relative mt-1 lg:w-64 xl:w-96">
-        <TextInput
-          id="search-request"
-          name="search-request"
-          placeholder="Search for requests"
-          onChange={handleSearchChange}
-        />
-      </div>
-    </form>
+    <form className="mb-4 sm:mb-0 sm:pr-3 relative " action="#" method="GET">
+  <Label htmlFor="search-request" className="sr-only font-display">
+    Search
+  </Label>
+  <div className="relative mt-1 lg:w-64 xl:w-96 ">
+    <TextInput
+      id="search-request"
+      name="search-request"
+      placeholder="Search for requests"
+      onChange={handleSearchChange}
+    />
+    <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+      {showInfo && (
+        <div className="absolute top-0 right-full w-max bg-gray-500 p-2 rounded-lg shadow-lg">
+          <p className="text-black-900 text-xs">Works with a few fields only,<br/>will expand in future.
+          <ol></ol>
+          </p>
+        </div>
+      )}
+      <InfoIcon
+        className="h-5 w-5 text-gray-400 cursor-pointer"
+        aria-hidden="true"
+        onMouseEnter={() => setShowInfo(true)} // Show info on mouse enter
+        onMouseLeave={() => setShowInfo(false)} // Hide info on mouse leave
+      />
+    </div>
+  </div>
+</form>
   );
 };
 
