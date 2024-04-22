@@ -309,6 +309,8 @@ const RequestTable: FC<{
             </Table.Cell>
             <Table.Cell className="whitespace-nowrap p-4 text-base font-sm text-gray-900 dark:text-white">
               {new Date(assets.created_at).toLocaleDateString()}
+            <Table.Cell className="whitespace-nowrap p-4 text-base font-sm text-gray-900 dark:text-white">
+              {new Date(assets.created_at).toLocaleDateString()}
             </Table.Cell>
             <Table.Cell className="space-x-2 whitespace-nowrap p-4">
               <div className="flex items-center gap-x-3">
