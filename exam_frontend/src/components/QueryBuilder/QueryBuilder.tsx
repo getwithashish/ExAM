@@ -8,9 +8,7 @@ import { Button, message } from 'antd';
 const fields: Field[] = [
   { name: "product_name", label: "Product Name" },
   { name: "asset_type", label: "Asset Type" },
-  { name: "version", label: "Version" },
   { name: "model_number", label: "Model Number" },
-  { name: "status", label: "Status" },
   { name: "location", label: "Location" },
   { name: "invoice_location", label: "Invoice Location" },
   { name: "business_unit", label: "Business Unit" },
@@ -18,9 +16,7 @@ const fields: Field[] = [
   { name: "processor", label: "Processor" },
   { name: "memory", label: "Memory" },
   { name: "storage", label: "Storage" },
-  { name: "asset_detail_status", label: "Asset Detail Status" },
-  { name: "assign_status", label: "Assign Status" },
-];
+]
 
 interface AutocompleteProps {
   selectedFieldIndex: number;
@@ -38,7 +34,7 @@ const CustomAutocomplete: React.FC<AutocompleteProps> = ({ selectedFieldIndex, f
     "location": "/asset/location",
     "invoice_location": "/asset/location",
     "business_unit": "/asset/business_unit",
-    "memory": "/asset/memory",
+    "memory": "/asset/memory_list",
     "asset_type": "/asset/asset_type",
     // ... define mappings for other relevant fields with separate endpoints
   };
@@ -54,13 +50,31 @@ const CustomAutocomplete: React.FC<AutocompleteProps> = ({ selectedFieldIndex, f
           const res = await axiosInstance.get(url);
           console.warn(res)
           if (res.data.data.results) {
-            suggestions = res.data.data.results.map(result => result.product_name);
+            const data = res.data.data.results;
+            if(data[0].product_name)
+            suggestions = data.map(result => result.product_name);
+            else if(data[0].os)
+            suggestions = data.map(result => result.os);
+            else if(data[0].storage)
+              suggestions = data.map(result => result.storage);
+            else if(data[0].model_number)
+                suggestions = data.map(result => result.model_number);
+            else if(data[0].processor)
+              suggestions = data.map(result => result.processor);
+                
+           
           } else if(res.data.data){
             const data = res.data.data
-            console.error(data,"data")
-           
-            suggestions =data?.map(result => result.asset_type_name)
             
+            if(data[0].asset_type_name)
+            suggestions =data?.map(result => result.asset_type_name)
+            else if(data[0].memory_space)
+              suggestions =data?.map(result => result.memory_space)
+            else if(data[0].business_unit_name)
+              suggestions =data?.map(result => result.business_unit_name)
+            else if(data[0].location_name)
+              suggestions =data?.map(result => result.location_name)
+                  
             console.warn(suggestions)
           
           
@@ -186,6 +200,7 @@ export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({ as
   
     // Display the constructed query parameters
     message.success(queryParams);
+    console.log(queryParams)
   
     // Call the assetDataRefetch function with the constructed query parameters
     assetDataRefetch(queryParams);
