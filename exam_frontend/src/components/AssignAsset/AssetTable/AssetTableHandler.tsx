@@ -91,7 +91,10 @@ const AssetTableHandler = ({ showAssignDrawer,queryParamProp }) => {
   };
 
   const statusOptions =
-    assetData?.results?.map((item: AssetResult) => item.status) || [];
+  (assetData?.results?.map((item: AssetResult) =>
+    item.status === 'IN STORE' ? 'IN STOCK' : item.status
+  ) || []);
+
   const businessUnitOptions =
     assetData?.results?.map(
       (item: AssetResult) => item.business_unit.business_unit_name
