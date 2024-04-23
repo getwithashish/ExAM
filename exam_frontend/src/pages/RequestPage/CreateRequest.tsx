@@ -447,6 +447,13 @@ const ViewRequestModal: FC<{
       disabled: true,
     },
     {
+      id: "memory",
+      label: "MEMORY",
+      name: "memory",
+      value: asset.memory.memory_space,
+      disabled: true,
+    },
+    {
       id: "processor",
       label: "PROCESSOR",
       name: "processor",

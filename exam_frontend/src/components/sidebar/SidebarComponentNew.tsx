@@ -15,6 +15,7 @@ import {
   CheckCircleOutlined,
   CheckSquareOutlined,
   CloseCircleOutlined,
+  RobotOutlined 
 } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import ExampleNavbar from "../Navbar/navbar";
@@ -333,6 +334,11 @@ const SidebarComponentNew = ({ children }) => {
                 <div onClick={handleDownload}>Download</div>
               </ToolTip>
             </Menu.Item>
+            <Menu.Item icon={<RobotOutlined />}>
+              <ToolTip title="AI Assistant">
+                <Link to="/exam/chat">AssetSense Ai</Link>
+              </ToolTip>
+            </Menu.Item>         
           </Menu>
         </Sider>
         <Content>

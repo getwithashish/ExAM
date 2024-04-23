@@ -288,7 +288,7 @@ const AssignRequestTable: FC<{
       <Table.Head className="bg-gray-100 dark:bg-gray-700">
         <Table.HeadCell>Asset</Table.HeadCell>
         <Table.HeadCell>Requester</Table.HeadCell>
-        <Table.HeadCell>Assignee</Table.HeadCell>
+        <Table.HeadCell>Custodian</Table.HeadCell>
         <Table.HeadCell>Request Date</Table.HeadCell>
         <Table.HeadCell>Actions</Table.HeadCell>
       </Table.Head>
@@ -438,6 +438,13 @@ const ViewRequestModal: FC<{
       disabled: true,
     },
     {
+      id: "memory",
+      label: "MEMORY",
+      name: "memory",
+      value: assignRequest.memory?.memory_space,
+      disabled: true,
+    },
+    {
       id: "processor",
       label: "PROCESSOR",
       name: "processor",
@@ -488,7 +495,7 @@ const ViewRequestModal: FC<{
     },
     {
       id: "assignee",
-      label: "ASSIGNEE",
+      label: "CUSTODIAN",
       name: "assignee",
       value: assignRequest.custodian?.employee_name,
       disabled: true,
