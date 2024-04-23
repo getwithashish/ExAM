@@ -17,7 +17,7 @@ const AssignPage: FC = function () {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(10); 
+  const [pageSize, setPageSize] = useState<number>(10);
 
   useEffect(() => {
     fetchAssignRequests();
@@ -29,6 +29,10 @@ const AssignPage: FC = function () {
     axiosInstance
       .get(`/asset/?limit=${pageSize}&offset=${offset}&assign_status=ASSIGN_PENDING`)
       .then((response) => {
+        const assignPendingAssets = response.data.data.results;
+        const totalAssets = response.data.data.count;
+        setAssignRequests(assignPendingAssets);
+        setTotalPages(Math.ceil(totalAssets / 10));
         const assignPendingAssets = response.data.data.results;
         const totalAssets = response.data.data.count;
         setAssignRequests(assignPendingAssets);

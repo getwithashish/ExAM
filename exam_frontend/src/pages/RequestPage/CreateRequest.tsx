@@ -29,6 +29,7 @@ const CreateRequestPage: FC = function () {
       .then((response) => {
         const createPendingAssets = response.data.data.results;
         const totalAssets = response.data.data.count;
+        const totalAssets = response.data.data.count;
         console.log("createPendingAssets", createPendingAssets);
         setAssets(createPendingAssets);
         setTotalPages(Math.ceil(totalAssets / 10)); // Calculate total pages based on total assets

@@ -253,33 +253,36 @@ const SearchRequests: FC<{
 
   return (
     <form className="mb-4 sm:mb-0 sm:pr-3 relative " action="#" method="GET">
-  <Label htmlFor="search-request" className="sr-only font-display">
-    Search
-  </Label>
-  <div className="relative mt-1 lg:w-64 xl:w-96 ">
-    <TextInput
-      id="search-request"
-      name="search-request"
-      placeholder="Search for requests"
-      onChange={handleSearchChange}
-    />
-    <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-      {showInfo && (
-        <div className="absolute top-0 right-full w-max bg-gray-700 p-2 rounded-lg shadow-lg">
-          <p className="text-white text-xs">Works with a few fields only,<br/>will expand in future.
-          <ol></ol>
-          </p>
+      <Label htmlFor="search-request" className="sr-only font-display">
+        Search
+      </Label>
+      <div className="relative mt-1 lg:w-64 xl:w-96 ">
+        <TextInput
+          id="search-request"
+          name="search-request"
+          placeholder="Search for requests"
+          onChange={handleSearchChange}
+        />
+        <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+          {showInfo && (
+            <div className="absolute top-0 right-full w-max bg-gray-700 p-2 rounded-lg shadow-lg">
+              <p className="text-white text-xs">
+                Works with a few fields only,
+                <br />
+                will expand in future.
+                <ol></ol>
+              </p>
+            </div>
+          )}
+          <InfoIcon
+            className="h-5 w-5 text-gray-400 cursor-pointer"
+            aria-hidden="true"
+            onMouseEnter={() => setShowInfo(true)} // Show info on mouse enter
+            onMouseLeave={() => setShowInfo(false)} // Hide info on mouse leave
+          />
         </div>
-      )}
-      <InfoIcon
-        className="h-5 w-5 text-gray-400 cursor-pointer"
-        aria-hidden="true"
-        onMouseEnter={() => setShowInfo(true)} // Show info on mouse enter
-        onMouseLeave={() => setShowInfo(false)} // Hide info on mouse leave
-      />
-    </div>
-  </div>
-</form>
+      </div>
+    </form>
   );
 };
 
@@ -304,49 +307,46 @@ const RequestTable: FC<{
   };
 
   return (
-    <Table
-  className="w-full divide-y font-display divide-gray-200 dark:divide-gray-600 mx-2 my-2 rounded-lg"
->
-  <Table.Head className="bg-gray-100 dark:bg-gray-700">
-    <Table.HeadCell>Asset Type</Table.HeadCell>
-    <Table.HeadCell>Product Name</Table.HeadCell>
-    <Table.HeadCell>Requester</Table.HeadCell>
-    <Table.HeadCell>Modified at</Table.HeadCell>
-    <Table.HeadCell>Actions</Table.HeadCell>
-  </Table.Head>
-  <Table.Body className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800 font-display">
-    {assets.map((asset) => (
-      <Table.Row
-        key={asset.asset_uuid}
-        className="hover:bg-gray-100 dark:hover:bg-gray-700"
-      >
-        <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
-          <div className="text-base font-normal text-gray-900 dark:text-white">
-            {asset.asset_type.asset_type_name}
-          </div>
-        </Table.Cell>
-        <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
-          {asset.product_name}
-        </Table.Cell>
-        <Table.Cell className="whitespace-nowrap p-4 text-base font-display font-md text-left text-gray-900 dark:text-white">
-          {asset.requester.username}
-        </Table.Cell>
-        <Table.Cell className="whitespace-nowrap p-4 text-base font-display font-xs text-gray-900 dark:text-white">
-          {new Date(asset.updated_at).toLocaleDateString()}
-        </Table.Cell>
-        <Table.Cell className="space-x-2 whitespace-nowrap p-4">
-          <div className="flex items-center gap-x-3">
-            <Button color="primary" onClick={() => handleViewAsset(asset)}>
-              <HiPencilAlt className="mr-2 text-lg font-display" />
-              View
-            </Button>
-          </div>
-        </Table.Cell>
-      </Table.Row>
-    ))}
-  </Table.Body>
-</Table>
-
+    <Table className="w-full divide-y font-display divide-gray-200 dark:divide-gray-600 mx-2 my-2 rounded-lg">
+      <Table.Head className="bg-gray-100 dark:bg-gray-700">
+        <Table.HeadCell>Asset Type</Table.HeadCell>
+        <Table.HeadCell>Product Name</Table.HeadCell>
+        <Table.HeadCell>Requester</Table.HeadCell>
+        <Table.HeadCell>Modified at</Table.HeadCell>
+        <Table.HeadCell>Actions</Table.HeadCell>
+      </Table.Head>
+      <Table.Body className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800 font-display">
+        {assets.map((asset) => (
+          <Table.Row
+            key={asset.asset_uuid}
+            className="hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
+              <div className="text-base font-normal text-gray-900 dark:text-white">
+                {asset.asset_type.asset_type_name}
+              </div>
+            </Table.Cell>
+            <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
+              {asset.product_name}
+            </Table.Cell>
+            <Table.Cell className="whitespace-nowrap p-4 text-base font-display font-md text-left text-gray-900 dark:text-white">
+              {asset.requester.username}
+            </Table.Cell>
+            <Table.Cell className="whitespace-nowrap p-4 text-base font-display font-xs text-gray-900 dark:text-white">
+              {new Date(asset.updated_at).toLocaleDateString()}
+            </Table.Cell>
+            <Table.Cell className="space-x-2 whitespace-nowrap p-4">
+              <div className="flex items-center gap-x-3">
+                <Button color="primary" onClick={() => handleViewAsset(asset)}>
+                  <HiPencilAlt className="mr-2 text-lg font-display" />
+                  View
+                </Button>
+              </div>
+            </Table.Cell>
+          </Table.Row>
+        ))}
+      </Table.Body>
+    </Table>
   );
 };
 
