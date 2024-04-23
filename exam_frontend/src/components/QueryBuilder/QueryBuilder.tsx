@@ -27,8 +27,9 @@ interface AutocompleteProps {
   setSelectedFields: React.Dispatch<React.SetStateAction<{ field: string; value: string }[]>>; // Add setSelectedFields prop
 }
 
-const CustomAutocomplete: React.FC<AutocompleteProps> = ({ selectedFieldIndex, field, value, onFieldChange, onInputChange, setSelectedFields }) => { // Add setSelectedFields to props
+const CustomAutocomplete: React.FC<AutocompleteProps> = ({ selectedFieldIndex, field, value, onFieldChange, onInputChange, setSelectedFields, setFilterValue }) => { // Add setSelectedFields to props
   const [suggestion, setSuggestion] = useState<string[]>([]);
+  
 
   const fieldEndpointMapping = {
     "location": "/asset/location",
@@ -44,7 +45,10 @@ const CustomAutocomplete: React.FC<AutocompleteProps> = ({ selectedFieldIndex, f
         try {
           const endpoint = fieldEndpointMapping[field];
           let suggestions;
-   
+           ;
+          
+        
+
           const url = endpoint ? `${endpoint}?query=${value}` : `/asset/?limit=20&asset_field_value_filter={"${field}":"${value}"}`;
    
           const res = await axiosInstance.get(url);
@@ -67,13 +71,18 @@ const CustomAutocomplete: React.FC<AutocompleteProps> = ({ selectedFieldIndex, f
             const data = res.data.data
             
             if(data[0].asset_type_name)
-            suggestions =data?.map(result => result.asset_type_name)
+            suggestions =data?.map((result) => ({ label: result.asset_type_name, id: result.id }))
             else if(data[0].memory_space)
-              suggestions =data?.map(result => result.memory_space)
+              suggestions =data?.map((result) => ({ label: result.memory_space, id: result.id }))
             else if(data[0].business_unit_name)
-              suggestions =data?.map(result => result.business_unit_name)
-            else if(data[0].location_name)
-              suggestions =data?.map(result => result.location_name)
+              suggestions =data?.map((result) => ({ label: result.business_unit_name, id: result.id }))
+            else if(data[0].location_name){
+              // suggestions =data?.map(result => result.location_name)
+              suggestions = data?.map((result) => ({ label: result.location_name, id: result.id }))
+              console.error(suggestions)
+
+            }
+              
                   
             console.warn(suggestions)
           
@@ -81,6 +90,15 @@ const CustomAutocomplete: React.FC<AutocompleteProps> = ({ selectedFieldIndex, f
         }
    
           setSuggestion(suggestions);
+          if (endpoint && suggestions) {
+            // Use the id of the respective field as the filter value
+            setFilterValue(suggestions.find(item => item.label === value).id);
+           
+            
+        } else {
+            // Use the original value as the filter value
+            setFilterValue(value);
+        }
           message.success('Suggestions fetched successfully');
         } catch (error) {
           console.error("Error fetching asset details:", error);
@@ -99,7 +117,10 @@ const CustomAutocomplete: React.FC<AutocompleteProps> = ({ selectedFieldIndex, f
       {
         setSelectedFields(prev => {
           const updatedFields = [...prev];
-          updatedFields[selectedFieldIndex].value = suggestedValue;
+          if(suggestedValue.label)
+          updatedFields[selectedFieldIndex].value = suggestedValue.label;
+          else
+          updatedFields[selectedFieldIndex].value = suggestedValue
           return updatedFields;
         });
 
@@ -136,6 +157,7 @@ export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({ as
   const [selectedFields, setSelectedFields] = useState<{ field: string; value: string }[]>([]);
   const [newFields, setNewFields] = useState<number[]>([]);
   const initialState = { selectedFields: [], newFields: [] };
+  const [filterValue,setFilterValue] = useState<number | string>()
 
   const handleInputChange = (event: React.ChangeEvent<{}>, newValue: string | null, index: number) => {
     if (newValue !== null) {
@@ -183,10 +205,10 @@ export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({ as
       message.error("Please select appropriate fields and values for all conditions.");
       return;
     }
-  
+    console.log("filter value in query is " ,filterValue)
     // Construct an array of query conditions for each selected field
     const queryConditions = selectedFields.map(field => ({
-      "==": [{ "var": field.field }, field.value]
+      "==": [{ "var": field.field },filterValue]
     }));
   
     // Construct the JSON logic expression for the 'and' operation
@@ -237,6 +259,7 @@ export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({ as
                 onFieldChange={(event, index) => handleFieldChange(event, index)}
                 onInputChange={(event, newValue) => {if(newValue !== null) {handleInputChange(event, newValue, index)}} }
                 setSelectedFields={setSelectedFields} // Pass setSelectedFields prop
+                setFilterValue={setFilterValue}
               />
             </div>
             <Button onClick={() => handleRemoveField(index)}>X</Button>
