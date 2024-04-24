@@ -24,11 +24,11 @@ interface AutocompleteProps {
   value: string;
   onFieldChange: (event: React.ChangeEvent<HTMLSelectElement>, index: number) => void;
   onInputChange: (event: React.ChangeEvent<{}>, newValue: string) => void;
-  setSelectedFields: React.Dispatch<React.SetStateAction<{ field: string; value: string }[]>>; // Add setSelectedFields prop
+  setSelectedFields: React.Dispatch<React.SetStateAction<{ field: string; value: string ; id:number | null}[]>>; // Add setSelectedFields prop
 }
 
-const CustomAutocomplete: React.FC<AutocompleteProps> = ({ selectedFieldIndex, field, value, onFieldChange, onInputChange, setSelectedFields, setFilterValue }) => { // Add setSelectedFields to props
-  const [suggestion, setSuggestion] = useState<string[]>([]);
+const CustomAutocomplete: React.FC<AutocompleteProps> = ({ selectedFieldIndex, field, value, onFieldChange, onInputChange, setSelectedFields, setFilterValue , suggestion ,setSuggestion }) => { // Add setSelectedFields to props
+ 
   
 
   const fieldEndpointMapping = {
@@ -112,22 +112,20 @@ const CustomAutocomplete: React.FC<AutocompleteProps> = ({ selectedFieldIndex, f
 }, [field, value, axiosInstance]);
 
 
-  const handleSuggestionClick = (suggestedValue: string | null) => {
-    if(suggestedValue)
-      {
-        setSelectedFields(prev => {
-          const updatedFields = [...prev];
-          if(suggestedValue.label)
-          updatedFields[selectedFieldIndex].value = suggestedValue.label;
-          else
-          updatedFields[selectedFieldIndex].value = suggestedValue
-          return updatedFields;
-        });
+const handleSuggestionClick = (suggestedValue: string | null) => {
+  if (suggestedValue) {
+    setSelectedFields(prev => {
+      const updatedFields = [...prev];
+      updatedFields[selectedFieldIndex].value = suggestedValue;
+      const suggestedItem = suggestion.find(item => item === suggestedValue);
+      updatedFields[selectedFieldIndex].id = suggestedItem ? suggestedItem.id : null; // Update id if the suggestion exists
+      return updatedFields;
+    });
+  }
+  setSuggestion([]); // Clear the suggestion array
+};
 
-      }
-   
-    setSuggestion([]); // Clear the suggestion array
-  };
+
 
   return (
     <Autocomplete
@@ -154,10 +152,11 @@ interface QueryBuilderComponentProps {
 }
 
 export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({ assetDataRefetch }) => {
-  const [selectedFields, setSelectedFields] = useState<{ field: string; value: string }[]>([]);
+  const [selectedFields, setSelectedFields] = useState<{ field: string; value: string ;id :number }[]>([]);
   const [newFields, setNewFields] = useState<number[]>([]);
   const initialState = { selectedFields: [], newFields: [] };
   const [filterValue,setFilterValue] = useState<number | string>()
+  const [suggestion, setSuggestion] = useState<string[]>([]);
 
   const handleInputChange = (event: React.ChangeEvent<{}>, newValue: string | null, index: number) => {
     if (newValue !== null) {
@@ -205,10 +204,12 @@ export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({ as
       message.error("Please select appropriate fields and values for all conditions.");
       return;
     }
-    console.log("filter value in query is " ,filterValue)
+    
+    console.log(suggestion)
+    console.log("selected fields",selectedFields)
     // Construct an array of query conditions for each selected field
     const queryConditions = selectedFields.map(field => ({
-      "==": [{ "var": field.field },filterValue]
+      "==": [{ "var": field.field },field.id?field.id:field.value]
     }));
   
     // Construct the JSON logic expression for the 'and' operation
@@ -260,6 +261,8 @@ export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({ as
                 onInputChange={(event, newValue) => {if(newValue !== null) {handleInputChange(event, newValue, index)}} }
                 setSelectedFields={setSelectedFields} // Pass setSelectedFields prop
                 setFilterValue={setFilterValue}
+                suggestion={suggestion}
+                setSuggestion={setSuggestion}
               />
             </div>
             <Button onClick={() => handleRemoveField(index)}>X</Button>
