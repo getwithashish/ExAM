@@ -48,6 +48,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/v1/asset/", include("asset.urls")),
     path("api/v1/user/", include("user_auth.urls")),
+    path("api/v1/ai/", include("ai.urls")),
     path("docs/", include_docs_urls(title="API documentation")),
     path(
         "swagger/",
