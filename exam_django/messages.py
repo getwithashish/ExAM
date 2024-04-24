@@ -63,13 +63,17 @@ ASSET_ASSIGNMENT_FAILED = "Failed to assign asset. Please try again."
 
 # Asset Success Messages
 ASSET_LIST_SUCCESSFULLY_RETRIEVED = "Asset list is successfully retreived."
-ASSET_FIELD_VALUE_LIST_SUCCESSFULLY_RETRIEVED = "Asset field value list is successfully retrieved"
+ASSET_FIELD_VALUE_LIST_SUCCESSFULLY_RETRIEVED = (
+    "Asset field value list is successfully retrieved"
+)
 ASSET_COUNT_RETRIEVAL_UNSUCCESSFUL = (
     "Asset count failed to be retrieved. Please try again."
 )
 ASSET_ASSIGNMENT_FAILED = "Failed to assign asset. Please try again."
 
-ASSET_FIELD_VALUE_QUERY_PARAM_NOT_FOUND = "No valid Asset Field Value Query Param was found"
+ASSET_FIELD_VALUE_QUERY_PARAM_NOT_FOUND = (
+    "No valid Asset Field Value Query Param was found"
+)
 ASSET_FIELD_NOT_FOUND = "No valid Asset Field was found"
 ASSET_FIELD_NOT_FILTERABLE = "Asset Field is not filterable"
 
@@ -101,6 +105,8 @@ ASSIGN_ASSET_REJECT_SUCCESSFUL = "Successfully rejected asset assignment request
 # Asset Type Exception Messages
 INVALID_ASSET_TYPE = "The given asset type is invalid."
 ASSET_TYPE_RETRIEVE_FAILURE = "The given asset type was not found."
+
+INVALID_FILE_TYPE = "Invalid file type. Give a valid file type"
 
 # Asset Type Success Messages
 VALID_ASSET_TYPE = "You have entered a valid asset type."
