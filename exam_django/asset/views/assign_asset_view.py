@@ -1,20 +1,14 @@
+# assign_asset_view.py
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from asset.serializers import AssignAssetSerializer
 from response import APIResponse
-from messages import ASSET_NOT_FOUND
-from asset.service.asset_assign_service.assign_asset_service import (
-    AssignAssetService,
-)
+from asset.service.asset_assign_service.assign_asset_service import AssignAssetService
 
 
 class AssignAssetView(APIView):
-    def get_permissions(self):
-        if self.request.method == "POST":
-            return [IsAuthenticated()]
-        else:
-            return super().get_permissions()
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         serializer = AssignAssetSerializer(data=request.data)
@@ -26,13 +20,13 @@ class AssignAssetView(APIView):
             asset_uuid = request.data.get("asset_uuid")
 
             # Assign the asset using the appropriate service based on requester's role
-            message = AssignAssetService.assign_asset(
+            response = AssignAssetService.assign_asset(
                 role, asset_uuid, employee_id, requester
             )
 
             return APIResponse(
-                message=message,
-                status=status.HTTP_201_CREATED,
+                message=response['message'],  # Extracting the message
+                status=response['status'],    # Extracting the status code
             )
         else:
             return APIResponse(
