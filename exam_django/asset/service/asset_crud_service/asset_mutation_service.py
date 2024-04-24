@@ -88,7 +88,11 @@ class AssetMutationService:
                     email_subject,
                     email_body,
                     [
+                        "astg7542@gmail.com",
+                        "acj88178@gmail.com",
                         "asimapalexperion23@gmail.com",
+                        "aidrin.varghese@experionglobal.com",
+                        "pavithraexperion@gmail.com",
                     ],
                 )
  
