@@ -5,25 +5,34 @@ import axiosInstance from "../../config/AxiosConfig";
 import React from "react";
 import DrawerViewRequest from "./DrawerViewRequest";
 import InfoIcon from "@mui/icons-material/Info";
+import { Pagination } from "antd";
 
 const CreateRequestPage: FC = function () {
   const [assets, setAssets] = useState<any[]>([]);
   const [selectedAsset, setSelectedAsset] = useState<any | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState<number>(1); // Step 2: Initialize currentPage state
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
 
   useEffect(() => {
     fetchAssets();
-  }, []);
+  }, [currentPage, pageSize]);
 
   const fetchAssets = () => {
     setLoading(true);
+    const offset = (currentPage - 1) * pageSize;
     axiosInstance
-      .get("/asset/?limit=100&asset_detail_status=CREATE_PENDING")
+      .get(
+        `/asset/?limit=${pageSize}&offset=${offset}&asset_detail_status=CREATE_PENDING`
+      )
       .then((response) => {
         const createPendingAssets = response.data.data.results;
+        const totalAssets = response.data.data.count;
         console.log("createPendingAssets", createPendingAssets);
         setAssets(createPendingAssets);
+        setTotalPages(Math.ceil(totalAssets / 10)); // Calculate total pages based on total assets
       })
       .catch((error) => {
         console.error("Error fetching assets:", error);
@@ -77,36 +86,46 @@ const CreateRequestPage: FC = function () {
 
   const filteredAssets = assets.filter(
     (asset) =>
-      asset.asset_type.asset_type_name
+      asset.asset_type?.asset_type_name
         .toLowerCase()
         .includes(searchQuery.toLowerCase()) ||
-      String(asset.version).toLowerCase().includes(searchQuery.toLowerCase()) ||
-      asset.asset_category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      asset.product_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      asset.model_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      asset.serial_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      asset.owner.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      String(asset.version)
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      asset.asset_category?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.product_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.model_number?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.serial_number?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.owner?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       String(asset.date_of_purchase)
-        .toLowerCase()
+        ?.toLowerCase()
         .includes(searchQuery.toLowerCase()) ||
       String(asset.warranty_period)
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      asset.os?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.os_version?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.mobile_os?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.processor?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.processor_gen?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.storage?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.configuration?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.accessories?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.location?.location_name
         .toLowerCase()
         .includes(searchQuery.toLowerCase()) ||
-      asset.os.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      asset.os_version.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      asset.mobile_os.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      asset.processor.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      asset.processor_gen.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      asset.storage.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      asset.configuration.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      asset.accessories.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      asset.location.location_name
+      asset.business_unit?.business_unit_name
         .toLowerCase()
         .includes(searchQuery.toLowerCase()) ||
-      asset.business_unit.business_unit_name
+      asset.requester?.username
         .toLowerCase()
         .includes(searchQuery.toLowerCase())
   );
+
+  const onShowSizeChange = (_: number, size: number) => {
+    setPageSize(size); // Update the pageSize when the user changes it
+    setCurrentPage(1); // Reset to the first page when changing the pageSize
+  };
 
   return (
     <React.Fragment>
@@ -212,6 +231,14 @@ const CreateRequestPage: FC = function () {
             )}
           </div>
         </div>
+        <Pagination
+          showSizeChanger
+          onShowSizeChange={onShowSizeChange}
+          pageSize={pageSize}
+          current={currentPage}
+          total={totalPages * pageSize}
+          onChange={setCurrentPage}
+        />
         {selectedAsset && (
           <ViewRequestModal
             asset={selectedAsset}
@@ -275,7 +302,6 @@ const RequestTable: FC<{
 }> = function ({ assets, setSelectedAsset }) {
   return (
     <Table className="min-w-full divide-y font-display divide-gray-200 dark:divide-gray-600 mx-2 my-2 rounded-lg">
-
       <Table.Head className="bg-gray-100 dark:bg-gray-700">
         <Table.HeadCell>Asset Type</Table.HeadCell>
         <Table.HeadCell>Product Name</Table.HeadCell>
@@ -284,38 +310,42 @@ const RequestTable: FC<{
         <Table.HeadCell>Actions</Table.HeadCell>
       </Table.Head>
       <Table.Body className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
-        {assets.map((assets) => (
-          <Table.Row
-            key={assets.asset_uuid}
-            className="hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
-              <div className="text-base font-normal text-gray-900 dark:text-white">
-                {assets.asset_type.asset_type_name}
-              </div>
-            </Table.Cell>
-            <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
-              {assets.product_name}
-            </Table.Cell>
-            <Table.Cell className="whitespace-nowrap p-4 text-base font-md text-gray-900 dark:text-white">
-              {assets.requester.username}
-            </Table.Cell>
-            <Table.Cell className="whitespace-nowrap p-4 text-base font-sm text-gray-900 dark:text-white">
-              {new Date(assets.created_at).toLocaleDateString()}
-            </Table.Cell>
-            <Table.Cell className="space-x-2 whitespace-nowrap p-4">
-              <div className="flex items-center gap-x-3">
-                <Button
-                  color="primary"
-                  onClick={() => setSelectedAsset(assets)}
-                >
-                  <HiPencilAlt className="mr-2 text-lg font-display" />
-                  View
-                </Button>
-              </div>
-            </Table.Cell>
-          </Table.Row>
-        ))}
+        {assets.map(
+          (
+            asset // Changed 'assets' to 'asset' to avoid naming conflict
+          ) => (
+            <Table.Row
+              key={asset.asset_uuid}
+              className="hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
+                <div className="text-base font-normal text-gray-900 dark:text-white">
+                  {asset.asset_type.asset_type_name}
+                </div>
+              </Table.Cell>
+              <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
+                {asset.product_name}
+              </Table.Cell>
+              <Table.Cell className="whitespace-nowrap p-4 text-base font-md text-gray-900 dark:text-white">
+                {asset.requester.username}
+              </Table.Cell>
+              <Table.Cell className="whitespace-nowrap p-4 text-base font-sm text-gray-900 dark:text-white">
+                {new Date(asset.created_at).toLocaleDateString()}
+              </Table.Cell>
+              <Table.Cell className="space-x-2 whitespace-nowrap p-4">
+                <div className="flex items-center gap-x-3">
+                  <Button
+                    color="primary"
+                    onClick={() => setSelectedAsset(asset)}
+                  >
+                    <HiPencilAlt className="mr-2 text-lg font-display" />
+                    View
+                  </Button>
+                </div>
+              </Table.Cell>
+            </Table.Row>
+          )
+        )}
       </Table.Body>
     </Table>
   );
