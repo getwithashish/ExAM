@@ -6,7 +6,7 @@ import React from "react";
 import DrawerViewRequest from "./DrawerViewRequest";
 import { ChangeEvent } from "react";
 import { Pagination } from "antd";
-import InfoIcon from "@mui/icons-material/Info";
+import InfoIcon from '@mui/icons-material/Info';
 
 const AssignPage: FC = function () {
   const [assignRequests, setAssignRequests] = useState<any[]>([]);
@@ -27,9 +27,7 @@ const AssignPage: FC = function () {
     setLoading(true);
     const offset = (currentPage - 1) * pageSize;
     axiosInstance
-      .get(
-        `/asset/?limit=${pageSize}&offset=${offset}&assign_status=ASSIGN_PENDING`
-      )
+      .get(`/asset/?limit=${pageSize}&offset=${offset}&assign_status=ASSIGN_PENDING`)
       .then((response) => {
         const assignPendingAssets = response.data.data.results;
         const totalAssets = response.data.data.count;
@@ -154,7 +152,7 @@ const AssignPage: FC = function () {
   );
 
   const onShowSizeChange = (_: number, size: number) => {
-    setPageSize(size);
+    setPageSize(size); 
     setCurrentPage(1);
   };
 
@@ -263,13 +261,13 @@ const AssignPage: FC = function () {
           </div>
         </div>
         <Pagination
-          showSizeChanger
-          onShowSizeChange={onShowSizeChange}
-          pageSize={pageSize}
-          current={currentPage}
-          total={totalPages * pageSize}
-          onChange={setCurrentPage}
-        />
+            showSizeChanger
+            onShowSizeChange={onShowSizeChange}
+            pageSize={pageSize}
+            current={currentPage}
+            total={totalPages * pageSize}
+            onChange={setCurrentPage}
+          />
         {selectedAssignRequest && (
           <ViewRequestModal
             assignRequest={selectedAssignRequest}
@@ -294,38 +292,36 @@ const SearchRequests: FC<{
 
   return (
     <form className="mb-4 sm:mb-0 sm:pr-3 relative " action="#" method="GET">
-      <Label htmlFor="search-request" className="sr-only font-display">
-        Search
-      </Label>
-      <div className="relative mt-1 lg:w-64 xl:w-96 ">
-        <TextInput
-          id="search-request"
-          name="search-request"
-          placeholder="Search for requests"
-          onChange={handleSearchChange}
-        />
-        <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-          {showInfo && (
-            <div className="absolute top-0 right-full w-max bg-gray-700 p-2 rounded-lg shadow-lg">
-              <p className="text-white text-xs">
-                Works with a few fields only,
-                <br />
-                will expand in future.
-                <ol></ol>
-              </p>
-            </div>
-          )}
-          <InfoIcon
-            className="h-5 w-5 text-gray-400 cursor-pointer"
-            aria-hidden="true"
-            onMouseEnter={() => setShowInfo(true)}
-            onMouseLeave={() => setShowInfo(false)}
-          />
+  <Label htmlFor="search-request" className="sr-only font-display">
+    Search
+  </Label>
+  <div className="relative mt-1 lg:w-64 xl:w-96 ">
+    <TextInput
+      id="search-request"
+      name="search-request"
+      placeholder="Search for requests"
+      onChange={handleSearchChange}
+    />
+    <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+      {showInfo && (
+        <div className="absolute top-0 right-full w-max bg-gray-700 p-2 rounded-lg shadow-lg">
+          <p className="text-white text-xs">Works with a few fields only,<br/>will expand in future.
+          <ol></ol>
+          </p>
         </div>
-      </div>
-    </form>
+      )}
+      <InfoIcon
+        className="h-5 w-5 text-gray-400 cursor-pointer"
+        aria-hidden="true"
+        onMouseEnter={() => setShowInfo(true)} 
+        onMouseLeave={() => setShowInfo(false)} 
+      />
+    </div>
+  </div>
+</form>
   );
 };
+
 
 const AssignRequestTable: FC<{
   assignRequests: any[];
@@ -336,7 +332,7 @@ const AssignRequestTable: FC<{
       <Table.Head className="bg-gray-100 dark:bg-gray-700">
         <Table.HeadCell>Asset</Table.HeadCell>
         <Table.HeadCell>Requester</Table.HeadCell>
-        <Table.HeadCell>Assignee</Table.HeadCell>
+        <Table.HeadCell>Custodian</Table.HeadCell>
         <Table.HeadCell>Request Date</Table.HeadCell>
         <Table.HeadCell>Actions</Table.HeadCell>
       </Table.Head>
@@ -486,6 +482,13 @@ const ViewRequestModal: FC<{
       disabled: true,
     },
     {
+      id: "memory",
+      label: "MEMORY",
+      name: "memory",
+      value: assignRequest.memory?.memory_space,
+      disabled: true,
+    },
+    {
       id: "processor",
       label: "PROCESSOR",
       name: "processor",
@@ -536,7 +539,7 @@ const ViewRequestModal: FC<{
     },
     {
       id: "assignee",
-      label: "ASSIGNEE",
+      label: "CUSTODIAN",
       name: "assignee",
       value: assignRequest.custodian?.employee_name,
       disabled: true,

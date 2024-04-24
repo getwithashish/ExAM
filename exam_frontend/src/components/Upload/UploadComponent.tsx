@@ -43,9 +43,12 @@ const UploadComponent: React.FC = () => {
 
   const handleSubmit = () => {
     const formData = new FormData();
+    let fileExtension = "";
 
     fileList.forEach((file) => {
       if (file.originFileObj) {
+        const fileName = file.originFileObj.name;
+        fileExtension = fileName.split(".").pop();
         formData.append("file", file.originFileObj);
       }
     });
@@ -58,11 +61,40 @@ const UploadComponent: React.FC = () => {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`, // Send JWT token in the Authorization header
           },
+          params: {
+            file_type: fileExtension,
+          },
         })
         .then((response) => {
           if (response.status === 200) {
             console.log("Files successfully submitted.");
             message.success("Files successfully submitted.");
+
+            console.log("This is the response Data: ", response.data)
+
+            const byteCharacters = atob(response.data);
+
+            // Create a Uint8Array from the byte characters
+            const byteNumbers = Array.from(byteCharacters, (char) =>
+              char.charCodeAt(0)
+            );
+            const byteArray = new Uint8Array(byteNumbers);
+
+            const blob = new Blob([byteArray], { type: "application/zip" });
+            const url = URL.createObjectURL(blob);
+
+            // const url = window.URL.createObjectURL(new Blob([response.data]));
+
+            // Create a link element and set the download attributes
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", "import_status.zip"); // Set the download filename
+
+            // Append the link to the document, simulate a click, and then remove the link
+            document.body.appendChild(link);
+            link.click(); // Simulate a click to start the download
+            document.body.removeChild(link);
+
             setFileList([]);
           } else {
             console.error("Failed to submit files.");

@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { PieChart } from "@mui/x-charts/PieChart";
 import Stack from "@mui/material/Stack";
-import { fetchAssetData } from '../api/ChartApi';
+import { fetchAssetData, fetchAssetTypeData } from '../api/ChartApi';
 import { AssetData, AssetDetailData, ChartData, PieChartGraphProps } from '../types/ChartTypes';
 import axiosInstance from '../../../config/AxiosConfig';
 import NoData from '../../NoData/NoData';
@@ -26,6 +26,7 @@ const statusColors: { [key: string]: string } = {
     'UPDATED': '#3ABBC9',
     'CREATE_REJECTED': '#CC0000',
     'UPDATE_REJECTED': '#CC0000',
+    'PENDING':'#FFB92A'
 };
 
 
@@ -34,8 +35,6 @@ const statusMapping: { [key: string]: string } = {
     ASSIGN_PENDING: 'PENDING',
     ASSIGNED: 'ASSIGNED',
     REJECTED: 'REJECTED',
-
-
     CREATE_PENDING: 'PENDING',
     UPDATE_PENDING: 'PENDING',
     CREATED: 'CREATED',
@@ -62,18 +61,19 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
         queryFn: fetchAssetData,
     })
 
+
     useEffect(() => {
-        axiosInstance.get('/asset/asset_type')
-          .then((res) => {
-            setAssetTypeData(res.data.data);
-          })
-          .catch(error => {
-            console.error("Error fetching asset data:", error);
-          });
-      }, []);
+        fetchAssetTypeData()
+            .then((data) => {
+                setAssetTypeData(data);
+            })
+            .catch(error => {
+                console.error("Error fetching asset data:", error);
+            });
+        }, []);
 
 
-      useEffect(() => {
+    useEffect(() => {
         fetchAssetData()
             .then(assetCountData => {
                 console.log("assetCountData", assetCountData);
@@ -92,61 +92,65 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
         return () => {};
     }, []);
 
-
     useEffect(() => {
-        axiosInstance.get(`/asset/asset_count`)
+        fetchAssetData()
             .then((res) => {
-                const assetDetailData = res.data.data;
-                const assetDetailStatusData = Object.entries(assetDetailData?.asset_detail_status ?? {}).reduce((acc, [label, value]) => {
+                const assetDetailData = res.asset_detail_status;
+                console.log("response data", assetDetailData);
+    
+                const mergedStatusData = Object.entries(assetDetailData ?? {}).reduce((acc, [label, value]) => {
                     const mappedLabel = statusMapping[label] ?? label;
-                    if (mappedLabel === 'CREATE_REJECTED' || mappedLabel === 'UPDATE_REJECTED') {
-                        const rejectedLabel = 'REJECTED';
-                        if (acc[rejectedLabel]) {
-                            acc[rejectedLabel].value += value as number;
-                        } else {
-                            acc[rejectedLabel] = {
-                                label: rejectedLabel,
-                                value: value as number,
-                                color: statusColors[rejectedLabel],
-                            };
-                        }
-                    } else if (mappedLabel === 'CREATE_PENDING' || mappedLabel === 'UPDATE_PENDING') {
-                        const pendingLabel = 'PENDING';
-                        if (acc[pendingLabel]) {
-                            acc[pendingLabel].value += value as number;
-                        } else {
-                            acc[pendingLabel] = {
-                                label: pendingLabel,
-                                value: value as number,
-                                color: statusColors[pendingLabel],
-                            };
-                        }
-                    } else {
+    
+                    if (mappedLabel === 'REJECTED' || mappedLabel === 'PENDING') {
                         if (acc[mappedLabel]) {
-                            acc[mappedLabel].value += value as number;
+                            acc[mappedLabel].value += value;
                         } else {
                             acc[mappedLabel] = {
                                 label: mappedLabel,
-                                value: value as number,
+                                value: value,
+                                color: statusColors[mappedLabel],
+                            };
+                        }
+                    } else if (!['UPDATE_PENDING', 'CREATE_PENDING', 'UPDATE_REJECTED', 'CREATE_REJECTED'].includes(mappedLabel)) {
+                        if (acc[mappedLabel]) {
+                            acc[mappedLabel].value += value;
+                        } else {
+                            acc[mappedLabel] = {
+                                label: mappedLabel,
+                                value: value,
                                 color: statusColors[label],
                             };
                         }
                     }
+    
                     return acc;
                 }, {} as { [key: string]: ChartData });
     
-                const assetDetailStatusArray: ChartData[] = Object.values(assetDetailStatusData);
+                // Add the merged counts for REJECTED and PENDING
+                if (mergedStatusData['REJECTED']) {
+                    mergedStatusData['REJECTED'].value += mergedStatusData['UPDATE_REJECTED']?.value ?? 0;
+                    mergedStatusData['REJECTED'].value += mergedStatusData['CREATE_REJECTED']?.value ?? 0;
+                    delete mergedStatusData['UPDATE_REJECTED'];
+                    delete mergedStatusData['CREATE_REJECTED'];
+                }
+                if (mergedStatusData['PENDING']) {
+                    mergedStatusData['PENDING'].value += mergedStatusData['UPDATE_PENDING']?.value ?? 0;
+                    mergedStatusData['PENDING'].value += mergedStatusData['CREATE_PENDING']?.value ?? 0;
+                    delete mergedStatusData['UPDATE_PENDING'];
+                    delete mergedStatusData['CREATE_PENDING'];
+                }
     
-                setDetailChartData(assetDetailStatusArray);
-                setDetailFilteredChartData(assetDetailStatusArray);
+                const mergedStatusArray: ChartData[] = Object.values(mergedStatusData);
+    
+                setDetailChartData(mergedStatusArray);
+                setDetailFilteredChartData(mergedStatusArray);
             })
             .catch(error => {
                 console.error("Error fetching asset details data:", error);
                 setDetailFilteredChartData([]);
-            })
+            });
     }, []);
-
-    
+        
     useEffect(() => {
         fetchAssetData()
             .then((assetAssignData) => {
@@ -166,52 +170,63 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
     
     
 
-    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => { 
+    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const assetTypeValue = parseInt(e.target.value);
         setSelectedType(assetTypeValue.toString());
-    
+        
         if (assetTypeValue === 0) {
             setAssetFilteredChartData(assetChartData);
             setDetailFilteredChartData(detailChartData);
             setAssignFilteredChartData(assignChartData);
-        } else {
-            Promise.all([
-                axiosInstance.get(`/asset/asset_count?asset_type=${assetTypeValue}`),
-                axiosInstance.get(`/asset/asset_count?asset_type=${assetTypeValue}`),
-                axiosInstance.get(`/asset/asset_count?asset_type=${assetTypeValue}`)
-            ]).then(([assetRes, detailRes, assignRes]) => {
+            } 
+            else 
+            {
+            axiosInstance.get(`/asset/asset_count?asset_type=${assetTypeValue}`)
+                .then((assetRes) => {
                 const assetCountData = assetRes.data.data;
-                const detailCountData = detailRes.data.data;
-                const assignCountData = assignRes.data.data;
-
                 const assetFilteredData = Object.entries(assetCountData?.status_counts ?? {}).map(([label, value]) => ({
                     label,
                     value: value as number,
                     color: statusColors[label],
                 }));
                 setAssetFilteredChartData(assetFilteredData);
+                })
+                .catch(error => {
+                console.error("Error fetching asset data:", error);
+                setAssetFilteredChartData([]);
+                });
 
+            axiosInstance.get(`/asset/asset_count?asset_type=${assetTypeValue}`)
+                .then((detailRes) => {
+                const detailCountData = detailRes.data.data;
                 const detailFilteredData = Object.entries(detailCountData?.asset_detail_status ?? {}).map(([label, value]) => ({
                     label: statusMapping[label] ?? label,
                     value: value as number,
                     color: statusColors[label],
                 }));
                 setDetailFilteredChartData(detailFilteredData);
-
+                })
+                .catch(error => {
+                console.error("Error fetching detail data:", error);
+                setDetailFilteredChartData([]);
+                });
+        
+            axiosInstance.get(`/asset/asset_count?asset_type=${assetTypeValue}`)
+                .then((assignRes) => {
+                const assignCountData = assignRes.data.data;
                 const assignFilteredData = Object.entries(assignCountData?.assign_status ?? {}).map(([label, value]) => ({
                     label: statusMapping[label] ?? label,
                     value: value as number,
                     color: statusColors[label],
                 }));
                 setAssignFilteredChartData(assignFilteredData);
-            }).catch(error => {
-                console.error("Error fetching data:", error);
-                setAssetFilteredChartData([]);
-                setDetailFilteredChartData([]);
+                })
+                .catch(error => {
+                console.error("Error fetching assign data:", error);
                 setAssignFilteredChartData([]);
-            });
+                });
+            }
         }
-    }    
 
     if (assetLoading) return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
@@ -219,9 +234,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
         </div>
     );
 
-    if (assetError) return <div>Error fetching data</div>;
-
-    
+    if (assetError) return <div>Error fetching data</div>;    
 
     return (
     <Stack >        
@@ -253,10 +266,10 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                             data: assetFilteredChartData,
                             innerRadius: 60,
                             outerRadius: 140,
-                            paddingAngle: 2,
-                            cornerRadius: 10,
-                            startAngle: -110,
-                            endAngle: 110,
+                            paddingAngle: 0,
+                            cornerRadius: 0,
+                            startAngle: 0,
+                            endAngle: 360,
                             cx:130,
                             cy: 155,
                             highlightScope: { faded: 'global', highlighted: 'item' },
@@ -264,7 +277,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                         },
                     ]}
                     width={300}
-                    height={280}
+                    height={350}
                     slotProps={{
                         legend: {
                             direction: 'row',
@@ -294,10 +307,10 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                             data: detailFilteredChartData,
                             innerRadius: 60,
                             outerRadius: 140,
-                            paddingAngle: 2,
-                            cornerRadius: 10,
-                            startAngle: -110,
-                            endAngle: 110,
+                            paddingAngle: 0,
+                            cornerRadius: 0,
+                            startAngle: 0,
+                            endAngle: 360,
                             cx:130,
                             cy: 155,
                             highlightScope: { faded: 'global', highlighted: 'item' },
@@ -305,7 +318,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                         },
                     ]}
                     width={300}
-                    height={280}
+                    height={350}
                     slotProps={{
                         legend: {
                             direction: 'row',
@@ -335,10 +348,10 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                             data: assignFilteredChartData,
                             innerRadius: 60,
                             outerRadius: 140,
-                            paddingAngle: 2,
-                            cornerRadius: 10,
-                            startAngle: -110,
-                            endAngle: 110,
+                            paddingAngle: 0,
+                            cornerRadius: 0,
+                            startAngle: 0,
+                            endAngle: 360,
                             cx:130,
                             cy: 155,
                             highlightScope: { faded: 'global', highlighted: 'item' },
@@ -346,7 +359,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                         },
                     ]}
                     width={300}
-                    height={280}
+                    height={350}
                     slotProps={{
                         legend: {
                             direction: 'row',
