@@ -36,6 +36,7 @@ import TableNavbar from "../../TableNavBar/TableNavbar";
 import SideDrawerComponent from "../../SideDrawerComponent/SideDrawerComponent";
 import UploadComponent from "../../Upload/UploadComponent";
 import DrawerViewRequest from "../../../pages/RequestPage/DrawerViewRequest";
+import GlobalSearch from "../../GlobalSearch/GlobalSearch";
 
 interface ExpandedDataType {
   key: React.Key;
@@ -49,7 +50,6 @@ const items = [
 ];
 
 const AssetTable = ({
-  
   asset_uuid,
   logsData,
   isLoading,
@@ -72,6 +72,7 @@ const AssetTable = ({
   memoryData,
   assetTypeData,
   expandedRowRender,
+  assetDataRefetch,
 }: AssetTableProps) => {
   const rowRender = (record, expanded) => {
     if (isSuccess) {
@@ -86,11 +87,20 @@ const AssetTable = ({
   const closeImportDrawer = () => {
     setShowUpload(false);
   };
-
+  function handleSearch(_searchTerm: string): void {
+    console.log("Global Search Term: ", _searchTerm);
+    assetDataRefetch(`&global_search=${_searchTerm}`);
+  }
   return (
     <>
       <div className="mainHeading" style={{ background: "white" }}>
         <div className=" font-display">Deallocate Assets</div>
+      </div>
+      <div style={{ marginLeft: "40px", marginBottom: "30px" }}>
+        <GlobalSearch
+          onSearch={handleSearch}
+          assetDataRefetch={assetDataRefetch}
+        />
       </div>
 
       <div
@@ -98,6 +108,7 @@ const AssetTable = ({
           position: "relative",
           display: "inline-block",
           background: "white",
+          width: "80vw",
         }}
       >
         <SideDrawerComponent
@@ -106,40 +117,39 @@ const AssetTable = ({
         >
           <UploadComponent />
         </SideDrawerComponent>
-        <div className="rounded-lg bg-gray-50 shadow-md dark:bg-gray-800 mx-10" style={{
-boxShadow
-:
-'0 0 10px rgba(0, 0, 0, 0.2)'
-}}>
-        <Table
-          columns={columns}
-          dataSource={assetData}
-          scroll={{ y: 600 }}
-          className="mainTable"
-          pagination={false}
-          bordered={false}
-          handleRowClick={handleRowClick}
+        <div
+          className="rounded-lg bg-gray-50 shadow-md dark:bg-gray-800 mx-10"
           style={{
-            fontSize: "50px",
-            borderColor:"white",
-            width:"29%"
-            
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
           }}
-          footer={() => (
-            <Pagination
-              pageSize={20}
-              showTotal={(total, range) =>
-                `${range[0]}-${range[1]} of ${total} assets`
-              }
-              total={totalItemCount}
-              onChange={(page, pageSize) => {
-                assetPageDataFetch(`&offset=${(page - 1) * pageSize}`);
-              }}
-              hideOnSinglePage={true}
-            />
-          )}
-       
-        />
+        >
+          <Table
+            columns={columns}
+            dataSource={assetData}
+            scroll={{ y: 600 }}
+            className="mainTable"
+            pagination={false}
+            bordered={false}
+            handleRowClick={handleRowClick}
+            style={{
+              fontSize: "50px",
+              borderColor: "white",
+              // width: "29%",
+            }}
+            footer={() => (
+              <Pagination
+                pageSize={20}
+                showTotal={(total, range) =>
+                  `${range[0]}-${range[1]} of ${total} assets`
+                }
+                total={totalItemCount}
+                onChange={(page, pageSize) => {
+                  assetPageDataFetch(`&offset=${(page - 1) * pageSize}`);
+                }}
+                hideOnSinglePage={true}
+              />
+            )}
+          />
         </div>
       </div>
       <DrawerViewRequest

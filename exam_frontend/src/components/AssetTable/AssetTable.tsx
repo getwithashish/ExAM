@@ -47,7 +47,8 @@ interface ExpandedDataType {
 const AssetTable = ({
   asset_uuid,
   logsData,
-  isLoading,
+  // isLoading,
+  isAssetDataLoading,
   isSuccess,
   selectedAssetId,
   setSelectedAssetId,
@@ -94,17 +95,18 @@ const AssetTable = ({
       <div className="mainHeading" font-display>
         <h1>{heading}</h1>
       </div>
-      <div style={{ marginLeft: "40px" }}>
+      <div style={{ marginLeft: "40px",marginBottom:"30px" }}>
         <GlobalSearch
           onSearch={handleSearch}
           assetDataRefetch={assetDataRefetch}
         />
       </div>
 
-      <div style={{ position: "relative", display: "inline-block" }}>
+      <div style={{ position: "relative", display: "inline-block", width: "80vw" }}>
         
         <Table
           columns={columns}
+          loading={isAssetDataLoading}
           dataSource={assetData}
           scroll={{ y: 600 }}
           className="mainTable"
@@ -114,10 +116,9 @@ const AssetTable = ({
           style={{
             fontSize: "50px",
             borderColor: "white",
-            width: "29%",
-            marginLeft: "1%",
+            // width: "29%",
+            marginLeft: "3.5%",
             boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-            marginRight: "200px",
           }}
 
           footer={() => (

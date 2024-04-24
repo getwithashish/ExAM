@@ -63,11 +63,15 @@ ASSET_ASSIGNMENT_FAILED = "Failed to assign asset. Please try again."
 
 # Asset Success Messages
 ASSET_LIST_SUCCESSFULLY_RETRIEVED = "Asset list is successfully retreived."
+ASSET_FIELD_VALUE_LIST_SUCCESSFULLY_RETRIEVED = "Asset field value list is successfully retrieved"
 ASSET_COUNT_RETRIEVAL_UNSUCCESSFUL = (
     "Asset count failed to be retrieved. Please try again."
 )
 ASSET_ASSIGNMENT_FAILED = "Failed to assign asset. Please try again."
 
+ASSET_FIELD_VALUE_QUERY_PARAM_NOT_FOUND = "No valid Asset Field Value Query Param was found"
+ASSET_FIELD_NOT_FOUND = "No valid Asset Field was found"
+ASSET_FIELD_NOT_FILTERABLE = "Asset Field is not filterable"
 
 # Asset Success Messages
 ASSET_LIST_SUCCESSFULLY_RETRIEVED = "Asset list is successfully retreived."
@@ -173,4 +177,4 @@ MEMORY_CREATION_UNSUCCESSFUL = "Memory creation is unsuccessful"
 MEMORY_SUCCESSFULLY_RETRIEVED = "Memory retrieved succesfully"
 MEMORY_EXISTS = "Memory already exists"
 
-ASSET_DELETION_SUCCESSFUL="Asset Deletion is sucessful"
+ASSET_DELETION_SUCCESSFUL = "Asset Deletion is sucessful"

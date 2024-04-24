@@ -1,4 +1,3 @@
-from .AssetSearchView import AssetSearchWithFilterView
 from .asset_view import AssetView, UserAgentAssetView
 from .asset_approve_view import AssetApproveView
 from .asset_type_view import AssetTypeView
@@ -25,7 +24,6 @@ __all__ = [
     "EmployeeView",
     "AssignAssetView",
     "UnassignAssetView",
-    "AssetSearchWithFilterView",
     "AssetLogView",
     "DataImportView",
     "AssetExportView",

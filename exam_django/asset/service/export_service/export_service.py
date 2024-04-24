@@ -17,11 +17,25 @@ from asset.models.memory import Memory
 from asset.models.business_unit import BusinessUnit
 from asset.models.location import Location
 from asset.models.employee import Employee
+from reportlab.lib.pagesizes import letter
+import openpyxl
+from io import BytesIO
+from reportlab.lib import colors
+from openpyxl.styles import NamedStyle
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from user_auth.models import User
+from asset.models.memory import Memory
+from asset.models.business_unit import BusinessUnit
+from asset.models.location import Location
+from asset.models.employee import Employee
 from asset.models import Asset
 from reportlab.platypus import Paragraph,Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 
 class ExportService:
+    @staticmethod
+    def export_asset(format: str):
     @staticmethod
     def export_asset(format: str):
         # Retrieve all assets from the database

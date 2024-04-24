@@ -11,7 +11,14 @@ import DropDown from "../DropDown/DropDown";
 import DrawerViewRequest from "./DrawerViewRequest";
 import { QueryBuilderComponent } from "../QueryBuilder/QueryBuilder";
 
-const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
+interface TableNavbarProps {
+  showUpload : boolean;
+  setShowUpload: (value:boolean)=>void ;
+  assetDataRefetch : (queryParam:string) => void;
+  reset : () => void;
+}
+
+const TableNavbar :  React.FC<TableNavbarProps> = ({ showUpload, setShowUpload, assetDataRefetch ,reset }) => {
   const [visible, setVisible] = useState(false);
   const decodeJWT = (token: string) => {
     try {
@@ -178,13 +185,16 @@ const TableNavbar = ({ showUpload, setShowUpload, assetDataRefetch }) => {
         onSearch={handleSearch}
         assetDataRefetch={assetDataRefetch}
       />
+
+      <button  className={styles["button"]} onClick={reset} >reset</button>
+
       <button onClick={showQueryBuilder} className={styles["button"]} >Advanced Search</button>
       <DrawerViewRequest
         title="Advanced Search"
         onClose={closeQueryBuilder}
-        open={visible}
+        visible={visible}
       >
-        <QueryBuilderComponent assetDataRefetch={assetDataRefetch}/>
+        <QueryBuilderComponent assetDataRefetch={assetDataRefetch} onClose={closeQueryBuilder}/>
       </DrawerViewRequest>
       <DropDown
         onSelect={handleDropDownSelect}
