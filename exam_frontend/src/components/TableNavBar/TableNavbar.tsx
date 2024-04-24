@@ -15,11 +15,13 @@ interface TableNavbarProps {
   showUpload : boolean;
   setShowUpload: (value:boolean)=>void ;
   assetDataRefetch : (queryParam:string) => void;
+  onLogicChange: React.Dispatch<any>; 
   reset : () => void;
 }
 
 const TableNavbar :  React.FC<TableNavbarProps> = ({ showUpload, setShowUpload, assetDataRefetch ,reset }) => {
   const [visible, setVisible] = useState(false);
+  const [jsonLogic, setJsonLogic] = useState<JsonLogicType | null>(null);
   const decodeJWT = (token: string) => {
     try {
       const base64Url = token.split(".")[1];
@@ -88,10 +90,12 @@ const TableNavbar :  React.FC<TableNavbarProps> = ({ showUpload, setShowUpload, 
     }
   };
 
-  const handleExport = async (format: 'csv' | 'xlsx' | 'pdf') => {
+  const handleExport = async (format: 'csv' | 'xlsx' | 'pdf',jsonLogic: any) => {
     try {
+
+      
       // Make an API call to the backend to export assets
-      const response = await axiosInstance.get(`/asset/export?export_format=${format}`, {
+      const response = await axiosInstance.get(`/asset/export?export_format=${format}&json_logic=${encodeURIComponent(JSON.stringify(jsonLogic))}`, {
         responseType: 'blob' // Receive response as a binary blob
       });
 
@@ -142,7 +146,7 @@ const TableNavbar :  React.FC<TableNavbarProps> = ({ showUpload, setShowUpload, 
     } else if (key === "downloadTemplate") {
       handleTemplateDownload();
     } else {
-      handleExport(key as 'csv' | 'xlsx' | 'pdf');
+      handleExport(key as 'csv' | 'xlsx' | 'pdf', jsonLogic);
     }
   };
   // Define the items for the import dropdown with icons
@@ -172,6 +176,11 @@ const TableNavbar :  React.FC<TableNavbarProps> = ({ showUpload, setShowUpload, 
   const closeQueryBuilder = () => {
     setVisible(false);
   };
+  const onLogicChange = (newLogic: any) => {
+    // Update the state with the new logic
+    setJsonLogic(newLogic);
+  };
+  
   return (
     <nav className={styles["navbar"]}>
       {getUserScope() === "LEAD" && (
@@ -194,7 +203,7 @@ const TableNavbar :  React.FC<TableNavbarProps> = ({ showUpload, setShowUpload, 
         onClose={closeQueryBuilder}
         visible={visible}
       >
-        <QueryBuilderComponent assetDataRefetch={assetDataRefetch} onClose={closeQueryBuilder}/>
+        <QueryBuilderComponent onLogicChange={setJsonLogic}  assetDataRefetch={assetDataRefetch} onClose={closeQueryBuilder}/>
       </DrawerViewRequest>
       <DropDown
         onSelect={handleDropDownSelect}
