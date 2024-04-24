@@ -88,6 +88,8 @@ ASSET_COUNT_SUCCESSFULLY_RETRIEVED = "Asset count is successfully retreived."
 ASSET_CREATE_PENDING_SUCCESSFUL = "Asset Creation successfully added to pending state. Approval required to complete Asset Creation."
 ASSET_UPDATE_PENDING_SUCCESSFUL = "Asset Updation successfully added to pending state. Approval required to complete Asset Updation."
 
+AI_RESPONSE_OBTAINED_SUCCESSFULLY = "AI Response is successfully obtained."
+
 # Approval Exception Messages
 APPROVAL_TYPE_NOT_FOUND = (
     "Specified approval type is not valid. Try with correct value."

@@ -28,6 +28,7 @@ import ApprovedRequestPage from "./pages/ApprovedRequest/ApprovedRequestPage";
 import MyApprovalPage from "./pages/MyApprovals/MyApprovalPage";
 import Deallocate from "./pages/Deallocate/Deallocate";
 import RejectedAllocationAsset from "./pages/RejectedAssetPage/RejectedAllocation";
+import AssetSense from "./components/ChatBot/assetSense";
 
 const ExamRoutes = () => {
   const { authenticated, setAuthenticated, userRole } = useAuth();
@@ -82,6 +83,7 @@ const ExamRoutes = () => {
                   <Route path="/rejected_allocation" element={<RejectedAllocationAsset/>}/>
                   <Route  path="/approved_requests" element={<ApprovedRequestPage />}/>
                   <Route path="/my_approvals" element={<MyApprovalPage />}/>
+                  <Route path="/chat" element={<AssetSense/>}/>
                 </Routes>
               </SidebarComponentNew>
             }

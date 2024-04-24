@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "user_auth",
     "asset",
+    "ai",
     "drf_yasg",
 ]
 
