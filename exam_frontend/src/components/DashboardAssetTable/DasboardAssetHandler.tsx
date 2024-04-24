@@ -142,6 +142,7 @@ const DasboardAssetHandler = () => {
 
   const handleSort = (column) => {
     return {
+      
       sorter: (a, b) => {
         // Check the column name and perform sorting accordingly
         switch (column) {
@@ -156,6 +157,8 @@ const DasboardAssetHandler = () => {
           case "version":
           case "warranty_period":
           case "date_of_purchase":
+          case "created_at":
+          case "updated_at":
             // If the column is numeric, convert to number and perform sorting
             return parseInt(a[column]) - parseInt(b[column]);
           default:
@@ -181,50 +184,6 @@ const DasboardAssetHandler = () => {
       width: 120,
       responsive: ["md"],
       ...handleSort("product_name"),
-
-      // filterIcon: <SearchOutlined />,
-      filterDropdown: ({
-        setSelectedKeys,
-        selectedKeys,
-        confirm,
-        clearFilters,
-      }) => (
-        <div style={{ padding: 8 }}>
-          <Input
-            placeholder="Search Product Name"
-            value={selectedKeys[0]}
-            onChange={(e) =>
-              setSelectedKeys(e.target.value ? [e.target.value] : [])
-            }
-            onPressEnter={() => confirm()}
-            style={{ marginBottom: 8, display: "block" }}
-          />
-          <Space>
-            <button
-              type="button"
-              onClick={confirm}
-              style={{ width: 90, fontSize: "16px" }}
-            >
-              Search
-            </button>
-            <button
-              type="button"
-              onClick={clearFilters}
-              style={{ width: 90, fontSize: "16px" }}
-            >
-              Reset
-            </button>
-          </Space>
-        </div>
-      ),
-      // onFilter: (value, record) => {
-      //   if (Array.isArray(value)) {
-      //     return value.includes(record.product_name);
-      //   }
-      //   return record.product_name.indexOf(value.toString()) === 0;
-      // },
-      // sorter: (a, b) => a.product_name.localeCompare(b.product_name),
-      // sortDirections: ["ascend", "descend"],
        render: renderClickableColumn("Product Name", "product_name"),
 
     },
@@ -234,48 +193,6 @@ const DasboardAssetHandler = () => {
       responsive: ["md"],
       width: 120,
       filterIcon: <SearchOutlined />,
-      filterDropdown: ({
-        setSelectedKeys,
-        selectedKeys,
-        confirm,
-        clearFilters,
-      }) => (
-        <div style={{ padding: 8 }}>
-          <Input
-            placeholder="Search Serial Number"
-            value={selectedKeys[0]}
-            onChange={(e) =>
-              setSelectedKeys(e.target.value ? [e.target.value] : [])
-            }
-            onPressEnter={() => confirm()}
-            style={{ marginBottom: 8, display: "block" }}
-          />
-          <Space>
-            <button
-              type="button"
-              onClick={confirm}
-              style={{ width: 90, fontSize: "16px" }}
-            >
-              Search
-            </button>
-            <button
-              type="button"
-              onClick={clearFilters}
-              style={{ width: 90, fontSize: "16px" }}
-            >
-              Reset
-            </button>
-          </Space>
-        </div>
-      ),
-      onFilter: (value, record) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.serial_number);
-        }
-        return record.serial_number.indexOf(value.toString()) === 0;
-      },
-      sorter: (a, b) => a.serial_number.localeCompare(b.serial_number),
-      sortDirections: ["ascend", "descend"],
       render: renderClickableColumn("Serial Number", "serial_number"),
 
     },
@@ -590,6 +507,7 @@ const DasboardAssetHandler = () => {
       dataIndex: 'created_at',
       responsive: ['md'],
       width: 120,
+      ...handleSort("created_at"),
       render: renderClickableColumn("Accessories", "updated_at"),
     
     },
@@ -598,6 +516,7 @@ const DasboardAssetHandler = () => {
       dataIndex: 'updated_at',
       responsive: ['md'],
       width: 120,
+      ...handleSort("updated_at"),
       render: renderClickableColumn("Accessories", "updated_at"),
 
     },
