@@ -138,6 +138,35 @@ const DasboardAssetHandler = () => {
     console.log("Viewing asset log for asset ID:", assetId);
   };
 
+  const handleSort = (column) => {
+    return {
+      sorter: (a, b) => {
+        // Check the column name and perform sorting accordingly
+        switch (column) {
+          case "product_name":
+          case "location":
+          case "invoice_location":
+          case "asset_type":
+          case "requester":
+          case "custodian":
+          case "approved_by":
+            return a[column].localeCompare(b[column]);
+          case "version":
+          case "warranty_period":
+          case "date_of_purchase":
+            // If the column is numeric, convert to number and perform sorting
+            return parseInt(a[column]) - parseInt(b[column]);
+          default:
+            // For any other column, return 0 to maintain the current order
+            return 0;
+        }
+      },
+      sortDirections: ["ascend", "descend"],
+      defaultSortOrder: "ascend", // Initial default sort order
+    };
+  };
+  
+
   <div>
     <h1>Asset Overview</h1>
   </div>;
@@ -149,6 +178,8 @@ const DasboardAssetHandler = () => {
       fixed: "left",
       width: 120,
       responsive: ["md"],
+      ...handleSort("product_name"),
+
       // filterIcon: <SearchOutlined />,
       filterDropdown: ({
         setSelectedKeys,
@@ -184,15 +215,15 @@ const DasboardAssetHandler = () => {
           </Space>
         </div>
       ),
-      onFilter: (value, record) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.product_name);
-        }
-        return record.product_name.indexOf(value.toString()) === 0;
-      },
-      sorter: (a, b) => a.product_name.localeCompare(b.product_name),
-      sortDirections: ["ascend", "descend"],
-      render: renderClickableColumn("Product Name", "product_name"),
+      // onFilter: (value, record) => {
+      //   if (Array.isArray(value)) {
+      //     return value.includes(record.product_name);
+      //   }
+      //   return record.product_name.indexOf(value.toString()) === 0;
+      // },
+      // sorter: (a, b) => a.product_name.localeCompare(b.product_name),
+      // sortDirections: ["ascend", "descend"],
+       render: renderClickableColumn("Product Name", "product_name"),
 
     },
     {
@@ -252,6 +283,7 @@ const DasboardAssetHandler = () => {
       dataIndex: "location",
       responsive: ["md"],
       width: 120,
+      ...handleSort("location"),
       filters: locationFilters,
       onFilter: (
         value: string | number | boolean | React.ReactText[] | Key,
@@ -270,6 +302,7 @@ const DasboardAssetHandler = () => {
       dataIndex: "invoice_location",
       responsive: ["md"],
       width: 120,
+      ...handleSort("invoice_location"),
       filters: locationFilters,
       onFilter: (
         value: string | number | boolean | React.ReactText[] | Key,
@@ -288,6 +321,7 @@ const DasboardAssetHandler = () => {
       dataIndex: "custodian",
       responsive: ["md"],
       width: 120,
+      ...handleSort("custodian"),
       filterIcon: <SearchOutlined />,
       filterDropdown: ({
         setSelectedKeys,
@@ -342,6 +376,8 @@ const DasboardAssetHandler = () => {
       responsive: ["md"],
       // fixed: "right",
       width: 120,
+      ...handleSort("asset_type"),
+
       filters: assetTypeFilters,
       onFilter: (
         value: string | number | boolean | React.ReactText[] | Key,
@@ -359,6 +395,7 @@ const DasboardAssetHandler = () => {
       dataIndex: "asset_category",
       responsive: ["md"],
       width: 140,
+      
       render: renderClickableColumn("Asset Category", "asset_category"),
     },
     {
@@ -366,6 +403,8 @@ const DasboardAssetHandler = () => {
       dataIndex: 'Version',
       responsive: ['md'],
       width: 120,
+      ...handleSort("version"),
+
       render: renderClickableColumn("Version", "version"),
 
     },
@@ -374,6 +413,7 @@ const DasboardAssetHandler = () => {
       dataIndex: 'Status',
       responsive: ['md'],
       width: 140,
+
       render: renderClickableColumn("Asset Status", "status"),
 
     },
@@ -382,6 +422,7 @@ const DasboardAssetHandler = () => {
       dataIndex: 'BusinessUnit',
       responsive: ['md'],
       width: 120,
+      
       render: renderClickableColumn("Business Unit", "business_unit"),
 
     },
@@ -423,6 +464,8 @@ const DasboardAssetHandler = () => {
       dataIndex: 'DateOfPurchase',
       responsive: ['md'],
       width: 120,
+      ...handleSort("date_of_purchase"),
+
       render: renderClickableColumn("Asset Status", "date_of_purchase"),
 
     },
@@ -431,6 +474,8 @@ const DasboardAssetHandler = () => {
       dataIndex: 'WarrantyPeriod',
       responsive: ['md'],
       width: 120,
+      ...handleSort("warranty_period"),
+
       render: renderClickableColumn("Asset Status", "warranty_period"),
 
     },
@@ -524,6 +569,7 @@ const DasboardAssetHandler = () => {
       title: 'Approved By',
       dataIndex: 'approved_by',
       responsive: ['md'],
+      ...handleSort("approved_by"),
       width: 120,
       render: renderClickableColumn("Approved By", "approved_by"),
 
@@ -533,6 +579,8 @@ const DasboardAssetHandler = () => {
       dataIndex: 'requester',
       responsive: ['md'],
       width: 120,
+      ...handleSort("requester"),
+
       render: renderClickableColumn("Requester", "requester"),
 
     },
