@@ -53,7 +53,8 @@ const AssetTable = ({
   showAssignDrawer,
   asset_uuid,
   logsData,
-  isLoading,
+  // isLoading,
+  isAssetDataLoading,
   isSuccess,
   selectedAssetId,
   setSelectedAssetId,
@@ -97,18 +98,18 @@ const AssetTable = ({
       <div className="mainHeading" style={{ background: "white" }}>
         <div className=" font-display">Allocate Assets</div>
       </div>
-      <div style={{ marginLeft: "40px",marginBottom:"30px" }}>
+      <div style={{ marginLeft: "40px", marginBottom: "30px" }}>
         <GlobalSearch
           onSearch={handleSearch}
           assetDataRefetch={assetDataRefetch}
         />
       </div>
-   
       <div
         style={{
           position: "relative",
           display: "inline-block",
           background: "white",
+          width: "80vw",
         }}
       >
         <SideDrawerComponent
@@ -121,6 +122,7 @@ const AssetTable = ({
         <Table
           columns={columns}
           dataSource={assetData}
+          loading={isAssetDataLoading}
           scroll={{ y: 600 }}
           className="mainTable"
           pagination={false}
@@ -129,12 +131,11 @@ const AssetTable = ({
           style={{
             fontSize: "50px",
             borderColor: "white",
-            width: "29%",
-            marginLeft: "1%",
+            // width: "29%",
+            marginLeft: "3.5%",
             boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-            marginRight: "120px",
+            // marginRight: "120px",
           }}
-
           footer={() => (
             <Pagination
               pageSize={20}

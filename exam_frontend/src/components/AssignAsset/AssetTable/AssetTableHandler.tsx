@@ -58,7 +58,7 @@ const AssetTableHandler = ({ showAssignDrawer,queryParamProp }) => {
   // });
 
   const [queryParam, setQueryParam] = useState("");
-  const { data: assetData, refetch: assetDataRefetch } = useQuery({
+  const { data: assetData, isLoading: isAssetDataLoading, refetch: assetDataRefetch } = useQuery({
     queryKey: ["assetList", queryParam],
     queryFn: () => getAssetDetails(`${queryParamProp + queryParam}`),
   });
@@ -91,7 +91,10 @@ const AssetTableHandler = ({ showAssignDrawer,queryParamProp }) => {
   };
 
   const statusOptions =
-    assetData?.results?.map((item: AssetResult) => item.status) || [];
+  (assetData?.results?.map((item: AssetResult) =>
+    item.status === 'IN STORE' ? 'IN STOCK' : item.status
+  ) || []);
+
   const businessUnitOptions =
     assetData?.results?.map(
       (item: AssetResult) => item.business_unit.business_unit_name
@@ -588,7 +591,7 @@ const AssetTableHandler = ({ showAssignDrawer,queryParamProp }) => {
     asset_category: result.asset_category,
     asset_type: result.asset_type?.asset_type_name,
     version: result.version,
-    status: result.status,
+    status: result.status === "IN STORE" ? "IN STOCK" : result.status,
     location: result.location?.location_name,
     invoice_location: result.invoice_location?.location_name,
     business_unit: result.business_unit?.business_unit_name,
@@ -626,7 +629,7 @@ const AssetTableHandler = ({ showAssignDrawer,queryParamProp }) => {
      totalItemCount={assetData?.count}
       handleRowClick={handleRowClick}
       assetPageDataFetch={refetchAssetData}
-
+      isAssetDataLoading={isAssetDataLoading}
       onCloseDrawer={onCloseDrawer}
       selectedRow={selectedRow}
       drawerVisible={drawerVisible}

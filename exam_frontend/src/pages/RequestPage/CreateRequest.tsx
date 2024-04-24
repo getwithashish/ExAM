@@ -4,25 +4,35 @@ import { HiPencilAlt } from "react-icons/hi";
 import axiosInstance from "../../config/AxiosConfig";
 import React from "react";
 import DrawerViewRequest from "./DrawerViewRequest";
+import InfoIcon from "@mui/icons-material/Info";
+import { Pagination } from "antd";
 
 const CreateRequestPage: FC = function () {
   const [assets, setAssets] = useState<any[]>([]);
   const [selectedAsset, setSelectedAsset] = useState<any | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState<number>(1); // Step 2: Initialize currentPage state
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
 
   useEffect(() => {
     fetchAssets();
-  }, []);
+  }, [currentPage, pageSize]);
 
   const fetchAssets = () => {
     setLoading(true);
+    const offset = (currentPage - 1) * pageSize;
     axiosInstance
-      .get("/asset/?limit=100&asset_detail_status=CREATE_PENDING")
+      .get(
+        `/asset/?limit=${pageSize}&offset=${offset}&asset_detail_status=CREATE_PENDING`
+      )
       .then((response) => {
         const createPendingAssets = response.data.data.results;
+        const totalAssets = response.data.data.count;
         console.log("createPendingAssets", createPendingAssets);
         setAssets(createPendingAssets);
+        setTotalPages(Math.ceil(totalAssets / 10)); // Calculate total pages based on total assets
       })
       .catch((error) => {
         console.error("Error fetching assets:", error);
@@ -74,11 +84,49 @@ const CreateRequestPage: FC = function () {
     }
   };
 
-  const filteredAssets = assets.filter((asset) =>
-    asset.asset_type.asset_type_name
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase())
+  const filteredAssets = assets.filter(
+    (asset) =>
+      asset.asset_type?.asset_type_name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      String(asset.version)
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      asset.asset_category?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.product_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.model_number?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.serial_number?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.owner?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      String(asset.date_of_purchase)
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      String(asset.warranty_period)
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      asset.os?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.os_version?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.mobile_os?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.processor?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.processor_gen?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.storage?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.configuration?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.accessories?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.location?.location_name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      asset.business_unit?.business_unit_name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      asset.requester?.username
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase())
   );
+
+  const onShowSizeChange = (_: number, size: number) => {
+    setPageSize(size); // Update the pageSize when the user changes it
+    setCurrentPage(1); // Reset to the first page when changing the pageSize
+  };
+
   return (
     <React.Fragment>
       <div className="bg-white py-2">
@@ -157,7 +205,7 @@ const CreateRequestPage: FC = function () {
           <div className="mb-1 w-full">
             <div className="mb-4">
               <h1 className="font-medium font-display mx-3 leading-none text-gray-900 dark:text-white text-3xl">
-                Asset Creation Approval Request
+                Asset creation requests
               </h1>
             </div>
             <div className="block items-center sm:flex">
@@ -172,7 +220,7 @@ const CreateRequestPage: FC = function () {
                 <p>Loading...</p>
               </div>
             ) : (
-              <div className="inline-block w-full align-middle mx-2">
+              <div className="inline-block w-full align-middle">
                 <div className="overflow-hidden">
                   <RequestTable
                     assets={filteredAssets}
@@ -183,6 +231,14 @@ const CreateRequestPage: FC = function () {
             )}
           </div>
         </div>
+        <Pagination
+          showSizeChanger
+          onShowSizeChange={onShowSizeChange}
+          pageSize={pageSize}
+          current={currentPage}
+          total={totalPages * pageSize}
+          onChange={setCurrentPage}
+        />
         {selectedAsset && (
           <ViewRequestModal
             asset={selectedAsset}
@@ -199,22 +255,42 @@ const CreateRequestPage: FC = function () {
 const SearchRequests: FC<{
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
 }> = function ({ setSearchQuery }) {
+  const [showInfo, setShowInfo] = useState(false); // State to manage visibility of info message
+
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
 
   return (
-    <form className="mb-4 sm:mb-0 sm:pr-3" action="#" method="GET">
+    <form className="mb-4 sm:mb-0 sm:pr-3 relative " action="#" method="GET">
       <Label htmlFor="search-request" className="sr-only font-display">
         Search
       </Label>
-      <div className="relative mt-1 lg:w-64 xl:w-96">
+      <div className="relative mt-1 lg:w-64 xl:w-96 ">
         <TextInput
           id="search-request"
           name="search-request"
           placeholder="Search for requests"
           onChange={handleSearchChange}
         />
+        <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+          {showInfo && (
+            <div className="absolute top-0 right-full w-max bg-gray-700 p-2 rounded-lg shadow-lg">
+              <p className="text-white text-xs">
+                Works with a few fields only,
+                <br />
+                will expand in future.
+                <ol></ol>
+              </p>
+            </div>
+          )}
+          <InfoIcon
+            className="h-5 w-5 text-gray-400 cursor-pointer"
+            aria-hidden="true"
+            onMouseEnter={() => setShowInfo(true)} // Show info on mouse enter
+            onMouseLeave={() => setShowInfo(false)} // Hide info on mouse leave
+          />
+        </div>
       </div>
     </form>
   );
@@ -225,34 +301,51 @@ const RequestTable: FC<{
   setSelectedAsset: (asset: any | null) => void;
 }> = function ({ assets, setSelectedAsset }) {
   return (
-    <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600 rounded-md mx-10 ">
-      <Table.Head className="bg-gray-100 dark:bg-gray-700 font-display">
+    <Table className="min-w-full divide-y font-display divide-gray-200 dark:divide-gray-600 mx-2 my-2 rounded-lg">
+      <Table.Head className="bg-gray-100 dark:bg-gray-700">
+        <Table.HeadCell>Asset Type</Table.HeadCell>
+        <Table.HeadCell>Product Name</Table.HeadCell>
         <Table.HeadCell>Requester</Table.HeadCell>
-        <Table.HeadCell>Request Date</Table.HeadCell>
+        <Table.HeadCell>Created at</Table.HeadCell>
         <Table.HeadCell>Actions</Table.HeadCell>
       </Table.Head>
-      <Table.Body className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800 font-display">
-        {assets.map((asset) => (
-          <Table.Row
-            key={asset.asset_uuid}
-            className="hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            <Table.Cell className="whitespace-nowrap p-4 text-base font-display font-md text-left text-gray-900 dark:text-white">
-              {asset.requester.username}
-            </Table.Cell>
-            <Table.Cell className="whitespace-nowrap p-4 text-base font-display font-xs text-gray-900 dark:text-white">
-              {new Date(asset.created_at).toLocaleDateString()}
-            </Table.Cell>
-            <Table.Cell className="space-x-2 whitespace-nowrap p-4">
-              <div className="flex items-center gap-x-3">
-                <Button color="primary" onClick={() => setSelectedAsset(asset)}>
-                  <HiPencilAlt className="mr-2 text-lg font-display" />
-                  View
-                </Button>
-              </div>
-            </Table.Cell>
-          </Table.Row>
-        ))}
+      <Table.Body className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
+        {assets.map(
+          (
+            asset // Changed 'assets' to 'asset' to avoid naming conflict
+          ) => (
+            <Table.Row
+              key={asset.asset_uuid}
+              className="hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
+                <div className="text-base font-normal text-gray-900 dark:text-white">
+                  {asset.asset_type.asset_type_name}
+                </div>
+              </Table.Cell>
+              <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
+                {asset.product_name}
+              </Table.Cell>
+              <Table.Cell className="whitespace-nowrap p-4 text-base font-md text-gray-900 dark:text-white">
+                {asset.requester.username}
+              </Table.Cell>
+              <Table.Cell className="whitespace-nowrap p-4 text-base font-sm text-gray-900 dark:text-white">
+                {new Date(asset.created_at).toLocaleDateString()}
+              </Table.Cell>
+              <Table.Cell className="space-x-2 whitespace-nowrap p-4">
+                <div className="flex items-center gap-x-3">
+                  <Button
+                    color="primary"
+                    onClick={() => setSelectedAsset(asset)}
+                  >
+                    <HiPencilAlt className="mr-2 text-lg font-display" />
+                    View
+                  </Button>
+                </div>
+              </Table.Cell>
+            </Table.Row>
+          )
+        )}
       </Table.Body>
     </Table>
   );
