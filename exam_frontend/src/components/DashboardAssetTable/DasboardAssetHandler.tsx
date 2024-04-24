@@ -531,23 +531,6 @@ const DasboardAssetHandler = () => {
       dataIndex: 'Memory',
       responsive: ['md'],
       width: 120,
-      filters: [
-        {
-          text: '16Gb',
-          value: '16Gb',
-        },
-        {
-          text: '128Gb',
-          value: '128Gb',
-        },
-      ],
-      
-      onFilter: (value: string | number | boolean | React.ReactText[], record: DataType) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.memory);
-        }
-        return record.memory.indexOf(value.toString()) === 0;
-      },
       render: renderClickableColumn("Asset Status", "memory"),
 
     },
