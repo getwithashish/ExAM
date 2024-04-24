@@ -139,7 +139,7 @@ const TableNavbar :  React.FC<TableNavbarProps> = ({ showUpload, setShowUpload, 
         assetDataRefetch={assetDataRefetch}
       />
 
-      <button  className={styles["button"]} onClick={reset} >reset</button>
+      <button  className={styles["button"]} onClick={reset} >Reset</button>
 
       <button onClick={showQueryBuilder} className={styles["button"]} >Advanced Search</button>
       <DrawerViewRequest
