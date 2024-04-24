@@ -85,26 +85,70 @@ const AssignPage: FC = function () {
     }
   };
 
-  const filteredAssigns = assignRequests.filter((assignRequest) =>
-    assignRequest.asset_type.asset_type_name.toLowerCase().includes(searchQuery.toLowerCase())||
-    String(assignRequest.version).toLowerCase().includes(searchQuery.toLowerCase()) ||
-    assignRequest.asset_category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    assignRequest.product_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    assignRequest.model_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    assignRequest.serial_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    assignRequest.owner.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    String(assignRequest.date_of_purchase).toLowerCase().includes(searchQuery.toLowerCase()) ||
-    String(assignRequest.warranty_period).toLowerCase().includes(searchQuery.toLowerCase()) ||
-    assignRequest.os.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    assignRequest.os_version.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    assignRequest.mobile_os.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    assignRequest.processor.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    assignRequest.processor_gen.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    assignRequest.storage.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    assignRequest.configuration.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    assignRequest.accessories.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    assignRequest.location.location_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    assignRequest.business_unit.business_unit_name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredAssigns = assignRequests.filter(
+    (assignRequest) =>
+      assignRequest.asset_type?.asset_type_name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      String(assignRequest.version)
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      assignRequest.asset_category
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      assignRequest.product_name
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      assignRequest.model_number
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      assignRequest.serial_number
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      assignRequest.owner?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      String(assignRequest.date_of_purchase)
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      String(assignRequest.warranty_period)
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      assignRequest.os?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      assignRequest.os_version
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      assignRequest.mobile_os
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      assignRequest.processor
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      assignRequest.processor_gen
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      assignRequest.storage
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      assignRequest.configuration
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      assignRequest.accessories
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      assignRequest.location.location_name
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      assignRequest.business_unit.business_unit_name
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      assignRequest.requester?.username
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      assignRequest.approved_by?.username
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      assignRequest.custodian?.employee_name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase())
   );
 
   const onShowSizeChange = (_: number, size: number) => {

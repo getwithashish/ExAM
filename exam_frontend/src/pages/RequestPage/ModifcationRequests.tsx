@@ -87,26 +87,48 @@ const ModificationRequests: FC = function () {
     }
   };
 
-  const filteredAssets = assets.filter((asset) =>
-    asset.asset_type.asset_type_name.toLowerCase().includes(searchQuery.toLowerCase())||
-    String(asset.version).toLowerCase().includes(searchQuery.toLowerCase()) ||
-    asset.asset_category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    asset.product_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    asset.model_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    asset.serial_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    asset.owner.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    String(asset.date_of_purchase).toLowerCase().includes(searchQuery.toLowerCase()) ||
-    String(asset.warranty_period).toLowerCase().includes(searchQuery.toLowerCase()) ||
-    asset.os.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    asset.os_version.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    asset.mobile_os.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    asset.processor.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    asset.processor_gen.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    asset.storage.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    asset.configuration.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    asset.accessories.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    asset.location.location_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    asset.business_unit.business_unit_name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredAssets = assets.filter(
+    (asset) =>
+      asset.asset_type?.asset_type_name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      String(asset.version)
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      asset.asset_category?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.product_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.model_number?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.serial_number?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.owner?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      String(asset.date_of_purchase)
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      String(asset.warranty_period)
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      asset.os?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.os_version?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.mobile_os?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.processor?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.processor_gen?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.storage?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.configuration?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.accessories?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.location.location_name
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      asset.business_unit.business_unit_name
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      asset.requester?.username
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      asset.approved_by?.username
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      asset.custodian?.employee_name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase())
   );
 
   const onShowSizeChange = (_: number, size: number) => {
