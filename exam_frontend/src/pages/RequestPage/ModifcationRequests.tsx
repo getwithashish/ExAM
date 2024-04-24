@@ -6,8 +6,9 @@ import React from "react";
 import DrawerViewRequest from "./DrawerViewRequest";
 import { styled } from "@mui/material/styles";
 import Tooltip, { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
-import InfoIcon from "@mui/icons-material/Info";
-import { Pagination } from "antd";
+import InfoIcon from '@mui/icons-material/Info'; 
+import { Pagination } from 'antd';
+
 
 const ModificationRequests: FC = function () {
   const [assets, setAssets] = useState<any[]>([]);
@@ -17,7 +18,8 @@ const ModificationRequests: FC = function () {
   const [latestLogData, setLatestLogData] = useState<any | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(10);
+  const [pageSize, setPageSize] = useState<number>(10); 
+
 
   useEffect(() => {
     fetchAssets();
@@ -26,10 +28,7 @@ const ModificationRequests: FC = function () {
   const fetchAssets = () => {
     setLoading(true);
     const offset = (currentPage - 1) * pageSize;
-    axiosInstance
-      .get(
-        `/asset/?limit=${pageSize}&offset=${offset}&asset_detail_status=UPDATE_PENDING`
-      )
+    axiosInstance.get(`/asset/?limit=${pageSize}&offset=${offset}&asset_detail_status=UPDATE_PENDING`)
       .then((response) => {
         const updatePendingAssets = response.data.data.results;
         const totalAssets = response.data.data.count;
@@ -137,6 +136,7 @@ const ModificationRequests: FC = function () {
     setCurrentPage(1);
   };
 
+
   return (
     <React.Fragment>
       <div className="bg-white py-2">
@@ -243,13 +243,13 @@ const ModificationRequests: FC = function () {
           </div>
         </div>
         <Pagination
-          showSizeChanger
-          onShowSizeChange={onShowSizeChange}
-          pageSize={pageSize}
-          current={currentPage}
-          total={totalPages * pageSize}
-          onChange={setCurrentPage}
-        />
+            showSizeChanger
+            onShowSizeChange={onShowSizeChange}
+            pageSize={pageSize}
+            current={currentPage}
+            total={totalPages * pageSize}
+            onChange={setCurrentPage}
+          />
         {selectedAsset && (
           <ViewRequestModal
             asset={selectedAsset}
@@ -502,6 +502,13 @@ const ViewRequestModal: FC<{
       label: "MOBILE OS",
       name: "mobile_os",
       value: asset.mobile_os,
+      disabled: true,
+    },
+    {
+      id: "memory",
+      label: "MEMORY",
+      name: "memory",
+      value: asset.memory.memory_space,
       disabled: true,
     },
     {
