@@ -1,3 +1,4 @@
+import base64
 import csv
 import openpyxl
 
@@ -89,11 +90,15 @@ class DataImportView(APIView):
                         skipped_fields_data, missing_fields_data
                     )
 
-                content_type = "application/zip"
-                response = HttpResponse(data_to_be_returned, content_type=content_type)
-                response["Content-Disposition"] = (
-                    'attachment; filename="import_status.zip"'
-                )
+                # content_type = "application/zip"
+                base64_encoded = base64.b64encode(
+                    data_to_be_returned.getvalue()
+                ).decode("utf-8")
+                response = HttpResponse(base64_encoded, content_type='text/plain')
+                # response = HttpResponse(data_to_be_returned, content_type=content_type)
+                # response["Content-Disposition"] = (
+                #     'attachment; filename="import_status.zip"'
+                # )
 
                 # response = HttpResponse(missing_fields_data, content_type=content_type)
                 # response["Content-Disposition"] = (
