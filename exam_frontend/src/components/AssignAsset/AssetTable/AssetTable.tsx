@@ -104,7 +104,6 @@ const AssetTable = ({
           assetDataRefetch={assetDataRefetch}
         />
       </div>
-
       <div
         style={{
           position: "relative",
