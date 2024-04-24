@@ -891,7 +891,7 @@ const AddAsset: React.FC = () => {
               placeholder="Select Approval"
               onChange={(value) => handleInputChange("status", value)}
             >
-              <Option value="in store">IN-STORE</Option>
+              <Option value="in store">IN-STOCK</Option>
               <Option value="in repair">IN-REPAIR</Option>
               <Option value="expired">EXPIRED</Option>
               <Option value="disposed">DISPOSED</Option>
