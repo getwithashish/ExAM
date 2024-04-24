@@ -85,10 +85,10 @@ export const AssetTimelineHandler = ({ assetUuid }: { assetUuid: string }) => {
                     <Timeline.Title>{log.operation}</Timeline.Title>
                     <Timeline.Body>
                       <ul>
-                        {Object.entries(log.changes).map(([key, value]: [string, any]) => (
-                          <li key={key}>
+                      {Object.entries(log.changes).map(([key, value]: [string, any]) => (
+                        <li key={key}>
                           {key === "requester_id" ? (
-                            <span>Requester: {value.new_value}</span>
+                            <span>Requester: {value.old_value}</span> 
                           ) : key === "custodian" ? (
                             <>
                               {value.old_value !== "None" && (
@@ -116,7 +116,7 @@ export const AssetTimelineHandler = ({ assetUuid }: { assetUuid: string }) => {
                             </>
                           )}
                         </li>
-                        ))}
+                      ))}
                       </ul>
                     </Timeline.Body>
                   </Timeline.Content>

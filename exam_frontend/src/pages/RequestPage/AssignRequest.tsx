@@ -148,7 +148,10 @@ const AssignPage: FC = function () {
         .includes(searchQuery.toLowerCase()) ||
       assignRequest.custodian?.employee_name
         .toLowerCase()
-        .includes(searchQuery.toLowerCase())
+        .includes(searchQuery.toLowerCase())||
+        assignRequest.memory?.memory_space
+       ?.toLowerCase()
+       .includes(searchQuery.toLowerCase())
   );
 
   const onShowSizeChange = (_: number, size: number) => {
@@ -412,6 +415,13 @@ const ViewRequestModal: FC<{
       disabled: true,
     },
     {
+      id: "assetType",
+      label: "ASSET TYPE",
+      name: "assetType",
+      value: assignRequest.asset_type.asset_type_name,
+      disabled: true,
+    },
+    {
       id: "version",
       label: "VERSION",
       name: "version",
@@ -426,59 +436,66 @@ const ViewRequestModal: FC<{
       disabled: true,
     },
     {
+      id: "productName",
+      label: "PRODUCT NAME",
+      name: "productName",
+      value: assignRequest.product_name,
+      disabled: true,
+    },
+    {
       id: "modelNumber",
       label: "MODEL NUMBER",
       name: "modelNumber",
-      value: assignRequest.model_number,
+      value: assignRequest?.model_number,
       disabled: true,
     },
     {
       id: "serialNumber",
       label: "SERIAL NUMBER",
       name: "serialNumber",
-      value: assignRequest.serial_number,
+      value: assignRequest?.serial_number,
       disabled: true,
     },
     {
       id: "owner",
       label: "OWNER",
       name: "owner",
-      value: assignRequest.owner,
+      value: assignRequest?.owner,
       disabled: true,
     },
     {
       id: "dop",
       label: "D.O.P",
       name: "dop",
-      value: assignRequest.date_of_purchase,
+      value: assignRequest?.date_of_purchase,
       disabled: true,
     },
     {
       id: "warranty_period",
       label: "WARRANTY",
       name: "warranty_period",
-      value: assignRequest.warranty_period,
+      value: assignRequest?.warranty_period,
       disabled: true,
     },
     {
       id: "os",
       label: "OS",
       name: "os",
-      value: assignRequest.os,
+      value: assignRequest?.os,
       disabled: true,
     },
     {
       id: "os_version",
       label: "OS VERSION",
       name: "os_version",
-      value: assignRequest.os_version,
+      value: assignRequest?.os_version,
       disabled: true,
     },
     {
       id: "mobile_os",
       label: "MOBILE OS",
       name: "mobile_os",
-      value: assignRequest.mobile_os,
+      value: assignRequest?.mobile_os,
       disabled: true,
     },
     {
@@ -492,28 +509,35 @@ const ViewRequestModal: FC<{
       id: "processor",
       label: "PROCESSOR",
       name: "processor",
-      value: assignRequest.processor,
+      value: assignRequest?.processor,
+      disabled: true,
+    },
+    {
+      id: "p_gen",
+      label: "PROCESSOR GEN",
+      name: "p_gen",
+      value: assignRequest?.processor_gen,
       disabled: true,
     },
     {
       id: "storage",
       label: "STORAGE",
       name: "storage",
-      value: assignRequest.storage,
+      value: assignRequest?.storage,
       disabled: true,
     },
     {
       id: "configuration",
       label: "CONFIGURATION",
       name: "configuration",
-      value: assignRequest.configuration,
+      value: assignRequest?.configuration,
       disabled: true,
     },
     {
       id: "accessories",
       label: "ACCESSORIES",
       name: "accessories",
-      value: assignRequest.accessories,
+      value: assignRequest?.accessories,
       disabled: true,
     },
     {

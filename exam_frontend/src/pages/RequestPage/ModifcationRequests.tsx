@@ -126,9 +126,8 @@ const ModificationRequests: FC = function () {
       asset.approved_by?.username
         .toLowerCase()
         .includes(searchQuery.toLowerCase()) ||
-      asset.custodian?.employee_name
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase())
+      asset.custodian?.employee_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.memory?.memory_space.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const onShowSizeChange = (_: number, size: number) => {
@@ -421,9 +420,9 @@ const ViewRequestModal: FC<{
       disabled: true,
     },
     {
-      id: "assetId",
+      id: "assetType",
       label: "ASSET TYPE",
-      name: "assetId",
+      name: "assetType",
       value: asset.asset_type.asset_type_name,
       disabled: true,
     },
@@ -452,98 +451,98 @@ const ViewRequestModal: FC<{
       id: "modelNumber",
       label: "MODEL NUMBER",
       name: "modelNumber",
-      value: asset.model_number,
+      value: asset?.model_number,
       disabled: true,
     },
     {
       id: "serialNumber",
       label: "SERIAL NUMBER",
       name: "serialNumber",
-      value: asset.serial_number,
+      value: asset?.serial_number,
       disabled: true,
     },
     {
       id: "owner",
       label: "OWNER",
       name: "owner",
-      value: asset.owner,
+      value: asset?.owner,
       disabled: true,
     },
     {
       id: "dop",
       label: "D.O.P",
       name: "dop",
-      value: asset.date_of_purchase,
+      value: asset?.date_of_purchase,
       disabled: true,
     },
     {
       id: "warranty_period",
       label: "WARRANTY",
       name: "warranty_period",
-      value: asset.warranty_period,
+      value: asset?.warranty_period,
       disabled: true,
     },
     {
       id: "os",
       label: "OS",
       name: "os",
-      value: asset.os,
+      value: asset?.os,
       disabled: true,
     },
     {
       id: "os_version",
       label: "OS VERSION",
       name: "os_version",
-      value: asset.os_version,
+      value: asset?.os_version,
       disabled: true,
     },
     {
       id: "mobile_os",
       label: "MOBILE OS",
       name: "mobile_os",
-      value: asset.mobile_os,
+      value: asset?.mobile_os,
       disabled: true,
     },
     {
       id: "memory",
       label: "MEMORY",
       name: "memory",
-      value: asset.memory.memory_space,
+      value: asset.memory?.memory_space,
       disabled: true,
     },
     {
       id: "processor",
       label: "PROCESSOR",
       name: "processor",
-      value: asset.processor,
+      value: asset?.processor,
       disabled: true,
     },
     {
       id: "p_gen",
       label: "PROCESSOR GEN",
       name: "p_gen",
-      value: asset.processor_gen,
+      value: asset?.processor_gen,
       disabled: true,
     },
     {
       id: "storage",
       label: "STORAGE",
       name: "storage",
-      value: asset.storage,
+      value: asset?.storage,
       disabled: true,
     },
     {
       id: "configuration",
       label: "CONFIGURATION",
       name: "configuration",
-      value: asset.configuration,
+      value: asset?.configuration,
       disabled: true,
     },
     {
       id: "accessories",
       label: "ACCESSORIES",
       name: "accessories",
-      value: asset.accessories,
+      value: asset?.accessories,
       disabled: true,
     },
     {
