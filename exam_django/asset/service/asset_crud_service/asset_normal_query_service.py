@@ -19,7 +19,10 @@ class AssetNormalQueryService(AssetQueryAbstract):
         "requester__username",
         "custodian__employee_name",
         "approved_by__username",
-        "invoice_location",  # Assuming this is a field in the Asset model
+        "invoice_location", 
+         "memory",
+          "created_at",
+           "updated_at" # Assuming this is a field in the Asset model
     ]
 
     def get_asset_details(self, serializer, request):
