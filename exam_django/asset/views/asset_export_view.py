@@ -10,11 +10,13 @@ class AssetExportView(APIView):
         # Retrieve the export format from query parameters or default to 'csv'
 
         export_format = request.query_params.get("export_format")
+        json_logic = request.query_params.get("json_logic")
         # Ensure the ExportService is correctly called with the specified format
         if export_format in ["csv", "xlsx", "pdf"]:
             response = ExportService.export_asset(
-                export_format
+                export_format, json_logic
             )  # Pass request to the export_asset method
+
             return response
         else:
             return HttpResponse("Invalid export format specified", status=400)
