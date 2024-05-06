@@ -1,5 +1,20 @@
-import axiosInstance from '../../../config/AxiosConfig';
 import { AssetData } from '../types/ChartTypes';
+import axiosInstance from '../../../config/AxiosConfig'; // Assuming AxiosConfig is an ES6 module
 
-export const fetchAssetData = (): Promise<AssetData> => // Function to fetch asset data/ asset count from the server
-    axiosInstance.get('/asset/asset_count').then((res) => res.data.data);
+let axiosInstanceInitialized = false;
+
+const initializeAxiosInstance = () => {
+  if (!axiosInstanceInitialized) {
+    axiosInstanceInitialized = true;
+  }
+};
+
+export const fetchAssetData = (): Promise<AssetData> => {
+  initializeAxiosInstance();
+  return axiosInstance.get('/asset/asset_count').then((res: any) => res.data.data);
+};
+
+export const fetchAssetTypeData = () => {
+  initializeAxiosInstance();
+  return axiosInstance.get('/asset/asset_type').then((res: any) => res.data.data);
+}

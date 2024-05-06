@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { fetchAssetData } from '../api/ChartApi';
 import { AxisConfig, BarChart } from '@mui/x-charts';

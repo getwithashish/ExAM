@@ -1,34 +1,74 @@
 import csv
+import io
+import pandas as pd
+import zipfile
+from datetime import datetime
+from django.forms import ValidationError
 from asset.models import Asset, AssetType, BusinessUnit, Employee, Location, Memory
 
 
 class AssetImportService:
     @staticmethod
-    def parse_and_add_assets(file_content, user):
-        # Split the file content into lines and decode it as UTF-8
-        print(user)
-        csv_reader = csv.DictReader(file_content.decode("utf-8").splitlines())
+    def parse_and_add_assets(file_content, user, file_type):
+        if file_type == "csv":
+            csv_reader = csv.DictReader(file_content.decode("utf-8").splitlines())
+        elif file_type == "xlsx":
+            df = pd.read_excel(io.BytesIO(file_content))
+            data = df.to_dict(orient="records")
+            csv_reader = [dict(row) for row in data]
+        else:
+            raise ValueError("Invalid file type. Must be 'csv' or 'xlsx'.")
 
-        # Get existing asset IDs and serial numbers from the database
         existing_asset_ids = set(Asset.objects.values_list("asset_id", flat=True))
         existing_serial_numbers = set(
             Asset.objects.values_list("serial_number", flat=True)
         )
 
-        # Initialize counters for added and skipped assets
         added_assets_count = 0
         skipped_assets_count = 0
+        skipped_fields_assets = []
+        missing_fields_assets = []
 
-        # Iterate over each row in the CSV file
+        new_assets = []
+
         for row in csv_reader:
-            # Check if the asset ID or serial number already exists in the database
+            asset_id = row.get("asset_id", "")
+            serial_number = row.get("serial_number", "")
+
             if (
-                row["asset_id"] in existing_asset_ids
-                or row["serial_number"] in existing_serial_numbers
+                asset_id in existing_asset_ids
+                or serial_number in existing_serial_numbers
             ):
-                # If duplicate, skip this row and increment the skipped count
                 skipped_assets_count += 1
+                skipped_fields_assets.append(row)
                 continue
+
+            mandatory_fields = [
+                "asset_category",
+                "asset_id",
+                "version",
+                "asset_type",
+                "product_name",
+                "serial_number",
+                "model_number",
+                "owner",
+                "date_of_purchase",
+                "warranty_period",
+                "invoice_location",
+                "business_unit",
+            ]
+            if any(str(row.get(field, "")).strip() == "" for field in mandatory_fields):
+                missing_fields_assets.append(row)
+                continue
+
+            try:
+                purchase_date = datetime.strptime(
+                    row["date_of_purchase"], "%Y-%m-%d"
+                ).date()
+            except ValueError:
+                raise ValidationError(
+                    "Date of purchase has an invalid format. It must be in YYYY-MM-DD format."
+                )
 
             asset_type, asset_type_created = AssetType.objects.get_or_create(
                 asset_type_name=row["asset_type"]
@@ -47,16 +87,15 @@ class AssetImportService:
                 memory_space=row["memory"]
             )
 
-            # Create a new Asset object with the data from the CSV row
-            Asset.objects.create(
-                asset_id=row["asset_id"],
+            asset = Asset(
+                asset_id=asset_id,
                 version=row["version"],
                 asset_category=row["asset_category"],
                 product_name=row["product_name"],
                 model_number=row["model_number"],
-                serial_number=row["serial_number"],
+                serial_number=serial_number,
                 owner=row["owner"],
-                date_of_purchase=row["date_of_purchase"],
+                date_of_purchase=purchase_date,
                 status=row["status"],
                 warranty_period=row["warranty_period"],
                 os=row["os"],
@@ -73,8 +112,8 @@ class AssetImportService:
                 created_at=row["created_at"],
                 updated_at=row["updated_at"],
                 is_deleted=row["is_deleted"],
-                approved_by=user,  # Assign the User object obtained from the JWT payload
-                requester_id=user.id,  # Assign the User ID obtained from the JWT payload
+                approved_by=user,
+                requester_id=user.id,
                 asset_type_id=asset_type.id if asset_type else None,
                 business_unit_id=business_unit.id if business_unit else None,
                 custodian_id=custodian.id if custodian else None,
@@ -83,17 +122,25 @@ class AssetImportService:
                 memory_id=memory.id if memory else None,
             )
 
-            # Update the existing asset ID and serial number sets and increment the added count
-            existing_asset_ids.add(row["asset_id"])
-            existing_serial_numbers.add(row["serial_number"])
+            new_assets.append(asset)
             added_assets_count += 1
 
+        Asset.objects.bulk_create(new_assets)
+
         return AssetImportService._prepare_import_summary(
-            added_assets_count, skipped_assets_count
+            added_assets_count,
+            skipped_assets_count,
+            skipped_fields_assets,
+            missing_fields_assets,
         )
 
     @staticmethod
-    def _prepare_import_summary(added_assets_count, skipped_assets_count):
+    def _prepare_import_summary(
+        added_assets_count,
+        skipped_assets_count,
+        skipped_fields_assets,
+        missing_fields_assets,
+    ):
         if added_assets_count == 0:
             message = "No new data found. All files are duplicates."
         else:
@@ -102,9 +149,58 @@ class AssetImportService:
                 f"{skipped_assets_count} duplicate entries omitted."
             )
 
-        # Return the message as a dictionary
         return {
             "message": message,
             "added_assets_count": added_assets_count,
             "skipped_assets_count": skipped_assets_count,
+            "skipped_fields_assets": skipped_fields_assets,
+            "missing_fields_assets": missing_fields_assets,
         }
+
+    @staticmethod
+    def generate_missing_fields_csv(missing_fields_assets):
+        output = io.StringIO()
+        csv_writer = csv.writer(output)
+
+        if missing_fields_assets:
+            header_row = missing_fields_assets[0].keys()
+            csv_writer.writerow(header_row)
+
+            for asset in missing_fields_assets:
+                csv_writer.writerow(asset.values())
+
+        # return output.getvalue()
+        return output
+
+    @staticmethod
+    def generate_missing_fields_xlsx(missing_fields_assets):
+        if missing_fields_assets:
+            df = pd.DataFrame(missing_fields_assets)
+            output = io.BytesIO()
+            df.to_excel(output, index=False)
+            output.seek(0)
+            # return output.getvalue()
+            return output
+        else:
+            # return None
+            return io.BytesIO()
+
+    @staticmethod
+    def generate_zip_file_csv(csv_file_one, csv_file_two):
+        zip_content = io.BytesIO()
+        with zipfile.ZipFile(zip_content, "w") as zf:
+            zf.writestr("skipped_fields.csv", csv_file_one.getvalue())
+            zf.writestr("missing_fields.csv", csv_file_two.getvalue())
+
+        zip_content.seek(0)
+        return zip_content
+
+    @staticmethod
+    def generate_zip_file_xlsx(xlsx_file_one, xlsx_file_two):
+        zip_content = io.BytesIO()
+        with zipfile.ZipFile(zip_content, "w") as zf:
+            zf.writestr("skipped_fields.xlsx", xlsx_file_one.getvalue())
+            zf.writestr("missing_fields.xlsx", xlsx_file_two.getvalue())
+
+        zip_content.seek(0)
+        return zip_content
