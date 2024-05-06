@@ -99,10 +99,10 @@ const CustomAutocomplete: React.FC<AutocompleteProps> = ({ selectedFieldIndex, f
             // Use the original value as the filter value
             setFilterValue(value);
         }
-          message.success('Suggestions fetched successfully');
+         
         } catch (error) {
           console.error("Error fetching asset details:", error);
-          message.error('Failed to fetch suggestions');
+          
         }
       }
    };
@@ -149,9 +149,10 @@ const handleSuggestionClick = (suggestedValue: string | null) => {
 
 interface QueryBuilderComponentProps {
   assetDataRefetch: (queryParam: string) => void
+  setJson_query :(queryParams:string)=>void
 }
 
-export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({ assetDataRefetch }) => {
+export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({ assetDataRefetch, setJson_query }) => {
   const [selectedFields, setSelectedFields] = useState<{ field: string; value: string ;id :number }[]>([]);
   const [newFields, setNewFields] = useState<number[]>([]);
   const initialState = { selectedFields: [], newFields: [] };
@@ -224,7 +225,7 @@ export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({ as
     // Display the constructed query parameters
     message.success(queryParams);
     console.log(queryParams)
-  
+    setJson_query(queryParams)
     // Call the assetDataRefetch function with the constructed query parameters
     assetDataRefetch(queryParams);
   };

@@ -20,6 +20,8 @@ interface TableNavbarProps {
 
 const TableNavbar :  React.FC<TableNavbarProps> = ({ showUpload, setShowUpload, assetDataRefetch ,reset }) => {
   const [visible, setVisible] = useState(false);
+  const [json_query, setJson_query] = useState<string>("")
+
   const decodeJWT = (token: string) => {
     try {
       const base64Url = token.split(".")[1];
@@ -55,8 +57,9 @@ const TableNavbar :  React.FC<TableNavbarProps> = ({ showUpload, setShowUpload, 
 
   // Function to handle export button click
   const handleExport = () => {
+    console.log("handleexport",json_query)
     axiosInstance
-      .get("/asset/export")
+      .get(`/asset/export?export_format=csv&json_logic=${json_query}`)
       .then((response) => {
         const blob = new Blob([response.data], { type: "text/csv" });
         const url = window.URL.createObjectURL(blob);
@@ -147,7 +150,7 @@ const TableNavbar :  React.FC<TableNavbarProps> = ({ showUpload, setShowUpload, 
         onClose={closeQueryBuilder}
         open={visible}
       >
-        <QueryBuilderComponent assetDataRefetch={assetDataRefetch}/>
+        <QueryBuilderComponent assetDataRefetch={assetDataRefetch} setJson_query={setJson_query}/>
       </DrawerViewRequest>
        
       
