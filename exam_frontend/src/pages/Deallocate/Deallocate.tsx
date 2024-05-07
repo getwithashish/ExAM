@@ -22,7 +22,8 @@ const Deallocate = () => {
         setLoading(false)
       }
   };
-
+  let queryParamProp =
+  "&assign_status=ASSIGNED&status=IN USE"
   return (
     
     <div style={{ background: "white" }}>
@@ -74,7 +75,7 @@ const Deallocate = () => {
       </nav>
 
       <Spin spinning={loading} >
-      <AssetTableHandler unassign={unassign} queryParamProp={NaN}/>
+      <AssetTableHandler unassign={unassign} queryParamProp={queryParamProp}/>
       </Spin>
     </div>
   );
