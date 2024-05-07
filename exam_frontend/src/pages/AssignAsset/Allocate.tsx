@@ -16,7 +16,9 @@ const Assignableasset = () => {
   const closeAssignDrawer = () => {
     setOpen(false);
   };
-
+ 
+  let queryParamProp =
+    "&assign_status=UNASSIGNED|REJECTED&status=IN STORE"
   return (
     <div style={{ background: "white" }}>
       <nav className="flex mb-4 mx-4 my-0 py-4" aria-label="Breadcrumb">
@@ -66,7 +68,7 @@ const Assignableasset = () => {
         </ol>
       </nav>
 
-      <AssetTableHandler showAssignDrawer={showAssignDrawer} />
+      <AssetTableHandler showAssignDrawer={showAssignDrawer} queryParamProp={queryParamProp } />
 
       <DrawerViewRequest title="assign" onClose={closeAssignDrawer} open={open}>
         {record && (
