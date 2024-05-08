@@ -11,18 +11,18 @@ class AssetNormalQueryService(AssetQueryAbstract):
     # Define a list of sortable fields
     SORTABLE_FIELDS = [
         "product_name",
-        "location__location_name",
-        "asset_type__asset_type_name",
+        "location",
+        "asset_type",
         "version",
         "date_of_purchase",
         "warranty_period",
-        "requester__username",
-        "custodian__employee_name",
-        "approved_by__username",
-        "invoice_location", 
-         "memory",
-          "created_at",
-           "updated_at" # Assuming this is a field in the Asset model
+        "requester",
+        "custodian",
+        "approved_by",
+        "invoice_location",
+        "memory",
+        "created_at",
+        "updated_at",  # Assuming this is a field in the Asset model
     ]
 
     def get_asset_details(self, serializer, request):

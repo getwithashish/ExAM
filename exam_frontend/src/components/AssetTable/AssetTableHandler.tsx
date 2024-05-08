@@ -60,6 +60,8 @@ const AssetTableHandler = ({
 }) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [sortedColumn, setSortedColumn] = useState<string | null>(null);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   
   const [queryParam, setQueryParam] = useState("");
   const { data: assetData, isLoading: isAssetDataLoading, refetch: assetDataRefetch } = useQuery({
@@ -164,6 +166,14 @@ const AssetTableHandler = ({
         {record[dataIndex]}
       </div>
     );
+    const handleSort = (column: string) => {
+      const newSortOrder =
+        column === sortedColumn ? (sortOrder === "asc" ? "desc" : "asc") : "asc";
+      setSortedColumn(column);
+      setSortOrder(newSortOrder);
+      const queryParams = `&sort_by=${column}&sort_order=${newSortOrder}`;
+      refetchAssetData(queryParams);
+    };
   const columns = [
     {
       title: "Product Name",
@@ -171,59 +181,21 @@ const AssetTableHandler = ({
       fixed: "left",
       width: 120,
       responsive: ["md"],
-      filterIcon: <SearchOutlined />,
-      filterDropdown: ({
-        setSelectedKeys,
-        selectedKeys,
-        confirm,
-        clearFilters,
-      }: {
-        setSelectedKeys: (keys: React.ReactText[]) => void;
-        selectedKeys: React.ReactText[];
-        confirm: () => void;
-        clearFilters: () => void;
-      }) => (
-        <div style={{ padding: 8 }}>
-          <Input
-            placeholder="Search Product Name"
-            value={selectedKeys[0]}
-            onChange={(e) =>
-              setSelectedKeys(e.target.value ? [e.target.value] : [])
-            }
-            onPressEnter={() => confirm()}
-            style={{ marginBottom: 8, display: "block" }}
-          />
-          <Space>
-            <button
-              type="button"
-              onClick={confirm}
-              style={{ width: 90, fontSize: "16px" }}
-            >
-              Search
-            </button>
-            <button
-              type="button"
-              onClick={clearFilters}
-              style={{ width: 90, fontSize: "16px" }}
-            >
-              Reset
-            </button>
-          </Space>
-        </div>
-      ),
-      onFilter: (
-        value: string | any[],
-        record: { product_name: string | any[] }
-      ) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.product_name);
-        }
-        return record.product_name.indexOf(value.toString()) === 0;
-      },
-      sorter: (a: { product_name: string }, b: { product_name: any }) =>
-        a.product_name.localeCompare(b.product_name),
-      sortDirections: ["ascend", "descend"],
+      sorter: true,
+      sortOrder: sortedColumn === "product_name" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("product_name"),
+      }),
       render: renderClickableColumn("Product Name", "product_name"),
+    },
+
+    {
+      title: "Serial Number",
+      dataIndex: "serial_number",
+      responsive: ["md"],
+      width: 120,
+      filterIcon: <SearchOutlined />,
+      render: renderClickableColumn("Serial Number", "serial_number"),
     },
     {
       title: "Serial Number",
@@ -299,8 +271,14 @@ const AssetTableHandler = ({
         }
         return record.location.indexOf(value.toString()) === 0;
       },
+      sorter: true,
+      sortOrder: sortedColumn === "location" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("location"),
+      }),
       render: renderClickableColumn("Location", "location"),
     },
+
     {
       title: "Invoice Location",
       dataIndex: "invoice_location",
@@ -316,7 +294,11 @@ const AssetTableHandler = ({
         }
         return record.location.indexOf(value.toString()) === 0;
       },
-
+      sorter: true,
+      sortOrder: sortedColumn === "invoice_location" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("invoice_location"),
+      }),
       render: renderClickableColumn("Invoice Location", "invoice_location"),
     },
 
@@ -335,6 +317,11 @@ const AssetTableHandler = ({
         }
         return record.asset_type.indexOf(value.toString()) === 0;
       },
+      sorter: true,
+      sortOrder: sortedColumn === "asset_type" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("asset_type"),
+      }),
       render: renderClickableColumn("Asset Type", "asset_type"),
     },
     {
@@ -379,6 +366,18 @@ const AssetTableHandler = ({
       render: renderClickableColumn("Business Unit", "business_unit"),
     },
     {
+      title: "Version",
+      dataIndex: "version",
+      responsive: ["md"],
+      width: 120,
+      sorter: true,
+      sortOrder: sortedColumn === "version" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("version"),
+      }),
+      render: renderClickableColumn("Version", "version"),
+    },
+    {
       title: "Os",
       dataIndex: "os",
       responsive: ["md"],
@@ -407,18 +406,28 @@ const AssetTableHandler = ({
       render: renderClickableColumn("Asset Status", "processor_gen"),
     },
     {
-      title: "Date Of Purchase",
-      dataIndex: "DateOfPurchase",
+      title: "Date of Purchase",
+      dataIndex: "date_of_purchase",
       responsive: ["md"],
       width: 120,
-      render: renderClickableColumn("Asset Status", "date_of_purchase"),
+      sorter: true,
+      sortOrder: sortedColumn === "date_of_purchase" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("date_of_purchase"),
+      }),
+      render: renderClickableColumn("Date of Purchase", "date_of_purchase"),
     },
     {
       title: "Warranty Period",
-      dataIndex: "WarrantyPeriod",
+      dataIndex: "warranty_period",
       responsive: ["md"],
       width: 120,
-      render: renderClickableColumn("Asset Status", "warranty_period"),
+      sorter: true,
+      sortOrder: sortedColumn === "warranty_period" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("warranty_period"),
+      }),
+      render: renderClickableColumn("Warranty Period", "warranty_period"),
     },
     {
       title: "Model Number",
@@ -429,10 +438,15 @@ const AssetTableHandler = ({
     },
     {
       title: "Memory",
-      dataIndex: "Memory",
+      dataIndex: "memory",
       responsive: ["md"],
       width: 120,
-      render: renderClickableColumn("Asset Status", "memory"),
+      sorter: true,
+      sortOrder: sortedColumn === "memory" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("memory"),
+      }),
+      render: renderClickableColumn("Memory", "memory"),
     },
     {
       title: "Storage",
@@ -453,6 +467,11 @@ const AssetTableHandler = ({
       dataIndex: "approved_by",
       responsive: ["md"],
       width: 120,
+      sorter: true,
+      sortOrder: sortedColumn === "approved_by" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("approved_by"),
+      }),
       render: renderClickableColumn("Approved By", "approved_by"),
     },
     {
@@ -460,6 +479,11 @@ const AssetTableHandler = ({
       dataIndex: "requester",
       responsive: ["md"],
       width: 120,
+      sorter: true,
+      sortOrder: sortedColumn === "requester" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("requester"),
+      }),
       render: renderClickableColumn("Requester", "requester"),
     },
     {
@@ -482,15 +506,26 @@ const AssetTableHandler = ({
       dataIndex: "created_at",
       responsive: ["md"],
       width: 120,
-      render: renderClickableColumn("Accessories", "created_at"),
+      sorter: true,
+      sortOrder: sortedColumn === "created_at" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("created_at"),
+      }),
+      render: renderClickableColumn("Created At", "created_at"),
     },
     {
       title: "Updated At",
       dataIndex: "updated_at",
       responsive: ["md"],
       width: 120,
-      render: renderClickableColumn("Accessories", "updated_at"),
+      sorter: true,
+      sortOrder: sortedColumn === "updated_at" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("updated_at"),
+      }),
+      render: renderClickableColumn("Updated At", "updated_at"),
     },
+
 
     {
       title: "Accessories",
@@ -511,60 +546,11 @@ const AssetTableHandler = ({
       dataIndex: "custodian",
       responsive: ["md"],
       width: 120,
-      fixed: "right",
-      filterIcon: <SearchOutlined />,
-      filterDropdown: ({
-        setSelectedKeys,
-        selectedKeys,
-        confirm,
-        clearFilters,
-      }: {
-        setSelectedKeys: (keys: React.ReactText[]) => void;
-        selectedKeys: React.ReactText[];
-        confirm: () => void;
-        clearFilters: () => void;
-      }) => (
-        <div style={{ padding: 8 }}>
-          <Input
-            placeholder="Search Custodian"
-            value={selectedKeys[0]}
-            onChange={(e) =>
-              setSelectedKeys(e.target.value ? [e.target.value] : [])
-            }
-            onPressEnter={() => confirm()}
-            style={{ marginBottom: 8, display: "block" }}
-          />
-          <Space>
-            <button
-              type="button"
-              onClick={confirm}
-              style={{ width: 90, fontSize: "16px" }}
-            >
-              Search
-            </button>
-            <button
-              type="button"
-              onClick={clearFilters}
-              style={{ width: 90, fontSize: "16px" }}
-            >
-              Reset
-            </button>
-          </Space>
-        </div>
-      ),
-      onFilter: (
-        value: string | any[],
-        record: { custodian: string | any[] }
-      ) => {
-        // Check if record.custodian is defined before accessing it
-        if (record.custodian) {
-          if (Array.isArray(value)) {
-            return value.includes(record.custodian);
-          }
-          return record.custodian.indexOf(value.toString()) === 0;
-        }
-        return false; // Return false if custodian is undefined
-      },
+      sorter: true,
+      sortOrder: sortedColumn === "custodian" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("custodian"),
+      }),
       render: renderClickableColumn("Custodian", "custodian"),
     },
 
