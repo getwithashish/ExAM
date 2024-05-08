@@ -110,16 +110,10 @@ const CreateRequestPage: FC = function () {
       asset.storage?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       asset.configuration?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       asset.accessories?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      asset.memory?.memory_space?.toLowerCase().includes(searchQuery.toLowerCase())||
-      asset.location?.location_name
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-      asset.business_unit?.business_unit_name
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-      asset.requester?.username
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase())
+      asset.memory?.memory_space?.toString().toLowerCase().includes(searchQuery.toLowerCase())||
+      asset.location?.location_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.business_unit?.business_unit_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.requester?.username.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const onShowSizeChange = (_: number, size: number) => {
@@ -256,7 +250,7 @@ const CreateRequestPage: FC = function () {
 const SearchRequests: FC<{
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
 }> = function ({ setSearchQuery }) {
-  const [showInfo, setShowInfo] = useState(false); // State to manage visibility of info message
+  const [showInfo, setShowInfo] = useState(false)
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);

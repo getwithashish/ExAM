@@ -114,6 +114,7 @@ const ModificationRequests: FC = function () {
       asset.storage?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       asset.configuration?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       asset.accessories?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.memory?.memory_space?.toString().toLowerCase().includes(searchQuery.toLowerCase())||
       asset.location.location_name
         ?.toLowerCase()
         .includes(searchQuery.toLowerCase()) ||
