@@ -28,7 +28,7 @@ export const Statistics = () => {
           <div className=''>
             <AssetCountComponent/>            
           </div>
-          <div className=''>
+          <div className='items-center justify-center'>
             <ChartHandlers/>
           </div>          
         </div>        
