@@ -12,15 +12,20 @@ import DrawerViewRequest from "./DrawerViewRequest";
 import { QueryBuilderComponent } from "../QueryBuilder/QueryBuilder";
 
 interface TableNavbarProps {
-  showUpload : boolean;
-  setShowUpload: (value:boolean)=>void ;
-  assetDataRefetch : (queryParam:string) => void;
-  reset : () => void;
+  showUpload: boolean;
+  setShowUpload: (value: boolean) => void;
+  assetDataRefetch: (queryParam: string) => void;
+  reset: () => void;
 }
 
-const TableNavbar :  React.FC<TableNavbarProps> = ({ showUpload, setShowUpload, assetDataRefetch ,reset }) => {
+const TableNavbar: React.FC<TableNavbarProps> = ({
+  showUpload,
+  setShowUpload,
+  assetDataRefetch,
+  reset,
+}) => {
   const [visible, setVisible] = useState(false);
-  const [json_query, setJson_query] = useState<string>("")
+  const [json_query, setJson_query] = useState<string>("");
 
   const decodeJWT = (token: string) => {
     try {
@@ -43,29 +48,25 @@ const TableNavbar :  React.FC<TableNavbarProps> = ({ showUpload, setShowUpload, 
 
   const getUserScope = () => {
     const jwtToken = localStorage.getItem("jwt");
-    console.log(jwtToken);
     if (jwtToken) {
       const payload = decodeJWT(jwtToken);
       return payload.user_scope;
     }
   };
 
-  // Function to handle import button click
   const handleImportClick = () => {
     setShowUpload(true);
   };
 
-  // Function to handle export button click
-  const handleExport = () => {
-    console.log("handleexport",json_query)
+  const handleExport = (exportFormat: string) => {
     axiosInstance
-      .get(`/asset/export?export_format=csv&json_logic=${json_query}`)
+      .get(`/asset/export?export_format=${exportFormat}&json_logic=${json_query}`)
       .then((response) => {
-        const blob = new Blob([response.data], { type: "text/csv" });
+        const blob = new Blob([response.data], { type: `application/${exportFormat}` });
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", "assets.csv");
+        link.setAttribute("download", `assets.${exportFormat}`);
         document.body.appendChild(link);
         link.click();
         window.URL.revokeObjectURL(url);
@@ -76,25 +77,16 @@ const TableNavbar :  React.FC<TableNavbarProps> = ({ showUpload, setShowUpload, 
       });
   };
 
-  // Function to handle template download button click
-  const handleTemplateDownload = () => {
-    // Use the direct URL of the static file
-    const filePath = "/static/sample_asset_download_template.csv";
+  const exportOptions = [
+    { label: "Export as CSV", format: "csv", icon: <DownloadOutlined /> },
+    { label: "Export as XLSX", format: "xlsx", icon: <DownloadOutlined /> },
+    { label: "Export as PDF", format: "pdf", icon: <DownloadOutlined /> },
+  ];
 
-    // Create a new link element to trigger the download
-    const link = document.createElement("a");
-    link.href = filePath;
-    link.setAttribute("download", "sample_asset_download_template.csv");
-    document.body.appendChild(link);
-
-    // Trigger the download
-    link.click();
-
-    // Cleanup
-    document.body.removeChild(link);
+  const handleExportSelect = (format: string) => {
+    handleExport(format);
   };
 
-  // Function to handle dropdown item selection
   const handleDropDownSelect = (key: string) => {
     if (key === "import") {
       handleImportClick();
@@ -103,20 +95,20 @@ const TableNavbar :  React.FC<TableNavbarProps> = ({ showUpload, setShowUpload, 
     }
   };
 
-  // Define the items for the dropdown with icons
-  const items = [
-    { label: "Import Files", key: "import", icon: <DownloadOutlined /> },
-    {
-      label: "Download Template",
-      key: "downloadTemplate",
-      icon: <CloudDownloadOutlined />,
-    },
-  ];
+  const handleTemplateDownload = () => {
+    const filePath = "/static/sample_asset_download_template.csv";
+    const link = document.createElement("a");
+    link.href = filePath;
+    link.setAttribute("download", "sample_asset_download_template.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
-  function handleSearch(_searchTerm: string): void {
+  const handleSearch = (_searchTerm: string): void => {
     console.log("Global Search Term: ", _searchTerm);
     assetDataRefetch(`&global_search=${_searchTerm}`);
-  }
+  };
 
   const showQueryBuilder = () => {
     setVisible(true);
@@ -125,38 +117,47 @@ const TableNavbar :  React.FC<TableNavbarProps> = ({ showUpload, setShowUpload, 
   const closeQueryBuilder = () => {
     setVisible(false);
   };
+
   return (
     <nav className={styles["navbar"]}>
-      {getUserScope() == "LEAD" ? (
+      {getUserScope() === "LEAD" && (
         <DropDown
           onSelect={handleDropDownSelect}
-          items={items}
+          items={[
+            { label: "Import Files", key: "import", icon: <UploadOutlined /> },
+            {
+              label: "Download Template",
+              key: "downloadTemplate",
+              icon: <CloudDownloadOutlined />,
+            },
+          ]}
           buttonLabel="Import"
         />
-      ) : (
-        ""
       )}
-      
-      <GlobalSearch
-        onSearch={handleSearch}
-        assetDataRefetch={assetDataRefetch}
-      />
 
-      <button  className={styles["button"]} onClick={reset} >Reset</button>
+      <GlobalSearch onSearch={handleSearch} assetDataRefetch={assetDataRefetch} />
 
-      <button onClick={showQueryBuilder} className={styles["button"]} >Advanced Search</button>
-      <DrawerViewRequest
-        title="Advanced Search"
-        onClose={closeQueryBuilder}
-        open={visible}
-      >
-        <QueryBuilderComponent assetDataRefetch={assetDataRefetch} setJson_query={setJson_query}/>
-      </DrawerViewRequest>
-       
-      
-      <button onClick={handleExport} className={styles["button"]}>
-        <UploadOutlined /> Export
+      <button className={styles["button"]} onClick={reset}>
+        Reset
       </button>
+
+      <button onClick={showQueryBuilder} className={styles["button"]}>
+        Advanced Search
+      </button>
+
+      <DrawerViewRequest title="Advanced Search" onClose={closeQueryBuilder} open={visible}>
+        <QueryBuilderComponent assetDataRefetch={assetDataRefetch} setJson_query={setJson_query} />
+      </DrawerViewRequest>
+
+      <DropDown
+        onSelect={handleExportSelect}
+        items={exportOptions.map((option) => ({
+          label: option.label,
+          key: option.format,
+          icon: option.icon,
+        }))}
+        buttonLabel="Export"
+      />
     </nav>
   );
 };
