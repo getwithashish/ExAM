@@ -8,15 +8,9 @@ import axiosInstance from "../../config/AxiosConfig";
 import GlobalSearch from "../GlobalSearch/GlobalSearch";
 import styles from "./TableNavbar.module.css";
 import DropDown from "../DropDown/DropDown";
-import DrawerViewRequest from "./DrawerViewRequest";
+import DrawerViewRequest from "../../pages/RequestPage/DrawerViewRequest";
 import { QueryBuilderComponent } from "../QueryBuilder/QueryBuilder";
-
-interface TableNavbarProps {
-  showUpload : boolean;
-  setShowUpload: (value:boolean)=>void ;
-  assetDataRefetch : (queryParam:string) => void;
-  reset : () => void;
-}
+import { TableNavbarProps } from "./types";
 
 const TableNavbar :  React.FC<TableNavbarProps> = ({ showUpload, setShowUpload, assetDataRefetch ,reset }) => {
   const [visible, setVisible] = useState(false);
@@ -25,7 +19,9 @@ const TableNavbar :  React.FC<TableNavbarProps> = ({ showUpload, setShowUpload, 
   const decodeJWT = (token: string) => {
     try {
       const base64Url = token.split(".")[1];
-      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      if (!base64Url) {
+        throw new Error("Invalid token format: missing base64Url");
+      }      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
       const jsonPayload = decodeURIComponent(
         atob(base64)
           .split("")
