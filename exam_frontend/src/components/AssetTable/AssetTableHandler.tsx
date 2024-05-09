@@ -197,65 +197,7 @@ const AssetTableHandler = ({
       filterIcon: <SearchOutlined />,
       render: renderClickableColumn("Serial Number", "serial_number"),
     },
-    {
-      title: "Serial Number",
-      dataIndex: "serial_number",
-      responsive: ["md"],
-      width: 120,
-      filterIcon: <SearchOutlined />,
-      filterDropdown: ({
-        setSelectedKeys,
-        selectedKeys,
-        confirm,
-        clearFilters,
-      }: {
-        setSelectedKeys: (keys: React.ReactText[]) => void;
-        selectedKeys: React.ReactText[];
-        confirm: () => void;
-        clearFilters: () => void;
-      }) => (
-        <div style={{ padding: 8 }}>
-          <Input
-            placeholder="Search Serial Number"
-            value={selectedKeys[0]}
-            onChange={(e) =>
-              setSelectedKeys(e.target.value ? [e.target.value] : [])
-            }
-            onPressEnter={() => confirm()}
-            style={{ marginBottom: 8, display: "block" }}
-          />
-          <Space>
-            <button
-              type="button"
-              onClick={confirm}
-              style={{ width: 90, fontSize: "16px" }}
-            >
-              Search
-            </button>
-            <button
-              type="button"
-              onClick={clearFilters}
-              style={{ width: 90, fontSize: "16px" }}
-            >
-              Reset
-            </button>
-          </Space>
-        </div>
-      ),
-      onFilter: (
-        value: string | any[],
-        record: { serial_number: string | any[] }
-      ) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.serial_number);
-        }
-        return record.serial_number.indexOf(value.toString()) === 0;
-      },
-      sorter: (a: { serial_number: string }, b: { serial_number: any }) =>
-        a.serial_number.localeCompare(b.serial_number),
-      sortDirections: ["ascend", "descend"],
-      render: renderClickableColumn("Serial Number", "serial_number"),
-    },
+  
     {
       title: "Location",
       dataIndex: "location",
