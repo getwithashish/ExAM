@@ -580,6 +580,7 @@ const CardComponent: React.FC<CardType> = ({
             onChange={(e) =>
               handleUpdateChange("serial_number", e.target.value)
             }
+            readOnly 
             style={inputStyle}
           />{" "}
         </Form.Item>
@@ -783,6 +784,7 @@ const CardComponent: React.FC<CardType> = ({
             onChange={(e) =>
               handleUpdateChange("configuration", e.target.value)
             }
+            readOnly 
             style={inputStyle}
           />{" "}
         </Form.Item>

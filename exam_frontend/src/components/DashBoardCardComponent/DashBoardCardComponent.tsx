@@ -358,7 +358,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
-            defaultValue={data.Generation}
+            defaultValue={data.processor_gen}
             onChange={(e) => handleUpdateChange("generation", e.target.value)}
             style={inputStyle}
             disabled
@@ -488,8 +488,8 @@ const DashBoardCardComponent: React.FC<CardType> = ({
             onChange={(e) =>
               handleUpdateChange("serail number", e.target.value)
             }
+            readOnly 
             style={inputStyle}
-            disabled
           />{" "}
         </Form.Item>
       ),
@@ -684,8 +684,9 @@ const DashBoardCardComponent: React.FC<CardType> = ({
             onChange={(e) =>
               handleUpdateChange("configuration", e.target.value)
             }
+            readOnly 
             style={inputStyle}
-            disabled
+           
           />{" "}
         </Form.Item>
       ),
