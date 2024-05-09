@@ -126,6 +126,7 @@ export interface DataType {
     asset_log: AssetLog;
   }
   export interface AssetTableProps {
+    sortOrder:string;
     logsData: LogData[] | undefined;
     isLoading: boolean;
     isSuccess: boolean;

@@ -331,7 +331,7 @@ const DasboardAssetHandler = () => {
       dataIndex: "processor_gen",
       responsive: ["md"],
       width: 120,
-      render: renderClickableColumn("Asset Status", "processor_gen"),
+      render: renderClickableColumn("processor_gen", "processor_gen"),
     },
 
     {
@@ -509,7 +509,7 @@ const DasboardAssetHandler = () => {
     os_version: result.os_version,
     mobile_os: result.mobile_os,
     processor: result.processor,
-    Generation: result.processor_gen,
+    processor_gen: result.processor_gen,
     accessories: result.accessories,
     date_of_purchase: result.date_of_purchase,
     warranty_period: result.warranty_period,
@@ -541,6 +541,8 @@ const DasboardAssetHandler = () => {
       selectedRow={selectedRow}
       drawerVisible={drawerVisible}
       assetData={data}
+      sortOrder={sortOrder}
+      sortedColumn={sortedColumn}
       totalItemCount={assetData?.count}
       assetPageDataFetch={setQueryParam}
       columns={columns}

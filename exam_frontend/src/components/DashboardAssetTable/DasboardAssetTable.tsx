@@ -31,6 +31,8 @@ const DasboardAssetTable = ({
   expandedRowRender,
   assetDataRefetch,
   reset,
+  sortOrder,
+  sortedColumn,
   isAssetDataLoading,
 }: AssetTableProps) => {
 
@@ -81,7 +83,9 @@ const DasboardAssetTable = ({
         <br></br>
         <br></br>
         <Table
-          columns={columns}
+          columns={columns.map((column: { dataIndex: string; }) => ({ ...column, sortOrder: column.dataIndex === sortedColumn ? sortOrder : undefined }))} 
+
+          // columns={columns}
           dataSource={assetData}
           className="mainTable"
           loading={isAssetDataLoading}
