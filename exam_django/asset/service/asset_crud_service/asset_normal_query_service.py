@@ -7,8 +7,23 @@ from asset.service.asset_crud_service.asset_query_abstract import AssetQueryAbst
 from messages import ASSET_LIST_SUCCESSFULLY_RETRIEVED
 
 
-
 class AssetNormalQueryService(AssetQueryAbstract):
+    # Define a list of sortable fields
+    SORTABLE_FIELDS = [
+        "product_name",
+        "location",
+        "asset_type",
+        "version",
+        "date_of_purchase",
+        "warranty_period",
+        "requester",
+        "custodian",
+        "approved_by",
+        "invoice_location",
+        "memory",
+        "created_at",
+        "updated_at",  # Assuming this is a field in the Asset model
+    ]
 
     def get_asset_details(self, serializer, request):
         self.pagination = LimitOffsetPagination()
@@ -29,6 +44,9 @@ class AssetNormalQueryService(AssetQueryAbstract):
         requester_id = request.query_params.get("requester_id")
         approved_by_id = request.query_params.get("approved_by_id")
 
+        sort_by = request.query_params.get("sort_by")
+        sort_order = request.query_params.get("sort_order")  # 'asc' or 'desc'
+
         query_params = request.query_params
         query_params_to_exclude = [
             "limit",
@@ -38,6 +56,8 @@ class AssetNormalQueryService(AssetQueryAbstract):
             "requester_id",
             "approved_by_id",
             "global_search",
+            "sort_by",
+            "sort_order",
         ]
         required_query_params = self.remove_fields_from_dict(
             query_params, query_params_to_exclude
@@ -59,6 +79,17 @@ class AssetNormalQueryService(AssetQueryAbstract):
         filter_kwargs = {}
         for field, value in required_query_params.items():
             filter_kwargs[f"{field}__icontains"] = value
+
+        # Sort queryset
+        if sort_by:
+            if sort_by in self.SORTABLE_FIELDS:
+                if sort_order == "asc":
+                    queryset = queryset.order_by(sort_by)
+                elif sort_order == "desc":
+                    queryset = queryset.order_by(f"-{sort_by}")
+            else:
+                # Handle invalid sort_by field here, raise an exception or use a default sorting behavior
+                pass
 
         # TODO How to filter using values of foreign tables
         if requester_id:
@@ -110,7 +141,6 @@ class AssetNormalQueryService(AssetQueryAbstract):
             "approval_status_message",
             "created_at",
             "updated_at",
-            
         ]:
             query |= Q(**{f"{field}__icontains": global_search})
 
@@ -122,7 +152,6 @@ class AssetNormalQueryService(AssetQueryAbstract):
         query |= Q(memory__memory_space__icontains=global_search)
         query |= Q(business_unit__business_unit_name__icontains=global_search)
         query |= Q(asset_type__asset_type_name__icontains=global_search)
-
 
         queryset = queryset.filter(query)
         return queryset
