@@ -10,11 +10,11 @@ import {
   Button,
   Dropdown,
   Input,
+  Modal,
   Space,
   Table,
   TableColumnsType,
   message,
-  Modal,
 } from "antd";
 import DrawerComponent from "../../DrawerComponent/DrawerComponent";
 import { SearchOutlined } from "@ant-design/icons";
@@ -65,13 +65,12 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [queryParam, setQueryParam] = useState("");
+  const [confirmModalVisible, setConfirmModalVisible] = useState(false); // State for confirmation modal visibility
+  const [selectedRecord, setSelectedRecord] = useState<DataType | null>(null); // State to store the selected record for deallocation
   const { data: assetData, refetch: assetDataRefetch } = useQuery({
     queryKey: ["assetList", queryParam],
     queryFn: () => getAssetDetails(`${queryParamProp + queryParam}`),
   });
-  const [confirmModalVisible, setConfirmModalVisible] = useState(false);
-const [assetKeyToDeallocate, setAssetKeyToDeallocate] = useState<string | null>(null);
-
 
   const refetchAssetData = (queryParamArg = "") => {
     let editedQueryParam = "";
@@ -161,17 +160,38 @@ const [assetKeyToDeallocate, setAssetKeyToDeallocate] = useState<string | null>(
     const queryParams = `&sort_by=${column}&sort_order=${newSortOrder}`;
     refetchAssetData(queryParams);
   };
-  const handleDeallocateAsset = (record: DataType) => {
-    setAssetKeyToDeallocate(record.key);
-    setConfirmModalVisible(true);
-  };
+  const renderDeallocateButton = (_, record) => (
+    <Button
+      ghost
+      style={{
+        borderRadius: "10px",
+        background: "#D3D3D3",
+        color: "black",
+      }}
+      onClick={() => {
+        setConfirmModalVisible(true); // Show confirmation modal
+        setSelectedRecord(record); // Store the selected record for deallocation
+      }}
+    >
+      -
+    </Button>
+  );
   const handleConfirmDeallocate = () => {
-    // Perform the deallocation action here using the assetKeyToDeallocate
-    console.log("Asset deallocated:", assetKeyToDeallocate);
-    // Close the modal
-    setConfirmModalVisible(false);
+    setConfirmModalVisible(false); // Close the confirmation modal
+
+    if (selectedRecord) {
+      // Check if the selected record has a custodian
+      if (selectedRecord.custodian != null || selectedRecord.custodian != undefined) {
+        // Deallocate the asset
+        unassign(selectedRecord);
+      } else {
+        // Show a warning message
+        message.warning("Not allocated yet");
+      }
+    }
+
+    setSelectedRecord(null); // Clear the selected record
   };
-  
   <div>
     <h1>Asset Overview</h1>
   </div>;
@@ -494,26 +514,14 @@ const [assetKeyToDeallocate, setAssetKeyToDeallocate] = useState<string | null>(
         </span>
       ),
     },
+
     {
       title: "Deallocate Asset",
       dataIndex: "DeallocateAsset",
       fixed: "right",
       width: 120,
-      render: (_, record) => (
-        <Button
-          ghost
-          style={{
-            borderRadius: "10px",
-            background: "#D3D3D3",
-            color: "black",
-          }}
-          onClick={() => handleDeallocateAsset(record)}
-        >
-          -
-        </Button>
-      ),
-    }
-    
+      render: renderDeallocateButton,
+    },
   ];
 
   const handleColumnClick = (record: string[], columnName: string) => {
@@ -574,17 +582,20 @@ const [assetKeyToDeallocate, setAssetKeyToDeallocate] = useState<string | null>(
 
   return (
     <>
-      {/* Step 6: Add the confirmation modal */}
+      {/* Confirmation Modal */}
       <Modal
-        title="Confirm Deallocate"
+      
+        title="Confirm Deallocation"
         visible={confirmModalVisible}
         onOk={handleConfirmDeallocate}
         onCancel={() => setConfirmModalVisible(false)}
+        okButtonProps={{ style: { backgroundColor: 'red' } }} 
+        style={{ marginTop:'100px'}}
       >
         <p>Are you sure you want to deallocate the asset?</p>
       </Modal>
-  
-      {/* Render the AssetTable component */}
+
+      {/* Existing JSX code for AssetTable component */}
       <AssetTable
         totalItemCount={assetData?.count}
         drawerTitle={drawerTitle}
@@ -611,7 +622,6 @@ const [assetKeyToDeallocate, setAssetKeyToDeallocate] = useState<string | null>(
       />
     </>
   );
-  
 };
 
 export default AssetTableHandler;
