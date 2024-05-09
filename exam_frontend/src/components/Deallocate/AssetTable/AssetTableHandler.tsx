@@ -14,6 +14,7 @@ import {
   Table,
   TableColumnsType,
   message,
+  Modal,
 } from "antd";
 import DrawerComponent from "../../DrawerComponent/DrawerComponent";
 import { SearchOutlined } from "@ant-design/icons";
@@ -68,6 +69,9 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
     queryKey: ["assetList", queryParam],
     queryFn: () => getAssetDetails(`${queryParamProp + queryParam}`),
   });
+  const [confirmModalVisible, setConfirmModalVisible] = useState(false);
+const [assetKeyToDeallocate, setAssetKeyToDeallocate] = useState<string | null>(null);
+
 
   const refetchAssetData = (queryParamArg = "") => {
     let editedQueryParam = "";
@@ -157,6 +161,17 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
     const queryParams = `&sort_by=${column}&sort_order=${newSortOrder}`;
     refetchAssetData(queryParams);
   };
+  const handleDeallocateAsset = (record: DataType) => {
+    setAssetKeyToDeallocate(record.key);
+    setConfirmModalVisible(true);
+  };
+  const handleConfirmDeallocate = () => {
+    // Perform the deallocation action here using the assetKeyToDeallocate
+    console.log("Asset deallocated:", assetKeyToDeallocate);
+    // Close the modal
+    setConfirmModalVisible(false);
+  };
+  
   <div>
     <h1>Asset Overview</h1>
   </div>;
@@ -479,13 +494,12 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
         </span>
       ),
     },
-
     {
       title: "Deallocate Asset",
       dataIndex: "DeallocateAsset",
       fixed: "right",
       width: 120,
-      render: (_data, record) => (
+      render: (_, record) => (
         <Button
           ghost
           style={{
@@ -493,19 +507,13 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
             background: "#D3D3D3",
             color: "black",
           }}
-          onClick={() => {
-            console.log(" unassign button clicked ");
-            if (record.custodian != null || record.custodian != undefined) {
-              unassign(record);
-            } else {
-              message.warning("Not allocated yet");
-            }
-          }}
+          onClick={() => handleDeallocateAsset(record)}
         >
           -
         </Button>
       ),
-    },
+    }
+    
   ];
 
   const handleColumnClick = (record: string[], columnName: string) => {
@@ -565,31 +573,45 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
   }, [selectedAssetId]);
 
   return (
-    <AssetTable
-      totalItemCount={assetData?.count}
-      drawerTitle={drawerTitle}
-      assetPageDataFetch={refetchAssetData}
-      selectedAssetId={selectedAssetId && selectedAssetId}
-      setSelectedAssetId={setSelectedAssetId}
-      handleRowClick={handleRowClick}
-      onCloseDrawer={onCloseDrawer}
-      selectedRow={selectedRow}
-      drawerVisible={drawerVisible}
-      assetData={data}
-      columns={columns}
-      memoryData={memoryData}
-      assetTypeData={assetTypeData}
-      locations={locations}
-      statusOptions={statusOptions}
-      assetDataRefetch={refetchAssetData}
-      asset_uuid={selectedAssetId}
-      businessUnitOptions={businessUnitOptions}
-      handleUpdateData={function (updatedData: { key: any }): void {
-        throw new Error("Function not implemented.");
-      }}
-      drawerTitle={""}
-    />
+    <>
+      {/* Step 6: Add the confirmation modal */}
+      <Modal
+        title="Confirm Deallocate"
+        visible={confirmModalVisible}
+        onOk={handleConfirmDeallocate}
+        onCancel={() => setConfirmModalVisible(false)}
+      >
+        <p>Are you sure you want to deallocate the asset?</p>
+      </Modal>
+  
+      {/* Render the AssetTable component */}
+      <AssetTable
+        totalItemCount={assetData?.count}
+        drawerTitle={drawerTitle}
+        assetPageDataFetch={refetchAssetData}
+        selectedAssetId={selectedAssetId && selectedAssetId}
+        setSelectedAssetId={setSelectedAssetId}
+        handleRowClick={handleRowClick}
+        onCloseDrawer={onCloseDrawer}
+        selectedRow={selectedRow}
+        drawerVisible={drawerVisible}
+        assetData={data}
+        columns={columns}
+        memoryData={memoryData}
+        assetTypeData={assetTypeData}
+        locations={locations}
+        statusOptions={statusOptions}
+        assetDataRefetch={refetchAssetData}
+        asset_uuid={selectedAssetId}
+        businessUnitOptions={businessUnitOptions}
+        handleUpdateData={function (updatedData: { key: any }): void {
+          throw new Error("Function not implemented.");
+        }}
+        drawerTitle={""}
+      />
+    </>
   );
+  
 };
 
 export default AssetTableHandler;
