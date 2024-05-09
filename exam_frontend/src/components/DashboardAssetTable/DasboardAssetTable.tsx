@@ -9,14 +9,10 @@ import UploadComponent from "../Upload/UploadComponent";
 import DashBoardCardComponent from "../DashBoardCardComponent/DashBoardCardComponent";
 import DrawerViewRequest from "../../pages/RequestPage/DrawerViewRequest";
 
-
 const DasboardAssetTable = ({
   asset_uuid,
-  logsData,
-  isLoading,
   isSuccess,
   selectedAssetId,
-  setSelectedAssetId,
   handleRowClick,
   onCloseDrawer,
   selectedRow,
@@ -52,7 +48,7 @@ const DasboardAssetTable = ({
       else return;
     } else return <>not loaded</>;
   };
-  const memoizedRowRender = useMemo(() => rowRender, [isSuccess]);
+  
   const [showUpload, setShowUpload] = useState(false);
   const closeImportDrawer = () => {
     setShowUpload(false);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "./GlobalSearch.module.css";
 import { GlobalSearchProps } from "./types/types";
 
