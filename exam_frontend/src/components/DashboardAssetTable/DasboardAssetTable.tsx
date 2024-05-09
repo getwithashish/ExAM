@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { Pagination, Table } from "antd";
 import "./DasboardAssetTable.css";
 import { CloseOutlined } from "@ant-design/icons";
@@ -48,7 +48,7 @@ const DasboardAssetTable = ({
       else return;
     } else return <>not loaded</>;
   };
-  
+
   const [showUpload, setShowUpload] = useState(false);
   const closeImportDrawer = () => {
     setShowUpload(false);

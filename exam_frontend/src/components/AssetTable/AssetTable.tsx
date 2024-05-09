@@ -1,39 +1,15 @@
 import React, {
-  Key,
-  SetStateAction,
-  useEffect,
   useMemo,
   useState,
 } from "react";
 import {
-  Badge,
-  Button,
-  Dropdown,
-  Input,
   Pagination,
-  Space,
   Table,
-  TableColumnsType,
 } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
 import "./AssetTable.css";
 import CardComponent from "../CardComponent/CardComponent";
 import { CloseOutlined } from "@ant-design/icons";
-import axiosInstance from "../../config/AxiosConfig";
-import { isError, useQuery } from "@tanstack/react-query";
-import { AssetTableProps, DataType, LogData } from "../AssetTable/types";
-import { ColumnFilterItem } from "../AssetTable/types";
-import { AssetResult } from "../AssetTable/types";
-import { FilterDropdownProps } from "../AssetTable/types";
-import { useInfiniteQuery } from "react-query";
-
-import { DownOutlined } from "@ant-design/icons";
-import ExportButton from "../Export/Export";
-import { getAssetLog } from "./api/getAssetLog";
-import { AxiosError } from "axios";
-import TableNavbar from "../TableNavBar/TableNavbar";
-import SideDrawerComponent from "../SideDrawerComponent/SideDrawerComponent";
-import UploadComponent from "../Upload/UploadComponent";
+import { AssetTableProps} from "../AssetTable/types";
 import DrawerViewRequest from "../../pages/RequestPage/DrawerViewRequest";
 import GlobalSearch from "../GlobalSearch/GlobalSearch";
 
