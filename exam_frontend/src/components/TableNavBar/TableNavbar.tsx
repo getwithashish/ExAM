@@ -60,17 +60,20 @@ const TableNavbar: React.FC<TableNavbarProps> = ({
 
   const handleExport = (exportFormat: string) => {
     axiosInstance
-      .get(`/asset/export?export_format=${exportFormat}&json_logic=${json_query}`)
+      .get(`/asset/export?export_format=${exportFormat}&json_logic=${json_query}`, {
+        responseType: 'blob'  // Set responseType to 'blob' to handle binary data
+      })
       .then((response) => {
-        const blob = new Blob([response.data], { type: `application/${exportFormat}` });
+        const contentType = `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`; // Specify XLSX MIME type
+        const blob = new Blob([response.data], { type: contentType });
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
         link.setAttribute("download", `assets.${exportFormat}`);
         document.body.appendChild(link);
         link.click();
-        window.URL.revokeObjectURL(url);
         document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
       })
       .catch((error) => {
         console.error("Error exporting assets:", error);
