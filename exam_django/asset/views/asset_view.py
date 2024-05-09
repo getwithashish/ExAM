@@ -190,13 +190,18 @@ class UserAgentAssetView(APIView):
     def post(self, request):
         request_body = json.loads(request.body)
         print(request_body)
-        # memory = Memory.objects.filter(memory_space=request_body.get("TotalMemoryGB")).first()
         asset_type = AssetType.objects.filter(asset_type_name="Laptop").first()
         memory = int(request_body.get("totalMemoryGB"))
         memory, create = Memory.objects.get_or_create(memory_space=memory)
         business_unit, create = BusinessUnit.objects.get_or_create(
             business_unit_name="DU0"
         )
+        processor = request_body.get("processor")
+        if processor == "":
+            processor = None
+        processor_gen = request_body.get("processorGen")
+        if processor_gen == "":
+            processor_gen = None
 
         Asset.objects.create(
             asset_category="HARDWARE",
@@ -206,9 +211,11 @@ class UserAgentAssetView(APIView):
             serial_number=request_body.get("serialNumber"),
             os=request_body.get("os"),
             os_version=request_body.get("osVersion"),
-            processor=request_body.get("cpuModel"),
+            processor=processor,
+            processor_gen=processor_gen,
             memory=memory,
             storage=int(request_body.get("totalStorageGB")),
+            configuration=f"{request_body.get('processorModelName')}/{memory}/{int(request_body.get('totalStorageGB'))}",
             owner="EXPERION",
             business_unit=business_unit,
             asset_detail_status="CREATED",
