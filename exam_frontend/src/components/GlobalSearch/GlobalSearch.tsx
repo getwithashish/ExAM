@@ -4,24 +4,24 @@ import { GlobalSearchProps } from "./types/types";
 
 const GlobalSearch: React.FC<GlobalSearchProps> = ({
   assetDataRefetch,
+  searchTerm,
+  setSearchTerm
 }) => {
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  // const [searchTerm, setSearchTerm] = useState(""); // Initialize searchTerm state
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
-    setSearchTerm(newValue); // Update the searchTerm state with the new value
+    setSearchTerm(newValue);
 
-    // Refetch asset data with the new search term
     if (newValue === "") {
-      assetDataRefetch(``);
+      assetDataRefetch("");
     } else {
       assetDataRefetch(`&global_search=${newValue}`);
     }
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); // Prevent default form submission behavior
-    // Optionally, you can perform any actions related to form submission here
+    event.preventDefault();
   };
 
   return (

@@ -1,4 +1,5 @@
 export interface GlobalSearchProps {
-    onSearch: (searchTerm: string) => void;
-    assetDataRefetch: (queryParam: string) => void;
-  }
+  assetDataRefetch: (queryParam: string) => void;
+  searchTerm: string; // Add searchTerm
+  setSearchTerm: (queryParam: string) => void;
+}

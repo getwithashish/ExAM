@@ -12,16 +12,23 @@ import DrawerViewRequest from "../../pages/RequestPage/DrawerViewRequest";
 import { QueryBuilderComponent } from "../QueryBuilder/QueryBuilder";
 import { TableNavbarProps } from "./types";
 
-const TableNavbar :  React.FC<TableNavbarProps> = ({ showUpload, setShowUpload, assetDataRefetch ,reset }) => {
+const TableNavbar: React.FC<TableNavbarProps> = ({
+  showUpload,
+  setShowUpload,
+  assetDataRefetch,
+  reset,
+  searchTerm, 
+  setSearchTerm,
+}) => {
   const [visible, setVisible] = useState(false);
-  const [json_query, setJson_query] = useState<string>("")
+  const [json_query, setJson_query] = useState<string>("");
 
   const decodeJWT = (token: string) => {
     try {
       const base64Url = token.split(".")[1];
       if (!base64Url) {
         throw new Error("Invalid token format: missing base64Url");
-      }      
+      }
       const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
       const jsonPayload = decodeURIComponent(
         atob(base64)
@@ -54,7 +61,7 @@ const TableNavbar :  React.FC<TableNavbarProps> = ({ showUpload, setShowUpload, 
 
   // Function to handle export button click
   const handleExport = () => {
-    console.log("handleexport",json_query)
+    console.log("handleexport", json_query);
     axiosInstance
       .get(`/asset/export?export_format=csv&json_logic=${json_query}`)
       .then((response) => {
@@ -110,11 +117,6 @@ const TableNavbar :  React.FC<TableNavbarProps> = ({ showUpload, setShowUpload, 
     },
   ];
 
-  function handleSearch(_searchTerm: string): void {
-    console.log("Global Search Term: ", _searchTerm);
-    assetDataRefetch(`&global_search=${_searchTerm}`);
-  }
-
   const showQueryBuilder = () => {
     setVisible(true);
   };
@@ -122,35 +124,41 @@ const TableNavbar :  React.FC<TableNavbarProps> = ({ showUpload, setShowUpload, 
   const closeQueryBuilder = () => {
     setVisible(false);
   };
+
   return (
     <nav className={styles["navbar"]}>
-      {getUserScope() == "LEAD" ? (
+      {getUserScope() === "LEAD" ? (
         <DropDown
           onSelect={handleDropDownSelect}
           items={items}
           buttonLabel="Import"
         />
-      ) : (
-        ""
-      )}
-      
+      ) : null}
+
       <GlobalSearch
-        onSearch={handleSearch}
         assetDataRefetch={assetDataRefetch}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm} // Pass searchTerm prop
       />
 
-      <button  className={styles["button"]} onClick={reset} >Reset</button>
+      <button className={styles["button"]} onClick={reset}>
+        Reset
+      </button>
 
-      <button onClick={showQueryBuilder} className={styles["button"]} >Advanced Search</button>
+      <button onClick={showQueryBuilder} className={styles["button"]}>
+        Advanced Search
+      </button>
       <DrawerViewRequest
         title="Advanced Search"
         onClose={closeQueryBuilder}
         open={visible}
       >
-        <QueryBuilderComponent assetDataRefetch={assetDataRefetch} setJson_query={setJson_query}/>
+        <QueryBuilderComponent
+          assetDataRefetch={assetDataRefetch}
+          setJson_query={setJson_query}
+        />
       </DrawerViewRequest>
-       
-      
+
       <button onClick={handleExport} className={styles["button"]}>
         <UploadOutlined /> Export
       </button>

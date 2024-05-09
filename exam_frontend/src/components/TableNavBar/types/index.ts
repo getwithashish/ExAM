@@ -18,7 +18,10 @@ export default styles;
 
 export interface TableNavbarProps {
   showUpload: boolean;
-  setShowUpload: (value: boolean) => void;
+  setShowUpload: React.Dispatch<React.SetStateAction<boolean>>;
   assetDataRefetch: (queryParam: string) => void;
   reset: () => void;
+  searchTerm: string; // Add searchTerm property
+  onSearch: (searchTerm: string) => void;
+  setSearchTerm: (searchTerm: string) => void;
 }
