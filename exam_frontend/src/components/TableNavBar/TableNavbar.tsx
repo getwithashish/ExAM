@@ -21,7 +21,8 @@ const TableNavbar :  React.FC<TableNavbarProps> = ({ showUpload, setShowUpload, 
       const base64Url = token.split(".")[1];
       if (!base64Url) {
         throw new Error("Invalid token format: missing base64Url");
-      }      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      }      
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
       const jsonPayload = decodeURIComponent(
         atob(base64)
           .split("")
