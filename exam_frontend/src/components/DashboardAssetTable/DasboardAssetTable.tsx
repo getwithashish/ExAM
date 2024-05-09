@@ -1,8 +1,8 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { Pagination, Table } from "antd";
 import "./DasboardAssetTable.css";
 import { CloseOutlined } from "@ant-design/icons";
-import { AssetTableProps } from "../AssetTable/types";
+import { AssetTableProps } from "./types";
 import TableNavbar from "../TableNavBar/TableNavbar";
 import SideDrawerComponent from "../SideDrawerComponent/SideDrawerComponent";
 import UploadComponent from "../Upload/UploadComponent";
@@ -11,11 +11,8 @@ import DrawerViewRequest from "../../pages/RequestPage/DrawerViewRequest";
 
 const DasboardAssetTable = ({
   asset_uuid,
-  logsData,
-  isLoading,
   isSuccess,
   selectedAssetId,
-  setSelectedAssetId,
   handleRowClick,
   onCloseDrawer,
   selectedRow,
@@ -38,6 +35,14 @@ const DasboardAssetTable = ({
   sortedColumn,
   isAssetDataLoading,
 }: AssetTableProps) => {
+
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
+  const handleSearch = (searchTerm: string) => {
+    setSearchTerm(searchTerm);
+    assetDataRefetch(`&global_search=${searchTerm}`);
+  };
+
   const rowRender = (record: { key: string }, expanded: any) => {
     if (isSuccess) {
       if (expanded && selectedAssetId && expandedRowRender)
@@ -45,7 +50,7 @@ const DasboardAssetTable = ({
       else return;
     } else return <>not loaded</>;
   };
-  const memoizedRowRender = useMemo(() => rowRender, [isSuccess]);
+
   const [showUpload, setShowUpload] = useState(false);
   const closeImportDrawer = () => {
     setShowUpload(false);
@@ -57,11 +62,14 @@ const DasboardAssetTable = ({
         <h6>Asset Details</h6>
       </div>
       <div className="ml-2">
-        <TableNavbar
+      <TableNavbar
           showUpload={showUpload}
           setShowUpload={setShowUpload}
           assetDataRefetch={assetDataRefetch}
           reset={reset}
+          searchTerm={searchTerm}
+          onSearch={handleSearch}
+          setSearchTerm={setSearchTerm}
         />
       </div>
 
@@ -100,7 +108,9 @@ const DasboardAssetTable = ({
               }
               total={totalItemCount}
               onChange={(page, pageSize) => {
-                assetPageDataFetch(`&offset=${(page - 1) * pageSize}`);
+                assetPageDataFetch(
+                  `&offset=${(page - 1) * pageSize}&global_search=${searchTerm}`
+                );
               }}
               hideOnSinglePage={true}
             />
