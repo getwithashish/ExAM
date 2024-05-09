@@ -1,7 +1,7 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8000/api/v1",
+  baseURL: import.meta.env["VITE_CONFIG_URL"],
 });
 
 const excludePaths = ["/user/register", "/user/signin"];

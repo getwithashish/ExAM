@@ -12,6 +12,7 @@ const getAssetDetails = async (query_params="") => {
     return [];
   }
 };
+
 export { getAssetDetails };
 
 const getLocationOptions = () => {

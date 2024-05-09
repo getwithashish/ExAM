@@ -310,7 +310,7 @@ const AddAsset: React.FC = () => {
 
     console.log("Attempting to submit form data:", formData);
     const response = await axiosInstance.post(
-      "http://localhost:8000/api/v1/asset/",
+      import.meta.env["VITE_ADD_ASSET_URL"],
       formData
     );
     console.log("Form Data Posted:", response.data);
