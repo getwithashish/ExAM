@@ -74,6 +74,13 @@ const AssetTable = ({
   expandedRowRender,
   assetDataRefetch,
 }: AssetTableProps) => {
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
+  const handleSearch = (searchTerm: string) => {
+    setSearchTerm(searchTerm);
+    assetDataRefetch(`&global_search=${searchTerm}`);
+  };
+
   const rowRender = (record, expanded) => {
     if (isSuccess) {
       if (expanded && selectedAssetId && expandedRowRender)
@@ -87,20 +94,18 @@ const AssetTable = ({
   const closeImportDrawer = () => {
     setShowUpload(false);
   };
-  function handleSearch(_searchTerm: string): void {
-    console.log("Global Search Term: ", _searchTerm);
-    assetDataRefetch(`&global_search=${_searchTerm}`);
-  }
+
   return (
     <>
       <div className="mainHeading" style={{ background: "white" }}>
         <div className=" font-display">Deallocate Assets</div>
       </div>
       <div style={{ marginLeft: "40px", marginBottom: "30px" }}>
-        <GlobalSearch
-          onSearch={handleSearch}
-          assetDataRefetch={assetDataRefetch}
-        />
+      <GlobalSearch
+        assetDataRefetch={assetDataRefetch}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm} // Pass searchTerm prop
+      />
       </div>
 
       <div
@@ -144,7 +149,9 @@ const AssetTable = ({
                 }
                 total={totalItemCount}
                 onChange={(page, pageSize) => {
-                  assetPageDataFetch(`&offset=${(page - 1) * pageSize}`);
+                  assetPageDataFetch(
+                    `&offset=${(page - 1) * pageSize}&global_search=${searchTerm}`
+                  );
                 }}
                 hideOnSinglePage={true}
               />

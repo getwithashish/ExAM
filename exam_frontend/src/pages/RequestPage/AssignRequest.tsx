@@ -21,14 +21,15 @@ const AssignPage: FC = function () {
 
   useEffect(() => {
     fetchAssignRequests();
-  }, [currentPage, pageSize]);
+  }, [currentPage, pageSize, searchQuery]);
 
   const fetchAssignRequests = () => {
     setLoading(true);
     const offset = (currentPage - 1) * pageSize;
+    const searchQueryParam = searchQuery ? `&global_search=${searchQuery}` : '';
     axiosInstance
       .get(
-        `/asset/?limit=${pageSize}&offset=${offset}&assign_status=ASSIGN_PENDING`
+        `/asset/?limit=${pageSize}&offset=${offset}&assign_status=ASSIGN_PENDING${searchQueryParam}`
       )
       .then((response) => {
         const assignPendingAssets = response.data.data.results;
@@ -139,10 +140,6 @@ const AssignPage: FC = function () {
       assignRequest.location.location_name
         ?.toLowerCase()
         .includes(searchQuery.toLowerCase()) ||
-      assignRequest.memory?.memory_space
-        ?.toString()
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
       assignRequest.business_unit.business_unit_name
         ?.toLowerCase()
         .includes(searchQuery.toLowerCase()) ||
@@ -154,10 +151,7 @@ const AssignPage: FC = function () {
         .includes(searchQuery.toLowerCase()) ||
       assignRequest.custodian?.employee_name
         .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-      assignRequest.memory?.memory_space
-        ?.toLowerCase()
-        .includes(searchQuery.toLowerCase())
+        .includes(searchQuery.toLowerCase()) 
   );
 
   const onShowSizeChange = (_: number, size: number) => {

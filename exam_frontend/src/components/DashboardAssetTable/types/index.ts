@@ -126,6 +126,7 @@ export interface DataType {
     asset_log: AssetLog;
   }
   export interface AssetTableProps {
+    sortOrder:string;
     logsData: LogData[] | undefined;
     isLoading: boolean;
     isSuccess: boolean;
@@ -148,6 +149,8 @@ export interface DataType {
   }) => void,
     drawerTitle:string
     asset_uuid: string;
+    assetPageDataFetch: (params: string) => void;
+    
   }
   
   

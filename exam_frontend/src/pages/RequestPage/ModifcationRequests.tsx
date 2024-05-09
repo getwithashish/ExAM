@@ -20,15 +20,16 @@ const ModificationRequests: FC = function () {
   const [totalPages, setTotalPages] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10); 
 
-
   useEffect(() => {
     fetchAssets();
-  }, [currentPage, pageSize]);
+  },[currentPage, pageSize, searchQuery]);
 
   const fetchAssets = () => {
     setLoading(true);
     const offset = (currentPage - 1) * pageSize;
-    axiosInstance.get(`/asset/?limit=${pageSize}&offset=${offset}&asset_detail_status=UPDATE_PENDING`)
+    const searchQueryParam = searchQuery ? `&global_search=${searchQuery}` : '';
+    
+    axiosInstance.get(`/asset/?limit=${pageSize}&offset=${offset}&asset_detail_status=UPDATE_PENDING${searchQueryParam}`)
       .then((response) => {
         const updatePendingAssets = response.data.data.results;
         const totalAssets = response.data.data.count;
@@ -114,7 +115,6 @@ const ModificationRequests: FC = function () {
       asset.storage?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       asset.configuration?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       asset.accessories?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      asset.memory?.memory_space?.toString().toLowerCase().includes(searchQuery.toLowerCase())||
       asset.location.location_name
         ?.toLowerCase()
         .includes(searchQuery.toLowerCase()) ||
@@ -127,8 +127,7 @@ const ModificationRequests: FC = function () {
       asset.approved_by?.username
         .toLowerCase()
         .includes(searchQuery.toLowerCase()) ||
-      asset.custodian?.employee_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      asset.memory?.memory_space.toLowerCase().includes(searchQuery.toLowerCase())
+      asset.custodian?.employee_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const onShowSizeChange = (_: number, size: number) => {

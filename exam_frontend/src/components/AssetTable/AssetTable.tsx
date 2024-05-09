@@ -1,39 +1,15 @@
 import React, {
-  Key,
-  SetStateAction,
-  useEffect,
   useMemo,
   useState,
 } from "react";
 import {
-  Badge,
-  Button,
-  Dropdown,
-  Input,
   Pagination,
-  Space,
   Table,
-  TableColumnsType,
 } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
 import "./AssetTable.css";
 import CardComponent from "../CardComponent/CardComponent";
 import { CloseOutlined } from "@ant-design/icons";
-import axiosInstance from "../../config/AxiosConfig";
-import { isError, useQuery } from "@tanstack/react-query";
-import { AssetTableProps, DataType, LogData } from "../AssetTable/types";
-import { ColumnFilterItem } from "../AssetTable/types";
-import { AssetResult } from "../AssetTable/types";
-import { FilterDropdownProps } from "../AssetTable/types";
-import { useInfiniteQuery } from "react-query";
-
-import { DownOutlined } from "@ant-design/icons";
-import ExportButton from "../Export/Export";
-import { getAssetLog } from "./api/getAssetLog";
-import { AxiosError } from "axios";
-import TableNavbar from "../TableNavBar/TableNavbar";
-import SideDrawerComponent from "../SideDrawerComponent/SideDrawerComponent";
-import UploadComponent from "../Upload/UploadComponent";
+import { AssetTableProps} from "../AssetTable/types";
 import DrawerViewRequest from "../../pages/RequestPage/DrawerViewRequest";
 import GlobalSearch from "../GlobalSearch/GlobalSearch";
 
@@ -72,6 +48,14 @@ const AssetTable = ({
   heading,
   assetDataRefetch,
 }: AssetTableProps) => {
+
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
+  const handleSearch = (searchTerm: string) => {
+    setSearchTerm(searchTerm);
+    assetDataRefetch(`&global_search=${searchTerm}`);
+  };
+
   const rowRender = (record: { key: string }, expanded: any) => {
     if (isSuccess) {
       if (expanded && selectedAssetId && expandedRowRender)
@@ -86,20 +70,17 @@ const AssetTable = ({
     setShowUpload(false);
   };
 
-  function handleSearch(_searchTerm: string): void {
-    console.log("Global Search Term: ", _searchTerm);
-    assetDataRefetch(`&global_search=${_searchTerm}`);
-  }
   return (
     <>
       <div className="mainHeading" font-display>
         <h1>{heading}</h1>
       </div>
       <div style={{ marginLeft: "40px",marginBottom:"30px" }}>
-        <GlobalSearch
-          onSearch={handleSearch}
-          assetDataRefetch={assetDataRefetch}
-        />
+      <GlobalSearch
+        assetDataRefetch={assetDataRefetch}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm} // Pass searchTerm prop
+      />
       </div>
 
       <div style={{ position: "relative", display: "inline-block", width: "80vw" }}>
@@ -129,7 +110,9 @@ const AssetTable = ({
               }
               total={totalItemCount}
               onChange={(page, pageSize) => {
-                assetPageDataFetch(`&offset=${(page - 1) * pageSize}`);
+                assetPageDataFetch(
+                  `&offset=${(page - 1) * pageSize}&global_search=${searchTerm}`
+                );
               }}
               hideOnSinglePage={true}
             />
