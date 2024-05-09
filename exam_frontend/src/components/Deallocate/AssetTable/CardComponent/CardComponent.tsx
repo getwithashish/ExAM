@@ -479,12 +479,11 @@ const CardComponent: React.FC<CardType> = ({
           <b>Serial Number:</b> <br></br>
           <br></br>{" "}
           <Input
-          disabled
-
             defaultValue={data.serial_number}
             onChange={(e) =>
               handleUpdateChange("serail number", e.target.value)
             }
+            readOnly 
             style={inputStyle}
           />{" "}
         </Form.Item>
@@ -693,12 +692,11 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
-          disabled
-
             defaultValue={data.configuration}
             onChange={(e) =>
               handleUpdateChange("configuration", e.target.value)
             }
+            readOnly 
             style={inputStyle}
           />{" "}
         </Form.Item>
