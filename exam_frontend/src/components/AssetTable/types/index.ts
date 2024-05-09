@@ -158,5 +158,7 @@ export interface AssetTableProps {
   handleDelete:any
   modifiedData:any
   reset:()=> void;
+  sortOrder:string;
+  sortedColumn:string;
 }
 
