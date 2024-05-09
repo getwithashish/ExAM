@@ -62,8 +62,7 @@ const AssetTableHandler = ({
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [sortedColumn, setSortedColumn] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [sortedColumn, setSortedColumn] = useState<string | null>(null);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+ 
   
   const [queryParam, setQueryParam] = useState("");
   const { data: assetData, isLoading: isAssetDataLoading, refetch: assetDataRefetch } = useQuery({
@@ -188,11 +187,7 @@ const AssetTableHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("product_name"),
       }),
-      sorter: true,
-      sortOrder: sortedColumn === "product_name" ? sortOrder : undefined,
-      onHeaderCell: () => ({
-        onClick: () => handleSort("product_name"),
-      }),
+
       render: renderClickableColumn("Product Name", "product_name"),
     },
 
@@ -280,25 +275,7 @@ const AssetTableHandler = ({
       width: 140,
       render: renderClickableColumn("Asset Category", "asset_category"),
     },
-    // {
-    //   title: "Asset Status",
-    //   dataIndex: "Status",
-    //   responsive: ["md"],
-    //   width: 140,
-    //   render: (_, record) => {
-    //     const displayedStatus = record.Status === "IN STORE" ? "IN STOCK" : record.Status;
-    //     console.log("The displayed status is:"+displayedStatus)
-    //     return (
-    //       <div
-    //         data-column-name="Asset Status"
-    //         onClick={() => handleColumnClick(record, "Asset Status")}
-    //         style={{ cursor: "pointer" }}
-    //       >
-    //         {displayedStatus}
-    //       </div>
-    //     );
-    //   },
-    // },
+ 
     
     {
       title: "Asset Status",
