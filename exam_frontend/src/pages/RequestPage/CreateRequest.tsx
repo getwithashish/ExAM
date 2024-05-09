@@ -7,6 +7,8 @@ import DrawerViewRequest from "./DrawerViewRequest";
 import InfoIcon from '@mui/icons-material/Info'; 
 import { Pagination } from 'antd';
 
+
+
 const CreateRequestPage: FC = function () {
   const [assets, setAssets] = useState<any[]>([]);
   const [selectedAsset, setSelectedAsset] = useState<any | null>(null);
@@ -18,20 +20,21 @@ const CreateRequestPage: FC = function () {
 
   useEffect(() => {
     fetchAssets();
-  }, [currentPage, pageSize]);
+  },[currentPage, pageSize, searchQuery]);
 
 
   const fetchAssets = () => {
     setLoading(true);
     const offset = (currentPage - 1) * pageSize;
+    const searchQueryParam = searchQuery ? `&global_search=${searchQuery}` : '';
     axiosInstance
-      .get(`/asset/?limit=${pageSize}&offset=${offset}&asset_detail_status=CREATE_PENDING`)
+      .get(`/asset/?limit=${pageSize}&offset=${offset}&asset_detail_status=CREATE_PENDING${searchQueryParam}`)
       .then((response) => {
         const createPendingAssets = response.data.data.results;
         const totalAssets = response.data.data.count;
         console.log("createPendingAssets", createPendingAssets);
         setAssets(createPendingAssets);
-        setTotalPages(Math.ceil(totalAssets / 10)); // Calculate total pages based on total assets
+        setTotalPages(Math.ceil(totalAssets / pageSize)); // Calculate total pages based on total assets
       })
       .catch((error) => {
         console.error("Error fetching assets:", error);
@@ -40,7 +43,6 @@ const CreateRequestPage: FC = function () {
         setLoading(false);
       });
   };
-
   const handleApprove = () => {
     if (selectedAsset) {
       const approvalData = {
