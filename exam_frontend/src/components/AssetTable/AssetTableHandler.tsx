@@ -62,6 +62,8 @@ const AssetTableHandler = ({
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [sortedColumn, setSortedColumn] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortedColumn, setSortedColumn] = useState<string | null>(null);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   
   const [queryParam, setQueryParam] = useState("");
   const { data: assetData, isLoading: isAssetDataLoading, refetch: assetDataRefetch } = useQuery({
@@ -181,6 +183,11 @@ const AssetTableHandler = ({
       fixed: "left",
       width: 120,
       responsive: ["md"],
+      sorter: true,
+      sortOrder: sortedColumn === "product_name" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("product_name"),
+      }),
       sorter: true,
       sortOrder: sortedColumn === "product_name" ? sortOrder : undefined,
       onHeaderCell: () => ({

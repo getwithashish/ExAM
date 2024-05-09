@@ -27,18 +27,10 @@ interface AutocompleteProps {
   setSelectedFields: React.Dispatch<React.SetStateAction<{ field: string; value: string ; id:number | null}[]>>; // Add setSelectedFields prop
 }
 
-const CustomAutocomplete: React.FC<AutocompleteProps> = ({ selectedFieldIndex, field, value, onFieldChange, onInputChange, setSelectedFields, setFilterValue , suggestion ,setSuggestion }) => { // Add setSelectedFields to props
+const CustomAutocomplete: React.FC<AutocompleteProps> = ({ selectedFieldIndex, field, value, onFieldChange, onInputChange, setSelectedFields, setFilterValue , suggestion ,setSuggestion ,fieldEndpointMapping }) => { // Add setSelectedFields to props
  
   
 
-  const fieldEndpointMapping = {
-    "location": "/asset/location",
-    "invoice_location": "/asset/location",
-    "business_unit": "/asset/business_unit",
-    "memory": "/asset/memory_list",
-    "asset_type": "/asset/asset_type",
-    // ... define mappings for other relevant fields with separate endpoints
-  };
   useEffect(() => {
     const fetchSuggestions = async () => {
       if (field && value) {
@@ -158,6 +150,15 @@ export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({ as
   const initialState = { selectedFields: [], newFields: [] };
   const [filterValue,setFilterValue] = useState<number | string>()
   const [suggestion, setSuggestion] = useState<string[]>([]);
+  
+  const fieldEndpointMapping = {
+    "location": "/asset/location",
+    "invoice_location": "/asset/location",
+    "business_unit": "/asset/business_unit",
+    "memory": "/asset/memory_list",
+    "asset_type": "/asset/asset_type",
+    // ... define mappings for other relevant fields with separate endpoints
+  };
 
   const handleInputChange = (event: React.ChangeEvent<{}>, newValue: string | null, index: number) => {
     if (newValue !== null) {
@@ -181,18 +182,69 @@ export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({ as
   
   
 
-  const handleFieldChange = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
+   const handleFieldChange = async (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
     const { value } = event.target;
+
+    if (value) {
+        try {
+            const endpoint = fieldEndpointMapping[value];
+            let suggestions = [];
+
+            if (value) {
+              const url = endpoint ? `${endpoint}` : `/asset/?limit=20&asset_field_value_filter={"${value}":""}`;
+   
+                const res = await axiosInstance.get(url);
+                console.warn(res);
+                if (res.data.data.results) {
+                  const data = res.data.data.results;
+                  if(data[0].product_name)
+                  suggestions = data.map(result => result.product_name);
+                  else if(data[0].os)
+                  suggestions = data.map(result => result.os);
+                  else if(data[0].storage)
+                    suggestions = data.map(result => result.storage);
+                  else if(data[0].model_number)
+                      suggestions = data.map(result => result.model_number);
+                  else if(data[0].processor)
+                    suggestions = data.map(result => result.processor);
+                      
+                }
+
+                else if (res.data.data) {
+                    const data = res.data.data;
+                    
+                    if (data[0].asset_type_name) {
+                        suggestions = data.map(result => ({ label: result.asset_type_name, id: result.id }));
+                    } else if (data[0].memory_space) {
+                        suggestions = data.map(result => ({ label: result.memory_space, id: result.id }));
+                    } else if (data[0].business_unit_name) {
+                        suggestions = data.map(result => ({ label: result.business_unit_name, id: result.id }));
+                    } else if (data[0].location_name) {
+                        suggestions = data.map(result => ({ label: result.location_name, id: result.id }));
+                    }
+                    
+                    console.warn(suggestions);
+                }
+                
+            }
+
+            setSuggestion(suggestions);
+        } catch (error) {
+            console.error("Error fetching asset details:", error);
+        }
+    }
+
     setSelectedFields(prev => {
-      const updatedFields = [...prev];
-      updatedFields[index].field = value;
-      return updatedFields;
+        const updatedFields = [...prev];
+        updatedFields[index].field = value;
+        return updatedFields;
     });
-  };
+};
 
   const handleAddField = () => {
     setNewFields(prev => [...prev, prev.length]);
     setSelectedFields(prev => [...prev, { field: '', value: '' }]);
+    setSuggestion([])
   };
 
   const handleRemoveField = (index: number) => {
@@ -264,6 +316,7 @@ export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({ as
                 setFilterValue={setFilterValue}
                 suggestion={suggestion}
                 setSuggestion={setSuggestion}
+                fieldEndpointMapping={fieldEndpointMapping}
               />
             </div>
             <Button onClick={() => handleRemoveField(index)}>X</Button>
