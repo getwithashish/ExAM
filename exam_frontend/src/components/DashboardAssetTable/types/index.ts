@@ -149,7 +149,8 @@ export interface DataType {
   }) => void,
     drawerTitle:string
     asset_uuid: string;
-  
+    assetPageDataFetch: (params: string) => void;
+    
   }
   
   

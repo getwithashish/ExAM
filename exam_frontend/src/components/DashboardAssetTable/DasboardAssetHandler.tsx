@@ -531,7 +531,6 @@ const DasboardAssetHandler = () => {
   }));
 
   const drawerTitle = "Asset Details";
-  const button = <Button type="primary"></Button>;
 
   return (
     <DasboardAssetTable
@@ -558,7 +557,6 @@ const DasboardAssetHandler = () => {
       handleUpdateData={function (updatedData: { key: any }): void {
         throw new Error("Function not implemented.");
       }}
-      drawerTitle={""}
     />
   );
 };
