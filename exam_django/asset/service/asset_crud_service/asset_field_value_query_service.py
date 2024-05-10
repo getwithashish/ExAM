@@ -91,13 +91,6 @@ class AssetFieldValueQueryService(AssetQueryAbstract):
                     )
                 },
             )
-
-            # page = self.pagination.paginate_queryset(queryset, request)
-            # if page is not None:
-            #     serializer = serializer_class(page, many=True)
-            #     serializer = self.pagination.get_paginated_response(serializer.data)
-
-            # else:
             serializer = serializer_class(queryset, many=True)
 
             return (
