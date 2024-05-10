@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import axiosInstance from "../../config/AxiosConfig"
-import { Field } from "react-querybuilder"
-import { Autocomplete } from '@mui/material';
-import TextField from '@mui/material/TextField';
-import { Button, message } from 'antd';
+import React, { useState, useEffect } from "react";
+import axiosInstance from "../../config/AxiosConfig";
+import { Field } from "react-querybuilder";
+import { Autocomplete } from "@mui/material";
+import TextField from "@mui/material/TextField";
+import { Button, message } from "antd";
+import MuiAutocomplete from "./MuiAutocomplete";
 
 const fields: Field[] = [
   { name: "product_name", label: "Product Name" },
@@ -16,20 +17,35 @@ const fields: Field[] = [
   { name: "processor", label: "Processor" },
   { name: "memory", label: "Memory" },
   { name: "storage", label: "Storage" },
-]
+];
 
 interface AutocompleteProps {
   selectedFieldIndex: number;
   field: string;
   value: string;
-  onFieldChange: (event: React.ChangeEvent<HTMLSelectElement>, index: number) => void;
+  onFieldChange: (
+    event: React.ChangeEvent<HTMLSelectElement>,
+    index: number
+  ) => void;
   onInputChange: (event: React.ChangeEvent<{}>, newValue: string) => void;
-  setSelectedFields: React.Dispatch<React.SetStateAction<{ field: string; value: string ; id:number | null}[]>>; // Add setSelectedFields prop
+  setSelectedFields: React.Dispatch<
+    React.SetStateAction<{ field: string; value: string; id: number | null }[]>
+  >; // Add setSelectedFields prop
 }
 
-const CustomAutocomplete: React.FC<AutocompleteProps> = ({ selectedFieldIndex, field, value, onFieldChange, onInputChange, setSelectedFields, setFilterValue , suggestion ,setSuggestion ,fieldEndpointMapping }) => { // Add setSelectedFields to props
- 
-  
+const CustomAutocomplete: React.FC<AutocompleteProps> = ({
+  selectedFieldIndex,
+  field,
+  value,
+  onFieldChange,
+  onInputChange,
+  setSelectedFields,
+  setFilterValue,
+  suggestion,
+  setSuggestion,
+  fieldEndpointMapping,
+}) => {
+  // Add setSelectedFields to props
 
   useEffect(() => {
     const fetchSuggestions = async () => {
@@ -37,87 +53,86 @@ const CustomAutocomplete: React.FC<AutocompleteProps> = ({ selectedFieldIndex, f
         try {
           const endpoint = fieldEndpointMapping[field];
           let suggestions;
-           ;
-          
-        
+          const url = endpoint
+            ? `${endpoint}?query=${value}`
+            : `/asset/?limit=20&asset_field_value_filter={"${field}":"${value}"}`;
 
-          const url = endpoint ? `${endpoint}?query=${value}` : `/asset/?limit=20&asset_field_value_filter={"${field}":"${value}"}`;
-   
           const res = await axiosInstance.get(url);
-          console.warn(res)
+          console.warn(res);
           if (res.data.data.results) {
             const data = res.data.data.results;
-            if(data[0].product_name)
-            suggestions = data.map(result => result.product_name);
-            else if(data[0].os)
-            suggestions = data.map(result => result.os);
-            else if(data[0].storage)
-              suggestions = data.map(result => result.storage);
-            else if(data[0].model_number)
-                suggestions = data.map(result => result.model_number);
-            else if(data[0].processor)
-              suggestions = data.map(result => result.processor);
-                
-           
-          } else if(res.data.data){
-            const data = res.data.data
-            
-            if(data[0].asset_type_name)
-            suggestions =data?.map((result) => ({ label: result.asset_type_name, id: result.id }))
-            else if(data[0].memory_space)
-              suggestions =data?.map((result) => ({ label: result.memory_space, id: result.id }))
-            else if(data[0].business_unit_name)
-              suggestions =data?.map((result) => ({ label: result.business_unit_name, id: result.id }))
-            else if(data[0].location_name){
-              // suggestions =data?.map(result => result.location_name)
-              suggestions = data?.map((result) => ({ label: result.location_name, id: result.id }))
-              console.error(suggestions)
+            if (data[0].product_name)
+              suggestions = data.map((result) => result.product_name);
+            else if (data[0].os) suggestions = data.map((result) => result.os);
+            else if (data[0].storage)
+              suggestions = data.map((result) => result.storage);
+            else if (data[0].model_number)
+              suggestions = data.map((result) => result.model_number);
+            else if (data[0].processor)
+              suggestions = data.map((result) => result.processor);
+          } else if (res.data.data) {
+            const data = res.data.data;
 
+            if (data[0].asset_type_name)
+              suggestions = data?.map((result) => ({
+                label: result.asset_type_name,
+                id: result.id,
+              }));
+            else if (data[0].memory_space)
+              suggestions = data?.map((result) => ({
+                label: result.memory_space,
+                id: result.id,
+              }));
+            else if (data[0].business_unit_name)
+              suggestions = data?.map((result) => ({
+                label: result.business_unit_name,
+                id: result.id,
+              }));
+            else if (data[0].location_name) {
+              // suggestions =data?.map(result => result.location_name)
+              suggestions = data?.map((result) => ({
+                label: result.location_name,
+                id: result.id,
+              }));
+              console.error(suggestions);
             }
-              
-                  
-            console.warn(suggestions)
-          
-          
-        }
-   
+
+            console.warn(suggestions);
+          }
+
           setSuggestion(suggestions);
           if (endpoint && suggestions) {
             // Use the id of the respective field as the filter value
-            setFilterValue(suggestions.find(item => item.label === value).id);
-           
-            
-        } else {
+            setFilterValue(suggestions.find((item) => item.label === value).id);
+          } else {
             // Use the original value as the filter value
             setFilterValue(value);
-        }
-         
+          }
         } catch (error) {
           console.error("Error fetching asset details:", error);
-          
         }
       }
-   };
-   
-   
+    };
+
     fetchSuggestions();
-}, [field, value, axiosInstance]);
+  }, [field, value, axiosInstance]);
 
-
-const handleSuggestionClick = (suggestedValue: string | null) => {
-  if (suggestedValue) {
-    setSelectedFields(prev => {
-      const updatedFields = [...prev];
-      updatedFields[selectedFieldIndex].value = suggestedValue;
-      const suggestedItem = suggestion.find(item => item === suggestedValue);
-      updatedFields[selectedFieldIndex].id = suggestedItem ? suggestedItem.id : null; // Update id if the suggestion exists
-      return updatedFields;
-    });
-  }
-  setSuggestion([]); // Clear the suggestion array
-};
-
-
+  const handleSuggestionClick = (suggestedValue: string | null) => {
+    if (suggestedValue) {
+      setSelectedFields((prev) => {
+        const updatedFields = [...prev];
+        updatedFields[selectedFieldIndex].value = suggestedValue;
+        const suggestedItem = suggestion.find(
+          (item) => item === suggestedValue
+        );
+        updatedFields[selectedFieldIndex].id = suggestedItem
+          ? suggestedItem.id
+          : null; // Update id if the suggestion exists
+        return updatedFields;
+      });
+    }
+    setSuggestion([]); // Clear the suggestion array
+  };
 
   return (
     <Autocomplete
@@ -128,201 +143,275 @@ const handleSuggestionClick = (suggestedValue: string | null) => {
       inputValue={value}
       onInputChange={onInputChange}
       options={suggestion}
-      renderInput={params => (
-        <TextField
-          {...params}
-          margin='normal'
-        />
-      )}
+      renderInput={(params) => <TextField {...params} margin="normal" />}
       onChange={(event, newValue) => handleSuggestionClick(newValue)}
     />
   );
 };
 
 interface QueryBuilderComponentProps {
-  assetDataRefetch: (queryParam: string) => void
-  setJson_query :(queryParams:string)=>void
+  assetDataRefetch: (queryParam: string) => void;
+  setJson_query: (queryParams: string) => void;
 }
 
-export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({ assetDataRefetch, setJson_query }) => {
-  const [selectedFields, setSelectedFields] = useState<{ field: string; value: string ;id :number }[]>([]);
+export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({
+  assetDataRefetch,
+  setJson_query,
+}) => {
+  const [selectedFields, setSelectedFields] = useState<
+    { field: string; value: string; id: number }[]
+  >([]);
   const [newFields, setNewFields] = useState<number[]>([]);
   const initialState = { selectedFields: [], newFields: [] };
-  const [filterValue,setFilterValue] = useState<number | string>()
+  const [filterValue, setFilterValue] = useState<number | string>();
   const [suggestion, setSuggestion] = useState<string[]>([]);
-  
+
   const fieldEndpointMapping = {
-    "location": "/asset/location",
-    "invoice_location": "/asset/location",
-    "business_unit": "/asset/business_unit",
-    "memory": "/asset/memory_list",
-    "asset_type": "/asset/asset_type",
+    location: "/asset/location",
+    invoice_location: "/asset/location",
+    business_unit: "/asset/business_unit",
+    memory: "/asset/memory_list",
+    asset_type: "/asset/asset_type",
     // ... define mappings for other relevant fields with separate endpoints
   };
 
-  const handleInputChange = (event: React.ChangeEvent<{}>, newValue: string | null, index: number) => {
+  const handleInputChange = (
+    event: React.ChangeEvent<{}>,
+    newValue: string | null,
+    index: number
+  ) => {
     if (newValue !== null) {
-       setSelectedFields(prev => {
-         const updatedFields = [...prev];
-         updatedFields[index].value = newValue; // Directly assign newValue if it's not null
-         return updatedFields;
-       });
+      setSelectedFields((prev) => {
+        const updatedFields = [...prev];
+        updatedFields[index].value = newValue; // Directly assign newValue if it's not null
+        return updatedFields;
+      });
     } else {
-       // Handle the case where newValue is null (e.g., when the Autocomplete box is cleared)
-       // You might want to clear the value for the specific field or handle it differently
-       setSelectedFields(prev => {
-         const updatedFields = [...prev];
-         updatedFields[index].value = ''; // Clear the value for the specific field
-         return updatedFields;
-       });
+      // Handle the case where newValue is null (e.g., when the Autocomplete box is cleared)
+      // You might want to clear the value for the specific field or handle it differently
+      setSelectedFields((prev) => {
+        const updatedFields = [...prev];
+        updatedFields[index].value = ""; // Clear the value for the specific field
+        return updatedFields;
+      });
     }
-   };
-  
-  
-  
-  
+  };
 
-   const handleFieldChange = async (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
+  const handleFieldChange = async (
+    event: React.ChangeEvent<HTMLSelectElement>,
+    index: number
+  ) => {
     const { value } = event.target;
 
     if (value) {
-        try {
-            const endpoint = fieldEndpointMapping[value];
-            let suggestions = [];
+      try {
+        const endpoint = fieldEndpointMapping[value];
+        let suggestions = [];
 
-            if (value) {
-              const url = endpoint ? `${endpoint}` : `/asset/?limit=20&asset_field_value_filter={"${value}":""}`;
-   
-                const res = await axiosInstance.get(url);
-                console.warn(res);
-                if (res.data.data.results) {
-                  const data = res.data.data.results;
-                  if(data[0].product_name)
-                  suggestions = data.map(result => result.product_name);
-                  else if(data[0].os)
-                  suggestions = data.map(result => result.os);
-                  else if(data[0].storage)
-                    suggestions = data.map(result => result.storage);
-                  else if(data[0].model_number)
-                      suggestions = data.map(result => result.model_number);
-                  else if(data[0].processor)
-                    suggestions = data.map(result => result.processor);
-                      
-                }
+        if (value) {
+          const url = endpoint
+            ? `${endpoint}`
+            : `/asset/?limit=20&asset_field_value_filter={"${value}":""}`;
 
-                else if (res.data.data) {
-                    const data = res.data.data;
-                    
-                    if (data[0].asset_type_name) {
-                        suggestions = data.map(result => ({ label: result.asset_type_name, id: result.id }));
-                    } else if (data[0].memory_space) {
-                        suggestions = data.map(result => ({ label: result.memory_space, id: result.id }));
-                    } else if (data[0].business_unit_name) {
-                        suggestions = data.map(result => ({ label: result.business_unit_name, id: result.id }));
-                    } else if (data[0].location_name) {
-                        suggestions = data.map(result => ({ label: result.location_name, id: result.id }));
-                    }
-                    
-                    console.warn(suggestions);
-                }
-                
+          const res = await axiosInstance.get(url);
+          console.warn(res);
+          if (res.data.data.results) {
+            const data = res.data.data.results;
+            if (data[0].product_name)
+              suggestions = data.map((result) => result.product_name);
+            else if (data[0].os) suggestions = data.map((result) => result.os);
+            else if (data[0].storage)
+              suggestions = data.map((result) => result.storage);
+            else if (data[0].model_number)
+              suggestions = data.map((result) => result.model_number);
+            else if (data[0].processor)
+              suggestions = data.map((result) => result.processor);
+          } else if (res.data.data) {
+            const data = res.data.data;
+
+            if (data[0].asset_type_name) {
+              suggestions = data.map((result) => ({
+                label: result.asset_type_name,
+                id: result.id,
+              }));
+            } else if (data[0].memory_space) {
+              suggestions = data.map((result) => ({
+                label: result.memory_space,
+                id: result.id,
+              }));
+            } else if (data[0].business_unit_name) {
+              suggestions = data.map((result) => ({
+                label: result.business_unit_name,
+                id: result.id,
+              }));
+            } else if (data[0].location_name) {
+              suggestions = data.map((result) => ({
+                label: result.location_name,
+                id: result.id,
+              }));
             }
 
-            setSuggestion(suggestions);
-        } catch (error) {
-            console.error("Error fetching asset details:", error);
+            console.warn(suggestions);
+          }
         }
+
+        setSuggestion(suggestions);
+      } catch (error) {
+        console.error("Error fetching asset details:", error);
+      }
     }
 
-    setSelectedFields(prev => {
-        const updatedFields = [...prev];
-        updatedFields[index].field = value;
-        return updatedFields;
+    setSelectedFields((prev) => {
+      const updatedFields = [...prev];
+      updatedFields[index].field = value;
+      return updatedFields;
     });
-};
+  };
 
   const handleAddField = () => {
-    setNewFields(prev => [...prev, prev.length]);
-    setSelectedFields(prev => [...prev, { field: '', value: '' }]);
-    setSuggestion([])
+    setNewFields((prev) => [...prev, prev.length]);
+    setSelectedFields((prev) => [...prev, { field: "", value: "" }]);
+    setSuggestion([]);
   };
 
   const handleRemoveField = (index: number) => {
-    setNewFields(prev => prev.filter((_, i) => i !== index));
-    setSelectedFields(prev => prev.filter((_, i) => i !== index));
+    setNewFields((prev) => prev.filter((_, i) => i !== index));
+    setSelectedFields((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleQueryButtonClick = () => {
-    if (selectedFields.some(field => !field.field || !field.value)) {
-      message.error("Please select appropriate fields and values for all conditions.");
+    if (selectedFields.some((field) => !field.field || !field.value)) {
+      message.error(
+        "Please select appropriate fields and values for all conditions."
+      );
       return;
     }
-    
-    console.log(suggestion)
-    console.log("selected fields",selectedFields)
+
+    console.log(suggestion);
+    console.log("selected fields", selectedFields);
     // Construct an array of query conditions for each selected field
-    const queryConditions = selectedFields.map(field => ({
-      "==": [{ "var": field.field },field.id?field.id:field.value]
+    const queryConditions = selectedFields.map((field) => ({
+      "==": [{ var: field.field }, field.id ? field.id : field.value],
     }));
-  
+
     // Construct the JSON logic expression for the 'and' operation
-    const jsonLogic = { "and": queryConditions };
-  
+    const jsonLogic = { and: queryConditions };
+
     // Convert the JSON logic expression to a string
     const jsonLogicString = JSON.stringify(jsonLogic);
-  
+
     // Construct the query parameters with the JSON logic expression
     const queryParams = `&json_logic=${encodeURIComponent(jsonLogicString)}`;
-  
+
     // Display the constructed query parameters
     message.success(queryParams);
-    console.log(queryParams)
-    setJson_query(queryParams)
+    console.log(queryParams);
+    setJson_query(queryParams);
     // Call the assetDataRefetch function with the constructed query parameters
     assetDataRefetch(queryParams);
   };
-  
+
   const handleReset = () => {
     setSelectedFields([]);
     setNewFields([]);
-    assetDataRefetch('')
-    message.success('Query builder reset successfully');
+    assetDataRefetch("");
+    message.success("Query builder reset successfully");
   };
+
+  const [allFieldValues, setAllFieldValues] = React.useState([]);
+
+  const handleSubmitFieldValues = (fieldValues) => {
+    console.log("Final Values: ", fieldValues)
+    const uniqueKeys = Array.from(new Set(fieldValues.flatMap(Object.keys)));
+    const valuesByKey = uniqueKeys.reduce((acc, key) => {
+      acc[key] = fieldValues
+        .map((item) => item[key]) // Extract values for this key
+        .filter((value) => value !== undefined); // Remove undefined values
+      return acc;
+    }, {});
+
+    console.log("Final Values as array: ", valuesByKey)
+
+    let andQueryConditions = []
+    for (const key in valuesByKey) {
+      let queryConditions = valuesByKey[key].map((field) => ({
+        "==": [{ var: key }, field],
+      }))
+      let orQueryCondition = {or: queryConditions}
+      andQueryConditions = andQueryConditions.concat(orQueryCondition)
+      console.log("Query Conditions: ", orQueryCondition)
+    }
+
+    let jsonLogic = {and: andQueryConditions}
+    console.log("Final Json Logic: ", jsonLogic)
+
+    const jsonLogicString = JSON.stringify(jsonLogic);
+    const queryParams = `&json_logic=${encodeURIComponent(jsonLogicString)}`;
+    message.success(queryParams);
+    console.log(queryParams);
+    setJson_query(queryParams);
+    assetDataRefetch(queryParams);
+  }
 
   return (
     <div>
-       <button onClick={handleReset} className='m-5 p-2 h-50 w-50 text-white'>
+      <button onClick={handleReset} className="m-5 p-2 h-50 w-50 text-white">
         Reset
       </button>
-      <button onClick={handleQueryButtonClick} disabled={!selectedFields.length || !selectedFields.every(field => field.field && field.value)} className='m-5 p-2 h-50 w-50 text-white'>Search</button>
-      <Button onClick={handleAddField} className='m-5'>+</Button><br></br>
-      <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
+      <button
+        onClick={() => {handleSubmitFieldValues(allFieldValues)}}
+        className="m-5 p-2 h-50 w-50 text-white"
+      >
+        Search
+      </button>
+      <Button onClick={handleAddField} className="m-5">
+        +
+      </Button>
+      <br/>
+      <div>
+      <div style={{ display: "flex", flexDirection: "column"}}>
         {newFields.map((_, index) => (
-          <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
-            <select onChange={e => handleFieldChange(e, index)} value={selectedFields[index]?.field} style={{ padding: '14.5px 10px' , marginTop : '7px' }}>
-              <option value="">Select a field</option>
-              {fields.map(field => (
-                <option key={field.name} value={field.name}>{field.label}</option>
-              ))}
-            </select>
-            <div style={{ width: '200px', marginLeft: '10px' }}>
-              <CustomAutocomplete
-                selectedFieldIndex={index}
-                field={selectedFields[index]?.field}
-                value={selectedFields[index]?.value}
-                onFieldChange={(event, index) => handleFieldChange(event, index)}
-                onInputChange={(event, newValue) => {if(newValue !== null) {handleInputChange(event, newValue, index)}} }
-                setSelectedFields={setSelectedFields} // Pass setSelectedFields prop
-                setFilterValue={setFilterValue}
-                suggestion={suggestion}
-                setSuggestion={setSuggestion}
-                fieldEndpointMapping={fieldEndpointMapping}
-              />
-            </div>
+          // <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
+          //   <select onChange={e => handleFieldChange(e, index)} value={selectedFields[index]?.field} style={{ padding: '14.5px 10px' , marginTop : '7px' }}>
+          //     <option value="">Select a field</option>
+          //     {fields.map(field => (
+          //       <option key={field.name} value={field.name}>{field.label}</option>
+          //     ))}
+          //   </select>
+          //   <div style={{ width: '200px', marginLeft: '10px' }}>
+          //     <CustomAutocomplete
+          //       selectedFieldIndex={index}
+          //       field={selectedFields[index]?.field}
+          //       value={selectedFields[index]?.value}
+          //       onFieldChange={(event, index) => handleFieldChange(event, index)}
+          //       onInputChange={(event, newValue) => {if(newValue !== null) {handleInputChange(event, newValue, index)}} }
+          //       setSelectedFields={setSelectedFields} // Pass setSelectedFields prop
+          //       setFilterValue={setFilterValue}
+          //       suggestion={suggestion}
+          //       setSuggestion={setSuggestion}
+          //       fieldEndpointMapping={fieldEndpointMapping}
+          //     />
+          //   </div>
+          //   <Button onClick={() => handleRemoveField(index)}>X</Button>
+          // </div>
+
+          <div key={index} style={{ marginBottom: "10px", display: "flex", alignItems:"center"}}>
+            <MuiAutocomplete
+              key={index}
+              allFieldValues={allFieldValues}
+              setAllFieldValues={setAllFieldValues}
+            />
             <Button onClick={() => handleRemoveField(index)}>X</Button>
           </div>
         ))}
       </div>
+      </div>
+
+      {/* <Button
+        onClick={() => {
+          handleSubmitFieldValues(allFieldValues)
+        }}
+      >Click To See all the values</Button> */}
     </div>
   );
 };
