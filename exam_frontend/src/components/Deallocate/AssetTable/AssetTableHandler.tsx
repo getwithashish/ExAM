@@ -10,6 +10,7 @@ import {
   Button,
   Dropdown,
   Input,
+  Modal,
   Space,
   Table,
   TableColumnsType,
@@ -64,6 +65,8 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [queryParam, setQueryParam] = useState("");
+  const [confirmModalVisible, setConfirmModalVisible] = useState(false); // State for confirmation modal visibility
+  const [selectedRecord, setSelectedRecord] = useState<DataType | null>(null); // State to store the selected record for deallocation
   const { data: assetData, refetch: assetDataRefetch } = useQuery({
     queryKey: ["assetList", queryParam],
     queryFn: () => getAssetDetails(`${queryParamProp + queryParam}`),
@@ -156,6 +159,38 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
     setSortOrder(newSortOrder);
     const queryParams = `&sort_by=${column}&sort_order=${newSortOrder}`;
     refetchAssetData(queryParams);
+  };
+  const renderDeallocateButton = (_, record) => (
+    <Button
+      ghost
+      style={{
+        borderRadius: "10px",
+        background: "#D3D3D3",
+        color: "black",
+      }}
+      onClick={() => {
+        setConfirmModalVisible(true); // Show confirmation modal
+        setSelectedRecord(record); // Store the selected record for deallocation
+      }}
+    >
+      -
+    </Button>
+  );
+  const handleConfirmDeallocate = () => {
+    setConfirmModalVisible(false); // Close the confirmation modal
+
+    if (selectedRecord) {
+      // Check if the selected record has a custodian
+      if (selectedRecord.custodian != null || selectedRecord.custodian != undefined) {
+        // Deallocate the asset
+        unassign(selectedRecord);
+      } else {
+        // Show a warning message
+        message.warning("Not allocated yet");
+      }
+    }
+
+    setSelectedRecord(null); // Clear the selected record
   };
   <div>
     <h1>Asset Overview</h1>
@@ -485,26 +520,7 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
       dataIndex: "DeallocateAsset",
       fixed: "right",
       width: 120,
-      render: (_data, record) => (
-        <Button
-          ghost
-          style={{
-            borderRadius: "10px",
-            background: "#D3D3D3",
-            color: "black",
-          }}
-          onClick={() => {
-            console.log(" unassign button clicked ");
-            if (record.custodian != null || record.custodian != undefined) {
-              unassign(record);
-            } else {
-              message.warning("Not allocated yet");
-            }
-          }}
-        >
-          -
-        </Button>
-      ),
+      render: renderDeallocateButton,
     },
   ];
 
@@ -565,30 +581,46 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
   }, [selectedAssetId]);
 
   return (
-    <AssetTable
-      totalItemCount={assetData?.count}
-      drawerTitle={drawerTitle}
-      assetPageDataFetch={refetchAssetData}
-      selectedAssetId={selectedAssetId && selectedAssetId}
-      setSelectedAssetId={setSelectedAssetId}
-      handleRowClick={handleRowClick}
-      onCloseDrawer={onCloseDrawer}
-      selectedRow={selectedRow}
-      drawerVisible={drawerVisible}
-      assetData={data}
-      columns={columns}
-      memoryData={memoryData}
-      assetTypeData={assetTypeData}
-      locations={locations}
-      statusOptions={statusOptions}
-      assetDataRefetch={refetchAssetData}
-      asset_uuid={selectedAssetId}
-      businessUnitOptions={businessUnitOptions}
-      handleUpdateData={function (updatedData: { key: any }): void {
-        throw new Error("Function not implemented.");
-      }}
-      drawerTitle={""}
-    />
+    <>
+      {/* Confirmation Modal */}
+      <Modal
+      
+        title="Confirm Deallocation"
+        visible={confirmModalVisible}
+        onOk={handleConfirmDeallocate}
+        onCancel={() => setConfirmModalVisible(false)}
+        okButtonProps={{ style: { backgroundColor: 'red' } }} 
+        style={{ marginTop:'100px'}}
+      >
+        <p>Are you sure you want to deallocate the asset?</p>
+      </Modal>
+
+      {/* Existing JSX code for AssetTable component */}
+      <AssetTable
+        totalItemCount={assetData?.count}
+        drawerTitle={drawerTitle}
+        assetPageDataFetch={refetchAssetData}
+        selectedAssetId={selectedAssetId && selectedAssetId}
+        setSelectedAssetId={setSelectedAssetId}
+        handleRowClick={handleRowClick}
+        onCloseDrawer={onCloseDrawer}
+        selectedRow={selectedRow}
+        drawerVisible={drawerVisible}
+        assetData={data}
+        columns={columns}
+        memoryData={memoryData}
+        assetTypeData={assetTypeData}
+        locations={locations}
+        statusOptions={statusOptions}
+        assetDataRefetch={refetchAssetData}
+        asset_uuid={selectedAssetId}
+        businessUnitOptions={businessUnitOptions}
+        handleUpdateData={function (updatedData: { key: any }): void {
+          throw new Error("Function not implemented.");
+        }}
+        drawerTitle={""}
+      />
+    </>
   );
 };
 
