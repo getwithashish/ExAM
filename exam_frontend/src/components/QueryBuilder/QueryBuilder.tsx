@@ -367,9 +367,9 @@ export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({
       <Button onClick={handleAddField} className="m-5">
         +
       </Button>
-      <br></br>
+      <br/>
       <div>
-      <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
+      <div style={{ display: "flex", flexDirection: "column"}}>
         {newFields.map((_, index) => (
           // <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
           //   <select onChange={e => handleFieldChange(e, index)} value={selectedFields[index]?.field} style={{ padding: '14.5px 10px' , marginTop : '7px' }}>
@@ -395,7 +395,7 @@ export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({
           //   <Button onClick={() => handleRemoveField(index)}>X</Button>
           // </div>
 
-          <div key={index} style={{ display: "flex", alignItems: "center" }}>
+          <div key={index} style={{ marginBottom: "10px", display: "flex", alignItems:"center"}}>
             <MuiAutocomplete
               key={index}
               allFieldValues={allFieldValues}

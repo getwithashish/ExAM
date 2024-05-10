@@ -170,7 +170,7 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
           renderInput={(params) => <TextField {...params} label="Search" />}
         />
       )}
-      <Button
+      {/* <Button
         onClick={() => {
           console.log(
             "Autocomplete Values: ",
@@ -181,7 +181,7 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
         }}
       >
         Click ME
-      </Button>
+      </Button> */}
     </div>
   );
 };
