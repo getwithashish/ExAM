@@ -26,13 +26,13 @@ class AssetFieldValueQueryService(AssetQueryAbstract):
 
         unfilterable_fields = [
             "asset_uuid",
-            "version",
+            # "version",
             "asset_category",
             "date_of_purchase",
             "status",
             "notes",
             "approval_status_message",
-            "warranty_period",
+            # "warranty_period",
             "asset_detail_status",
             "assign_status",
             "created_at",
@@ -92,13 +92,13 @@ class AssetFieldValueQueryService(AssetQueryAbstract):
                 },
             )
 
-            page = self.pagination.paginate_queryset(queryset, request)
-            if page is not None:
-                serializer = serializer_class(page, many=True)
-                serializer = self.pagination.get_paginated_response(serializer.data)
+            # page = self.pagination.paginate_queryset(queryset, request)
+            # if page is not None:
+            #     serializer = serializer_class(page, many=True)
+            #     serializer = self.pagination.get_paginated_response(serializer.data)
 
-            else:
-                serializer = serializer_class(queryset, many=True)
+            # else:
+            serializer = serializer_class(queryset, many=True)
 
             return (
                 serializer.data,

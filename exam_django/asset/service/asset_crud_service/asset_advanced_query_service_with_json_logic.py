@@ -47,19 +47,28 @@ class AssetAdvancedQueryServiceWithJsonLogic(AssetQueryAbstract):
     def convert_json_logic_to_django_q(self, logic_data):
         # Recursively convert JsonLogic expression to Django Q objects
         if "and" in logic_data:
-            return Q(
-                *[
-                    self.convert_json_logic_to_django_q(item)
-                    for item in logic_data["and"]
-                ]
-            )
+            # return Q(
+            #     *[
+            #         self.convert_json_logic_to_django_q(item)
+            #         for item in logic_data["and"]
+            #     ]
+            # )
+            combined_q = Q()
+            for item in logic_data["and"]:
+                combined_q &= self.convert_json_logic_to_django_q(item)
+            return combined_q
+        
         elif "or" in logic_data:
-            return Q(
-                *[
-                    self.convert_json_logic_to_django_q(item)
-                    for item in logic_data["or"]
-                ]
-            )
+            # return Q(
+            #     *[
+            #         self.convert_json_logic_to_django_q(item)
+            #         for item in logic_data["or"]
+            #     ]
+            # )
+            combined_q = Q()
+            for item in logic_data["or"]:
+                combined_q |= self.convert_json_logic_to_django_q(item)
+            return combined_q
 
         # "equals" operation
         elif "==" in logic_data:
