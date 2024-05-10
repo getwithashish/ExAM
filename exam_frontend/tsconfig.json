@@ -26,6 +26,10 @@
     "strict": true,
     "target": "ESNext",
     "types": ["vite/client"]
+    
+ 
+      
+       
   },
   "exclude": ["node_modules"],
   "include": ["**/*.cjs", "**/*.mjs", "**/*.ts", "**/*.tsx"]

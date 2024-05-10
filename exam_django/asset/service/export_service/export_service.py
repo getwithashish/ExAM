@@ -11,7 +11,7 @@ from io import BytesIO
 from reportlab.lib import colors
 from openpyxl.styles import NamedStyle
 from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle,KeepTogether
 from user_auth.models import User
 from asset.models.memory import Memory
 from asset.models.business_unit import BusinessUnit
@@ -23,15 +23,16 @@ from io import BytesIO
 from reportlab.lib import colors
 from openpyxl.styles import NamedStyle
 from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, PageBreak
 from user_auth.models import User
 from asset.models.memory import Memory
 from asset.models.business_unit import BusinessUnit
 from asset.models.location import Location
 from asset.models.employee import Employee
 from asset.models import Asset
-from reportlab.platypus import Paragraph, Spacer
-from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import Paragraph
+from reportlab.lib.units import inch
+from reportlab.lib.styles import getSampleStyleSheet,ParagraphStyle
 from asset.service.asset_crud_service.asset_advanced_query_service_with_json_logic import (
     AssetAdvancedQueryServiceWithJsonLogic,
 )
@@ -139,10 +140,17 @@ class ExportService:
             content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
         response["Content-Disposition"] = 'attachment; filename="assets.xlsx"'
-
+ 
         wb.save(response)
  
         return response
+   
+   
+    @staticmethod
+    def transpose_data(data):
+        # Transpose the data (swap rows and columns)
+        transposed_data = list(map(list, zip(*data)))
+        return transposed_data
  
     @staticmethod
     def export_pdf(assets):
@@ -150,102 +158,102 @@ class ExportService:
         response["Content-Disposition"] = 'attachment; filename="assets.pdf"'
  
         buffer = BytesIO()
+ 
+        # Set mandatory margins and available width for the PDF document
+        left_margin = 30
+        right_margin = 30
+        top_margin = 30
+        bottom_margin = 30
+        available_width = letter[0] - left_margin - right_margin
+ 
+        # Initialize SimpleDocTemplate with specified margins
         doc = SimpleDocTemplate(
             buffer,
             pagesize=letter,
-            rightMargin=30,
-            leftMargin=30,
-            topMargin=30,
-            bottomMargin=30,
+            leftMargin=left_margin,
+            rightMargin=right_margin,
+            topMargin=top_margin,
+            bottomMargin=bottom_margin,
         )
+ 
         elements = []
  
-        fields = [field.name for field in Asset._meta.fields]
+        heading_style = ParagraphStyle(
+            name='Heading1',
+            fontName='Helvetica-Bold',
+            fontSize=14,
+            alignment=1,
+            spaceAfter=12
+        )
+        elements.append(Paragraph("Asset Details", heading_style))
  
-        data = [
-            [getattr(asset, field) or "" for field in fields] for asset in assets
-        ]  # Ensure all values are non-null
-        data.insert(0, fields)  # Insert header row
+        excluded_fields = ["asset_uuid", "is_deleted"]
+        fields = [field.name.capitalize() for field in Asset._meta.fields if field.name not in excluded_fields]
  
-        num_columns = len(fields)
-        num_rows = len(data)
+        assets_per_page = 6  # Adjust assets per page as needed
+        num_assets = len(assets)
  
-        # Define column widths dynamically based on content
-        col_widths = [
-            max(len(str(row[col])) for row in data) * 4 for col in range(num_columns)
-        ]
+        for i in range(0, num_assets, assets_per_page):
+            page_assets = assets[i:i + assets_per_page]
  
-        # Ensure that the total width of the table does not exceed the page width
-        max_page_width = letter[0] - 60  # Adjust 60 as necessary for margins
+            # Prepare data for the table
+            data = [fields]
+            for asset in page_assets:
+                row = []
+                for field in fields:
+                    value = getattr(asset, field.lower(), "")
+                    if field.lower() in ["created_at", "updated_at"]:
+                        # Apply text wrapping to created_at and updated_at fields
+                        value = Paragraph(str(value), style=ParagraphStyle(name='Normal', wordWrap=True))
+                    elif isinstance(value, datetime.datetime) and field.lower() in ["created_at", "updated_at"]:
+                        value = value.strftime("%Y-%m-%d %H:%M:%S")
+                    row.append(value)
+                data.append(row)
  
-        # Calculate font scaling factor based on column width
-        max_font_size = 12  # Maximum font size
-        min_font_size = 6  # Minimum font size
-        font_scaling_factor = min(
-            max_page_width / sum(col_widths), 1
-        )  # Scaling factor for font size
+            # Transpose the data (swap rows and columns)
+            transposed_data = ExportService.transpose_data(data)
  
-        # Create table style with font size adjusted and word wrap
-        table_style = [
-            ("BACKGROUND", (0, 0), (-1, 0), colors.gray),
-            ("TEXTCOLOR", (0, 0), (-1, 0), colors.whitesmoke),
-            ("ALIGN", (0, 0), (-1, -1), "CENTER"),
-            ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-            ("BOTTOMPADDING", (0, 0), (-1, 0), 12),
-            ("BACKGROUND", (0, 1), (-1, -1), colors.beige),
-            ("GRID", (0, 0), (-1, -1), 1, colors.black),
-        ]
-        for i in range(num_columns):
-            table_style.append(
-                (
-                    "FONTSIZE",
-                    (i, 0),
-                    (i, -1),
-                    max(min_font_size, max_font_size * font_scaling_factor),
-                )
-            )
-            table_style.append(
-                ("WORDWRAP", (i, 0), (i, -1))
-            )  # Enable word wrap for each column
+            # Calculate column widths based on content and available width
+            col_widths = [max(len(str(cell)) * 8 for cell in col) for col in transposed_data]
  
-        # Determine the number of columns per table based on available page width
-        columns_per_table = 1
-        total_width = sum(col_widths[:columns_per_table])
-        while total_width <= max_page_width and columns_per_table < num_columns:
-            columns_per_table += 1
-            total_width = sum(col_widths[:columns_per_table])
+            # Create a table from the transposed data with adjusted column widths
+            table_data = []
+            for row in transposed_data:
+                table_row = []
+                for idx, cell in enumerate(row):
+                    if isinstance(cell, str) and '\n' in cell:
+                        cell = cell.replace('\n', '<br/>')
  
-        # Calculate the column widths for each table
-        table_col_widths = []
-        start_col = 0
-        while start_col < num_columns:
-            end_col = min(start_col + columns_per_table, num_columns)
-            table_width = sum(col_widths[start_col:end_col])
-            scaling_factor = min(max_page_width / table_width, 1)
-            table_col_widths.append(
-                [int(width * scaling_factor) for width in col_widths[start_col:end_col]]
-            )
-            start_col = end_col
+                    table_row.append(cell)
+                table_data.append(table_row)
  
-        # Split the data into sections of columns_per_table columns each
-        start_col = 0
-        while start_col < num_columns:
-            end_col = min(start_col + columns_per_table, num_columns)
-            section_data = [row[start_col:end_col] for row in data]
+            table = Table(table_data, colWidths=col_widths)
+            table.setStyle(TableStyle([
+                ("BACKGROUND", (0, 0), (-1, 0), colors.gray),
+                ("TEXTCOLOR", (0, 0), (-1, 0), colors.whitesmoke),
+                ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                ("FONTSIZE", (0, 0), (-1, 0), 12),
+                ("LINEBELOW", (0, 0), (-1, 0), 1, colors.black),
+                ("BACKGROUND", (0, 1), (-1, -1), colors.beige),
+                ("GRID", (0, 0), (-1, -1), 1, colors.black),
+                ("TOPPADDING", (0, 0), (-1, -1), 10),  # Increase top padding
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 10),  # Increase bottom padding
+                ("LEFTPADDING", (0, 0), (-1, -1), 10),  # Increase left padding
+                ("RIGHTPADDING", (0, 0), (-1, -1), 10),  # Increase right padding
+            ]))
  
-            # Create a table for the current section
-            table = Table(section_data, colWidths=table_col_widths.pop(0))
-            table.setStyle(TableStyle(table_style))
- 
+            # Add the table to elements
             elements.append(table)
  
-            # Add spacer between sections
-            start_col = end_col
-            if start_col < num_columns:
-                elements.append(Spacer(1, 12))
+            # Add page break if not the last page
+            if i + assets_per_page < num_assets:
+                elements.append(PageBreak())
  
+        # Build the PDF document
         doc.build(elements)
  
+        # Write PDF content to response
         pdf = buffer.getvalue()
         buffer.close()
         response.write(pdf)
