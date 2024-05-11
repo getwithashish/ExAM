@@ -24,11 +24,15 @@ class UnassignAssetView(APIView):
                 role = requester.user_scope
 
                 asset_uuid = request.data.get("asset_uuid")
+                
                 print("asset_uuid", request.data)
-
+                # Retrieve the Asset object using the asset_uuid
+                asset = Asset.objects.get(asset_uuid=asset_uuid)
+                custodian_id = asset.custodian
+                print(custodian_id)
                 # Assign the asset using the appropriate service based on requester's role
                 data, message, http_status = UnassignAssetService.unassign_asset(
-                    role, asset_uuid, requester
+                    role, asset_uuid, requester,custodian_id=custodian_id
                 )
 
                 return APIResponse(
