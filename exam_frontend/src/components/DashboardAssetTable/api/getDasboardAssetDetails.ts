@@ -1,6 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../../../config/AxiosConfig";
-import { AssetResult } from "../types";
+
 
 const getAssetDetails = async (query_params="") => {
   try {

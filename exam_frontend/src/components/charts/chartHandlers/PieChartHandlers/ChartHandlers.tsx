@@ -4,50 +4,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { PieChart } from "@mui/x-charts/PieChart";
 import Stack from "@mui/material/Stack";
-import { fetchAssetData, fetchAssetTypeData } from "../api/ChartApi";
+import { fetchAssetData, fetchAssetTypeData } from "../../api/ChartApi";
 import {
   AssetData,
   AssetDetailData,
   ChartData,
   PieChartGraphProps,
-} from "../types/ChartTypes";
-import axiosInstance from "../../../config/AxiosConfig";
-import NoData from "../../NoData/NoData";
+} from "../../types/ChartTypes";
+import axiosInstance from "../../../../config/AxiosConfig";
+import NoData from "../../../NoData/NoData";
+import { Typography } from "@mui/material";
+import { statusColors } from "./StatusColors";
+import { statusMapping } from "./statusMapping";
 
-const statusColors: { [key: string]: string } = {
-  "IN STORE": "#FFB92A",
-  "IN REPAIR": "#FEEB51",
-  "IN USE": "#9BCA3E",
-  DISPOSED: "#3ABBC9",
-  EXPIRED: "#CC0000",
-  UNASSIGNED: "#E6E6E6",
-  ASSIGN_PENDING: "#FFB92A",
-  ASSIGNED: "#9BCA3E",
-  REJECTED: "#CC0000",
-  CREATE_PENDING: "#FD6A02",
-  UPDATE_PENDING: "#FD6A02",
-  CREATED: "#9BCA3E",
-  UPDATED: "#3ABBC9",
-  CREATE_REJECTED: "#CC0000",
-  UPDATE_REJECTED: "#CC0000",
-  PENDING: "#FFB92A",
-};
 
-const statusMapping: { [key: string]: string } = {
-  UNASSIGNED: "UNASSIGNED",
-  ASSIGN_PENDING: "PENDING",
-  ASSIGNED: "ASSIGNED",
-  REJECTED: "REJECTED",
-  CREATE_PENDING: "PENDING",
-  UPDATE_PENDING: "PENDING",
-  CREATED: "CREATED",
-  UPDATED: "UPDATED",
-  CREATE_REJECTED: "REJECTED",
-  UPDATE_REJECTED: "REJECTED",
-  "IN STORE": "IN STOCK",
-};
-
-const ChartHandlers: React.FC<PieChartGraphProps> = () => {
+const ChartHandlers: React.FC<PieChartGraphProps> = ({ assetCountData }) => {
   const [assetTypeData, setAssetTypeData] = useState<AssetDetailData[]>([]);
   const [selectedType, setSelectedType] = useState<string>("");
   const [assetChartData, setAssetChartData] = useState<ChartData[]>([]);
@@ -63,6 +34,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
     ChartData[]
   >([]);
 
+  const [clickedData, setClickedData] = useState<ChartData | null>(null);
   const {
     data: assetData,
     isLoading: assetLoading,
@@ -75,6 +47,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
   useEffect(() => {
     fetchAssetTypeData()
       .then((data) => {
+        console.log('Asset types', data)
         setAssetTypeData(data);
       })
       .catch((error) => {
@@ -102,6 +75,18 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
       });
     return () => {};
   }, []);
+
+
+  const handleItemClick = (event, params) => {
+    if (params && assetChartData.length > 0 && params.index < assetChartData.length) {
+      const { index } = params;
+      const clickedDatum = assetChartData[index];
+      setClickedData(clickedDatum); // Update clicked data state
+    } else {
+      setClickedData(null); // Reset clicked data state if invalid click
+    }
+  };
+
 
   useEffect(() => {
     fetchAssetData()
@@ -197,7 +182,15 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const assetTypeValue = parseInt(e.target.value);
+    const selectedAssetType = assetTypeData.find(assetType => assetType.id === assetTypeValue);
+
+    if (selectedAssetType) {
+      console.log("Selected Asset Type:", selectedAssetType.asset_type_name);
+    } else {
+      console.log("Selected asset type not found.");
+    }
     setSelectedType(assetTypeValue.toString());
+    console.log("Selected Asset Type:", selectedType); 
 
     if (assetTypeValue === 0) {
       setAssetFilteredChartData(assetChartData);
@@ -342,8 +335,9 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                       },
                     },
                   ]}
+                  onClick={handleItemClick}
                   width={300}
-                  height={350}
+                  height={350}  
                   slotProps={{
                     legend: {
                       direction: "row",
@@ -357,9 +351,24 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                       markGap: 2,
                       itemGap: 8,
                     },
-                    
                   }}
                 />
+                {/* <div>
+                  {assetCountData && (
+                    <div>
+                      <Typography>Status Counts:</Typography>
+                      <pre>
+                        {JSON.stringify(assetCountData.status_counts, null, 2)}
+                      </pre>
+                    </div>
+                  )}
+                  {clickedData && (
+                    <div>
+                      <Typography>Clicked Data:</Typography>
+                      <pre>{JSON.stringify(clickedData, null, 2)}</pre>
+                    </div>
+                  )}
+                </div> */}
               </div>
               <div className="item pt-6 mt-4">
                 <div className="text-center">
