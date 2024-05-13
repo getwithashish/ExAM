@@ -430,7 +430,6 @@ const DashBoardCardComponent: React.FC<CardType> = ({
           <br></br>{" "}
           <Input
             defaultValue={formattedExpiryDate}
-            onChange={(e) => handleUpdateChange("comments", e.target.value)}
             style={inputStyle}
             disabled
           />{" "}
