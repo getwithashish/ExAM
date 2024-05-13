@@ -164,7 +164,6 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
           loading={isAssetDataLoading}
           onChange={(event, newValue) => {
             if (typeof newValue === "string") {
-              // timeout to avoid instant validation of the dialog's form.
               setTimeout(() => {
                 toggleOpen(true);
                 setDialogValue({
@@ -200,17 +199,8 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
             return filtered;
           }}
           id="free-solo-dialog-demo"
-          // options={top100Films}
-          // onOpen={() => {
-          //   setOptions(
-          //     getAssetDetails(
-          //       `&asset_field_value_filter={${fieldName}:${fieldValue}}`
-          //     )
-          //   );
-          // }}
           options={assetData}
           getOptionLabel={(option) => {
-            // for example value selected with enter, right from the input
             if (typeof option === "string") {
               return option;
             }
@@ -264,10 +254,7 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
                   [itemElement.queryFieldName]: obj["id"],
                 })),
               ]);
-              setValue(
-                //   newValue.map((obj) => ({ [item.queryFieldName]: obj[fieldName] }))
-                newValue
-              );
+              setValue(newValue);
             }
           }}
           onOpen={() => {
@@ -316,7 +303,6 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
             </li>
           )}
           sx={{ width: 300 }}
-        //   freeSolo
           renderInput={(params) => <TextField {...params} label="Search" />}
         />
       )}
