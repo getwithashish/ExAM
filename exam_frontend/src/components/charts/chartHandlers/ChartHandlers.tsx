@@ -357,6 +357,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                       markGap: 2,
                       itemGap: 8,
                     },
+                    
                   }}
                 />
               </div>
@@ -433,7 +434,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                     },
                   ]}
                   width={300}
-                  height={350}
+                  height={370}
                   slotProps={{
                     legend: {
                       direction: "row",

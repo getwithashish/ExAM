@@ -29,7 +29,7 @@ import { useInfiniteQuery } from "react-query";
 
 import { DownOutlined } from "@ant-design/icons";
 import ExportButton from "../Export/Export";
-import { getDasboardAssetLogDetails } from "../DashboardAssetTable/api/getDasboardAssetLogDetails";
+import { getDasboardAssetLogDetails } from "./api/getDasboardAssetLogDetails";
 import { AxiosError } from "axios";
 
 import {
@@ -37,7 +37,7 @@ import {
   getAssetTypeOptions,
   getLocationOptions,
   getMemoryOptions,
-} from "../DashboardAssetTable/api/getDasboardAssetDetails";
+} from "./api/getDasboardAssetDetails";
 import DasboardAssetTable from "./DasboardAssetTable";
 
 import TimelineViewDrawer from "../TimelineLog/TimeLineDrawer";
@@ -49,7 +49,7 @@ interface ExpandedDataType {
   upgradeNum: string;
 }
 
-const DasboardAssetHandler = () => {
+const DashboardAssetHandler = () => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
 
@@ -561,4 +561,4 @@ const DasboardAssetHandler = () => {
   );
 };
 
-export default DasboardAssetHandler;
+export default DashboardAssetHandler;

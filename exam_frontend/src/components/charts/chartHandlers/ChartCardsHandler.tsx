@@ -65,66 +65,79 @@ const AssetCountComponent = () => {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 p-2">
+    <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
       <div className="w-auto">
         <div
-          className="my-2 bg-gradient-to-r from-purple-800 to-purple-800 hover:from-purple-900 hover:to-purple-900 rounded-lg p-3 shadow-md"
+          className="my-2 bg-gradient-to-r from-purple-800 to-purple-800 hover:from-purple-900 hover:to-purple-900 rounded-lg p-3 shadow-md xs:mt-0 min-h-24"
           style={{ boxShadow: "0 0 5px rgba(0, 0, 0, 0.5)" }}
         >
-          <div className="text-white text-xs sm:text-xl md:text-lg lg:text-xl xl:text-3xl font-display font-light text-left">
+          <div className="text-white text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-light text-left">
             Asset count
           </div>
-          <div className="text-white text-lg sm:text-2xl md:text-3xl lg:text-4xl xl:text-4xl font-black mx-4 text-right">
+          <div className="text-white text-xl sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-medium text-right">
             {totalAssets}
           </div>
         </div>
         <div
-          className="my-2 bg-gradient-to-r from-teal-700 to-teal-700 hover:from-teal-800 hover:to-teal-800 rounded-lg p-3 shadow-md mt-4 sm:mt-0 min-h-[100px]"
+          className="my-2 bg-gradient-to-r from-teal-700 to-teal-700 hover:from-teal-800 hover:to-teal-800 rounded-lg p-3 shadow-md xs:mt-0 min-h-24"
           style={{ boxShadow: "0 0 5px rgba(0, 0, 0, 0.5)" }}
         >
-          <div className="text-white text-md sm:text-xl md:text-lg lg:text-xl xl:text-3xl font-display font-light text-left">
+          <div className="text-white text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-light text-left">
             Inventory
           </div>
-          <div className="text-white text-xs sm:text-xl md:text-xl lg:text-2xl xl:text-4xl font-semibold mx-4 text-right">
+          <div className="text-white text-xl sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-medium text-right">
             {assetTypes[currentAssetIndex]}
           </div>
         </div>
         <div
-          className="my-2 bg-gradient-to-r from-cyan-700 to-cyan-700 hover:from-cyan-500 hover:to-cyan-600 rounded-lg p-3 shadow-md mt-4 sm:mt-0"
+          className="my-2 bg-gradient-to-r from-cyan-700 to-cyan-700 hover:from-cyan-500 hover:to-cyan-600 rounded-lg p-3 shadow-md xs:mt-0 min-h-24"
           style={{ boxShadow: "0 0 5px rgba(0, 0, 0, 0.5)" }}
         >
-          <div className="text-white text-md sm:text-xl md:text-lg lg:text-xl xl:text-3xl font-display font-light text-left">
-            Asset Types
+          <div className="text-white text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-light text-left">
+            Asset types
           </div>
-          <div className="text-white text-lg sm:text-2xl md:text-2xl lg:text-4xl xl:text-4xl font-black mx-4 text-right">
+          <div className="text-white text-xl sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-medium text-right">
             {totalAssetTypes}
           </div>
         </div>
       </div>
       <div
-        className="my-2 bg-gradient-to-r from-blue-800 to-blue-800 hover:from-blue-900 hover:to-blue-900 rounded-lg p-3 shadow-md"
+        className=" my-2 py-4 items-center justify-center bg-gradient-to-r from-blue-800 to-blue-800 hover:from-blue-900 hover:to-blue-900 rounded-lg lg:p-6 md:p-4 sm:p-2 shadow-md"
         style={{ boxShadow: "0 0 5px rgba(0, 0, 0, 0.5)" }}
       >
-        <div className="text-white text-lg sm:text-xl md:text-lg lg:text-xl xl:text-3xl font-display font-light mb-4 text-left">
-          Remaining Approvals
+        <div className="text-white text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-light text-center">
+          Remaining approvals
         </div>
-        <div className=" font-semibold text-center flex-row gap-4">
-          <div className="text-white text-xl sm:text-xl md:text-xl lg:text-2xl xl:text-3xl flex-1 mt-5">
-            Asset Approvals <br />
-            <div className="text-white text-3xl sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl">
+        <div
+          className=" font-semibold text-center flex-row gap-4"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+        >
+          <div className="text-white text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-medium">
+            Pending: <br />
+            <div className="text-white text-xl sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-semibold">
+              {pendingAssetsCount + pendingAssignsCount}
+            </div>
+          </div>
+          <div className="text-white text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-medium">
+            Asset approvals: <br />
+            <div className="text-white text-xl sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-semibold">
               {pendingAssetsCount}
             </div>
           </div>
-          <div className=" text-white text-xl sm:text-xl md:text-xl lg:text-2xl xl:text-3xl flex-1 mt-5">
-            Assign Approvals <br />
-            <div className="text-white text-3xl sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl">
+          <div className="text-white text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-medium">
+            Assign approvals: <br />
+            <div className="text-white text-xl sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-semibold">
               {pendingAssignsCount}
             </div>
           </div>
         </div>
       </div>
       <div
-        className="col-span-2 my-2 rounded-lg p-3 shadow-md"
+        className="col-span-2 rounded-lg shadow-md m-2"
         style={{ boxShadow: "0 0 5px rgba(0, 0, 0, 0.5)" }}
       >
         <BarChartHandler />
