@@ -31,6 +31,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
   locations,
   memoryData,
   assetTypeData,
+  formattedExpiryDate
 }) => {
   const uniqueStatusOptions = Array.from(new Set(statusOptions));
   const uniqueBusinessOptions = Array.from(new Set(businessUnitOptions));
@@ -413,6 +414,23 @@ const DashBoardCardComponent: React.FC<CardType> = ({
             onChange={(e) =>
               handleUpdateChange("warranty period", e.target.value)
             }
+            style={inputStyle}
+            disabled
+          />{" "}
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Expiry Date",
+      name: "Expiry Date",
+      value: (
+        <Form.Item name="Expiry Date">
+          <b>Expiry Date: </b>
+          <br></br>
+          <br></br>{" "}
+          <Input
+            defaultValue={formattedExpiryDate}
+            onChange={(e) => handleUpdateChange("comments", e.target.value)}
             style={inputStyle}
             disabled
           />{" "}
