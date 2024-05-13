@@ -13,12 +13,15 @@ import {
 } from "../../types/ChartTypes";
 import axiosInstance from "../../../../config/AxiosConfig";
 import NoData from "../../../NoData/NoData";
-import { Typography } from "@mui/material";
 import { statusColors } from "./StatusColors";
 import { statusMapping } from "./statusMapping";
 
+interface ChartHandlersProps {
+  onSelectAssetType: (assetType: string) => void;
+}
 
-const ChartHandlers: React.FC<PieChartGraphProps> = ({ assetCountData }) => {
+
+const ChartHandlers: React.FC<PieChartGraphProps & ChartHandlersProps> = ({ onSelectAssetType }) => {
   const [assetTypeData, setAssetTypeData] = useState<AssetDetailData[]>([]);
   const [selectedType, setSelectedType] = useState<string>("");
   const [assetChartData, setAssetChartData] = useState<ChartData[]>([]);
@@ -132,7 +135,6 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ assetCountData }) => {
           {} as { [key: string]: ChartData }
         );
 
-        // Add the merged counts for REJECTED and PENDING
         if (mergedStatusData["REJECTED"]) {
           mergedStatusData["REJECTED"].value +=
             mergedStatusData["UPDATE_REJECTED"]?.value ?? 0;
@@ -186,12 +188,13 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ assetCountData }) => {
 
     if (selectedAssetType) {
       console.log("Selected Asset Type:", selectedAssetType.asset_type_name);
+      setSelectedType(selectedAssetType.asset_type_name);
+      onSelectAssetType(selectedAssetType.asset_type_name); // Call the prop to pass the selected asset type to the parent
     } else {
       console.log("Selected asset type not found.");
-    }
+    } 
     setSelectedType(assetTypeValue.toString());
-    console.log("Selected Asset Type:", selectedType); 
-
+    
     if (assetTypeValue === 0) {
       setAssetFilteredChartData(assetChartData);
       setDetailFilteredChartData(detailChartData);
@@ -274,6 +277,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ assetCountData }) => {
       <div className="flex justify-end">
         <select
           className="block bg-transparent font-display text-xs text-black-500 appearance-none dark:text-gray-400 dark:border-gray-200 focus:outline-none rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          value={selectedType}
           onChange={handleSelectChange}
         >
           <option

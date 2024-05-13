@@ -1,14 +1,18 @@
 import AssetCountComponent from "./chartHandlers/ChartCardsHandler";
 import ChartHandlers from "./chartHandlers/PieChartHandlers/ChartHandlers";
 
-export const Statistics = () => {
+interface StatisticsProps {
+  onSelectAssetType: (assetType: string) => void;
+}
+
+export const Statistics: React.FC<StatisticsProps> = ({ onSelectAssetType }) => {
   return (
     <div className="bg-white py-4">
       <div>
         <nav className="flex mb-4 mx-4" aria-label="Breadcrumb">
           <ol className="inline-flex items-center space-x-1 md:space-x-3 rtl:space-x-reverse">
             <li className="inline-flex items-center font-display">
-              <a
+              <a  
                 href="#"
                 className="inline-flex items-center text-xs font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white"
               >
@@ -41,7 +45,7 @@ export const Statistics = () => {
             <AssetCountComponent />
           </div>
           <div className="items-center justify-center">
-            <ChartHandlers />
+          <ChartHandlers onSelectAssetType={onSelectAssetType} />
           </div>
         </div>
       </div>

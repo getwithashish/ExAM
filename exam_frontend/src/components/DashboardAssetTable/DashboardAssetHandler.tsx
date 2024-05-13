@@ -49,21 +49,34 @@ interface ExpandedDataType {
   upgradeNum: string;
 }
 
-const DashboardAssetHandler = () => {
-  const [selectedRow, setSelectedRow] = useState(null);
-  const [drawerVisible, setDrawerVisible] = useState(false);
-  const [queryParam, setQueryParam] = useState("");
-  const [sortedColumn, setSortedColumn] = useState<string | null>(null);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+interface DashboardAssetHandlerProps {
+  selectedType: string;
+}
 
-  const {
-    data: assetData,
-    isLoading: isAssetDataLoading,
-    refetch: assetDataRefetch,
-  } = useQuery({
-    queryKey: ["assetList", queryParam],
-    queryFn: () => getAssetDetails(`${queryParam}`),
-  });
+const DashboardAssetHandler: React.FC<DashboardAssetHandlerProps & ExpandedDataType> = ({ selectedType }) => {
+    const [selectedRow, setSelectedRow] = useState(null);
+    const [drawerVisible, setDrawerVisible] = useState(false);
+    const [queryParam, setQueryParam] = useState("");
+    const [sortedColumn, setSortedColumn] = useState<string | null>(null);
+    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+    useEffect(() => {
+      // Update queryParam only if selectedType is not empty
+      if (selectedType !== "") {
+        setQueryParam(`&asset_type=${selectedType}`);
+      } else {
+        setQueryParam(""); 
+      }
+    }, [selectedType]);
+
+    const {
+      data: assetData,
+      isLoading: isAssetDataLoading,
+      refetch: assetDataRefetch,
+    } = useQuery({
+      queryKey: ["assetList", queryParam],
+      queryFn: () => getAssetDetails(`${queryParam}`),
+    });
 
   const refetchAssetData = (queryParam = "") => {
     setQueryParam(queryParam);
