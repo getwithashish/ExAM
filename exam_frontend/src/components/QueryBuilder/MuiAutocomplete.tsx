@@ -246,8 +246,6 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
               let newFieldValues = allFieldValues.filter(
                 (item) => !item.hasOwnProperty(itemElement["queryFieldName"])
               );
-              console.log("NewFieldValues: ", newFieldValues);
-              console.log("New Value: ", newValue);
               setAllFieldValues([
                 ...newFieldValues,
                 ...newValue.map((obj) => ({
