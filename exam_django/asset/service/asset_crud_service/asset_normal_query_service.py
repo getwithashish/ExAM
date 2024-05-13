@@ -44,6 +44,12 @@ class AssetNormalQueryService(AssetQueryAbstract):
         requester_id = request.query_params.get("requester_id")
         approved_by_id = request.query_params.get("approved_by_id")
 
+        asset_type_id = request.query_params.get("asset_type")
+        business_unit_id = request.query_params.get("business_unit")
+        location_id = request.query_params.get("location")
+        invoice_location_id = request.query_params.get("invoice_location")
+        memory_id = request.query_params.get("memory")
+
         sort_by = request.query_params.get("sort_by")
         sort_order = request.query_params.get("sort_order")  # 'asc' or 'desc'
 
@@ -55,6 +61,11 @@ class AssetNormalQueryService(AssetQueryAbstract):
             "asset_detail_status",
             "requester_id",
             "approved_by_id",
+            "asset_type",
+            "business_unit",
+            "location",
+            "invoice_location",
+            "memory",
             "global_search",
             "sort_by",
             "sort_order",
@@ -96,6 +107,18 @@ class AssetNormalQueryService(AssetQueryAbstract):
             filter_kwargs["requester_id"] = requester_id
         if approved_by_id:
             filter_kwargs["approved_by_id"] = approved_by_id
+
+        if asset_type_id:
+            filter_kwargs["asset_type_id"] = asset_type_id
+        if business_unit_id:
+            filter_kwargs["business_unit_id"] = business_unit_id
+        if location_id:
+            filter_kwargs["location_id"] = location_id
+        if invoice_location_id:
+            filter_kwargs["invoice_location_id"] = invoice_location_id
+        if memory_id:
+            filter_kwargs["memory_id"] = memory_id
+
         queryset = queryset.filter(**filter_kwargs)
 
         # Apply pagination
