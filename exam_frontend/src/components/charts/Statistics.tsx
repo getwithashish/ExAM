@@ -1,18 +1,53 @@
+import { useEffect, useState } from "react";
 import AssetCountComponent from "./chartHandlers/ChartCardsHandler";
 import ChartHandlers from "./chartHandlers/PieChartHandlers/ChartHandlers";
+import { fetchAssetData } from "./api/ChartApi";
 
 interface StatisticsProps {
-  onSelectAssetType: (assetType: string) => void;
+  setSelectedTypeId: (id: number) => void;
+  setAssetState: React.Dispatch<React.SetStateAction<string | null>>;
+  setDetailState: React.Dispatch<React.SetStateAction<string | null>>;
+  setAssignState: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-export const Statistics: React.FC<StatisticsProps> = () => {
+export const Statistics = ({ setSelectedTypeId, setAssetState, setDetailState, setAssignState}: StatisticsProps) => {
+  const [assetCountData, setAssetCountData] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [_assetState, _setAssetState] = useState<string | null>(null);
+  const [_detailState, _setDetailState] = useState<string | null>(null);
+  const [_assignState, _setAssignState] = useState<string | null>(null);
+
+
+  useEffect(() => {
+    fetchAssetData()
+      .then((assetCountData) => {
+        console.log("assetCountData", assetCountData);
+        setAssetCountData(assetCountData);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching asset count data:", error);
+        setError("Error fetching asset count data");
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <div className="bg-white py-4">
       <div>
         <nav className="flex mb-4 mx-4" aria-label="Breadcrumb">
           <ol className="inline-flex items-center space-x-1 md:space-x-3 rtl:space-x-reverse">
             <li className="inline-flex items-center font-display">
-              <a  
+              <a
                 href="#"
                 className="inline-flex items-center text-xs font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white"
               >
@@ -45,7 +80,7 @@ export const Statistics: React.FC<StatisticsProps> = () => {
             <AssetCountComponent />
           </div>
           <div className="items-center justify-center">
-          <ChartHandlers />
+            <ChartHandlers assetCountData={assetCountData} setSelectedTypeId={setSelectedTypeId} selectedTypeId={0} setAssetState={setAssetState} setDetailState={setDetailState} setAssignState={setAssignState}/>
           </div>
         </div>
       </div>

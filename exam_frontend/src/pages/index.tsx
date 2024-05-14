@@ -5,11 +5,17 @@ import DashboardAssetHandler from "../components/DashboardAssetTable/DashboardAs
 
 const DashboardPage: FC = function () {
 
+  const [selectedTypeId, setSelectedTypeId] = useState<number>(0);
+  const [_assetState, setAssetState] = useState<string | null>(null);
+  const [_detailState, setDetailState] = useState<string | null>(null);
+  const [_assignState, setAssignState] = useState<string | null>(null);
+  
+
 
   return (
     <div className="bg-white">
-      <Statistics/>
-      <DashboardAssetHandler />
+   <Statistics setSelectedTypeId={setSelectedTypeId} setAssetState={setAssetState} setDetailState={setDetailState} setAssignState={setAssignState} />
+      <DashboardAssetHandler selectedTypeId={selectedTypeId} assetState={_assetState} detailState={_detailState} assignState={_assignState} />
     </div>
   );
 };

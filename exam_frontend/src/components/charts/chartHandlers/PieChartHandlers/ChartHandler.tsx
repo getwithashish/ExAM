@@ -13,12 +13,14 @@ import {
 } from "../../types/ChartTypes";
 import axiosInstance from "../../../../config/AxiosConfig";
 import NoData from "../../../NoData/NoData";
+import { Typography } from "@mui/material";
 import { statusColors } from "./StatusColors";
 import { statusMapping } from "./statusMapping";
 
-const ChartHandlers: React.FC<PieChartGraphProps> = ({ selectedTypeId, setSelectedTypeId , setAssetState, setDetailState, setAssignState}) => {
+const ChartHandlers: React.FC<PieChartGraphProps> = () => {
   const [assetTypeData, setAssetTypeData] = useState<AssetDetailData[]>([]);
   const [selectedType, setSelectedType] = useState<string>("");
+  const [selectedTypeId, setSelectedTypeId] = useState<number>(null);
   const [assetChartData, setAssetChartData] = useState<ChartData[]>([]);
   const [assetFilteredChartData, setAssetFilteredChartData] = useState<
     ChartData[]
@@ -31,9 +33,9 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ selectedTypeId, setSelect
   const [detailFilteredChartData, setDetailFilteredChartData] = useState<
     ChartData[]
   >([]);
-  const [assetState, _setAssetState] = useState<ChartData | null>(null); //query as &status=IN USE/IN STORE/IN REPAIR/EXPIRED/DISPOSED
-  const [detailState, _setDetailState] = useState<ChartData | null>(null); //query as &asset_detail_status=
-  const [assignState, _setAssignState] = useState<ChartData | null>(null); //query as &assign_status=
+  const [assetState, setAssetState] = useState<ChartData | null>(null); //query as &status=IN USE/IN STORE/IN REPAIR/EXPIRED/DISPOSED
+  const [detailState, setDetailState] = useState<ChartData | null>(null); //query as &asset_detail_status=
+  const [assignState, setAssignState] = useState<ChartData | null>(null); //query as &assign_status=
   const {
     data: _assetData,
     isLoading: assetLoading,
@@ -76,12 +78,23 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ selectedTypeId, setSelect
   }, []);
 
   const handleAssetItemClick = (_event: React.MouseEvent, params: any) => {
-    let chartLabel = assetFilteredChartData[params["dataIndex"]]?.label;
-    if (chartLabel === "IN STOCK") {
-      chartLabel = "IN STORE";  
-    }
+    const chartLabel = assetFilteredChartData[params["dataIndex"]]?.label;
     console.log("Clicked Asset Chart Label: ", chartLabel);
     setAssetState(chartLabel ?? null);
+    // if (
+    //   params &&
+    //   assetChartData.length > 0 &&
+    //   params.index < assetChartData.length
+    // ) {
+    //   const { index } = params;
+    //   const AssetStatus = assetChartData[index];
+    //   if (AssetStatus !== undefined) {
+    //     setAssetState(AssetStatus);
+    //   } else {
+    //     setAssetState(null);
+    //   }
+    // }
+
   };
   
   useEffect(() => {
@@ -90,15 +103,24 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ selectedTypeId, setSelect
 
   
   const handleDetailItemClick = (_event: React.MouseEvent, params: any) => {
-    let chartLabel = detailFilteredChartData[params["dataIndex"]]?.label;
-    if (chartLabel === "PENDING"){
-      chartLabel = "UPDATE_PENDING|CREATE_PENDING";
-    }
-    if (chartLabel === "REJECTED"){
-      chartLabel = "CREATE_REJECTED|UPDATE_REJECTED";
-    }
+    const chartLabel = detailFilteredChartData[params["dataIndex"]]?.label;
     console.log("Clicked Detail Chart Label: ", chartLabel);
     setDetailState(chartLabel?? null)
+
+    // if (
+    //   params &&
+    //   detailChartData.length > 0 &&
+    //   params.index < detailChartData.length
+    // ) {
+    //   const { index } = params;
+    //   const detailStatus = detailChartData[index];
+    //   if (detailStatus !== undefined) {
+    //     setDetailState(detailStatus);
+    //   } else {
+    //     setDetailState(null);
+    //   }
+    // }
+
   };
 
     
@@ -107,12 +129,24 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ selectedTypeId, setSelect
   }, [detailState]);
 
   const handleAssignItemClick = (_event: React.MouseEvent, params: any) => {
-    let chartLabel = assignFilteredChartData[params["dataIndex"]]?.label;
-    if (chartLabel === "PENDING") {
-      chartLabel = "ASSIGN_PENDING";  
-    }
+    const chartLabel = assignFilteredChartData[params["dataIndex"]]?.label;
     console.log("Clicked Assign Chart Label: ", chartLabel);
     setAssignState(chartLabel?? null)
+
+    // if (
+    //   params &&
+    //   assignChartData.length > 0 &&
+    //   params.index < assignChartData.length
+    // ) {
+    //   const { index } = params;
+    //   const assignStatus = assignChartData[index];
+    //   if (assignStatus !== undefined) {
+    //     setAssignState(assignStatus);
+    //   } else {
+    //     setAssignState(null);
+    //   }
+    // }
+
   };
 
   useEffect(() => {
@@ -391,7 +425,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ selectedTypeId, setSelect
                     },
                   ]}
                   onClick={handleAssetItemClick}
-                  width={320}
+                  width={350}
                   height={370}
                   slotProps={{
                     legend: {
@@ -453,7 +487,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ selectedTypeId, setSelect
                     },
                   ]}
                   onClick={handleDetailItemClick}
-                  width={320}
+                  width={350}
                   height={370}
                   slotProps={{
                     legend: {
@@ -499,7 +533,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ selectedTypeId, setSelect
                     },
                   ]}
                   onClick={handleAssignItemClick}
-                  width={320}
+                  width={350}
                   height={370}
                   slotProps={{
                     legend: {

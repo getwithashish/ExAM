@@ -20,6 +20,11 @@ export interface PieChartGraphProps {
   };
   selectedAssetType?: string;
   type?: string;
+  selectedTypeId: number,
+  setSelectedTypeId: (id: number) => void
+  setAssetState: React.Dispatch<React.SetStateAction<string | null>>;
+  setDetailState: React.Dispatch<React.SetStateAction<string | null>>;
+  setAssignState: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 export interface AssetDetailData{
