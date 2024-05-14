@@ -380,7 +380,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ selectedTypeId, setSelect
                       cornerRadius: 10,
                       startAngle: 0,
                       endAngle: 360,
-                      cx: 160,
+                      cx: 130,
                       cy: 160,
                       highlightScope: { faded: "global", highlighted: "item" },
                       faded: {
@@ -391,7 +391,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ selectedTypeId, setSelect
                     },
                   ]}
                   onClick={handleAssetItemClick}
-                  width={320}
+                  width={300}
                   height={370}
                   slotProps={{
                     legend: {
@@ -442,7 +442,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ selectedTypeId, setSelect
                       cornerRadius: 10,
                       startAngle: 0,
                       endAngle: 360,
-                      cx: 160,
+                      cx: 135,
                       cy: 160,
                       highlightScope: { faded: "global", highlighted: "item" },
                       faded: {
@@ -453,7 +453,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ selectedTypeId, setSelect
                     },
                   ]}
                   onClick={handleDetailItemClick}
-                  width={320}
+                  width={300}
                   height={370}
                   slotProps={{
                     legend: {
@@ -488,7 +488,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ selectedTypeId, setSelect
                       cornerRadius: 10,
                       startAngle: 0,
                       endAngle: 360,
-                      cx: 160,
+                      cx: 135,
                       cy: 160,
                       highlightScope: { faded: "global", highlighted: "item" },
                       faded: {
@@ -499,7 +499,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ selectedTypeId, setSelect
                     },
                   ]}
                   onClick={handleAssignItemClick}
-                  width={320}
+                  width={300}
                   height={370}
                   slotProps={{
                     legend: {
