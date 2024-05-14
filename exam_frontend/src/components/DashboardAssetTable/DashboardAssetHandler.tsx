@@ -49,13 +49,41 @@ interface ExpandedDataType {
   upgradeNum: string;
 }
 
-const DasboardAssetHandler = () => {
+interface DashboardAssetHandlerProps {
+  selectedTypeId: number;
+  assetState: string | null;
+  detailState: string | null;
+  assignState: string | null;
+}
+
+const DasboardAssetHandler = ({
+  selectedTypeId,
+  assetState,
+  detailState,
+  assignState,
+}: DashboardAssetHandlerProps) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
 
   const [queryParam, setQueryParam] = useState("");
   const [sortedColumn, setSortedColumn] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+  useEffect(() => {
+    if (selectedTypeId !== 0) {
+      setQueryParam(`&asset_type=${selectedTypeId}`);
+    } else if (assetState) {
+      setQueryParam(`&status=${assetState}`);
+    } else if (detailState) {
+      setQueryParam(`&asset_detail_status=${detailState}`);
+    } else if (assignState) {
+      setQueryParam(`&assign_status=${assignState}`);
+    } else {
+      setQueryParam(``);
+    }
+  }, [selectedTypeId, assetState, detailState, assignState]);
+
+  useEffect(() => {});
 
   const {
     data: assetData,
@@ -359,7 +387,6 @@ const DasboardAssetHandler = () => {
       }),
       render: renderClickableColumn("Warranty Period", "warranty_period"),
     },
-   
 
     {
       title: "Expiry Date",
@@ -367,11 +394,15 @@ const DasboardAssetHandler = () => {
       responsive: ["md"],
       width: 120,
       render: (_, record) => {
-        const dateOfPurchase = record.date_of_purchase ? new Date(record.date_of_purchase) : null;
+        const dateOfPurchase = record.date_of_purchase
+          ? new Date(record.date_of_purchase)
+          : null;
         const warrantyPeriod = parseInt(record.warranty_period) || 0; // Defaulting to 0 if warranty_period is not provided or invalid
         if (dateOfPurchase instanceof Date && !isNaN(dateOfPurchase)) {
-          const expiryDate = new Date(dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000); // Calculating expiry date in milliseconds
-          const formattedExpiryDate = expiryDate.toISOString().split('T')[0];
+          const expiryDate = new Date(
+            dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000
+          ); // Calculating expiry date in milliseconds
+          const formattedExpiryDate = expiryDate.toISOString().split("T")[0];
           // Apply renderClickableColumn logic here
           return (
             <div
@@ -386,9 +417,7 @@ const DasboardAssetHandler = () => {
           return "Invalid Date";
         }
       },
-    }
-    
-,    
+    },
 
     {
       title: "Model Number",
@@ -558,7 +587,6 @@ const DasboardAssetHandler = () => {
     AssignAsset: "assign",
     created_at: result.created_at,
     updated_at: result.updated_at,
-    
   }));
 
   const drawerTitle = "Asset Details";
