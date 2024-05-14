@@ -13,15 +13,11 @@ import {
 } from "../../types/ChartTypes";
 import axiosInstance from "../../../../config/AxiosConfig";
 import NoData from "../../../NoData/NoData";
+import { Typography } from "@mui/material";
 import { statusColors } from "./StatusColors";
 import { statusMapping } from "./statusMapping";
 
-interface ChartHandlersProps {
-  onSelectAssetType: (assetType: number) => void;
-}
-
-
-const ChartHandlers: React.FC<PieChartGraphProps> = () => {
+const ChartHandlers: React.FC<PieChartGraphProps> = ({ assetCountData }) => {
   const [assetTypeData, setAssetTypeData] = useState<AssetDetailData[]>([]);
   const [selectedType, setSelectedType] = useState<string>("");
   const [assetChartData, setAssetChartData] = useState<ChartData[]>([]);
@@ -37,8 +33,9 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
     ChartData[]
   >([]);
 
+  const [clickedData, setClickedData] = useState<ChartData | null>(null);
   const {
-    data: assetData,
+    data: _assetData,
     isLoading: assetLoading,
     isError: assetError,
   } = useQuery<AssetData>({
@@ -49,7 +46,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
   useEffect(() => {
     fetchAssetTypeData()
       .then((data) => {
-        console.log('Asset types', data)
+        console.log("Asset types", data);
         setAssetTypeData(data);
       })
       .catch((error) => {
@@ -77,6 +74,64 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
       });
     return () => {};
   }, []);
+
+  const handleAssetItemClick = (_event: React.MouseEvent, params: any) => {
+    const chartLabel = assetFilteredChartData[params["dataIndex"]]?.label;
+    console.log("Clicked Asset Chart Label: ", chartLabel);
+  
+    if (
+      params &&
+      assetChartData.length > 0 &&
+      params.index < assetChartData.length
+    ) {
+      const { index } = params;
+      const clickedDatum = assetChartData[index];
+      if (clickedDatum !== undefined) {
+        setClickedData(clickedDatum);
+      } else {
+        setClickedData(null);
+      }
+    }
+  };
+  
+  const handleDetailItemClick = (_event: React.MouseEvent, params: any) => {
+    const chartLabel = detailFilteredChartData[params["dataIndex"]]?.label;
+    console.log("Clicked Detail Chart Label: ", chartLabel);
+  
+    if (
+      params &&
+      detailChartData.length > 0 &&
+      params.index < detailChartData.length
+    ) {
+      const { index } = params;
+      const clickedDatum = detailChartData[index];
+      if (clickedDatum !== undefined) {
+        setClickedData(clickedDatum);
+      } else {
+        setClickedData(null);
+      }
+    }
+  };
+  
+  const handleAssignItemClick = (_event: React.MouseEvent, params: any) => {
+    const chartLabel = assignFilteredChartData[params["dataIndex"]]?.label;
+    console.log("Clicked Assign Chart Label: ", chartLabel);
+  
+    if (
+      params &&
+      assignChartData.length > 0 &&
+      params.index < assignChartData.length
+    ) {
+      const { index } = params;
+      const clickedDatum = assignChartData[index];
+      if (clickedDatum !== undefined) {
+        setClickedData(clickedDatum);
+      } else {
+        setClickedData(null);
+      }
+    }
+  };
+  
 
   useEffect(() => {
     fetchAssetData()
@@ -169,11 +224,20 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
       });
   }, []);
 
-
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const assetTypeValue = parseInt(e.target.value);
+    const selectedAssetType = assetTypeData.find(
+      (assetType) => assetType.id === assetTypeValue
+    );
+
+    if (selectedAssetType) {
+      console.log("Selected Asset Type:", selectedAssetType.asset_type_name);
+    } else {
+      console.log("Selected asset type not found.");
+    }
     setSelectedType(assetTypeValue.toString());
-    
+    console.log("Selected Asset Type:", selectedType);
+
     if (assetTypeValue === 0) {
       setAssetFilteredChartData(assetChartData);
       setDetailFilteredChartData(detailChartData);
@@ -183,6 +247,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
         .get(`/asset/asset_count?asset_type=${assetTypeValue}`)
         .then((assetRes) => {
           const assetCountData = assetRes.data.data;
+          console.log("assetCountData: ", assetCountData);
           const assetFilteredData = Object.entries(
             assetCountData?.status_counts ?? {}
           ).map(([label, value]) => ({
@@ -256,7 +321,6 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
       <div className="flex justify-end">
         <select
           className="block bg-transparent font-display text-xs text-black-500 appearance-none dark:text-gray-400 dark:border-gray-200 focus:outline-none rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          value={selectedType}
           onChange={handleSelectChange}
         >
           <option
@@ -304,12 +368,12 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                       data: assetFilteredChartData,
                       innerRadius: 60,
                       outerRadius: 140,
-                      paddingAngle: 0,
-                      cornerRadius: 0,
+                      paddingAngle: 1,
+                      cornerRadius: 10,
                       startAngle: 0,
                       endAngle: 360,
-                      cx: 130,
-                      cy: 155,
+                      cx: 160,
+                      cy: 160,
                       highlightScope: { faded: "global", highlighted: "item" },
                       faded: {
                         innerRadius: 75,
@@ -318,8 +382,9 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                       },
                     },
                   ]}
-                  width={300}
-                  height={350}  
+                  onClick={handleAssetItemClick}
+                  width={350}
+                  height={370}
                   slotProps={{
                     legend: {
                       direction: "row",
@@ -365,12 +430,12 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                       data: detailFilteredChartData,
                       innerRadius: 60,
                       outerRadius: 140,
-                      paddingAngle: 0,
-                      cornerRadius: 0,
+                      paddingAngle: 1,
+                      cornerRadius: 10,
                       startAngle: 0,
                       endAngle: 360,
-                      cx: 130,
-                      cy: 155,
+                      cx: 160,
+                      cy: 160,
                       highlightScope: { faded: "global", highlighted: "item" },
                       faded: {
                         innerRadius: 75,
@@ -379,8 +444,9 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                       },
                     },
                   ]}
-                  width={300}
-                  height={350}
+                  onClick={handleDetailItemClick}
+                  width={350}
+                  height={370}
                   slotProps={{
                     legend: {
                       direction: "row",
@@ -410,12 +476,12 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                       data: assignFilteredChartData,
                       innerRadius: 60,
                       outerRadius: 140,
-                      paddingAngle: 0,
-                      cornerRadius: 0,
+                      paddingAngle: 1,
+                      cornerRadius: 10,
                       startAngle: 0,
                       endAngle: 360,
-                      cx: 130,
-                      cy: 155,
+                      cx: 160,
+                      cy: 160,
                       highlightScope: { faded: "global", highlighted: "item" },
                       faded: {
                         innerRadius: 75,
@@ -424,7 +490,8 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                       },
                     },
                   ]}
-                  width={300}
+                  onClick={handleAssignItemClick}
+                  width={350}
                   height={370}
                   slotProps={{
                     legend: {

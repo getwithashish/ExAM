@@ -57,14 +57,22 @@ export default function BarChartHandler() {
     }
   }
 
+  const mergedSX = {
+    ...chartSetting.sx,
+    '& .MuiLegend-root': {
+      ...(chartSetting.sx && chartSetting.sx['& .MuiLegend-root']),
+      fontSize: '6px', 
+    },
+  };  
+
   return (
     <div className='text-center'>
-      <span className='font-semibold text-lg sm:text-sm md:text-md lg:text-lg'>Individual Asset Count</span>
+      <span className='font-semibold text-md sm:text-sm md:text-md lg:text-lg'>Individual Asset Count</span>
       <BarChart
+        sx={mergedSX}
         xAxis={xAxis}
         series={series}
-        height={250}
-        {...chartSetting}      
+        height={250} 
       />
     </div>
   );

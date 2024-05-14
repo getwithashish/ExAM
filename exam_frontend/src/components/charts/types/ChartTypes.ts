@@ -11,6 +11,13 @@ export interface AssetData{
 }
 
 export interface PieChartGraphProps {
+  assetCountData: {
+    total_assets: number;
+    status_counts: { [key: string]: number };
+    asset_detail_status: { [key: string]: number };
+    assign_status: { [key: string]: number };
+    asset_type_counts: { [key: string]: number };
+  };
   selectedAssetType?: string;
   type?: string;
 }
