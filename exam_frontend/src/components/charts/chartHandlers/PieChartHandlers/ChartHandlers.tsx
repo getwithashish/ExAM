@@ -16,7 +16,13 @@ import NoData from "../../../NoData/NoData";
 import { statusColors } from "./StatusColors";
 import { statusMapping } from "./statusMapping";
 
-const ChartHandlers: React.FC<PieChartGraphProps> = ({ selectedTypeId, setSelectedTypeId , setAssetState, setDetailState, setAssignState}) => {
+const ChartHandlers: React.FC<PieChartGraphProps> = ({
+  selectedTypeId,
+  setSelectedTypeId,
+  setAssetState,
+  setDetailState,
+  setAssignState,
+}) => {
   const [assetTypeData, setAssetTypeData] = useState<AssetDetailData[]>([]);
   const [selectedType, setSelectedType] = useState<string>("");
   const [assetChartData, setAssetChartData] = useState<ChartData[]>([]);
@@ -31,9 +37,9 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ selectedTypeId, setSelect
   const [detailFilteredChartData, setDetailFilteredChartData] = useState<
     ChartData[]
   >([]);
-  const [assetState, _setAssetState] = useState<ChartData | null>(null); //query as &status=IN USE/IN STORE/IN REPAIR/EXPIRED/DISPOSED
-  const [detailState, _setDetailState] = useState<ChartData | null>(null); //query as &asset_detail_status=
-  const [assignState, _setAssignState] = useState<ChartData | null>(null); //query as &assign_status=
+  const [assetState, _setAssetState] = useState<ChartData | null>(null);
+  const [detailState, _setDetailState] = useState<ChartData | null>(null);
+  const [assignState, _setAssignState] = useState<ChartData | null>(null);
   const {
     data: _assetData,
     isLoading: assetLoading,
@@ -78,30 +84,28 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ selectedTypeId, setSelect
   const handleAssetItemClick = (_event: React.MouseEvent, params: any) => {
     let chartLabel = assetFilteredChartData[params["dataIndex"]]?.label;
     if (chartLabel === "IN STOCK") {
-      chartLabel = "IN STORE";  
+      chartLabel = "IN STORE";
     }
     console.log("Clicked Asset Chart Label: ", chartLabel);
     setAssetState(chartLabel ?? null);
   };
-  
+
   useEffect(() => {
     console.log("assetState:", assetState);
   }, [assetState]);
 
-  
   const handleDetailItemClick = (_event: React.MouseEvent, params: any) => {
     let chartLabel = detailFilteredChartData[params["dataIndex"]]?.label;
-    if (chartLabel === "PENDING"){
+    if (chartLabel === "PENDING") {
       chartLabel = "UPDATE_PENDING|CREATE_PENDING";
     }
-    if (chartLabel === "REJECTED"){
+    if (chartLabel === "REJECTED") {
       chartLabel = "CREATE_REJECTED|UPDATE_REJECTED";
     }
     console.log("Clicked Detail Chart Label: ", chartLabel);
-    setDetailState(chartLabel?? null)
+    setDetailState(chartLabel ?? null);
   };
 
-    
   useEffect(() => {
     console.log("detailState:", detailState);
   }, [detailState]);
@@ -109,10 +113,10 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ selectedTypeId, setSelect
   const handleAssignItemClick = (_event: React.MouseEvent, params: any) => {
     let chartLabel = assignFilteredChartData[params["dataIndex"]]?.label;
     if (chartLabel === "PENDING") {
-      chartLabel = "ASSIGN_PENDING";  
+      chartLabel = "ASSIGN_PENDING";
     }
     console.log("Clicked Assign Chart Label: ", chartLabel);
-    setAssignState(chartLabel?? null)
+    setAssignState(chartLabel ?? null);
   };
 
   useEffect(() => {
@@ -122,13 +126,13 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ selectedTypeId, setSelect
   useEffect(() => {
     fetchAssetData()
       .then((res) => {
+
         const assetDetailData = res.asset_detail_status;
         console.log("response data", assetDetailData);
 
         const mergedStatusData = Object.entries(assetDetailData ?? {}).reduce(
           (acc, [label, value]) => {
             const mappedLabel = statusMapping[label] ?? label;
-
             if (mappedLabel === "REJECTED" || mappedLabel === "PENDING") {
               if (acc[mappedLabel]) {
                 acc[mappedLabel].value += value;
@@ -157,7 +161,6 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ selectedTypeId, setSelect
                 };
               }
             }
-
             return acc;
           },
           {} as { [key: string]: ChartData }
@@ -171,6 +174,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ selectedTypeId, setSelect
           delete mergedStatusData["UPDATE_REJECTED"];
           delete mergedStatusData["CREATE_REJECTED"];
         }
+
         if (mergedStatusData["PENDING"]) {
           mergedStatusData["PENDING"].value +=
             mergedStatusData["UPDATE_PENDING"]?.value ?? 0;
@@ -181,7 +185,6 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ selectedTypeId, setSelect
         }
 
         const mergedStatusArray: ChartData[] = Object.values(mergedStatusData);
-
         setDetailChartData(mergedStatusArray);
         setDetailFilteredChartData(mergedStatusArray);
       })
@@ -235,16 +238,6 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ selectedTypeId, setSelect
     } else {
       console.log("Selected asset type not found.");
     }
-
-    //     selectedAssetType
-    //     Object { id: 1, asset_type_name: "Laptop" }
-    //     ChartHandlers.tsx:237:12
-    //     Selected Asset Type: Laptop ChartHandlers.tsx:240:14
-    //     Selected Asset Type ID: 1
-    //     Clicked Asset Chart Label:  IN USE
-
-    //selectedAssetType undefined ChartHandlers.tsx:237:12
-    // Selected asset type not found.
 
     if (assetTypeValue === 0) {
       setAssetFilteredChartData(assetChartData);
@@ -392,7 +385,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ selectedTypeId, setSelect
                   ]}
                   onClick={handleAssetItemClick}
                   width={300}
-                  height={370}
+                  height={380}
                   slotProps={{
                     legend: {
                       direction: "row",
@@ -408,22 +401,6 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ selectedTypeId, setSelect
                     },
                   }}
                 />
-                {/* <div>
-                  {assetCountData && (
-                    <div>
-                      <Typography>Status Counts:</Typography>
-                      <pre>
-                        {JSON.stringify(assetCountData.status_counts, null, 2)}
-                      </pre>
-                    </div>
-                  )}
-                  {clickedData && (
-                    <div>
-                      <Typography>Clicked Data:</Typography>
-                      <pre>{JSON.stringify(clickedData, null, 2)}</pre>
-                    </div>
-                  )}
-                </div> */}
               </div>
               <div className="item pt-6 mt-4">
                 <div className="text-center">
@@ -454,7 +431,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ selectedTypeId, setSelect
                   ]}
                   onClick={handleDetailItemClick}
                   width={300}
-                  height={370}
+                  height={380}
                   slotProps={{
                     legend: {
                       direction: "row",
@@ -500,7 +477,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ selectedTypeId, setSelect
                   ]}
                   onClick={handleAssignItemClick}
                   width={300}
-                  height={370}
+                  height={380}
                   slotProps={{
                     legend: {
                       direction: "row",
