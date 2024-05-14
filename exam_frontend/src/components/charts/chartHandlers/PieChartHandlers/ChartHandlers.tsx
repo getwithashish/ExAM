@@ -17,13 +17,13 @@ import { statusColors } from "./StatusColors";
 import { statusMapping } from "./statusMapping";
 
 interface ChartHandlersProps {
-  onSelectAssetType: (assetType: string) => void;
+  onSelectAssetType: (assetType: number) => void;
 }
 
 
 const ChartHandlers: React.FC<PieChartGraphProps & ChartHandlersProps> = ({ onSelectAssetType }) => {
   const [assetTypeData, setAssetTypeData] = useState<AssetDetailData[]>([]);
-  const [selectedType, setSelectedType] = useState<string>("");
+  const [selectedType, setSelectedType] = useState<number>(0);
   const [assetChartData, setAssetChartData] = useState<ChartData[]>([]);
   const [assetFilteredChartData, setAssetFilteredChartData] = useState<
     ChartData[]
@@ -37,7 +37,6 @@ const ChartHandlers: React.FC<PieChartGraphProps & ChartHandlersProps> = ({ onSe
     ChartData[]
   >([]);
 
-  const [clickedData, setClickedData] = useState<ChartData | null>(null);
   const {
     data: assetData,
     isLoading: assetLoading,
@@ -78,18 +77,6 @@ const ChartHandlers: React.FC<PieChartGraphProps & ChartHandlersProps> = ({ onSe
       });
     return () => {};
   }, []);
-
-
-  const handleItemClick = (event, params) => {
-    if (params && assetChartData.length > 0 && params.index < assetChartData.length) {
-      const { index } = params;
-      const clickedDatum = assetChartData[index];
-      setClickedData(clickedDatum); // Update clicked data state
-    } else {
-      setClickedData(null); // Reset clicked data state if invalid click
-    }
-  };
-
 
   useEffect(() => {
     fetchAssetData()
@@ -184,16 +171,26 @@ const ChartHandlers: React.FC<PieChartGraphProps & ChartHandlersProps> = ({ onSe
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const assetTypeValue = parseInt(e.target.value);
-    const selectedAssetType = assetTypeData.find(assetType => assetType.id === assetTypeValue);
+    console.log("assetTypeValue", assetTypeValue)    
 
-    if (selectedAssetType) {
-      console.log("Selected Asset Type:", selectedAssetType.asset_type_name);
-      setSelectedType(selectedAssetType.asset_type_name);
-      onSelectAssetType(selectedAssetType.asset_type_name); // Call the prop to pass the selected asset type to the parent
-    } else {
-      console.log("Selected asset type not found.");
-    } 
-    setSelectedType(assetTypeValue.toString());
+  if (assetTypeValue === 0) {
+    const value = assetTypeValue 
+    setSelectedType(null);
+    console.log("asset type value", value) 
+    return;
+  }
+
+  const selectedAssetType = assetTypeData.find(assetType => assetType.id === assetTypeValue);
+
+  if (selectedAssetType) {
+    console.log("Selected Asset Type:", selectedAssetType.id);
+    setSelectedType(selectedAssetType.id);
+    onSelectAssetType(selectedAssetType.id);
+  } else {
+    setSelectedType(0);
+    
+    console.log("Selected asset type not found.");
+  }    
     
     if (assetTypeValue === 0) {
       setAssetFilteredChartData(assetChartData);
@@ -339,7 +336,6 @@ const ChartHandlers: React.FC<PieChartGraphProps & ChartHandlersProps> = ({ onSe
                       },
                     },
                   ]}
-                  onClick={handleItemClick}
                   width={300}
                   height={350}  
                   slotProps={{

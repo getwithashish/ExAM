@@ -50,33 +50,34 @@ interface ExpandedDataType {
 }
 
 interface DashboardAssetHandlerProps {
-  selectedType: string;
+  selectedType: number | null; // Assuming selectedType can be null if nothing is selected
 }
 
-const DashboardAssetHandler: React.FC<DashboardAssetHandlerProps & ExpandedDataType> = ({ selectedType }) => {
-    const [selectedRow, setSelectedRow] = useState(null);
-    const [drawerVisible, setDrawerVisible] = useState(false);
-    const [queryParam, setQueryParam] = useState("");
-    const [sortedColumn, setSortedColumn] = useState<string | null>(null);
-    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+const DashboardAssetHandler: React.FC<DashboardAssetHandlerProps> = ({ selectedType }) => {
+  const [selectedRow, setSelectedRow] = useState<any>(null); // Adjust the type based on your data structure
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [queryParam, setQueryParam] = useState("");
+  const [sortedColumn, setSortedColumn] = useState<string | null>(null);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
-    useEffect(() => {
-      // Update queryParam only if selectedType is not empty
-      if (selectedType !== "") {
-        setQueryParam(`&asset_type=${selectedType}`);
-      } else {
-        setQueryParam(""); 
-      }
-    }, [selectedType]);
+  useEffect(() => {
+    // Update queryParam only if selectedType is not null
+    if (selectedType !== null) {
+      setQueryParam(`&asset_type=${selectedType}`);
+    } else {
+      setQueryParam(""); // Set queryParam to empty string when selectedType is null
+    }
+  }, [selectedType]);
 
-    const {
-      data: assetData,
-      isLoading: isAssetDataLoading,
-      refetch: assetDataRefetch,
-    } = useQuery({
-      queryKey: ["assetList", queryParam],
-      queryFn: () => getAssetDetails(`${queryParam}`),
-    });
+  const {
+    data: assetData,
+    isLoading: isAssetDataLoading,
+    refetch: assetDataRefetch,
+  } = useQuery({
+    queryKey: ["assetList", queryParam],
+    queryFn: () => getAssetDetails(`${queryParam}`),
+  });
+
 
   const refetchAssetData = (queryParam = "") => {
     setQueryParam(queryParam);

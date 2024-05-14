@@ -4,10 +4,10 @@ import { Statistics } from "../components/charts/Statistics";
 import DashboardAssetHandler from "../components/DashboardAssetTable/DashboardAssetHandler";
 
 const DashboardPage: FC = function () {
-  const [selectedType, setSelectedType] = useState<string>("");
+  const [selectedType, setSelectedType] = useState<number>(0);
 
   const handleTypeSelection = (selectedType: string) => {
-    setSelectedType(selectedType);
+    setSelectedType(parseInt(selectedType));
   };
 
 
