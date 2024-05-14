@@ -5,7 +5,7 @@ interface StatisticsProps {
   onSelectAssetType: (assetType: string) => void;
 }
 
-export const Statistics: React.FC<StatisticsProps> = ({ onSelectAssetType }) => {
+export const Statistics: React.FC<StatisticsProps> = () => {
   return (
     <div className="bg-white py-4">
       <div>
@@ -45,7 +45,7 @@ export const Statistics: React.FC<StatisticsProps> = ({ onSelectAssetType }) => 
             <AssetCountComponent />
           </div>
           <div className="items-center justify-center">
-          <ChartHandlers onSelectAssetType={onSelectAssetType} />
+          <ChartHandlers />
           </div>
         </div>
       </div>

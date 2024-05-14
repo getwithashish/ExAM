@@ -21,9 +21,9 @@ interface ChartHandlersProps {
 }
 
 
-const ChartHandlers: React.FC<PieChartGraphProps & ChartHandlersProps> = ({ onSelectAssetType }) => {
+const ChartHandlers: React.FC<PieChartGraphProps> = () => {
   const [assetTypeData, setAssetTypeData] = useState<AssetDetailData[]>([]);
-  const [selectedType, setSelectedType] = useState<number>(0);
+  const [selectedType, setSelectedType] = useState<string>("");
   const [assetChartData, setAssetChartData] = useState<ChartData[]>([]);
   const [assetFilteredChartData, setAssetFilteredChartData] = useState<
     ChartData[]
@@ -169,28 +169,10 @@ const ChartHandlers: React.FC<PieChartGraphProps & ChartHandlersProps> = ({ onSe
       });
   }, []);
 
+
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const assetTypeValue = parseInt(e.target.value);
-    console.log("assetTypeValue", assetTypeValue)    
-
-  if (assetTypeValue === 0) {
-    const value = assetTypeValue 
-    setSelectedType(null);
-    console.log("asset type value", value) 
-    return;
-  }
-
-  const selectedAssetType = assetTypeData.find(assetType => assetType.id === assetTypeValue);
-
-  if (selectedAssetType) {
-    console.log("Selected Asset Type:", selectedAssetType.id);
-    setSelectedType(selectedAssetType.id);
-    onSelectAssetType(selectedAssetType.id);
-  } else {
-    setSelectedType(0);
-    
-    console.log("Selected asset type not found.");
-  }    
+    setSelectedType(assetTypeValue.toString());
     
     if (assetTypeValue === 0) {
       setAssetFilteredChartData(assetChartData);

@@ -4,17 +4,12 @@ import { Statistics } from "../components/charts/Statistics";
 import DashboardAssetHandler from "../components/DashboardAssetTable/DashboardAssetHandler";
 
 const DashboardPage: FC = function () {
-  const [selectedType, setSelectedType] = useState<number>(0);
-
-  const handleTypeSelection = (selectedType: string) => {
-    setSelectedType(parseInt(selectedType));
-  };
 
 
   return (
     <div className="bg-white">
-      <Statistics onSelectAssetType={handleTypeSelection} />
-      <DashboardAssetHandler selectedType={selectedType} />
+      <Statistics/>
+      <DashboardAssetHandler />
     </div>
   );
 };

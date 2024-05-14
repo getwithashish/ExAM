@@ -29,7 +29,7 @@ import { useInfiniteQuery } from "react-query";
 
 import { DownOutlined } from "@ant-design/icons";
 import ExportButton from "../Export/Export";
-import { getDasboardAssetLogDetails } from "./api/getDasboardAssetLogDetails";
+import { getDasboardAssetLogDetails } from "../DashboardAssetTable/api/getDasboardAssetLogDetails";
 import { AxiosError } from "axios";
 
 import {
@@ -37,7 +37,7 @@ import {
   getAssetTypeOptions,
   getLocationOptions,
   getMemoryOptions,
-} from "./api/getDasboardAssetDetails";
+} from "../DashboardAssetTable/api/getDasboardAssetDetails";
 import DasboardAssetTable from "./DasboardAssetTable";
 
 import TimelineViewDrawer from "../TimelineLog/TimeLineDrawer";
@@ -49,25 +49,13 @@ interface ExpandedDataType {
   upgradeNum: string;
 }
 
-interface DashboardAssetHandlerProps {
-  selectedType: number | null; // Assuming selectedType can be null if nothing is selected
-}
-
-const DashboardAssetHandler: React.FC<DashboardAssetHandlerProps> = ({ selectedType }) => {
-  const [selectedRow, setSelectedRow] = useState<any>(null); // Adjust the type based on your data structure
+const DasboardAssetHandler = () => {
+  const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
+
   const [queryParam, setQueryParam] = useState("");
   const [sortedColumn, setSortedColumn] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-
-  useEffect(() => {
-    // Update queryParam only if selectedType is not null
-    if (selectedType !== null) {
-      setQueryParam(`&asset_type=${selectedType}`);
-    } else {
-      setQueryParam(""); // Set queryParam to empty string when selectedType is null
-    }
-  }, [selectedType]);
 
   const {
     data: assetData,
@@ -77,7 +65,6 @@ const DashboardAssetHandler: React.FC<DashboardAssetHandlerProps> = ({ selectedT
     queryKey: ["assetList", queryParam],
     queryFn: () => getAssetDetails(`${queryParam}`),
   });
-
 
   const refetchAssetData = (queryParam = "") => {
     setQueryParam(queryParam);
@@ -605,4 +592,4 @@ const DashboardAssetHandler: React.FC<DashboardAssetHandlerProps> = ({ selectedT
   );
 };
 
-export default DashboardAssetHandler;
+export default DasboardAssetHandler;
