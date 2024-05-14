@@ -17,9 +17,10 @@ import { Typography } from "@mui/material";
 import { statusColors } from "./StatusColors";
 import { statusMapping } from "./statusMapping";
 
-const ChartHandlers: React.FC<PieChartGraphProps> = ({ assetCountData }) => {
+const ChartHandlers: React.FC<PieChartGraphProps> = () => {
   const [assetTypeData, setAssetTypeData] = useState<AssetDetailData[]>([]);
   const [selectedType, setSelectedType] = useState<string>("");
+  const [selectedTypeId, setSelectedTypeId] = useState<number>(null);
   const [assetChartData, setAssetChartData] = useState<ChartData[]>([]);
   const [assetFilteredChartData, setAssetFilteredChartData] = useState<
     ChartData[]
@@ -78,7 +79,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ assetCountData }) => {
   const handleAssetItemClick = (_event: React.MouseEvent, params: any) => {
     const chartLabel = assetFilteredChartData[params["dataIndex"]]?.label;
     console.log("Clicked Asset Chart Label: ", chartLabel);
-  
+
     if (
       params &&
       assetChartData.length > 0 &&
@@ -93,11 +94,11 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ assetCountData }) => {
       }
     }
   };
-  
+
   const handleDetailItemClick = (_event: React.MouseEvent, params: any) => {
     const chartLabel = detailFilteredChartData[params["dataIndex"]]?.label;
     console.log("Clicked Detail Chart Label: ", chartLabel);
-  
+
     if (
       params &&
       detailChartData.length > 0 &&
@@ -112,11 +113,11 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ assetCountData }) => {
       }
     }
   };
-  
+
   const handleAssignItemClick = (_event: React.MouseEvent, params: any) => {
     const chartLabel = assignFilteredChartData[params["dataIndex"]]?.label;
     console.log("Clicked Assign Chart Label: ", chartLabel);
-  
+
     if (
       params &&
       assignChartData.length > 0 &&
@@ -131,7 +132,6 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ assetCountData }) => {
       }
     }
   };
-  
 
   useEffect(() => {
     fetchAssetData()
@@ -224,19 +224,26 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({ assetCountData }) => {
       });
   }, []);
 
+  useEffect(() => {
+    console.log("Selected Asset Type ID:", selectedTypeId);
+  }, [selectedTypeId]);
+
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log("assetTypeData", assetTypeData);
     const assetTypeValue = parseInt(e.target.value);
     const selectedAssetType = assetTypeData.find(
       (assetType) => assetType.id === assetTypeValue
     );
+    console.log("selectedAssetType", selectedAssetType);
 
     if (selectedAssetType) {
       console.log("Selected Asset Type:", selectedAssetType.asset_type_name);
+
+      setSelectedTypeId(selectedAssetType.id);
     } else {
       console.log("Selected asset type not found.");
     }
     setSelectedType(assetTypeValue.toString());
-    console.log("Selected Asset Type:", selectedType);
 
     if (assetTypeValue === 0) {
       setAssetFilteredChartData(assetChartData);
