@@ -146,12 +146,12 @@ const DashboardAssetHandler = ({
     );
 
 
-    const handleSort = (column: string) => {
+    const handleSort = (column: string,) => {
       const newSortOrder =
         column === sortedColumn ? (sortOrder === "asc" ? "desc" : "asc") : "asc";
       setSortedColumn(column);
       setSortOrder(newSortOrder);
-      const queryParams = `&sort_by=${column}&sort_order=${newSortOrder}&offset=${0}`; // Reset offset to first page
+      const queryParams = `&global_search=${searchTerm}&sort_by=${column}&sort_order=${newSortOrder}&offset=${20}`;
       refetchAssetData(queryParams);
     };
     
@@ -159,7 +159,7 @@ const DashboardAssetHandler = ({
     <h1>Asset Overview</h1>
   </div>;
 
-  const columns = [
+const columns = [
     {
       title: "Product Name",
       dataIndex: "product_name",
