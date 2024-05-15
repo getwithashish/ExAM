@@ -1,36 +1,10 @@
-import React, {
-  Key,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
-import {
-  Badge,
-  Button,
-  Dropdown,
-  Input,
-  Space,
-  Table,
-  TableColumnsType,
-} from "antd";
-import DrawerComponent from "../../DrawerComponent/DrawerComponent";
+import React, { Key, SetStateAction, useCallback, useState } from "react";
+import { Button, Input, Space } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import "./AssetTable.css";
-import CardComponent from "../CardComponent/CardComponent";
-import { CloseOutlined } from "@ant-design/icons";
-import axiosInstance from "../../config/AxiosConfig";
-import { isError, useQuery } from "@tanstack/react-query";
-import { DataType, LogData } from "../AssetTable/types";
-import { ColumnFilterItem } from "../AssetTable/types";
+import { useQuery } from "@tanstack/react-query";
+import { DataType } from "../AssetTable/types";
 import { AssetResult } from "../AssetTable/types";
-import { FilterDropdownProps } from "../AssetTable/types";
-import { useInfiniteQuery } from "react-query";
-
-import { DownOutlined } from "@ant-design/icons";
-import ExportButton from "../../Export/Export";
-import { getAssetLog } from "./api/getAssetLog";
-import { AxiosError } from "axios";
 import AssetTable from "./AssetTable";
 import {
   getAssetDetails,
@@ -38,28 +12,26 @@ import {
   getLocationOptions,
   getMemoryOptions,
 } from "./api/getAssetDetails";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBookOpenReader } from "@fortawesome/free-solid-svg-icons";
+// interface ExpandedDataType {
+//   key: React.Key;
+//   date: string;
+//   name: string;
+//   upgradeNum: string;
+// }
 
-interface ExpandedDataType {
-  key: React.Key;
-  date: string;
-  name: string;
-  upgradeNum: string;
-}
-
-const AssetTableHandler = ({ showAssignDrawer,queryParamProp }) => {
+const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [sortedColumn, setSortedColumn] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  // const { data: assetData } = useQuery({
-  //   queryKey: ["assetList"],
-  //   queryFn: () => getAssetDetails(),
-  // });
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   const [queryParam, setQueryParam] = useState("");
-  const { data: assetData, isLoading: isAssetDataLoading, refetch: assetDataRefetch } = useQuery({
+  const {
+    data: assetData,
+    isLoading: isAssetDataLoading,
+    refetch: assetDataRefetch,
+  } = useQuery({
     queryKey: ["assetList", queryParam],
     queryFn: () => getAssetDetails(`${queryParamProp + queryParam}`),
   });
@@ -92,9 +64,9 @@ const AssetTableHandler = ({ showAssignDrawer,queryParamProp }) => {
   };
 
   const statusOptions =
-  (assetData?.results?.map((item: AssetResult) =>
-    item.status === 'IN STORE' ? 'IN STOCK' : item.status
-  ) || []);
+    assetData?.results?.map((item: AssetResult) =>
+      item.status === "IN STORE" ? "IN STOCK" : item.status
+    ) || [];
 
   const businessUnitOptions =
     assetData?.results?.map(
@@ -148,12 +120,13 @@ const AssetTableHandler = ({ showAssignDrawer,queryParamProp }) => {
       )
     );
   };
+
   const handleSort = (column: string) => {
     const newSortOrder =
       column === sortedColumn ? (sortOrder === "asc" ? "desc" : "asc") : "asc";
     setSortedColumn(column);
     setSortOrder(newSortOrder);
-    const queryParams = `&sort_by=${column}&sort_order=${newSortOrder}`;
+    const queryParams = `&global_search=${searchTerm}&sort_by=${column}&sort_order=${newSortOrder}&offset=${0}`;
     refetchAssetData(queryParams);
   };
   <div>
@@ -414,11 +387,15 @@ const AssetTableHandler = ({ showAssignDrawer,queryParamProp }) => {
       responsive: ["md"],
       width: 120,
       render: (_, record) => {
-        const dateOfPurchase = record.date_of_purchase ? new Date(record.date_of_purchase) : null;
+        const dateOfPurchase = record.date_of_purchase
+          ? new Date(record.date_of_purchase)
+          : null;
         const warrantyPeriod = parseInt(record.warranty_period) || 0; // Defaulting to 0 if warranty_period is not provided or invalid
         if (dateOfPurchase instanceof Date && !isNaN(dateOfPurchase)) {
-          const expiryDate = new Date(dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000); // Calculating expiry date in milliseconds
-          const formattedExpiryDate = expiryDate.toISOString().split('T')[0];
+          const expiryDate = new Date(
+            dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000
+          ); // Calculating expiry date in milliseconds
+          const formattedExpiryDate = expiryDate.toISOString().split("T")[0];
           // Apply renderClickableColumn logic here
           return (
             <div
@@ -433,9 +410,7 @@ const AssetTableHandler = ({ showAssignDrawer,queryParamProp }) => {
           return "Invalid Date";
         }
       },
-    }
-,    
-
+    },
     {
       title: "Model Number",
       dataIndex: "ModelNumber", // Corrected dataIndex
@@ -624,7 +599,7 @@ const AssetTableHandler = ({ showAssignDrawer,queryParamProp }) => {
 
   return (
     <AssetTable
-     totalItemCount={assetData?.count}
+      totalItemCount={assetData?.count}
       handleRowClick={handleRowClick}
       assetPageDataFetch={refetchAssetData}
       isAssetDataLoading={isAssetDataLoading}
@@ -633,6 +608,8 @@ const AssetTableHandler = ({ showAssignDrawer,queryParamProp }) => {
       drawerVisible={drawerVisible}
       assetData={data}
       columns={columns}
+      sortOrder={sortOrder}
+      sortedColumn={sortedColumn}
       memoryData={memoryData}
       assetTypeData={assetTypeData}
       locations={locations}
@@ -643,6 +620,8 @@ const AssetTableHandler = ({ showAssignDrawer,queryParamProp }) => {
         throw new Error("Function not implemented.");
       }}
       drawerTitle={""}
+      searchTerm={searchTerm}
+      setSearchTerm={setSearchTerm}
     />
   );
 };

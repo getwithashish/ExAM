@@ -43,7 +43,7 @@ const DashboardAssetHandler = ({
 }: DashboardAssetHandlerProps) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
-
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [queryParam, setQueryParam] = useState("");
   const [sortedColumn, setSortedColumn] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
@@ -151,9 +151,9 @@ const DashboardAssetHandler = ({
         column === sortedColumn ? (sortOrder === "asc" ? "desc" : "asc") : "asc";
       setSortedColumn(column);
       setSortOrder(newSortOrder);
-      const queryParams = `&global_search=${searchTerm}&sort_by=${column}&sort_order=${newSortOrder}&offset=${20}`;
+      const queryParams = `&global_search=${searchTerm}&sort_by=${column}&sort_order=${newSortOrder}&offset=${0}`;
       refetchAssetData(queryParams);
-    };
+    };  
     
   <div>
     <h1>Asset Overview</h1>
@@ -590,6 +590,8 @@ const columns = [
       handleUpdateData={function (updatedData: { key: any }): void {
         throw new Error("Function not implemented.");
       }}
+      searchTerm={searchTerm}
+      setSearchTerm={setSearchTerm}
     />
   );
 };

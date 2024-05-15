@@ -34,9 +34,11 @@ const DashboardAssetTable = ({
   sortOrder,
   sortedColumn,
   isAssetDataLoading,
+  searchTerm,
+  setSearchTerm
 }: AssetTableProps) => {
   
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  // const [searchTerm, setSearchTerm] = useState<string>("");
 
 
   const handleSearch = (searchTerm: string) => {
