@@ -35,6 +35,7 @@ const CardComponent: React.FC<CardType> = ({
   memoryData,
   assetTypeData,
   isMyApprovalPage,
+  formattedExpiryDate,
   onClose,
   onDelete,
 }) => {
@@ -510,6 +511,22 @@ const CardComponent: React.FC<CardType> = ({
               handleUpdateChange("warranty_period", e.target.value)
             }
             style={inputStyle}
+          />{" "}
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Expiry Date",
+      name: "Expiry Date",
+      value: (
+        <Form.Item name="Expiry Date">
+          <b>Expiry Date: </b>
+          <br></br>
+          <br></br>{" "}
+          <Input
+            defaultValue={formattedExpiryDate}
+            style={inputStyle}
+            disabled
           />{" "}
         </Form.Item>
       ),
