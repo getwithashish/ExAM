@@ -9,6 +9,7 @@ import { Button, DatePicker, Input, Form, InputNumber, Select } from "antd";
 import dayjs from "dayjs";
 const { TextArea } = Input;
 import styles from "./AddAsset.module.css";
+import AssetFieldAutoComplete from "../AutocompleteBox/AssetFieldAutoComplete";
 
 const { Option } = Select;
 
@@ -337,6 +338,32 @@ const AddAsset: React.FC = () => {
           className={styles["formContainer"]}
         >
           {/* Form items... */}
+
+          
+          <Form.Item
+            label={
+              <span>
+                Autocomplete<span className={styles["star"]}>*</span>
+              </span>
+            }
+            className={styles["formItem"]}
+            validateStatus={
+              !formData.asset_category &&
+              requiredFields.includes("asset_category") &&
+              formSubmitted
+                ? "error"
+                : ""
+            }
+            help={
+              !formData.asset_category &&
+              requiredFields.includes("asset_category") &&
+              formSubmitted
+                ? "Required"
+                : ""
+            }
+          >
+            <AssetFieldAutoComplete assetField="asset_type" />
+          </Form.Item>
 
           {/* Category */}
           <Form.Item

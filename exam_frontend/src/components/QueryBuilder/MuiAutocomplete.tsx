@@ -189,11 +189,14 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
           filterOptions={(options, params) => {
             const filtered = filter(options, params);
 
-            if (params.inputValue !== "") {
-              filtered.push({
-                inputValue: params.inputValue,
-                fieldName: `Add "${params.inputValue}"`,
-              });
+            const isExisting = options.some(
+              (option) => params.inputValue.trim() === option[fieldName]
+            );
+            if (params.inputValue !== "" && !isExisting) {
+            //   filtered.push({
+            //     inputValue: params.inputValue.trim(),
+            //     [fieldName]: `Add "${params.inputValue}"`,
+            //   });
             }
 
             return filtered;
@@ -261,11 +264,21 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
           filterOptions={(options, params) => {
             const filtered = filter(options, params);
 
-            if (params.inputValue !== "") {
-              filtered.push({
-                inputValue: params.inputValue,
-                [fieldName]: `Add "${params.inputValue}"`,
-              });
+            const isExisting = options.some(
+              (option) =>
+                params.inputValue.trim() ===
+                option[
+                  fieldName == "location_name" ||
+                  fieldName == "invoice_location"
+                    ? "location_name"
+                    : fieldName
+                ]
+            );
+            if (params.inputValue !== "" && !isExisting) {
+            //   filtered.push({
+            //     inputValue: params.inputValue.trim(),
+            //     // [fieldName]: `Add "${params.inputValue}"`,
+            //   });
             }
 
             return filtered;
@@ -289,7 +302,7 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
           clearOnBlur
           handleHomeEndKeys
           renderOption={(props, option) => (
-            <li {...props}>
+            <li {...props} key={option["id"]}>
               {
                 option[
                   fieldName == "location_name" ||
