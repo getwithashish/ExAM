@@ -1,36 +1,10 @@
-import React, {
-  Key,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
-import {
-  Badge,
-  Button,
-  Dropdown,
-  Input,
-  Space,
-  Table,
-  TableColumnsType,
-} from "antd";
-import DrawerComponent from "../DrawerComponent/DrawerComponent";
+import React, { Key, SetStateAction, useCallback, useState } from "react";
+import { Button } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import "./AssetTable.css";
-import CardComponent from "../CardComponent/CardComponent";
-import { CloseOutlined } from "@ant-design/icons";
-import axiosInstance from "../../config/AxiosConfig";
-import { isError, useQuery } from "@tanstack/react-query";
-import { DataType, LogData } from "../AssetTable/types";
-import { ColumnFilterItem } from "../AssetTable/types";
+import { useQuery } from "@tanstack/react-query";
+import { DataType } from "../AssetTable/types";
 import { AssetResult } from "../AssetTable/types";
-import { FilterDropdownProps } from "../AssetTable/types";
-import { useInfiniteQuery } from "react-query";
-
-import { DownOutlined } from "@ant-design/icons";
-import ExportButton from "../Export/Export";
-import { getAssetLog } from "./api/getAssetLog";
-import { AxiosError } from "axios";
 import AssetTable from "./AssetTable";
 import {
   getAssetDetails,
@@ -38,34 +12,21 @@ import {
   getLocationOptions,
   getMemoryOptions,
 } from "./api/getAssetDetails";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBookOpenReader } from "@fortawesome/free-solid-svg-icons";
-import { Notes } from "@mui/icons-material";
 
-interface ExpandedDataType {
-  key: React.Key;
-  date: string;
-  name: string;
-  upgradeNum: string;
-}
-interface AssetTableHandlerProps {
-  isRejectedPage: boolean;
-}
-
-const AssetTableHandler = ({
-  isRejectedPage,
-  queryParamProp,
-  heading,
-  isMyApprovalPage,
-}) => {
+const AssetTableHandler = ({  isRejectedPage,  queryParamProp,  heading,  isMyApprovalPage,}) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [sortedColumn, setSortedColumn] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
- 
-  
+  const [sortOrders, setSortOrders] = useState({});
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
   const [queryParam, setQueryParam] = useState("");
-  const { data: assetData, isLoading: isAssetDataLoading, refetch: assetDataRefetch } = useQuery({
+  const {
+    data: assetData,
+    isLoading: isAssetDataLoading,
+    refetch: assetDataRefetch,
+  } = useQuery({
     queryKey: ["assetList", queryParam],
     queryFn: () => getAssetDetails(`${queryParamProp + queryParam}`),
   });
@@ -98,9 +59,9 @@ const AssetTableHandler = ({
   };
 
   const statusOptions =
-  (assetData?.results?.map((item: AssetResult) =>
-    item.status === 'IN STORE' ? 'IN STOCK' : item.status
-  ) || []);
+    assetData?.results?.map((item: AssetResult) =>
+      item.status === "IN STORE" ? "IN STOCK" : item.status
+    ) || [];
   const businessUnitOptions =
     assetData?.results?.map(
       (item: AssetResult) => item.business_unit.business_unit_name
@@ -167,14 +128,25 @@ const AssetTableHandler = ({
         {record[dataIndex]}
       </div>
     );
+
     const handleSort = (column: string) => {
-      const newSortOrder =
-        column === sortedColumn ? (sortOrder === "asc" ? "desc" : "asc") : "asc";
+      const isCurrentColumn = column === sortedColumn;  
+      let newSortOrders = { ...sortOrders };  
+      if (!isCurrentColumn) {
+        newSortOrders = { [column]: "asc" };
+      } else {
+        newSortOrders[column] = sortOrders[column] === "asc" ? "desc" : "asc";
+      }  
       setSortedColumn(column);
-      setSortOrder(newSortOrder);
-      const queryParams = `&sort_by=${column}&sort_order=${newSortOrder}`;
-      refetchAssetData(queryParams);
+      setSortOrders(newSortOrders);  
+      const queryParams = Object.keys(newSortOrders)
+        .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
+        .join("");  
+      const additionalQueryParams = `&global_search=${searchTerm}&offset=${0}`;  
+      refetchAssetData(queryParams + additionalQueryParams);
     };
+
+
   const columns = [
     {
       title: "Product Name",
@@ -199,7 +171,7 @@ const AssetTableHandler = ({
       filterIcon: <SearchOutlined />,
       render: renderClickableColumn("Serial Number", "serial_number"),
     },
-  
+
     {
       title: "Location",
       dataIndex: "location",
@@ -275,8 +247,7 @@ const AssetTableHandler = ({
       width: 140,
       render: renderClickableColumn("Asset Category", "asset_category"),
     },
- 
-    
+
     {
       title: "Asset Status",
       dataIndex: "Status",
@@ -356,6 +327,36 @@ const AssetTableHandler = ({
       render: renderClickableColumn("Warranty Period", "warranty_period"),
     },
     {
+      title: "Expiry Date",
+      dataIndex: "expiry_date",
+      responsive: ["md"],
+      width: 120,
+      render: (_, record) => {
+        const dateOfPurchase = record.date_of_purchase
+          ? new Date(record.date_of_purchase)
+          : null;
+        const warrantyPeriod = parseInt(record.warranty_period) || 0; // Defaulting to 0 if warranty_period is not provided or invalid
+        if (dateOfPurchase instanceof Date && !isNaN(dateOfPurchase)) {
+          const expiryDate = new Date(
+            dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000
+          ); // Calculating expiry date in milliseconds
+          const formattedExpiryDate = expiryDate.toISOString().split("T")[0];
+          // Apply renderClickableColumn logic here
+          return (
+            <div
+              data-column-name="Expiry Date"
+              onClick={() => handleColumnClick(record, "Expiry Date")}
+              style={{ cursor: "pointer", color: "red" }}
+            >
+              {formattedExpiryDate}
+            </div>
+          );
+        } else {
+          return "Invalid Date";
+        }
+      },
+    },
+    {
       title: "Model Number",
       dataIndex: "ModelNumber", // Corrected dataIndex
       responsive: ["md"],
@@ -417,8 +418,10 @@ const AssetTableHandler = ({
       dataIndex: "asset_detail_status",
       responsive: ["md"],
       width: 140,
-      render: renderClickableColumn("Asset Detail Status", "asset_detail_status"),
-
+      render: renderClickableColumn(
+        "Asset Detail Status",
+        "asset_detail_status"
+      ),
     },
     {
       title: "Asset Assign Status",
@@ -451,7 +454,6 @@ const AssetTableHandler = ({
       }),
       render: renderClickableColumn("Updated At", "updated_at"),
     },
-
 
     {
       title: "Accessories",
@@ -575,6 +577,8 @@ const AssetTableHandler = ({
       selectedRow={selectedRow}
       drawerVisible={drawerVisible}
       assetData={data}
+      sortOrder={sortOrder}
+      sortedColumn={sortedColumn}
       columns={columns}
       memoryData={memoryData}
       assetTypeData={assetTypeData}
@@ -586,7 +590,8 @@ const AssetTableHandler = ({
       handleUpdateData={function (updatedData: { key: any }): void {
         throw new Error("Function not implemented.");
       }}
-      // drawerTitle={""}
+      searchTerm={searchTerm}
+      setSearchTerm={setSearchTerm}
     />
   );
 };
