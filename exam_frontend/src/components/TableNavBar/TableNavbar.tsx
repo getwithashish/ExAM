@@ -140,7 +140,7 @@ const TableNavbar: React.FC<TableNavbarProps> = ({
       <GlobalSearch
         assetDataRefetch={assetDataRefetch}
         searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm} // Pass searchTerm prop
+        setSearchTerm={setSearchTerm}
       />
 
       <button className={styles["button"]} onClick={reset}>

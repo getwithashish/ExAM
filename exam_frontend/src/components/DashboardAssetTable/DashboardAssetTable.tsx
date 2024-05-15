@@ -9,7 +9,7 @@ import UploadComponent from "../Upload/UploadComponent";
 import DashBoardCardComponent from "../DashBoardCardComponent/DashBoardCardComponent";
 import DrawerViewRequest from "../../pages/RequestPage/DrawerViewRequest";
 
-const DasboardAssetTable = ({
+const DashboardAssetTable = ({
   asset_uuid,
   isSuccess,
   selectedAssetId,
@@ -34,13 +34,17 @@ const DasboardAssetTable = ({
   sortOrder,
   sortedColumn,
   isAssetDataLoading,
+  searchTerm,
+  setSearchTerm
 }: AssetTableProps) => {
+  
+  // const [searchTerm, setSearchTerm] = useState<string>("");
 
-  const [searchTerm, setSearchTerm] = useState<string>("");
 
   const handleSearch = (searchTerm: string) => {
     setSearchTerm(searchTerm);
-    assetDataRefetch(`&global_search=${searchTerm}`);
+    const queryParams = `&global_search=${searchTerm}&sort_by=${sortedColumn}&sort_order=${sortOrder}&offset=20`;
+    assetDataRefetch(queryParams);
   };
 
   const rowRender = (record: { key: string }, expanded: any) => {
@@ -62,7 +66,7 @@ const DasboardAssetTable = ({
         <h6>Asset Details</h6>
       </div>
       <div className="ml-2">
-      <TableNavbar
+        <TableNavbar
           showUpload={showUpload}
           setShowUpload={setShowUpload}
           assetDataRefetch={assetDataRefetch}
@@ -73,7 +77,9 @@ const DasboardAssetTable = ({
         />
       </div>
 
-      <div style={{ position: "relative", display: "inline-block", width: "80vw" }}>
+      <div
+        style={{ position: "relative", display: "inline-block", width: "80vw" }}
+      >
         <SideDrawerComponent
           displayDrawer={showUpload}
           closeDrawer={closeImportDrawer}
@@ -83,9 +89,11 @@ const DasboardAssetTable = ({
         <br></br>
         <br></br>
         <Table
-          columns={columns.map((column: { dataIndex: string; }) => ({ ...column, sortOrder: column.dataIndex === sortedColumn ? sortOrder : undefined }))} 
-
-          // columns={columns}
+          columns={columns.map((column: { dataIndex: string }) => ({
+            ...column,
+            sortOrder:
+              column.dataIndex === sortedColumn ? sortOrder : undefined,
+          }))}
           dataSource={assetData}
           className="mainTable"
           loading={isAssetDataLoading}
@@ -108,9 +116,9 @@ const DasboardAssetTable = ({
               }
               total={totalItemCount}
               onChange={(page, pageSize) => {
-                assetPageDataFetch(
-                  `&offset=${(page - 1) * pageSize}&global_search=${searchTerm}`
-                );
+                const offset = (page - 1) * pageSize;
+                const queryParams = `&offset=${offset}&global_search=${searchTerm}&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
+                assetPageDataFetch(queryParams);
               }}
               hideOnSinglePage={true}
             />
@@ -152,4 +160,4 @@ const DasboardAssetTable = ({
   );
 };
 
-export default React.memo(DasboardAssetTable);
+export default React.memo(DashboardAssetTable);

@@ -159,6 +159,5 @@ export interface AssetTableProps {
   modifiedData:any
   reset:()=> void;
   sortOrder:string;
-  sortedColumn:string;
 }
 

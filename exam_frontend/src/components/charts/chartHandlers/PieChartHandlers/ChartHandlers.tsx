@@ -2,52 +2,27 @@ import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { PieChart } from "@mui/x-charts/PieChart";
+import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import Stack from "@mui/material/Stack";
-import { fetchAssetData, fetchAssetTypeData } from "../api/ChartApi";
+import { fetchAssetData, fetchAssetTypeData } from "../../api/ChartApi";
 import {
   AssetData,
   AssetDetailData,
   ChartData,
   PieChartGraphProps,
-} from "../types/ChartTypes";
-import axiosInstance from "../../../config/AxiosConfig";
-import NoData from "../../NoData/NoData";
+} from "../../types/ChartTypes";
+import axiosInstance from "../../../../config/AxiosConfig";
+import NoData from "../../../NoData/NoData";
+import { statusColors } from "./StatusColors";
+import { statusMapping } from "./statusMapping";
 
-const statusColors: { [key: string]: string } = {
-  "IN STORE": "#FFB92A",
-  "IN REPAIR": "#FEEB51",
-  "IN USE": "#9BCA3E",
-  DISPOSED: "#3ABBC9",
-  EXPIRED: "#CC0000",
-  UNASSIGNED: "#E6E6E6",
-  ASSIGN_PENDING: "#FFB92A",
-  ASSIGNED: "#9BCA3E",
-  REJECTED: "#CC0000",
-  CREATE_PENDING: "#FD6A02",
-  UPDATE_PENDING: "#FD6A02",
-  CREATED: "#9BCA3E",
-  UPDATED: "#3ABBC9",
-  CREATE_REJECTED: "#CC0000",
-  UPDATE_REJECTED: "#CC0000",
-  PENDING: "#FFB92A",
-};
-
-const statusMapping: { [key: string]: string } = {
-  UNASSIGNED: "UNASSIGNED",
-  ASSIGN_PENDING: "PENDING",
-  ASSIGNED: "ASSIGNED",
-  REJECTED: "REJECTED",
-  CREATE_PENDING: "PENDING",
-  UPDATE_PENDING: "PENDING",
-  CREATED: "CREATED",
-  UPDATED: "UPDATED",
-  CREATE_REJECTED: "REJECTED",
-  UPDATE_REJECTED: "REJECTED",
-  "IN STORE": "IN STOCK",
-};
-
-const ChartHandlers: React.FC<PieChartGraphProps> = () => {
+const ChartHandlers: React.FC<PieChartGraphProps> = ({
+  selectedTypeId,
+  setSelectedTypeId,
+  setAssetState,
+  setDetailState,
+  setAssignState,
+}) => {
   const [assetTypeData, setAssetTypeData] = useState<AssetDetailData[]>([]);
   const [selectedType, setSelectedType] = useState<string>("");
   const [assetChartData, setAssetChartData] = useState<ChartData[]>([]);
@@ -62,9 +37,11 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
   const [detailFilteredChartData, setDetailFilteredChartData] = useState<
     ChartData[]
   >([]);
-
+  const [assetState, _setAssetState] = useState<ChartData | null>(null);
+  const [detailState, _setDetailState] = useState<ChartData | null>(null);
+  const [assignState, _setAssignState] = useState<ChartData | null>(null);
   const {
-    data: assetData,
+    data: _assetData,
     isLoading: assetLoading,
     isError: assetError,
   } = useQuery<AssetData>({
@@ -75,6 +52,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
   useEffect(() => {
     fetchAssetTypeData()
       .then((data) => {
+        console.log("Asset types", data);
         setAssetTypeData(data);
       })
       .catch((error) => {
@@ -95,7 +73,8 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
         }));
         setAssetChartData(assetTypeData);
         setAssetFilteredChartData(assetTypeData);
-      })
+        console.log('asset filtered data:', assetChartData)
+      })  
       .catch((error) => {
         console.error("Error fetching asset count data:", error);
         setAssetFilteredChartData([]);
@@ -103,16 +82,58 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
     return () => {};
   }, []);
 
+  const handleAssetItemClick = (_event: React.MouseEvent, params: any) => {
+    let chartLabel = assetFilteredChartData[params["dataIndex"]]?.label;
+    if (chartLabel === "IN STOCK") {
+      chartLabel = "IN STORE";
+    }
+    console.log("Clicked Asset Chart Label: ", chartLabel);
+    setAssetState(chartLabel ?? null);
+  };
+
+  useEffect(() => {
+    console.log("assetState:", assetState);
+  }, [assetState]);
+
+  const handleDetailItemClick = (_event: React.MouseEvent, params: any) => {
+    let chartLabel = detailFilteredChartData[params["dataIndex"]]?.label;
+    if (chartLabel === "PENDING") {
+      chartLabel = "UPDATE_PENDING|CREATE_PENDING";
+    }
+    if (chartLabel === "REJECTED") {
+      chartLabel = "CREATE_REJECTED|UPDATE_REJECTED";
+    }
+    console.log("Clicked Detail Chart Label: ", chartLabel);
+    setDetailState(chartLabel ?? null);
+  };
+
+  useEffect(() => {
+    console.log("detailState:", detailState);
+  }, [detailState]);
+
+  const handleAssignItemClick = (_event: React.MouseEvent, params: any) => {
+    let chartLabel = assignFilteredChartData[params["dataIndex"]]?.label;
+    if (chartLabel === "PENDING") {
+      chartLabel = "ASSIGN_PENDING";
+    }
+    console.log("Clicked Assign Chart Label: ", chartLabel);
+    setAssignState(chartLabel ?? null);
+  };
+
+  useEffect(() => {
+    console.log("assignState:", assignState);
+  }, [assignState]);
+
   useEffect(() => {
     fetchAssetData()
       .then((res) => {
+
         const assetDetailData = res.asset_detail_status;
         console.log("response data", assetDetailData);
 
         const mergedStatusData = Object.entries(assetDetailData ?? {}).reduce(
           (acc, [label, value]) => {
             const mappedLabel = statusMapping[label] ?? label;
-
             if (mappedLabel === "REJECTED" || mappedLabel === "PENDING") {
               if (acc[mappedLabel]) {
                 acc[mappedLabel].value += value;
@@ -141,13 +162,11 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                 };
               }
             }
-
             return acc;
           },
           {} as { [key: string]: ChartData }
         );
 
-        // Add the merged counts for REJECTED and PENDING
         if (mergedStatusData["REJECTED"]) {
           mergedStatusData["REJECTED"].value +=
             mergedStatusData["UPDATE_REJECTED"]?.value ?? 0;
@@ -156,6 +175,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
           delete mergedStatusData["UPDATE_REJECTED"];
           delete mergedStatusData["CREATE_REJECTED"];
         }
+
         if (mergedStatusData["PENDING"]) {
           mergedStatusData["PENDING"].value +=
             mergedStatusData["UPDATE_PENDING"]?.value ?? 0;
@@ -166,7 +186,6 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
         }
 
         const mergedStatusArray: ChartData[] = Object.values(mergedStatusData);
-
         setDetailChartData(mergedStatusArray);
         setDetailFilteredChartData(mergedStatusArray);
       })
@@ -195,9 +214,31 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
       });
   }, []);
 
+  useEffect(() => {
+    console.log("Selected Asset Type ID:", selectedTypeId);
+  }, [selectedTypeId]);
+
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log("assetTypeData", assetTypeData);
     const assetTypeValue = parseInt(e.target.value);
-    setSelectedType(assetTypeValue.toString());
+
+    if (assetTypeValue === 0) {
+      console.log("Selected Asset Type: None");
+      setSelectedTypeId(0);
+    }
+
+    const selectedAssetType = assetTypeData.find(
+      (assetType) => assetType.id === assetTypeValue
+    );
+    console.log("selectedAssetType", selectedAssetType);
+
+    if (selectedAssetType) {
+      console.log("Selected Asset Type:", selectedAssetType.asset_type_name);
+      setSelectedTypeId(selectedAssetType.id);
+      setSelectedType(assetTypeValue.toString());
+    } else {
+      console.log("Selected asset type not found.");
+    }
 
     if (assetTypeValue === 0) {
       setAssetFilteredChartData(assetChartData);
@@ -208,6 +249,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
         .get(`/asset/asset_count?asset_type=${assetTypeValue}`)
         .then((assetRes) => {
           const assetCountData = assetRes.data.data;
+          console.log("assetCountData: ", assetCountData);
           const assetFilteredData = Object.entries(
             assetCountData?.status_counts ?? {}
           ).map(([label, value]) => ({
@@ -326,24 +368,34 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                   series={[
                     {
                       data: assetFilteredChartData,
-                      innerRadius: 60,
+                      innerRadius: 40,
                       outerRadius: 140,
-                      paddingAngle: 0,
-                      cornerRadius: 0,
+                      paddingAngle: 1,
+                      cornerRadius: 10,
                       startAngle: 0,
                       endAngle: 360,
                       cx: 130,
-                      cy: 155,
+                      cy: 160,
                       highlightScope: { faded: "global", highlighted: "item" },
+                      arcLabel: (item) => `${item.value}`,
+                      arcLabelMinAngle: 10,
                       faded: {
-                        innerRadius: 75,
-                        additionalRadius: -40,
+                        innerRadius: 60,
+                        additionalRadius: -60,
                         color: "grey",
                       },
                     },
                   ]}
+                  sx={{
+                    [`& .${pieArcLabelClasses.root}`]: {
+                      fill: 'white',
+                      fontWeight: 'light',
+                      fontSize: 20,
+                    },
+                  }}
+                  onClick={handleAssetItemClick}
                   width={300}
-                  height={350}
+                  height={380}
                   slotProps={{
                     legend: {
                       direction: "row",
@@ -373,22 +425,32 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                       data: detailFilteredChartData,
                       innerRadius: 60,
                       outerRadius: 140,
-                      paddingAngle: 0,
-                      cornerRadius: 0,
+                      paddingAngle: 1,
+                      cornerRadius: 10,
                       startAngle: 0,
                       endAngle: 360,
-                      cx: 130,
-                      cy: 155,
+                      cx: 135,
+                      cy: 160,
                       highlightScope: { faded: "global", highlighted: "item" },
+                      arcLabel: (item) => `${item.value}`,
+                      arcLabelMinAngle: 10,
                       faded: {
-                        innerRadius: 75,
-                        additionalRadius: -40,
-                        color: "grey",
+                        innerRadius: 60,
+                        additionalRadius: -60,
+                        color: "gray",
                       },
                     },
                   ]}
+                  sx={{
+                    [`& .${pieArcLabelClasses.root}`]: {
+                      fill: 'white',
+                      fontWeight: 'light',
+                      fontSize: 20,
+                    },
+                  }}
+                  onClick={handleDetailItemClick}
                   width={300}
-                  height={350}
+                  height={380}
                   slotProps={{
                     legend: {
                       direction: "row",
@@ -418,22 +480,32 @@ const ChartHandlers: React.FC<PieChartGraphProps> = () => {
                       data: assignFilteredChartData,
                       innerRadius: 60,
                       outerRadius: 140,
-                      paddingAngle: 0,
-                      cornerRadius: 0,
+                      paddingAngle: 1,
+                      cornerRadius: 10,
                       startAngle: 0,
                       endAngle: 360,
-                      cx: 130,
-                      cy: 155,
+                      cx: 135,
+                      cy: 160,
                       highlightScope: { faded: "global", highlighted: "item" },
+                      arcLabel: (item) => `${item.value}`,
+                      arcLabelMinAngle: 10,
                       faded: {
-                        innerRadius: 75,
-                        additionalRadius: -40,
-                        color: "grey",
+                        innerRadius: 60,
+                        additionalRadius: -60,
+                        color: "gray",
                       },
                     },
                   ]}
+                  sx={{
+                    [`& .${pieArcLabelClasses.root}`]: {
+                      fill: 'white',
+                      fontWeight: 'light',
+                      fontSize: 20,
+                    },
+                  }}
+                  onClick={handleAssignItemClick}
                   width={300}
-                  height={350}
+                  height={380}
                   slotProps={{
                     legend: {
                       direction: "row",
