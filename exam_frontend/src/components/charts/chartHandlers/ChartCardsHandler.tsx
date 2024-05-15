@@ -107,7 +107,26 @@ const AssetCountComponent = () => {
       >
         <div className="text-white text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-light text-center">
           Remaining approvals
+        <div className="text-white text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-light text-center">
+          Remaining approvals
         </div>
+        <div
+          className=" font-semibold text-center flex-row gap-4"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+        >
+          <div className="text-white text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-medium">
+            Pending: <br />
+            <div className="text-white text-xl sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-semibold">
+              {pendingAssetsCount + pendingAssignsCount}
+            </div>
+          </div>
+          <div className="text-white text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-medium">
+            Asset approvals: <br />
+            <div className="text-white text-xl sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-semibold">
         <div
           className=" font-semibold text-center flex-row gap-4"
           style={{
