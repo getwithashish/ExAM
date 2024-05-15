@@ -5,7 +5,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from asset.serializers.asset_serializer import AssetReadSerializer
 from asset.service.asset_crud_service.asset_query_abstract import AssetQueryAbstract
 from messages import ASSET_LIST_SUCCESSFULLY_RETRIEVED
-
+from datetime import timedelta
 
 class AssetNormalQueryService(AssetQueryAbstract):
     # Define a list of sortable fields
@@ -24,7 +24,6 @@ class AssetNormalQueryService(AssetQueryAbstract):
         "created_at",
         "updated_at",  # Assuming this is a field in the Asset model
     ]
-
     def get_asset_details(self, serializer, request):
         self.pagination = LimitOffsetPagination()
         queryset = Asset.objects.all()

@@ -419,12 +419,15 @@ const AssetTableHandler = ({ showAssignDrawer,queryParamProp }) => {
         if (dateOfPurchase instanceof Date && !isNaN(dateOfPurchase)) {
           const expiryDate = new Date(dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000); // Calculating expiry date in milliseconds
           const formattedExpiryDate = expiryDate.toISOString().split('T')[0];
+          const currentDate = new Date();
+          const isExpired = expiryDate < currentDate;
+    
           // Apply renderClickableColumn logic here
           return (
             <div
               data-column-name="Expiry Date"
               onClick={() => handleColumnClick(record, "Expiry Date")}
-              style={{ cursor: "pointer", color: "red" }}
+              style={{ cursor: "pointer", color: isExpired ? "red" : "green", fontWeight: isExpired ? "bold" : "bold" }}
             >
               {formattedExpiryDate}
             </div>
@@ -433,7 +436,8 @@ const AssetTableHandler = ({ showAssignDrawer,queryParamProp }) => {
           return "Invalid Date";
         }
       },
-    }
+    },
+    
 ,    
 
     {
