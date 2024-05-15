@@ -145,15 +145,16 @@ const DashboardAssetHandler = ({
       </div>
     );
 
-  const handleSort = (column: string) => {
-    const newSortOrder =
-      column === sortedColumn ? (sortOrder === "asc" ? "desc" : "asc") : "asc";
-    setSortedColumn(column);
-    setSortOrder(newSortOrder);
-    const queryParams = `&sort_by=${column}&sort_order=${newSortOrder}&offset=${0}`;
-    refetchAssetData(queryParams);
-  };
-  
+
+    const handleSort = (column: string) => {
+      const newSortOrder =
+        column === sortedColumn ? (sortOrder === "asc" ? "desc" : "asc") : "asc";
+      setSortedColumn(column);
+      setSortOrder(newSortOrder);
+      const queryParams = `&sort_by=${column}&sort_order=${newSortOrder}&offset=${0}`; // Reset offset to first page
+      refetchAssetData(queryParams);
+    };
+    
   <div>
     <h1>Asset Overview</h1>
   </div>;

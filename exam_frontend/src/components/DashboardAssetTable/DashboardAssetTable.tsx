@@ -40,7 +40,8 @@ const DashboardAssetTable = ({
 
   const handleSearch = (searchTerm: string) => {
     setSearchTerm(searchTerm);
-    assetDataRefetch(`&global_search=${searchTerm}`);
+    const queryParams = `&global_search=${searchTerm}&sort_by=${sortedColumn}&sort_order=${sortOrder}&offset=0`;
+    assetDataRefetch(queryParams);
   };
 
   const rowRender = (record: { key: string }, expanded: any) => {
@@ -84,8 +85,6 @@ const DashboardAssetTable = ({
         <br></br>
         <Table
           columns={columns.map((column: { dataIndex: string; }) => ({ ...column, sortOrder: column.dataIndex === sortedColumn ? sortOrder : undefined }))} 
-
-          // columns={columns}
           dataSource={assetData}
           className="mainTable"
           loading={isAssetDataLoading}
@@ -102,18 +101,18 @@ const DashboardAssetTable = ({
           }}
           footer={() => (
             <Pagination
-              pageSize={20}
-              showTotal={(total, range) =>
-                `${range[0]}-${range[1]} of ${total} assets`
-              }
-              total={totalItemCount}
-              onChange={(page, pageSize) => {
-                const offset = (page - 1) * pageSize;
-                const queryParams = `&offset=${offset}&global_search=${searchTerm}&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
-                assetPageDataFetch(queryParams);
-              }}
-              hideOnSinglePage={true}
-            />
+            pageSize={20}
+            showTotal={(total, range) =>
+              `${range[0]}-${range[1]} of ${total} assets`
+            }
+            total={totalItemCount}
+            onChange={(page, pageSize) => {
+              const offset = (page - 1) * pageSize;
+              const queryParams = `&offset=${offset}&global_search=${searchTerm}&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
+              assetPageDataFetch(queryParams);
+            }}
+            hideOnSinglePage={true}
+          />
           )}
         />
       </div>
