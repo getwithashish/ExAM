@@ -5,10 +5,8 @@ import { AxiosError } from 'axios';
 import { MakeOptional } from '@mui/x-charts/models/helpers';
 import CircularWithValueLabel from './circularProgessBar';
 import { axisClasses } from "@mui/x-charts";
+import { ErrorResponse } from './types';
 
-interface ErrorResponse {
-  message: string;  
-} 
 
 type Error = AxiosError<ErrorResponse>;
 
@@ -59,14 +57,22 @@ export default function BarChartHandler() {
     }
   }
 
+  const mergedSX = {
+    ...chartSetting.sx,
+    '& .MuiLegend-root': {
+      ...(chartSetting.sx && chartSetting.sx['& .MuiLegend-root']),
+      fontSize: '6px', 
+    },
+  };  
+
   return (
-    <div style={{ maxWidth: '100%', width: '100%' }} className='text-center '>
-      <span className='font-bold text-lg sm:text-sm md:text-md lg:text-lg'>Individual Asset Count</span>
+    <div className='text-center'>
+      <span className='font-semibold text-md sm:text-sm md:text-md lg:text-lg'>Individual Asset Count</span>
       <BarChart
+        sx={mergedSX}
         xAxis={xAxis}
         series={series}
-        height={250}
-        {...chartSetting}      
+        height={250} 
       />
     </div>
   );
