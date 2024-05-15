@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { PieChart } from "@mui/x-charts/PieChart";
+import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import Stack from "@mui/material/Stack";
 import { fetchAssetData, fetchAssetTypeData } from "../../api/ChartApi";
 import {
@@ -73,7 +73,8 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
         }));
         setAssetChartData(assetTypeData);
         setAssetFilteredChartData(assetTypeData);
-      })
+        console.log('asset filtered data:', assetChartData)
+      })  
       .catch((error) => {
         console.error("Error fetching asset count data:", error);
         setAssetFilteredChartData([]);
@@ -367,7 +368,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                   series={[
                     {
                       data: assetFilteredChartData,
-                      innerRadius: 60,
+                      innerRadius: 40,
                       outerRadius: 140,
                       paddingAngle: 1,
                       cornerRadius: 10,
@@ -376,13 +377,22 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                       cx: 130,
                       cy: 160,
                       highlightScope: { faded: "global", highlighted: "item" },
+                      arcLabel: (item) => `${item.value}`,
+                      arcLabelMinAngle: 10,
                       faded: {
-                        innerRadius: 75,
-                        additionalRadius: -40,
+                        innerRadius: 60,
+                        additionalRadius: -60,
                         color: "grey",
                       },
                     },
                   ]}
+                  sx={{
+                    [`& .${pieArcLabelClasses.root}`]: {
+                      fill: 'white',
+                      fontWeight: 'light',
+                      fontSize: 20,
+                    },
+                  }}
                   onClick={handleAssetItemClick}
                   width={300}
                   height={380}
@@ -422,13 +432,22 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                       cx: 135,
                       cy: 160,
                       highlightScope: { faded: "global", highlighted: "item" },
+                      arcLabel: (item) => `${item.value}`,
+                      arcLabelMinAngle: 10,
                       faded: {
-                        innerRadius: 75,
-                        additionalRadius: -40,
-                        color: "grey",
+                        innerRadius: 60,
+                        additionalRadius: -60,
+                        color: "gray",
                       },
                     },
                   ]}
+                  sx={{
+                    [`& .${pieArcLabelClasses.root}`]: {
+                      fill: 'white',
+                      fontWeight: 'light',
+                      fontSize: 20,
+                    },
+                  }}
                   onClick={handleDetailItemClick}
                   width={300}
                   height={380}
@@ -468,13 +487,22 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                       cx: 135,
                       cy: 160,
                       highlightScope: { faded: "global", highlighted: "item" },
+                      arcLabel: (item) => `${item.value}`,
+                      arcLabelMinAngle: 10,
                       faded: {
-                        innerRadius: 75,
-                        additionalRadius: -40,
-                        color: "grey",
+                        innerRadius: 60,
+                        additionalRadius: -60,
+                        color: "gray",
                       },
                     },
                   ]}
+                  sx={{
+                    [`& .${pieArcLabelClasses.root}`]: {
+                      fill: 'white',
+                      fontWeight: 'light',
+                      fontSize: 20,
+                    },
+                  }}
                   onClick={handleAssignItemClick}
                   width={300}
                   height={380}

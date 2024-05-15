@@ -101,7 +101,7 @@ const AssetCountComponent = () => {
           </div>
         </div>
       </div>
-      <div
+      {/* <div
         className=" my-2 py-4 items-center justify-center bg-gradient-to-r from-blue-800 to-blue-800 hover:from-blue-900 hover:to-blue-900 rounded-lg lg:p-6 md:p-4 sm:p-2 shadow-md"
         style={{ boxShadow: "0 0 5px rgba(0, 0, 0, 0.5)" }}
       >
@@ -135,9 +135,9 @@ const AssetCountComponent = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
       <div
-        className="col-span-2 rounded-lg shadow-md m-2"
+        className="col-span-3 rounded-lg shadow-md m-2"
         style={{ boxShadow: "0 0 5px rgba(0, 0, 0, 0.5)" }}
       >
         <BarChartHandler />

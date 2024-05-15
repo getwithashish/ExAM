@@ -9,7 +9,7 @@ import UploadComponent from "../Upload/UploadComponent";
 import DashBoardCardComponent from "../DashBoardCardComponent/DashBoardCardComponent";
 import DrawerViewRequest from "../../pages/RequestPage/DrawerViewRequest";
 
-const DasboardAssetTable = ({
+const DashboardAssetTable = ({
   asset_uuid,
   isSuccess,
   selectedAssetId,
@@ -108,9 +108,9 @@ const DasboardAssetTable = ({
               }
               total={totalItemCount}
               onChange={(page, pageSize) => {
-                assetPageDataFetch(
-                  `&offset=${(page - 1) * pageSize}&global_search=${searchTerm}`
-                );
+                const offset = (page - 1) * pageSize;
+                const queryParams = `&offset=${offset}&global_search=${searchTerm}&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
+                assetPageDataFetch(queryParams);
               }}
               hideOnSinglePage={true}
             />
@@ -152,4 +152,4 @@ const DasboardAssetTable = ({
   );
 };
 
-export default React.memo(DasboardAssetTable);
+export default React.memo(DashboardAssetTable);
