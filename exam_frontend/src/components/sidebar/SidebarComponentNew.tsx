@@ -329,6 +329,12 @@ const SidebarComponentNew = ({ children }) => {
             ) : (
               ""
             )}
+                <Menu.Item icon={<UserSwitchOutlined />}>
+                  <ToolTip title="To view the expired assets">
+                    <Link to="/exam/expired_assets">Expired Assets</Link>
+                  </ToolTip>
+
+                </Menu.Item>
             <Menu.Item icon={<CarryOutOutlined />}>
               <ToolTip title="Download user agent">
                 <div onClick={handleDownload}>Download</div>
