@@ -43,10 +43,12 @@ const DashboardAssetHandler = ({
 }: DashboardAssetHandlerProps) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [searchTerm, setSearchTerm] = useState<string>("");
   const [queryParam, setQueryParam] = useState("");
   const [sortedColumn, setSortedColumn] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortOrders, setSortOrders] = useState({});
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
 
   useEffect(() => {
     if (selectedTypeId !== 0) {
@@ -146,14 +148,22 @@ const DashboardAssetHandler = ({
     );
 
 
-    const handleSort = (column: string,) => {
-      const newSortOrder =
-        column === sortedColumn ? (sortOrder === "asc" ? "desc" : "asc") : "asc";
+    const handleSort = (column: string) => {
+      const isCurrentColumn = column === sortedColumn;  
+      let newSortOrders = { ...sortOrders };  
+      if (!isCurrentColumn) {
+        newSortOrders = { [column]: "asc" };
+      } else {
+        newSortOrders[column] = sortOrders[column] === "asc" ? "desc" : "asc";
+      }  
       setSortedColumn(column);
-      setSortOrder(newSortOrder);
-      const queryParams = `&global_search=${searchTerm}&sort_by=${column}&sort_order=${newSortOrder}&offset=${0}`;
-      refetchAssetData(queryParams);
-    };  
+      setSortOrders(newSortOrders);  
+      const queryParams = Object.keys(newSortOrders)
+        .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
+        .join("");  
+      const additionalQueryParams = `&global_search=${searchTerm}&offset=${0}`;  
+      refetchAssetData(queryParams + additionalQueryParams);
+    };
     
   <div>
     <h1>Asset Overview</h1>

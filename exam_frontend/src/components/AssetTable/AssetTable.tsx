@@ -7,21 +7,11 @@ import { AssetTableProps } from "../AssetTable/types";
 import DrawerViewRequest from "../../pages/RequestPage/DrawerViewRequest";
 import GlobalSearch from "../GlobalSearch/GlobalSearch";
 
-// interface ExpandedDataType {
-//   key: React.Key;
-//   date: string;
-//   name: string;
-//   upgradeNum: string;
-// }
-
 const AssetTable = ({
   asset_uuid,
-  logsData,
   // isLoading,
   isAssetDataLoading,
-  isSuccess,
   selectedAssetId,
-  setSelectedAssetId,
   handleRowClick,
   onCloseDrawer,
   selectedRow,
@@ -37,7 +27,6 @@ const AssetTable = ({
   locations,
   memoryData,
   assetTypeData,
-  expandedRowRender,
   isMyApprovalPage,
   heading,
   assetDataRefetch,
@@ -47,26 +36,11 @@ const AssetTable = ({
   setSearchTerm,
 }: AssetTableProps) => {
 
-  
+
     const handleSearch = (searchTerm: string) => {
     setSearchTerm(searchTerm);
     const queryParams = `&global_search=${searchTerm}&sort_by=${sortedColumn}&sort_order=${sortOrder}&offset=20`;
     assetDataRefetch(queryParams);
-  };
-
-  const rowRender = (record: { key: string }, expanded: any) => {
-    if (isSuccess) {
-      if (expanded && selectedAssetId && expandedRowRender)
-        return expandedRowRender(record.key);
-      else return;
-    } else return <>not loaded</>;
-  };
-  
-  const _memoizedRowRender = useMemo(() => rowRender, [isSuccess]);
-
-  const [showUpload, setShowUpload] = useState(false);
-  const closeImportDrawer = () => {
-    setShowUpload(false);
   };
 
   return (
