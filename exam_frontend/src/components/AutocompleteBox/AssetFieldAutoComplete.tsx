@@ -16,7 +16,12 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import { useQuery } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
-
+import {
+  createAssetType,
+  createBusinessUnit,
+  createLocation,
+  createMemory,
+} from "./api/postAssetDetails";
 
 const filter = createFilterOptions();
 
@@ -39,10 +44,21 @@ const AssetFieldAutoComplete = ({ assetField }) => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setValue({
-      title: dialogValue.title,
-    });
+    mutate(dialogValue);
+    // setValue({
+    //   title: dialogValue.title,
+    // });
     handleClose();
+  };
+
+  const assetFieldKeyName = () => {
+    if (assetField == "location" || assetField == "invoice_location") {
+      return "location_name";
+    } else if (assetField == "memory") {
+      return "memory_space";
+    } else {
+      return `${assetField}_name`;
+    }
   };
 
   const splitAndCapitalizeWords = (assetFieldName) => {
@@ -80,14 +96,26 @@ const AssetFieldAutoComplete = ({ assetField }) => {
     initialData: [],
   });
 
-  const { mutate } = useMutation(postMessage, {
+  const { mutate } = useMutation({
+    mutationFn: (dialogValue) => {
+      if (assetField !== "") {
+        if (assetField == "asset_type") {
+          return createAssetType(dialogValue);
+        } else if (
+          assetField == "location" ||
+          assetField == "invoice_location"
+        ) {
+          return createLocation(dialogValue);
+        } else if (assetField == "business_unit") {
+          return createBusinessUnit(dialogValue);
+        } else if (assetField == "memory") {
+          return createMemory(dialogValue);
+        }
+      }
+    },
     onSuccess: (data) => {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { role: "user", content: inputMessage },
-        { role: "bot", content: data.data },
-      ]);
-      setInputMessage("");
+      console.log("This is Data: ", data);
+      setValue(data);
     },
   });
 
@@ -101,13 +129,13 @@ const AssetFieldAutoComplete = ({ assetField }) => {
             setTimeout(() => {
               toggleOpen(true);
               setDialogValue({
-                title: newValue,
+                [assetFieldKeyName()]: newValue,
               });
             });
           } else if (newValue && newValue.inputValue) {
             toggleOpen(true);
             setDialogValue({
-              title: newValue.inputValue,
+              [assetFieldKeyName()]: newValue.inputValue,
             });
           } else {
             setValue(newValue);
@@ -123,21 +151,13 @@ const AssetFieldAutoComplete = ({ assetField }) => {
             (option) =>
               params.inputValue.trim() ===
               option[
-                assetField == "location" || assetField == "invoice_location"
-                  ? "location_name"
-                  : assetField == "memory"
-                  ? "memory_space"
-                  : `${assetField}_name`
+                assetFieldKeyName()
               ]
           );
           if (params.inputValue !== "" && !isExisting) {
             filtered.push({
               inputValue: params.inputValue.trim(),
-              [assetField == "location" || assetField == "invoice_location"
-                ? "location_name"
-                : assetField == "memory"
-                ? "memory_space"
-                : `${assetField}_name`]: `Add "${params.inputValue}"`,
+              [assetFieldKeyName()]: `Add "${params.inputValue}"`,
             });
           }
 
@@ -153,11 +173,7 @@ const AssetFieldAutoComplete = ({ assetField }) => {
             return option.inputValue;
           }
           return option[
-            assetField == "location" || assetField == "invoice_location"
-              ? "location_name"
-              : assetField == "memory"
-              ? "memory_space"
-              : `${assetField}_name`
+            assetFieldKeyName()
           ].toString();
         }}
         selectOnFocus
@@ -167,11 +183,7 @@ const AssetFieldAutoComplete = ({ assetField }) => {
           <li {...props} key={option["id"]}>
             {
               option[
-                assetField == "location" || assetField == "invoice_location"
-                  ? "location_name"
-                  : assetField == "memory"
-                  ? "memory_space"
-                  : `${assetField}_name`
+                assetFieldKeyName()
               ]
             }
           </li>
@@ -194,15 +206,14 @@ const AssetFieldAutoComplete = ({ assetField }) => {
               autoFocus
               margin="dense"
               id="name"
-              value={dialogValue.title}
+              value={
+                dialogValue[
+                  assetFieldKeyName()
+                ]
+              }
               onChange={(event) =>
                 setDialogValue({
-                  ...dialogValue,
-                  [assetField == "location" || assetField == "invoice_location"
-                    ? "location_name"
-                    : assetField == "memory"
-                    ? "memory_space"
-                    : `${assetField}_name`]: event.target.value,
+                  [assetFieldKeyName()]: event.target.value,
                 })
               }
               label={splitAndCapitalizeWords(assetField)}
