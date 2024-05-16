@@ -5,40 +5,19 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import {
-  Badge,
-  Button,
-  Dropdown,
-  Input,
-  Space,
-  Table,
-  TableColumnsType,
-} from "antd";
 
 import { SearchOutlined } from "@ant-design/icons";
 import "./DasboardAssetTable.css";
-import CardComponent from "../CardComponent/CardComponent";
-import { CloseOutlined } from "@ant-design/icons";
-import axiosInstance from "../../config/AxiosConfig";
-import { isError, useQuery } from "@tanstack/react-query";
-import { DataType, LogData } from "../AssetTable/types";
-import { ColumnFilterItem } from "../AssetTable/types";
+import { useQuery } from "@tanstack/react-query";
+import { DataType } from "../AssetTable/types";
 import { AssetResult } from "../AssetTable/types";
-import { FilterDropdownProps } from "../AssetTable/types";
-import { useInfiniteQuery } from "react-query";
-
-import { DownOutlined } from "@ant-design/icons";
-import ExportButton from "../Export/Export";
-import { getDasboardAssetLogDetails } from "../DashboardAssetTable/api/getDasboardAssetLogDetails";
-import { AxiosError } from "axios";
-
 import {
   getAssetDetails,
   getAssetTypeOptions,
   getLocationOptions,
   getMemoryOptions,
-} from "../DashboardAssetTable/api/getDasboardAssetDetails";
-import DasboardAssetTable from "./DasboardAssetTable";
+} from "./api/getDashboardAssetDetails";
+import DashboardAssetTable from "./DashboardAssetTable";
 
 import TimelineViewDrawer from "../TimelineLog/TimeLineDrawer";
 
@@ -56,7 +35,7 @@ interface DashboardAssetHandlerProps {
   assignState: string | null;
 }
 
-const DasboardAssetHandler = ({
+const DashboardAssetHandler = ({
   selectedTypeId,
   assetState,
   detailState,
@@ -64,10 +43,12 @@ const DasboardAssetHandler = ({
 }: DashboardAssetHandlerProps) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
-
   const [queryParam, setQueryParam] = useState("");
   const [sortedColumn, setSortedColumn] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortOrders, setSortOrders] = useState({});
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
 
   useEffect(() => {
     if (selectedTypeId !== 0) {
@@ -138,9 +119,6 @@ const DasboardAssetHandler = ({
       value: assetType.asset_type_name,
     })) ?? [];
 
-  const assetDataList = assetData;
-  // console.log("Testing on 65:", assetDataList ? assetDataList[0].results : []);
-
   const handleRowClick = useCallback((record: React.SetStateAction<null>) => {
     setSelectedRow(record);
     setDrawerVisible(true);
@@ -168,24 +146,30 @@ const DasboardAssetHandler = ({
         {record[dataIndex]}
       </div>
     );
-  const handleViewAssetLog = (assetId) => {
-    // Logic to handle viewing asset log for the selected asset ID
-    console.log("Viewing asset log for asset ID:", assetId);
-  };
 
-  const handleSort = (column: string) => {
-    const newSortOrder =
-      column === sortedColumn ? (sortOrder === "asc" ? "desc" : "asc") : "asc";
-    setSortedColumn(column);
-    setSortOrder(newSortOrder);
-    const queryParams = `&sort_by=${column}&sort_order=${newSortOrder}`;
-    refetchAssetData(queryParams);
-  };
+
+    const handleSort = (column: string) => {
+      const isCurrentColumn = column === sortedColumn;  
+      let newSortOrders = { ...sortOrders };  
+      if (!isCurrentColumn) {
+        newSortOrders = { [column]: "asc" };
+      } else {
+        newSortOrders[column] = sortOrders[column] === "asc" ? "desc" : "asc";
+      }  
+      setSortedColumn(column);
+      setSortOrders(newSortOrders);  
+      const queryParams = Object.keys(newSortOrders)
+        .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
+        .join("");  
+      const additionalQueryParams = `&global_search=${searchTerm}&offset=${0}`;  
+      refetchAssetData(queryParams + additionalQueryParams);
+    };
+    
   <div>
     <h1>Asset Overview</h1>
   </div>;
 
-  const columns = [
+const columns = [
     {
       title: "Product Name",
       dataIndex: "product_name",
@@ -592,7 +576,7 @@ const DasboardAssetHandler = ({
   const drawerTitle = "Asset Details";
 
   return (
-    <DasboardAssetTable
+    <DashboardAssetTable
       drawerTitle={drawerTitle}
       isAssetDataLoading={isAssetDataLoading}
       handleRowClick={handleRowClick}
@@ -616,8 +600,10 @@ const DasboardAssetHandler = ({
       handleUpdateData={function (updatedData: { key: any }): void {
         throw new Error("Function not implemented.");
       }}
+      searchTerm={searchTerm}
+      setSearchTerm={setSearchTerm}
     />
   );
 };
 
-export default DasboardAssetHandler;
+export default DashboardAssetHandler;
