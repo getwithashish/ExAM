@@ -362,7 +362,7 @@ const AddAsset: React.FC = () => {
                 : ""
             }
           >
-            <AssetFieldAutoComplete assetField="asset_type" />
+            <AssetFieldAutoComplete assetField="user" />
           </Form.Item>
 
           {/* Category */}

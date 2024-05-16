@@ -22,6 +22,7 @@ import {
   createLocation,
   createMemory,
 } from "./api/postAssetDetails";
+import { getUserOptions } from "./api/getUserDetails";
 
 const filter = createFilterOptions();
 
@@ -56,6 +57,8 @@ const AssetFieldAutoComplete = ({ assetField }) => {
       return "location_name";
     } else if (assetField == "memory") {
       return "memory_space";
+    } else if (assetField == "user") {
+      return "username";
     } else {
       return `${assetField}_name`;
     }
@@ -89,6 +92,8 @@ const AssetFieldAutoComplete = ({ assetField }) => {
           return getBusinessUnitOptions();
         } else if (assetField == "memory") {
           return getMemoryOptions();
+        } else if (assetField == "user") {
+          return getUserOptions();
         }
       }
     },
@@ -148,11 +153,7 @@ const AssetFieldAutoComplete = ({ assetField }) => {
           const filtered = filter(options, params);
 
           const isExisting = options.some(
-            (option) =>
-              params.inputValue.trim() ===
-              option[
-                assetFieldKeyName()
-              ]
+            (option) => params.inputValue.trim() === option[assetFieldKeyName()]
           );
           if (params.inputValue !== "" && !isExisting) {
             filtered.push({
@@ -172,20 +173,14 @@ const AssetFieldAutoComplete = ({ assetField }) => {
           if (option.inputValue) {
             return option.inputValue;
           }
-          return option[
-            assetFieldKeyName()
-          ].toString();
+          return option[assetFieldKeyName()].toString();
         }}
         selectOnFocus
         clearOnBlur
         handleHomeEndKeys
         renderOption={(props, option) => (
           <li {...props} key={option["id"]}>
-            {
-              option[
-                assetFieldKeyName()
-              ]
-            }
+            {option[assetFieldKeyName()]}
           </li>
         )}
         sx={{ width: 300 }}
@@ -206,11 +201,7 @@ const AssetFieldAutoComplete = ({ assetField }) => {
               autoFocus
               margin="dense"
               id="name"
-              value={
-                dialogValue[
-                  assetFieldKeyName()
-                ]
-              }
+              value={dialogValue[assetFieldKeyName()]}
               onChange={(event) =>
                 setDialogValue({
                   [assetFieldKeyName()]: event.target.value,

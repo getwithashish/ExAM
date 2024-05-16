@@ -17,6 +17,7 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
+import { getUserOptions } from "./api/getUserDetails";
 
 const filter = createFilterOptions();
 
@@ -51,6 +52,16 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
       value: "business_unit_name",
       queryFieldName: "business_unit",
     },
+    {
+      label: "Requester",
+      value: "requester",
+      queryFieldName: "requester",
+    },
+    {
+      label: "Approved By",
+      value: "approved_by",
+      queryFieldName: "approved_by",
+    },
   ];
 
   const foreignFieldValueNames = [
@@ -59,33 +70,14 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
     "invoice_location",
     "business_unit_name",
     "memory_space",
+    "requester",
+    "approved_by",
   ];
 
   const [value, setValue] = React.useState([]);
   const [open, toggleOpen] = React.useState(false);
 
   const [fieldName, setFieldName] = React.useState("");
-  const [fieldValue, setFieldValue] = React.useState("");
-
-  const handleClose = () => {
-    setDialogValue({
-      title: "",
-    });
-    toggleOpen(false);
-  };
-
-  const [dialogValue, setDialogValue] = React.useState({
-    title: "",
-  });
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setValue({
-      title: dialogValue.title,
-      year: parseInt(dialogValue.year, 10),
-    });
-    handleClose();
-  };
 
   const [isQueryEnabled, setIsQueryEnabled] = React.useState(false);
 
@@ -108,6 +100,8 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
           return getBusinessUnitOptions();
         } else if (fieldName == "memory_space") {
           return getMemoryOptions();
+        } else if (fieldName == "requester" || fieldName == "approved_by") {
+          return getUserOptions();
         } else {
           return getAssetDetails(
             `?asset_field_value_filter={"${fieldName}":""}`
@@ -118,6 +112,16 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
     enabled: isQueryEnabled,
     initialData: [],
   });
+
+  const getFieldName = () => {
+    if (fieldName == "location_name" || fieldName == "invoice_location") {
+      return "location_name";
+    } else if (fieldName == "requester" || fieldName == "approved_by") {
+      return "username";
+    } else {
+      return fieldName;
+    }
+  };
 
   return (
     <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
@@ -164,17 +168,7 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
           loading={isAssetDataLoading}
           onChange={(event, newValue) => {
             if (typeof newValue === "string") {
-              setTimeout(() => {
-                toggleOpen(true);
-                setDialogValue({
-                  title: newValue,
-                });
-              });
             } else if (newValue && newValue.inputValue) {
-              toggleOpen(true);
-              setDialogValue({
-                title: newValue.inputValue,
-              });
             } else {
               let newFieldValues = allFieldValues.filter(
                 (item) => !item.hasOwnProperty(fieldName)
@@ -193,10 +187,6 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
               (option) => params.inputValue.trim() === option[fieldName]
             );
             if (params.inputValue !== "" && !isExisting) {
-            //   filtered.push({
-            //     inputValue: params.inputValue.trim(),
-            //     [fieldName]: `Add "${params.inputValue}"`,
-            //   });
             }
 
             return filtered;
@@ -231,17 +221,7 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
           loading={isAssetDataLoading}
           onChange={(event, newValue) => {
             if (typeof newValue === "string") {
-              setTimeout(() => {
-                toggleOpen(true);
-                setDialogValue({
-                  title: newValue,
-                });
-              });
             } else if (newValue && newValue.inputValue) {
-              toggleOpen(true);
-              setDialogValue({
-                title: newValue.inputValue,
-              });
             } else {
               const itemElement = fieldNames.find(
                 (item) => item["value"] == fieldName
@@ -265,20 +245,9 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
             const filtered = filter(options, params);
 
             const isExisting = options.some(
-              (option) =>
-                params.inputValue.trim() ===
-                option[
-                  fieldName == "location_name" ||
-                  fieldName == "invoice_location"
-                    ? "location_name"
-                    : fieldName
-                ]
+              (option) => params.inputValue.trim() === option[getFieldName()]
             );
             if (params.inputValue !== "" && !isExisting) {
-            //   filtered.push({
-            //     inputValue: params.inputValue.trim(),
-            //     // [fieldName]: `Add "${params.inputValue}"`,
-            //   });
             }
 
             return filtered;
@@ -292,25 +261,14 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
             if (option.inputValue) {
               return option.inputValue;
             }
-            return option[
-              fieldName == "location_name" || fieldName == "invoice_location"
-                ? "location_name"
-                : fieldName
-            ].toString();
+            return option[getFieldName()].toString();
           }}
           selectOnFocus
           clearOnBlur
           handleHomeEndKeys
           renderOption={(props, option) => (
             <li {...props} key={option["id"]}>
-              {
-                option[
-                  fieldName == "location_name" ||
-                  fieldName == "invoice_location"
-                    ? "location_name"
-                    : fieldName
-                ]
-              }
+              {option[getFieldName()]}
             </li>
           )}
           sx={{ width: 300 }}
