@@ -10,14 +10,18 @@ interface StatisticsProps {
   setAssignState: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-export const Statistics = ({ setSelectedTypeId, setAssetState, setDetailState, setAssignState}: StatisticsProps) => {
+export const Statistics = ({
+  setSelectedTypeId,
+  setAssetState,
+  setDetailState,
+  setAssignState,
+}: StatisticsProps) => {
   const [assetCountData, setAssetCountData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [_assetState, _setAssetState] = useState<string | null>(null);
   const [_detailState, _setDetailState] = useState<string | null>(null);
   const [_assignState, _setAssignState] = useState<string | null>(null);
-
 
   useEffect(() => {
     fetchAssetData()
@@ -80,7 +84,14 @@ export const Statistics = ({ setSelectedTypeId, setAssetState, setDetailState, s
             <AssetCountComponent />
           </div>
           <div className="items-center justify-center">
-            <ChartHandlers assetCountData={assetCountData} setSelectedTypeId={setSelectedTypeId} selectedTypeId={0} setAssetState={setAssetState} setDetailState={setDetailState} setAssignState={setAssignState}/>
+            <ChartHandlers
+              assetCountData={assetCountData}
+              setSelectedTypeId={setSelectedTypeId}
+              selectedTypeId={0}
+              setAssetState={setAssetState}
+              setDetailState={setDetailState}
+              setAssignState={setAssignState}
+            />
           </div>
         </div>
       </div>
