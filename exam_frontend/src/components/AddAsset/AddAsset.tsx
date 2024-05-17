@@ -69,6 +69,8 @@ const AddAsset: React.FC = () => {
     "default"
   );
 
+  const [value, setValue] = React.useState("");
+
   const onFormLayoutChange = ({ size }: { size: SizeType }) => {
     setComponentSize(size);
   };
