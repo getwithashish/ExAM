@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../../config/AxiosConfig";
-import { Field } from "react-querybuilder";
+import type { Field } from "react-querybuilder";
 import { Autocomplete } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { Button, message } from "antd";
 import MuiAutocomplete from "./MuiAutocomplete";
+import type { FieldValues } from "./types/types";
 
 const fields: Field[] = [
   { name: "product_name", label: "Product Name" },
@@ -318,10 +319,12 @@ export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({
     message.success("Query builder reset successfully");
   };
 
-  const [allFieldValues, setAllFieldValues] = React.useState([]);
+  const [allFieldValues, setAllFieldValues] = React.useState<
+    (string | FieldValues)[]
+  >([]);
 
   const handleSubmitFieldValues = (fieldValues) => {
-    console.log("Final Values: ", fieldValues)
+    console.log("Final Values: ", fieldValues);
     const uniqueKeys = Array.from(new Set(fieldValues.flatMap(Object.keys)));
     const valuesByKey = uniqueKeys.reduce((acc, key) => {
       acc[key] = fieldValues
@@ -330,20 +333,20 @@ export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({
       return acc;
     }, {});
 
-    console.log("Final Values as array: ", valuesByKey)
+    console.log("Final Values as array: ", valuesByKey);
 
-    let andQueryConditions = []
+    let andQueryConditions = [];
     for (const key in valuesByKey) {
-      let queryConditions = valuesByKey[key].map((field) => ({
+      const queryConditions = valuesByKey[key].map((field) => ({
         "==": [{ var: key }, field],
-      }))
-      let orQueryCondition = {or: queryConditions}
-      andQueryConditions = andQueryConditions.concat(orQueryCondition)
-      console.log("Query Conditions: ", orQueryCondition)
+      }));
+      const orQueryCondition = { or: queryConditions };
+      andQueryConditions = andQueryConditions.concat(orQueryCondition);
+      console.log("Query Conditions: ", orQueryCondition);
     }
 
-    let jsonLogic = {and: andQueryConditions}
-    console.log("Final Json Logic: ", jsonLogic)
+    const jsonLogic = { and: andQueryConditions };
+    console.log("Final Json Logic: ", jsonLogic);
 
     const jsonLogicString = JSON.stringify(jsonLogic);
     const queryParams = `&json_logic=${encodeURIComponent(jsonLogicString)}`;
@@ -351,60 +354,69 @@ export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({
     console.log(queryParams);
     setJson_query(queryParams);
     assetDataRefetch(queryParams);
-  }
+  };
 
   return (
     <div>
-      <button onClick={handleReset} className="m-5 p-2 h-50 w-50 text-white">
+      <button onClick={handleReset} className="h-50 w-50 m-5 p-2 text-white">
         Reset
       </button>
       <button
-        onClick={() => {handleSubmitFieldValues(allFieldValues)}}
-        className="m-5 p-2 h-50 w-50 text-white"
+        onClick={() => {
+          handleSubmitFieldValues(allFieldValues);
+        }}
+        className="h-50 w-50 m-5 p-2 text-white"
       >
         Search
       </button>
       <Button onClick={handleAddField} className="m-5">
         +
       </Button>
-      <br/>
+      <br />
       <div>
-      <div style={{ display: "flex", flexDirection: "column"}}>
-        {newFields.map((_, index) => (
-          // <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
-          //   <select onChange={e => handleFieldChange(e, index)} value={selectedFields[index]?.field} style={{ padding: '14.5px 10px' , marginTop : '7px' }}>
-          //     <option value="">Select a field</option>
-          //     {fields.map(field => (
-          //       <option key={field.name} value={field.name}>{field.label}</option>
-          //     ))}
-          //   </select>
-          //   <div style={{ width: '200px', marginLeft: '10px' }}>
-          //     <CustomAutocomplete
-          //       selectedFieldIndex={index}
-          //       field={selectedFields[index]?.field}
-          //       value={selectedFields[index]?.value}
-          //       onFieldChange={(event, index) => handleFieldChange(event, index)}
-          //       onInputChange={(event, newValue) => {if(newValue !== null) {handleInputChange(event, newValue, index)}} }
-          //       setSelectedFields={setSelectedFields} // Pass setSelectedFields prop
-          //       setFilterValue={setFilterValue}
-          //       suggestion={suggestion}
-          //       setSuggestion={setSuggestion}
-          //       fieldEndpointMapping={fieldEndpointMapping}
-          //     />
-          //   </div>
-          //   <Button onClick={() => handleRemoveField(index)}>X</Button>
-          // </div>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          {newFields.map((_, index) => (
+            // <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
+            //   <select onChange={e => handleFieldChange(e, index)} value={selectedFields[index]?.field} style={{ padding: '14.5px 10px' , marginTop : '7px' }}>
+            //     <option value="">Select a field</option>
+            //     {fields.map(field => (
+            //       <option key={field.name} value={field.name}>{field.label}</option>
+            //     ))}
+            //   </select>
+            //   <div style={{ width: '200px', marginLeft: '10px' }}>
+            //     <CustomAutocomplete
+            //       selectedFieldIndex={index}
+            //       field={selectedFields[index]?.field}
+            //       value={selectedFields[index]?.value}
+            //       onFieldChange={(event, index) => handleFieldChange(event, index)}
+            //       onInputChange={(event, newValue) => {if(newValue !== null) {handleInputChange(event, newValue, index)}} }
+            //       setSelectedFields={setSelectedFields} // Pass setSelectedFields prop
+            //       setFilterValue={setFilterValue}
+            //       suggestion={suggestion}
+            //       setSuggestion={setSuggestion}
+            //       fieldEndpointMapping={fieldEndpointMapping}
+            //     />
+            //   </div>
+            //   <Button onClick={() => handleRemoveField(index)}>X</Button>
+            // </div>
 
-          <div key={index} style={{ marginBottom: "10px", display: "flex", alignItems:"center"}}>
-            <MuiAutocomplete
+            <div
               key={index}
-              allFieldValues={allFieldValues}
-              setAllFieldValues={setAllFieldValues}
-            />
-            <Button onClick={() => handleRemoveField(index)}>X</Button>
-          </div>
-        ))}
-      </div>
+              style={{
+                marginBottom: "10px",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <MuiAutocomplete
+                key={index}
+                allFieldValues={allFieldValues}
+                setAllFieldValues={setAllFieldValues}
+              />
+              <Button onClick={() => handleRemoveField(index)}>X</Button>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* <Button
