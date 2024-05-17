@@ -6,6 +6,7 @@ import {
   getLocationOptions,
   getMemoryOptions,
   getBusinessUnitOptions,
+  getAssetDetails,
 } from "./api/getAssetDetails";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -26,15 +27,21 @@ import { getUserOptions } from "./api/getUserDetails";
 
 const filter = createFilterOptions();
 
-const AssetFieldAutoComplete = ({ assetField }) => {
-  const [value, setValue] = React.useState("");
+const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
   const [open, toggleOpen] = React.useState(false);
-
-  // const [fieldName, setFieldName] = React.useState("");
 
   const [dialogValue, setDialogValue] = React.useState({
     [assetField]: "",
   });
+
+  const foreignFieldValueNames = [
+    "asset_type",
+    "location",
+    "invoice_location",
+    "business_unit",
+    "memory",
+    "user",
+  ];
 
   const handleClose = () => {
     setDialogValue({
@@ -46,21 +53,22 @@ const AssetFieldAutoComplete = ({ assetField }) => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     mutate(dialogValue);
-    // setValue({
-    //   title: dialogValue.title,
-    // });
     handleClose();
   };
 
   const assetFieldKeyName = () => {
-    if (assetField == "location" || assetField == "invoice_location") {
-      return "location_name";
-    } else if (assetField == "memory") {
-      return "memory_space";
-    } else if (assetField == "user") {
-      return "username";
+    if (!foreignFieldValueNames.includes(assetField)) {
+      return assetField;
     } else {
-      return `${assetField}_name`;
+      if (assetField == "location" || assetField == "invoice_location") {
+        return "location_name";
+      } else if (assetField == "memory") {
+        return "memory_space";
+      } else if (assetField == "user") {
+        return "username";
+      } else {
+        return `${assetField}_name`;
+      }
     }
   };
 
@@ -94,6 +102,10 @@ const AssetFieldAutoComplete = ({ assetField }) => {
           return getMemoryOptions();
         } else if (assetField == "user") {
           return getUserOptions();
+        } else {
+          return getAssetDetails(
+            `?asset_field_value_filter={"${assetField}":""}`
+          );
         }
       }
     },
@@ -119,105 +131,167 @@ const AssetFieldAutoComplete = ({ assetField }) => {
       }
     },
     onSuccess: (data) => {
-      console.log("This is Data: ", data);
       setValue(data);
     },
   });
 
   return (
     <React.Fragment>
-      <Autocomplete
-        value={value}
-        loading={isAssetDataLoading}
-        onChange={(event, newValue) => {
-          if (typeof newValue === "string") {
-            setTimeout(() => {
-              toggleOpen(true);
-              setDialogValue({
-                [assetFieldKeyName()]: newValue,
-              });
-            });
-          } else if (newValue && newValue.inputValue) {
-            toggleOpen(true);
-            setDialogValue({
-              [assetFieldKeyName()]: newValue.inputValue,
-            });
-          } else {
-            setValue(newValue);
-          }
-        }}
-        onOpen={() => {
-          setIsQueryEnabled(true);
-        }}
-        filterOptions={(options, params) => {
-          const filtered = filter(options, params);
-
-          const isExisting = options.some(
-            (option) => params.inputValue.trim() === option[assetFieldKeyName()]
-          );
-          if (params.inputValue !== "" && !isExisting) {
-            filtered.push({
-              inputValue: params.inputValue.trim(),
-              [assetFieldKeyName()]: `Add "${params.inputValue}"`,
-            });
-          }
-
-          return filtered;
-        }}
-        id={`autocomplete-${assetField}`}
-        options={assetData}
-        getOptionLabel={(option) => {
-          if (typeof option === "string") {
-            return option;
-          }
-          if (option.inputValue) {
-            return option.inputValue;
-          }
-          return option[assetFieldKeyName()].toString();
-        }}
-        selectOnFocus
-        clearOnBlur
-        handleHomeEndKeys
-        renderOption={(props, option) => (
-          <li {...props} key={option["id"]}>
-            {option[assetFieldKeyName()]}
-          </li>
-        )}
-        sx={{ width: 300 }}
-        renderInput={(params) => <TextField {...params} label="Search" />}
-      />
-
-      <Dialog open={open} onClose={handleClose}>
-        <form onSubmit={handleSubmit}>
-          <DialogTitle>
-            Add a new {splitAndCapitalizeWords(assetField)}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              If the {splitAndCapitalizeWords(assetField)} you want does not
-              exist, Please add it!
-            </DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              value={dialogValue[assetFieldKeyName()]}
-              onChange={(event) =>
+      {foreignFieldValueNames.includes(assetField) && (
+        <React.Fragment>
+          <Autocomplete
+            value={value}
+            loading={isAssetDataLoading}
+            onChange={(event, newValue) => {
+              if (typeof newValue === "string") {
+                setTimeout(() => {
+                  toggleOpen(true);
+                  setDialogValue({
+                    [assetFieldKeyName()]: newValue,
+                  });
+                });
+              } else if (newValue && newValue.inputValue) {
+                toggleOpen(true);
                 setDialogValue({
-                  [assetFieldKeyName()]: event.target.value,
-                })
+                  [assetFieldKeyName()]: newValue.inputValue,
+                });
+              } else {
+                setValue(newValue);
               }
-              label={splitAndCapitalizeWords(assetField)}
-              type="text"
-              variant="standard"
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button type="submit">Add</Button>
-          </DialogActions>
-        </form>
-      </Dialog>
+            }}
+            onOpen={() => {
+              setIsQueryEnabled(true);
+            }}
+            filterOptions={(options, params) => {
+              const filtered = filter(options, params);
+
+              const isExisting = options.some(
+                (option) =>
+                  params.inputValue.trim() === option[assetFieldKeyName()]
+              );
+              if (params.inputValue !== "" && !isExisting) {
+                filtered.push({
+                  inputValue: params.inputValue.trim(),
+                  [assetFieldKeyName()]: `Add "${params.inputValue}"`,
+                });
+              }
+
+              return filtered;
+            }}
+            id={`autocomplete-${assetField}`}
+            options={assetData}
+            getOptionLabel={(option) => {
+              if (typeof option === "string") {
+                return option;
+              }
+              if (option.inputValue) {
+                return option.inputValue;
+              }
+              return option[assetFieldKeyName()].toString();
+            }}
+            selectOnFocus
+            clearOnBlur
+            handleHomeEndKeys
+            renderOption={(props, option) => (
+              <li {...props} key={option["id"]}>
+                {option[assetFieldKeyName()]}
+              </li>
+            )}
+            sx={{ width: 300 }}
+            renderInput={(params) => <TextField {...params} label="Search" />}
+          />
+
+          <Dialog open={open} onClose={handleClose}>
+            <form onSubmit={handleSubmit}>
+              <DialogTitle>
+                Add a new {splitAndCapitalizeWords(assetField)}
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  If the {splitAndCapitalizeWords(assetField)} you want does not
+                  exist, Please add it!
+                </DialogContentText>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  value={dialogValue[assetFieldKeyName()]}
+                  onChange={(event) =>
+                    setDialogValue({
+                      [assetFieldKeyName()]: event.target.value,
+                    })
+                  }
+                  label={splitAndCapitalizeWords(assetField)}
+                  type="text"
+                  variant="standard"
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button type="submit">Add</Button>
+              </DialogActions>
+            </form>
+          </Dialog>
+        </React.Fragment>
+      )}
+
+      {!foreignFieldValueNames.includes(assetField) && (
+        <Autocomplete
+          value={value}
+          loading={isAssetDataLoading}
+          freeSolo
+          onInputChange={(event, newValue) => {
+            if (newValue !== "") {
+              setValue({ [assetFieldKeyName()]: newValue });
+            }
+          }}
+          onChange={(event, newValue) => {
+            if (typeof newValue === "string") {
+              setTimeout(() => {
+                setValue({ [assetFieldKeyName()]: newValue });
+              });
+            } else if (newValue && newValue.inputValue) {
+              setValue({ [assetFieldKeyName()]: newValue });
+            } else {
+              setValue(newValue);
+            }
+          }}
+          onOpen={() => {
+            setIsQueryEnabled(true);
+          }}
+          filterOptions={(options, params) => {
+            const filtered = filter(options, params);
+
+            const isExisting = options.some(
+              (option) =>
+                params.inputValue.trim() === option[assetFieldKeyName()]
+            );
+            if (params.inputValue !== "" && !isExisting) {
+            }
+
+            return filtered;
+          }}
+          id={`autocomplete-${assetField}-name`}
+          options={assetData}
+          getOptionLabel={(option) => {
+            if (typeof option === "string") {
+              return option;
+            }
+            if (option.inputValue) {
+              return option.inputValue;
+            }
+            return option[assetFieldKeyName()].toString();
+          }}
+          selectOnFocus
+          disableClearable
+          handleHomeEndKeys
+          renderOption={(props, option) => (
+            <li {...props}>{option[assetFieldKeyName()]}</li>
+          )}
+          sx={{ width: 300 }}
+          renderInput={(params) => <TextField {...params} label="Search" />}
+        />
+      )}
     </React.Fragment>
   );
 };
