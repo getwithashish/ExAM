@@ -40,6 +40,8 @@ const AddAsset: React.FC = () => {
     "default"
   );
 
+  const [value, setValue] = React.useState("");
+
   const onFormLayoutChange = ({ size }: { size: SizeType }) => {
     setComponentSize(size);
   };
@@ -339,7 +341,6 @@ const AddAsset: React.FC = () => {
         >
           {/* Form items... */}
 
-          
           <Form.Item
             label={
               <span>
@@ -362,7 +363,11 @@ const AddAsset: React.FC = () => {
                 : ""
             }
           >
-            <AssetFieldAutoComplete assetField="user" />
+            <AssetFieldAutoComplete
+              assetField="product_name"
+              value={value}
+              setValue={setValue}
+            />
           </Form.Item>
 
           {/* Category */}
