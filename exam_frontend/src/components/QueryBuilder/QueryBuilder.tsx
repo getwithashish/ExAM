@@ -376,29 +376,6 @@ export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({
       <div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           {newFields.map((_, index) => (
-            // <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
-            //   <select onChange={e => handleFieldChange(e, index)} value={selectedFields[index]?.field} style={{ padding: '14.5px 10px' , marginTop : '7px' }}>
-            //     <option value="">Select a field</option>
-            //     {fields.map(field => (
-            //       <option key={field.name} value={field.name}>{field.label}</option>
-            //     ))}
-            //   </select>
-            //   <div style={{ width: '200px', marginLeft: '10px' }}>
-            //     <CustomAutocomplete
-            //       selectedFieldIndex={index}
-            //       field={selectedFields[index]?.field}
-            //       value={selectedFields[index]?.value}
-            //       onFieldChange={(event, index) => handleFieldChange(event, index)}
-            //       onInputChange={(event, newValue) => {if(newValue !== null) {handleInputChange(event, newValue, index)}} }
-            //       setSelectedFields={setSelectedFields} // Pass setSelectedFields prop
-            //       setFilterValue={setFilterValue}
-            //       suggestion={suggestion}
-            //       setSuggestion={setSuggestion}
-            //       fieldEndpointMapping={fieldEndpointMapping}
-            //     />
-            //   </div>
-            //   <Button onClick={() => handleRemoveField(index)}>X</Button>
-            // </div>
 
             <div
               key={index}
