@@ -40,7 +40,11 @@ const AddAsset: React.FC = () => {
     "default"
   );
 
-  const [value, setValue] = React.useState("");
+  const [productValue, setProductValue] = React.useState({ product_name: "" });
+  const [assetTypeValue, setAssetTypeValue] = React.useState({
+    asset_type_name: "",
+    id: "0",
+  });
 
   const onFormLayoutChange = ({ size }: { size: SizeType }) => {
     setComponentSize(size);
@@ -363,11 +367,22 @@ const AddAsset: React.FC = () => {
                 : ""
             }
           >
-            <AssetFieldAutoComplete
-              assetField="product_name"
-              value={value}
-              setValue={setValue}
-            />
+            <React.Fragment>
+              <AssetFieldAutoComplete
+                key="0"
+                assetField="product_name"
+                value={productValue}
+                setValue={setProductValue}
+              />
+            </React.Fragment>
+            <React.Fragment>
+              <AssetFieldAutoComplete
+                key="1"
+                assetField="asset_type"
+                value={assetTypeValue}
+                setValue={setAssetTypeValue}
+              />
+            </React.Fragment>
           </Form.Item>
 
           {/* Category */}
