@@ -22,7 +22,6 @@ import { getUserOptions } from "./api/getUserDetails";
 import type {
   MuiAutocompleteProps,
   FieldValues,
-  ItemElementType,
   ItemElementTypeWithString,
   ItemElementTypeWithUndefined,
 } from "./types/types";
