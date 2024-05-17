@@ -10,6 +10,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
+            "id",
             "password",
             "email",
             "first_name",
@@ -44,6 +45,7 @@ class UsernameAndUserscopeTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         return token
 
+
 class SSOTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
@@ -54,23 +56,25 @@ class SSOTokenObtainPairSerializer(TokenObtainPairSerializer):
         token["user_scope"] = user.user_scope
 
         return token
-    
+
     def validate(self, attrs):
         email = attrs.get("email")
 
         if email:
-            user = authenticate(request=self.context.get('request'), email=email)
+            user = authenticate(request=self.context.get("request"), email=email)
         else:
             raise serializers.ValidationError("Must include 'email'.")
 
         if not user:
-            raise serializers.ValidationError("Unable to log in with provided credentials.")
+            raise serializers.ValidationError(
+                "Unable to log in with provided credentials."
+            )
 
         refresh = self.get_token(user)
 
         data = {
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
         }
 
         return data

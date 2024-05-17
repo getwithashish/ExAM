@@ -11,12 +11,15 @@ import {
 } from "./api/getAssetDetails";
 import { useQuery } from "@tanstack/react-query";
 import {
+  Box,
   Button,
+  Chip,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
 } from "@mui/material";
+import { getUserOptions } from "./api/getUserDetails";
 
 const filter = createFilterOptions();
 
@@ -39,6 +42,9 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
     { label: "Memory", value: "memory_space", queryFieldName: "memory" },
     { label: "Storage", value: "storage" },
     { label: "Configuration", value: "configuration" },
+    { label: "Status", value: "status" },
+    { label: "Asset Approval Status", value: "asset_detail_status" },
+    { label: "Asset Assignment Status", value: "assign_status" },
     { label: "Owner", value: "owner" },
     { label: "Location", value: "location_name", queryFieldName: "location" },
     {
@@ -51,6 +57,16 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
       value: "business_unit_name",
       queryFieldName: "business_unit",
     },
+    {
+      label: "Requester",
+      value: "requester",
+      queryFieldName: "requester",
+    },
+    {
+      label: "Approved By",
+      value: "approved_by",
+      queryFieldName: "approved_by",
+    },
   ];
 
   const foreignFieldValueNames = [
@@ -59,33 +75,21 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
     "invoice_location",
     "business_unit_name",
     "memory_space",
+    "requester",
+    "approved_by",
   ];
+
+  const DropDownFieldValue = {
+    status: ["IN STOCK", "IN USE", "IN REPAIR", "DISPOSED"],
+    asset_detail_status: ["CREATED", "UPDATED", "PENDING", "REJECTED"],
+    assign_status: ["ASSIGNED", "UNASSIGNED", "PENDING", "REJECTED"],
+  };
+  const DropDownFieldValueNames = Object.keys(DropDownFieldValue);
 
   const [value, setValue] = React.useState([]);
   const [open, toggleOpen] = React.useState(false);
 
   const [fieldName, setFieldName] = React.useState("");
-  const [fieldValue, setFieldValue] = React.useState("");
-
-  const handleClose = () => {
-    setDialogValue({
-      title: "",
-    });
-    toggleOpen(false);
-  };
-
-  const [dialogValue, setDialogValue] = React.useState({
-    title: "",
-  });
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setValue({
-      title: dialogValue.title,
-      year: parseInt(dialogValue.year, 10),
-    });
-    handleClose();
-  };
 
   const [isQueryEnabled, setIsQueryEnabled] = React.useState(false);
 
@@ -108,6 +112,8 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
           return getBusinessUnitOptions();
         } else if (fieldName == "memory_space") {
           return getMemoryOptions();
+        } else if (fieldName == "requester" || fieldName == "approved_by") {
+          return getUserOptions();
         } else {
           return getAssetDetails(
             `?asset_field_value_filter={"${fieldName}":""}`
@@ -118,6 +124,16 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
     enabled: isQueryEnabled,
     initialData: [],
   });
+
+  const getFieldName = () => {
+    if (fieldName == "location_name" || fieldName == "invoice_location") {
+      return "location_name";
+    } else if (fieldName == "requester" || fieldName == "approved_by") {
+      return "username";
+    } else {
+      return fieldName;
+    }
+  };
 
   return (
     <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
@@ -157,153 +173,189 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
         </Select>
       </FormControl>
 
-      {fieldName !== "" && !foreignFieldValueNames.includes(fieldName) && (
-        <Autocomplete
-          multiple
-          value={value}
-          loading={isAssetDataLoading}
-          onChange={(event, newValue) => {
-            if (typeof newValue === "string") {
-              setTimeout(() => {
-                toggleOpen(true);
-                setDialogValue({
-                  title: newValue,
-                });
-              });
-            } else if (newValue && newValue.inputValue) {
-              toggleOpen(true);
-              setDialogValue({
-                title: newValue.inputValue,
-              });
-            } else {
-              let newFieldValues = allFieldValues.filter(
-                (item) => !item.hasOwnProperty(fieldName)
-              );
-              setAllFieldValues([...newFieldValues, ...newValue]);
-              setValue(newValue);
-            }
-          }}
-          onOpen={() => {
-            setIsQueryEnabled(true);
-          }}
-          filterOptions={(options, params) => {
-            const filtered = filter(options, params);
-
-            if (params.inputValue !== "") {
-              filtered.push({
-                inputValue: params.inputValue,
-                fieldName: `Add "${params.inputValue}"`,
-              });
-            }
-
-            return filtered;
-          }}
-          id="free-solo-dialog-demo"
-          options={assetData}
-          getOptionLabel={(option) => {
-            if (typeof option === "string") {
-              return option;
-            }
-            if (option.inputValue) {
-              return option.inputValue;
-            }
-            return option[fieldName];
-          }}
-          selectOnFocus
-          clearOnBlur
-          handleHomeEndKeys
-          renderOption={(props, option) => (
-            <li {...props}>{option[fieldName]}</li>
-          )}
-          sx={{ width: 300 }}
-          freeSolo
-          renderInput={(params) => <TextField {...params} label="Search" />}
-        />
-      )}
-
-      {fieldName !== "" && foreignFieldValueNames.includes(fieldName) && (
-        <Autocomplete
-          multiple
-          value={value}
-          loading={isAssetDataLoading}
-          onChange={(event, newValue) => {
-            if (typeof newValue === "string") {
-              setTimeout(() => {
-                toggleOpen(true);
-                setDialogValue({
-                  title: newValue,
-                });
-              });
-            } else if (newValue && newValue.inputValue) {
-              toggleOpen(true);
-              setDialogValue({
-                title: newValue.inputValue,
-              });
-            } else {
-              const itemElement = fieldNames.find(
-                (item) => item["value"] == fieldName
-              );
-              let newFieldValues = allFieldValues.filter(
-                (item) => !item.hasOwnProperty(itemElement["queryFieldName"])
-              );
-              setAllFieldValues([
-                ...newFieldValues,
-                ...newValue.map((obj) => ({
-                  [itemElement.queryFieldName]: obj["id"],
-                })),
-              ]);
-              setValue(newValue);
-            }
-          }}
-          onOpen={() => {
-            setIsQueryEnabled(true);
-          }}
-          filterOptions={(options, params) => {
-            const filtered = filter(options, params);
-
-            if (params.inputValue !== "") {
-              filtered.push({
-                inputValue: params.inputValue,
-                [fieldName]: `Add "${params.inputValue}"`,
-              });
-            }
-
-            return filtered;
-          }}
-          id="advanced-query-autcomplete-foreign-fields"
-          options={assetData}
-          getOptionLabel={(option) => {
-            if (typeof option === "string") {
-              return option;
-            }
-            if (option.inputValue) {
-              return option.inputValue;
-            }
-            return option[
-              fieldName == "location_name" || fieldName == "invoice_location"
-                ? "location_name"
-                : fieldName
-            ].toString();
-          }}
-          selectOnFocus
-          clearOnBlur
-          handleHomeEndKeys
-          renderOption={(props, option) => (
-            <li {...props}>
-              {
-                option[
-                  fieldName == "location_name" ||
-                  fieldName == "invoice_location"
-                    ? "location_name"
-                    : fieldName
-                ]
+      {fieldName !== "" &&
+        !foreignFieldValueNames.includes(fieldName) &&
+        !DropDownFieldValueNames.includes(fieldName) && (
+          <Autocomplete
+            multiple
+            value={value}
+            loading={isAssetDataLoading}
+            onChange={(event, newValue) => {
+              if (typeof newValue === "string") {
+              } else if (newValue && newValue.inputValue) {
+              } else {
+                let newFieldValues = allFieldValues.filter(
+                  (item) => !item.hasOwnProperty(fieldName)
+                );
+                setAllFieldValues([...newFieldValues, ...newValue]);
+                setValue(newValue);
               }
-            </li>
-          )}
-          sx={{ width: 300 }}
-          renderInput={(params) => <TextField {...params} label="Search" />}
-        />
-      )}
+            }}
+            onOpen={() => {
+              setIsQueryEnabled(true);
+            }}
+            filterOptions={(options, params) => {
+              const filtered = filter(options, params);
+
+              const isExisting = options.some(
+                (option) => params.inputValue.trim() === option[fieldName]
+              );
+              if (params.inputValue !== "" && !isExisting) {
+              }
+
+              return filtered;
+            }}
+            id="free-solo-dialog-demo"
+            options={assetData}
+            getOptionLabel={(option) => {
+              if (typeof option === "string") {
+                return option;
+              }
+              if (option.inputValue) {
+                return option.inputValue;
+              }
+              return option[fieldName];
+            }}
+            selectOnFocus
+            clearOnBlur
+            handleHomeEndKeys
+            renderOption={(props, option) => (
+              <li {...props}>{option[fieldName]}</li>
+            )}
+            sx={{ width: 300 }}
+            freeSolo
+            renderInput={(params) => <TextField {...params} label="Search" />}
+          />
+        )}
+
+      {fieldName !== "" &&
+        foreignFieldValueNames.includes(fieldName) &&
+        !DropDownFieldValueNames.includes(fieldName) && (
+          <Autocomplete
+            multiple
+            value={value}
+            loading={isAssetDataLoading}
+            onChange={(event, newValue) => {
+              if (typeof newValue === "string") {
+              } else if (newValue && newValue.inputValue) {
+              } else {
+                const itemElement = fieldNames.find(
+                  (item) => item["value"] == fieldName
+                );
+                let newFieldValues = allFieldValues.filter(
+                  (item) => !item.hasOwnProperty(itemElement["queryFieldName"])
+                );
+                setAllFieldValues([
+                  ...newFieldValues,
+                  ...newValue.map((obj) => ({
+                    [itemElement.queryFieldName]: obj["id"],
+                  })),
+                ]);
+                setValue(newValue);
+              }
+            }}
+            onOpen={() => {
+              setIsQueryEnabled(true);
+            }}
+            filterOptions={(options, params) => {
+              const filtered = filter(options, params);
+
+              const isExisting = options.some(
+                (option) => params.inputValue.trim() === option[getFieldName()]
+              );
+              if (params.inputValue !== "" && !isExisting) {
+              }
+
+              return filtered;
+            }}
+            id="advanced-query-autcomplete-foreign-fields"
+            options={assetData}
+            getOptionLabel={(option) => {
+              if (typeof option === "string") {
+                return option;
+              }
+              if (option.inputValue) {
+                return option.inputValue;
+              }
+              return option[getFieldName()].toString();
+            }}
+            selectOnFocus
+            clearOnBlur
+            handleHomeEndKeys
+            renderOption={(props, option) => (
+              <li {...props} key={option["id"]}>
+                {option[getFieldName()]}
+              </li>
+            )}
+            sx={{ width: 300 }}
+            renderInput={(params) => <TextField {...params} label="Search" />}
+          />
+        )}
+
+      {fieldName !== "" &&
+        !foreignFieldValueNames.includes(fieldName) &&
+        DropDownFieldValueNames.includes(fieldName) && (
+          <FormControl>
+            <InputLabel id="simple-status-select">Select Status</InputLabel>
+            <Select
+              labelId="simple-status-select"
+              id="demo-simple-select"
+              multiple
+              value={value}
+              label="Select Status"
+              sx={{ minWidth: 300 }}
+              onChange={(event) => {
+                const newValue = event.target.value;
+                let newFieldValues = allFieldValues.filter(
+                  (item) => !item.hasOwnProperty(fieldName)
+                );
+                setAllFieldValues([
+                  ...newFieldValues,
+                  // Using flatMap() here is very important, since we are returning an array for "PENDING" and "REJECTED"
+                  ...newValue.flatMap((obj) => {
+                    if (fieldName == "status") {
+                      return {
+                        [fieldName]: obj == "IN STOCK" ? "IN STORE" : obj,
+                      };
+                    } else if (fieldName == "asset_detail_status") {
+                      if (obj == "PENDING") {
+                        return [
+                          { [fieldName]: "CREATE_PENDING" },
+                          { [fieldName]: "UPDATE_PENDING" },
+                        ];
+                      } else if (obj == "REJECTED") {
+                        return [
+                          { [fieldName]: "CREATE_REJECTED" },
+                          { [fieldName]: "UPDATE_REJECTED" },
+                        ];
+                      }
+                      return { [fieldName]: obj };
+                    } else if (fieldName == "assign_status") {
+                      if (obj == "PENDING") {
+                        return [{ [fieldName]: "ASSIGN_PENDING" }];
+                      }
+                      return { [fieldName]: obj };
+                    }
+                  }),
+                ]);
+                setValue(newValue);
+              }}
+              renderValue={(selected) => (
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                  {selected.map((value) => (
+                    <Chip key={value} label={value} />
+                  ))}
+                </Box>
+              )}
+            >
+              {DropDownFieldValue[fieldName].map((field, index) => (
+                <MenuItem key={index} value={field}>
+                  {field}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )}
     </div>
   );
 };
