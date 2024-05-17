@@ -12,7 +12,6 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import {
   Box,
-  Button,
   Chip,
   FormControl,
   InputLabel,
@@ -20,10 +19,19 @@ import {
   Select,
 } from "@mui/material";
 import { getUserOptions } from "./api/getUserDetails";
+import type {
+  MuiAutocompleteProps,
+  FieldValues,
+  ItemElementTypeWithString,
+  ItemElementTypeWithUndefined,
+} from "./types/types";
 
 const filter = createFilterOptions();
 
-const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
+const MuiAutocomplete = ({
+  allFieldValues,
+  setAllFieldValues,
+}: MuiAutocompleteProps) => {
   const fieldNames = [
     { label: "Product Name", value: "product_name" },
     { label: "Model Number", value: "model_number" },
@@ -86,18 +94,13 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
   };
   const DropDownFieldValueNames = Object.keys(DropDownFieldValue);
 
-  const [value, setValue] = React.useState([]);
-  const [open, toggleOpen] = React.useState(false);
+  const [value, setValue] = React.useState<(FieldValues | string)[]>([]);
 
   const [fieldName, setFieldName] = React.useState("");
 
   const [isQueryEnabled, setIsQueryEnabled] = React.useState(false);
 
-  const {
-    data: assetData,
-    isLoading: isAssetDataLoading,
-    refetch: assetDataRefetch,
-  } = useQuery({
+  const { data: assetData, isLoading: isAssetDataLoading } = useQuery({
     queryKey: ["assetList", fieldName],
     queryFn: () => {
       if (fieldName !== "") {
@@ -120,6 +123,7 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
           );
         }
       }
+      return "";
     },
     enabled: isQueryEnabled,
     initialData: [],
@@ -150,14 +154,19 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
             let newFieldValues = [];
             if (!foreignFieldValueNames.includes(fieldName)) {
               newFieldValues = allFieldValues.filter(
-                (item) => !item.hasOwnProperty(fieldName)
+                (item: FieldValues) =>
+                  !Object.prototype.hasOwnProperty.call(item, fieldName)
               );
             } else {
               const itemElement = fieldNames.find(
-                (item) => item["value"] == fieldName
+                (item) => item.value == fieldName
               );
               newFieldValues = allFieldValues.filter(
-                (item) => !item.hasOwnProperty(itemElement["queryFieldName"])
+                (item) =>
+                  !Object.prototype.hasOwnProperty.call(
+                    item,
+                    itemElement?.queryFieldName!
+                  )
               );
             }
 
@@ -180,12 +189,13 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
             multiple
             value={value}
             loading={isAssetDataLoading}
-            onChange={(event, newValue) => {
+            onChange={(_event, newValue) => {
               if (typeof newValue === "string") {
-              } else if (newValue && newValue.inputValue) {
+                return;
               } else {
-                let newFieldValues = allFieldValues.filter(
-                  (item) => !item.hasOwnProperty(fieldName)
+                const newFieldValues = allFieldValues.filter(
+                  (item) =>
+                    !Object.prototype.hasOwnProperty.call(item, fieldName)
                 );
                 setAllFieldValues([...newFieldValues, ...newValue]);
                 setValue(newValue);
@@ -196,13 +206,6 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
             }}
             filterOptions={(options, params) => {
               const filtered = filter(options, params);
-
-              const isExisting = options.some(
-                (option) => params.inputValue.trim() === option[fieldName]
-              );
-              if (params.inputValue !== "" && !isExisting) {
-              }
-
               return filtered;
             }}
             id="free-solo-dialog-demo"
@@ -214,7 +217,7 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
               if (option.inputValue) {
                 return option.inputValue;
               }
-              return option[fieldName];
+              return option[fieldName] as string;
             }}
             selectOnFocus
             clearOnBlur
@@ -235,20 +238,27 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
             multiple
             value={value}
             loading={isAssetDataLoading}
-            onChange={(event, newValue) => {
+            onChange={(_event, newValue) => {
               if (typeof newValue === "string") {
-              } else if (newValue && newValue.inputValue) {
+                return;
               } else {
-                const itemElement = fieldNames.find(
-                  (item) => item["value"] == fieldName
+                const itemElement:
+                  | ItemElementTypeWithString
+                  | ItemElementTypeWithUndefined
+                  | undefined = fieldNames.find(
+                  (item) => item.value == fieldName
                 );
-                let newFieldValues = allFieldValues.filter(
-                  (item) => !item.hasOwnProperty(itemElement["queryFieldName"])
+                const newFieldValues = allFieldValues.filter(
+                  (item) =>
+                    !Object.prototype.hasOwnProperty.call(
+                      item,
+                      itemElement?.queryFieldName!
+                    )
                 );
                 setAllFieldValues([
                   ...newFieldValues,
-                  ...newValue.map((obj) => ({
-                    [itemElement.queryFieldName]: obj["id"],
+                  ...newValue.map<FieldValues>((obj) => ({
+                    [itemElement.queryFieldName]: obj.id,
                   })),
                 ]);
                 setValue(newValue);
@@ -259,13 +269,6 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
             }}
             filterOptions={(options, params) => {
               const filtered = filter(options, params);
-
-              const isExisting = options.some(
-                (option) => params.inputValue.trim() === option[getFieldName()]
-              );
-              if (params.inputValue !== "" && !isExisting) {
-              }
-
               return filtered;
             }}
             id="advanced-query-autcomplete-foreign-fields"
@@ -283,7 +286,7 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
             clearOnBlur
             handleHomeEndKeys
             renderOption={(props, option) => (
-              <li {...props} key={option["id"]}>
+              <li {...props} key={option.id}>
                 {option[getFieldName()]}
               </li>
             )}
@@ -306,13 +309,14 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
               sx={{ minWidth: 300 }}
               onChange={(event) => {
                 const newValue = event.target.value;
-                let newFieldValues = allFieldValues.filter(
-                  (item) => !item.hasOwnProperty(fieldName)
+                const newFieldValues = allFieldValues.filter(
+                  (item) =>
+                    !Object.prototype.hasOwnProperty.call(item, fieldName)
                 );
                 setAllFieldValues([
                   ...newFieldValues,
                   // Using flatMap() here is very important, since we are returning an array for "PENDING" and "REJECTED"
-                  ...newValue.flatMap((obj) => {
+                  ...newValue.flatMap((obj: string) => {
                     if (fieldName == "status") {
                       return {
                         [fieldName]: obj == "IN STOCK" ? "IN STORE" : obj,
@@ -335,24 +339,28 @@ const MuiAutocomplete = ({ allFieldValues, setAllFieldValues }) => {
                         return [{ [fieldName]: "ASSIGN_PENDING" }];
                       }
                       return { [fieldName]: obj };
+                    } else {
+                      return;
                     }
                   }),
                 ]);
                 setValue(newValue);
               }}
               renderValue={(selected) => (
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                   {selected.map((value) => (
                     <Chip key={value} label={value} />
                   ))}
                 </Box>
               )}
             >
-              {DropDownFieldValue[fieldName].map((field, index) => (
-                <MenuItem key={index} value={field}>
-                  {field}
-                </MenuItem>
-              ))}
+              {DropDownFieldValue[fieldName].map(
+                (field: string, index: number) => (
+                  <MenuItem key={index} value={field}>
+                    {field}
+                  </MenuItem>
+                )
+              )}
             </Select>
           </FormControl>
         )}
