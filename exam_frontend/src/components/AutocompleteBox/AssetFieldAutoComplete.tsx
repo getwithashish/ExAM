@@ -79,6 +79,18 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
       .join(" ");
   };
 
+  const generateRandomString = (length) => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    const charactersLength = characters.length;
+  
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+  
+    return result;
+  }
+
   const [isQueryEnabled, setIsQueryEnabled] = React.useState(false);
 
   const {
@@ -86,7 +98,7 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
     isLoading: isAssetDataLoading,
     refetch: assetDataRefetch,
   } = useQuery({
-    queryKey: ["assetList"],
+    queryKey: ["assetList", assetField],
     queryFn: () => {
       if (assetField !== "") {
         if (assetField == "asset_type") {
@@ -178,7 +190,7 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
 
               return filtered;
             }}
-            id={`autocomplete-${assetField}`}
+            id={`autocomplete-${generateRandomString(5)}`}
             options={assetData}
             getOptionLabel={(option) => {
               if (typeof option === "string") {
@@ -187,7 +199,7 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
               if (option.inputValue) {
                 return option.inputValue;
               }
-              return option[assetFieldKeyName()].toString();
+              return option[assetFieldKeyName()]?.toString();
             }}
             selectOnFocus
             clearOnBlur
@@ -214,7 +226,7 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
                 <TextField
                   autoFocus
                   margin="dense"
-                  id="name"
+                  id={generateRandomString(7)}
                   value={dialogValue[assetFieldKeyName()]}
                   onChange={(event) =>
                     setDialogValue({
@@ -271,7 +283,7 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
 
             return filtered;
           }}
-          id={`autocomplete-${assetField}-name`}
+          id={`autocomplete-${generateRandomString(7)}`}
           options={assetData}
           getOptionLabel={(option) => {
             if (typeof option === "string") {
@@ -280,7 +292,7 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
             if (option.inputValue) {
               return option.inputValue;
             }
-            return option[assetFieldKeyName()].toString();
+            return option[assetFieldKeyName()]?.toString();
           }}
           selectOnFocus
           disableClearable
