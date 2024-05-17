@@ -9,30 +9,62 @@ import { Button, DatePicker, Input, Form, InputNumber, Select } from "antd";
 import dayjs from "dayjs";
 const { TextArea } = Input;
 import styles from "./AddAsset.module.css";
-
 const { Option } = Select;
-
 type SizeType = Parameters<typeof Form>[0]["size"];
 
 const AddAsset: React.FC = () => {
   // State to store form data
   const [formData, setFormData] = useState<any>({});
-  const [requiredFields, setRequiredFields] = useState<string[]>([
-    "asset_category",
+  const [requiredFields, setRequiredFields] = useState<string[]>([]);
+
+  const hardwareSpecificFields = [
+    "model_number",
     "asset_id",
-    "product_name",
-    "serial_number",
     "asset_type",
+    "serial_number",
+    "warranty_period",
     "location",
     "invoice_location",
-    "business_unit",
-    "os",
-    "status",
-    "version",
-    "warranty_period",
     "date_of_purchase",
-    "model_number",
-  ]);
+
+  ];
+
+  const softwareSpecificFields = [
+    "asset_id",
+    "product_name",
+    "location",
+    "date_of_purchase",
+
+    // Add other software specific fields here...
+  ];
+  const setRequiredFieldsByCategory = (category: string) => {
+    let requiredFieldsArray: string[] = [
+      "asset_category",
+      "asset_id",
+      "product_name",
+      "serial_number",
+      // "asset_type",
+      "location",
+      "invoice_location",
+      "business_unit",
+      "os",
+      "status",
+      "warranty_period",
+      "date_of_purchase",
+    ];
+    if (category === "HARDWARE") {
+      requiredFieldsArray = requiredFieldsArray.concat(hardwareSpecificFields);
+    } else if (category === "SOFTWARE") {
+      requiredFieldsArray = requiredFieldsArray.concat(softwareSpecificFields);
+    }
+  
+    setRequiredFields(requiredFieldsArray);
+  };  
+
+  useEffect(() => {
+    setRequiredFieldsByCategory(formData.asset_category);
+  }, [formData.asset_category]);
+
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   const [componentSize, setComponentSize] = useState<SizeType | "default">(
@@ -177,8 +209,6 @@ const AddAsset: React.FC = () => {
     queryFn: () =>
       axiosInstance.get("/asset/asset_type").then((res) => res.data.data),
   });
-
-  // Fetch memory space options
   const {
     data: memoryData,
     isLoading: isMemoryLoading,
@@ -188,8 +218,6 @@ const AddAsset: React.FC = () => {
     queryFn: () =>
       axiosInstance.get("/asset/memory_list").then((res) => res.data.data),
   });
-
-  // Fetch business unit details
   const {
     data: businessUnitData,
     isLoading: isBusinessUnitLoading,
@@ -199,8 +227,6 @@ const AddAsset: React.FC = () => {
     queryFn: () =>
       axiosInstance.get("/asset/business_unit").then((res) => res.data.data),
   });
-
-  //Fetch location details
 
   const {
     data: locationData,
@@ -245,81 +271,116 @@ const AddAsset: React.FC = () => {
     id: item.id,
     name: item.location_name,
   }));
-  // Fetch data queries...
+
+  
+
+  
+
+
 
   const handleSubmit = async () => {
     setFormSubmitted(true);
-    if (!formData.warranty_period) {
-      // If warranty_period is undefined, set it to an empty string
+  
+    // Ensure that warranty_period is not undefined for hardware assets
+    if (formData.asset_category === "HARDWARE" && !formData.warranty_period && !formData.asset_type) {
       formData.warranty_period = "";
     }
-    if (
-      !formData.asset_category ||
-      !formData.asset_id ||
-      !formData.product_name ||
-      !formData.serial_number ||
-      !formData.asset_type ||
-      !formData.location ||
-      !formData.invoice_location ||
-      !formData.business_unit ||
-      !formData.os ||
-      !formData.version ||
-      !formData.warranty_period ||
-      !formData.date_of_purchase
-    ) {
-      message.error("Please fill in all mandatory fields.");
-      return;
-    }
-    const warrantyPeriodValue = formData.warranty_period.trim();
-    if (warrantyPeriodValue !== "" && !/^\d+$/.test(warrantyPeriodValue)) {
-      message.error("Warranty period should be a valid integer.");
-      return;
-    }
-    const versionValue = formData.version.trim();
-    if (versionValue !== "" && !/^\d+$/.test(versionValue)) {
-      message.error("Version should only contain digits.");
-      return;
-    }
-    const osVersionValue = formData.os_version.trim();
-    if (osVersionValue !== "" && !/^\d+$/.test(osVersionValue)) {
-      message.error("OS version should only contain digits.");
-      return;
-    }
-    const storageValue = formData.storage?.trim();
-    const formatPattern = /^\d{1,3}GB$/;
-
-    if (storageValue && !formatPattern.test(storageValue)) {
-      message.error(
-        'Storage should be in the format "###GB", where ### is any one to three digits.'
-      );
-      return;
-    }
-    const processorValue = formData.processor?.trim();
-    const processorGenValue = formData.processor_gen?.trim();
-    const alphanumericPattern = /^[a-zA-Z0-9]+$/;
-
-    if (
-      (processorValue && !alphanumericPattern.test(processorValue)) ||
-      (processorGenValue && !alphanumericPattern.test(processorGenValue))
-    ) {
-      message.error(
-        "Processor and Processor Generation should be alphanumeric."
-      );
-      return;
-    }
-
-    console.log("Attempting to submit form data:", formData);
-    const response = await axiosInstance.post(
-      import.meta.env["VITE_ADD_ASSET_URL"],
-      formData
+  
+    // Check if all mandatory fields are filled for software
+    const isAllSoftwareFieldsFilled = softwareSpecificFields.every(
+      field => !!formData[field]
     );
-    console.log("Form Data Posted:", response.data);
-    message.success("Form data submitted successfully");
+  
+    // Check if all mandatory fields are filled for hardware
+    const isAllHardwareFieldsFilled = hardwareSpecificFields.every(
+      field => !!formData[field]
+    );
+  
+    // If it's a software asset and all mandatory fields are filled
+    if (formData.asset_category === "SOFTWARE" && isAllSoftwareFieldsFilled) {
+      // Your software-specific validation logic goes here
+      try {
+        // If software-specific validation passes, submit the form
+        console.log("Attempting to submit software asset form data:", formData);
+        const response = await axiosInstance.post(
+          import.meta.env["VITE_ADD_ASSET_URL"],
+          formData
+        );
+        console.log("Form Data Posted:", response.data);
+    
+        // Display success message and reload page
+        message.success("Form data submitted successfully");
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
+        return; // Exit the function after successful submission
+      } catch (error) {
+        console.error("Error submitting form data:", error);
+        message.error("Failed to submit form data. Please try again later.");
+        return; // Exit the function after encountering an error
+      }
+    }
+  
+    // If it's a hardware asset and all mandatory fields are filled
+    if (formData.asset_category === "HARDWARE" && isAllHardwareFieldsFilled) {
+      // Your hardware-specific validation logic goes here
+      const warrantyPeriodValue = formData.warranty_period.trim();
+      if (warrantyPeriodValue !== "" && !/^\d+$/.test(warrantyPeriodValue)) {
+        message.error("Warranty period should be a valid integer.");
+        return;
+      }
+    
+      const storageValue = formData.storage?.trim();
+      const formatPattern = /^\d{1,3}GB$/;
+  
+      if (storageValue && !formatPattern.test(storageValue)) {
+        message.error(
+          'Storage should be in the format "###GB", where ### is any one to three digits.'
+        );
+        return;
+      }
+      const processorValue = formData.processor?.trim();
+      const processorGenValue = formData.processor_gen?.trim();
+      const alphanumericPattern = /^[a-zA-Z0-9]+$/;
+  
+      if (
+        (processorValue && !alphanumericPattern.test(processorValue)) ||
+        (processorGenValue && !alphanumericPattern.test(processorGenValue))
+      ) {
+        message.error(
+          "Processor and Processor Generation should be alphanumeric."
+        );
+        return;
+      }
+      try {
+        // If hardware-specific validation passes, submit the form
+        console.log("Attempting to submit hardware asset form data:", formData);
+        const response = await axiosInstance.post(
+          import.meta.env["VITE_ADD_ASSET_URL"],
+          formData
+        );
+        console.log("Form Data Posted:", response.data);
+    
+        // Display success message and reload page
+        message.success("Form data submitted successfully");
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
+        return; // Exit the function after successful submission
+      } catch (error) {
+        console.error("Error submitting form data:", error);
+        message.error("Failed to submit form data. Please try again later.");
+        return; // Exit the function after encountering an error
+      }
+    }
+  
+    // If mandatory fields are not filled for either software or hardware
+    message.error("Please fill in all mandatory fields.");
+};
 
-    setTimeout(() => {
-      window.location.reload();
-    }, 1500);
-  };
+
+
+
 
   return (
     <div className="font-display">
@@ -336,63 +397,36 @@ const AddAsset: React.FC = () => {
           style={{ padding: "20px", overflowX: "hidden" }}
           className={styles["formContainer"]}
         >
-          {/* Form items... */}
-
-          {/* Category */}
-          <Form.Item
+<Form.Item
             label={
               <span>
                 Category<span className={styles["star"]}>*</span>
               </span>
             }
             className={styles["formItem"]}
-            validateStatus={
-              !formData.asset_category &&
-              requiredFields.includes("asset_category") &&
-              formSubmitted
-                ? "error"
-                : ""
-            }
-            help={
-              !formData.asset_category &&
-              requiredFields.includes("asset_category") &&
-              formSubmitted
-                ? "Required"
-                : ""
-            }
+          
           >
             <Select
               className={styles["input"]}
               placeholder="Select asset category"
-              onChange={(value) => handleInputChange("asset_category", value)}
+              onChange={(value) => setFormData({ ...formData, asset_category: value })}
             >
               <Option value="HARDWARE">Hardware</Option>
               <Option value="SOFTWARE">Software</Option>
             </Select>
           </Form.Item>
 
-          {/* Asset ID */}
-          <Form.Item
+          {formData.asset_category === "SOFTWARE" && (
+            <>
+             
+              <Form.Item
             label={
               <span>
                 Asset ID<span className={styles["star"]}>*</span>
               </span>
             }
             className={styles["formItem"]}
-            validateStatus={
-              !formData.asset_id &&
-              requiredFields.includes("asset_id") &&
-              formSubmitted
-                ? "error"
-                : ""
-            }
-            help={
-              !formData.asset_id &&
-              requiredFields.includes("asset_id") &&
-              formSubmitted
-                ? "Required"
-                : ""
-            }
+          
           >
             <Input
               placeholder="Enter Asset ID"
@@ -406,91 +440,14 @@ const AddAsset: React.FC = () => {
             />
           </Form.Item>
 
-          <Form.Item
-            label={
-              <span>
-                Version<span className={styles["star"]}>*</span>
-              </span>
-            }
-            className={styles["formItem"]}
-            validateStatus={
-              !formData.version &&
-              requiredFields.includes("version") &&
-              formSubmitted
-                ? "error"
-                : ""
-            }
-            help={
-              !formData.version &&
-              requiredFields.includes("version") &&
-              formSubmitted
-                ? "Required"
-                : ""
-            }
-          >
-            <Input
-              className={styles["input"]}
-              placeholder="Enter version number"
-              onChange={(e) => validateVersion(e)}
-              suffix={
-                <Tooltip title="Version number should be digit eg:2,3">
-                  <InfoCircleOutlined style={{ color: "rgba(0,0,0,.45)" }} />
-                </Tooltip>
-              }
-            />
-          </Form.Item>
-
-          <Form.Item
-            label={
-              <span>
-                Asset Type<span className={styles["star"]}>*</span>
-              </span>
-            }
-            className={styles["formItem"]}
-            validateStatus={
-              !formData.asset_type &&
-              requiredFields.includes("asset_type") &&
-              formSubmitted
-                ? "error"
-                : ""
-            }
-            help={
-              !formData.asset_type &&
-              requiredFields.includes("asset_type") &&
-              formSubmitted
-                ? "Required"
-                : ""
-            }
-          >
-            <Select
-              className={styles["input"]}
-              placeholder="Select asset type"
-              onChange={(value) => handleInputChange("asset_type", value)}
-              options={asset_type}
-            />
-          </Form.Item>
-
-          <Form.Item
+              <Form.Item
             label={
               <span>
                 Product Name<span className={styles["star"]}>*</span>
               </span>
             }
             className={styles["formItem"]}
-            validateStatus={
-              !formData.product_name &&
-              requiredFields.includes("product_name") &&
-              formSubmitted
-                ? "error"
-                : ""
-            }
-            help={
-              !formData.product_name &&
-              requiredFields.includes("product_name") &&
-              formSubmitted
-                ? "Required"
-                : ""
-            }
+           
           >
             <Input
               placeholder="Enter Product name"
@@ -505,7 +462,163 @@ const AddAsset: React.FC = () => {
               }
             />
           </Form.Item>
+          <Form.Item
+            label={
+              <span>
+                Purchase Date<span className={styles["star"]}>*</span>
+              </span>
+            }
+            className={styles["formItem"]}
+            
+          >
+            <DatePicker
+              className={styles["input"]}
+              placeholder="Enter purchase date"
+              format="YYYY-MM-DD" // Set the format to YYYY-MM-DD
+              onChange={(_date, dateString) =>
+                handleInputChange("date_of_purchase", dateString)
+              } // Use dateString to get the formatted date
+            />
+          </Form.Item>
+          <Form.Item label="Owner" className={styles["formItem"]}>
+            <Select
+              className={styles["input"]}
+              placeholder="Select owner"
+              onChange={(value) => handleInputChange("owner", value)}
+            >
+              <Option value="EXPERION">EXPERION</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label={
+              <span>
+                Asset Location<span className={styles["star"]}>*</span>
+              </span>
+            }
+            className={styles["formItem"]}
+           
+          >
+            <Select
+              className={styles["input"]}
+              placeholder="Select product location"
+              onChange={(value) => handleInputChange("location", value)}
+            >
+              {locations.map((location: any) => (
+                <Option key={location.id}>{location.name}</Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label="Business Unit"
+            className={styles["formItem"]}
+          
+          >
+            <Select
+              className={styles["input"]}
+              placeholder="Select business unit"
+              onChange={(value) => handleInputChange("business_unit", value)}
+            >
+              {business_units.map((item: any) => (
+                <Option key={item.id}>{item.name}</Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item label="Notes:" className={styles["formItem"]}>
+            <Input
+              placeholder="Enter reason for creation"
+              className={styles["input"]}
+              onChange={(e) => handleInputChange("message", e.target.value)}
+            />
+          </Form.Item>
 
+         
+              {/* Add more software specific fields as needed */}
+            </>
+          )}
+        
+           {formData.asset_category === "HARDWARE" && (
+            <>
+              {/* Render hardware specific fields */}
+              {/* Example: */}
+              <Form.Item
+            label={
+              <span>
+                Asset ID<span className={styles["star"]}>*</span>
+              </span>
+            }
+            className={styles["formItem"]}
+            
+          >
+            <Input
+              placeholder="Enter Asset ID"
+              className={styles["input"]}
+              onChange={(e) => handleInputChange("asset_id", e.target.value)}
+              suffix={
+                <Tooltip title="Asset Id should be alphanumeric Eg:ASS101">
+                  <InfoCircleOutlined style={{ color: "rgba(0,0,0,.45)" }} />
+                </Tooltip>
+              }
+            />
+          </Form.Item>
+
+              
+          <Form.Item
+            label={
+              <span>
+                Asset Type<span className={styles["star"]}>*</span>
+              </span>
+            }
+            className={styles["formItem"]}
+            
+          >
+            <Select
+              className={styles["input"]}
+              placeholder="Select asset type"
+              onChange={(value) => handleInputChange("asset_type", value)}
+              options={asset_type}
+            />
+          </Form.Item>
+          <Form.Item
+            label={
+              <span>
+                Product Name<span className={styles["star"]}>*</span>
+              </span>
+            }
+            className={styles["formItem"]}
+           
+          >
+            <Input
+              placeholder="Enter Product name"
+              className={styles["input"]}
+              onChange={(e) =>
+                handleInputChange("product_name", e.target.value)
+              }
+              suffix={
+                <Tooltip title="Product name should not exceed 20 characters">
+                  <InfoCircleOutlined style={{ color: "rgba(0,0,0,.45)" }} />
+                </Tooltip>
+              }
+            />
+          </Form.Item>
+          <Form.Item
+            label={
+              <span>
+                Purchase Date<span className={styles["star"]}>*</span>
+              </span>
+            }
+            className={styles["formItem"]}
+           
+          >
+            <DatePicker
+              className={styles["input"]}
+              placeholder="Enter purchase date"
+              format="YYYY-MM-DD" // Set the format to YYYY-MM-DD
+              onChange={(_date, dateString) =>
+                handleInputChange("date_of_purchase", dateString)
+              } // Use dateString to get the formatted date
+            />
+          </Form.Item>
+          
           <Form.Item
             label={
               <span>
@@ -513,20 +626,7 @@ const AddAsset: React.FC = () => {
               </span>
             }
             className={styles["formItem"]}
-            validateStatus={
-              !formData.model_number &&
-              requiredFields.includes("model_number") &&
-              formSubmitted
-                ? "error"
-                : ""
-            }
-            help={
-              !formData.model_number &&
-              requiredFields.includes("model_number") &&
-              formSubmitted
-                ? "Required"
-                : ""
-            }
+           
           >
             <Input
               placeholder="Enter Model number"
@@ -544,7 +644,6 @@ const AddAsset: React.FC = () => {
               }
             />
           </Form.Item>
-
           <Form.Item
             label={
               <span>
@@ -552,20 +651,7 @@ const AddAsset: React.FC = () => {
               </span>
             }
             className={styles["formItem"]}
-            validateStatus={
-              !formData.serial_number &&
-              requiredFields.includes("serial_number") &&
-              formSubmitted
-                ? "error"
-                : ""
-            }
-            help={
-              !formData.serial_number &&
-              requiredFields.includes("serial_number") &&
-              formSubmitted
-                ? "Required"
-                : ""
-            }
+           
           >
             <Input
               placeholder="Enter serial number"
@@ -583,49 +669,6 @@ const AddAsset: React.FC = () => {
               }
             />
           </Form.Item>
-
-          <Form.Item label="Owner" className={styles["formItem"]}>
-            <Select
-              className={styles["input"]}
-              placeholder="Select owner"
-              onChange={(value) => handleInputChange("owner", value)}
-            >
-              <Option value="EXPERION">EXPERION</Option>
-            </Select>
-          </Form.Item>
-
-          <Form.Item
-            label={
-              <span>
-                Purchase Date<span className={styles["star"]}>*</span>
-              </span>
-            }
-            className={styles["formItem"]}
-            validateStatus={
-              !formData.date_of_purchase &&
-              requiredFields.includes("date_of_purchase") &&
-              formSubmitted
-                ? "error"
-                : ""
-            }
-            help={
-              !formData.date_of_purchase &&
-              requiredFields.includes("date_of_purchase") &&
-              formSubmitted
-                ? "Required"
-                : ""
-            }
-          >
-            <DatePicker
-              className={styles["input"]}
-              placeholder="Enter purchase date"
-              format="YYYY-MM-DD" // Set the format to YYYY-MM-DD
-              onChange={(_date, dateString) =>
-                handleInputChange("date_of_purchase", dateString)
-              } // Use dateString to get the formatted date
-            />
-          </Form.Item>
-
           <Form.Item
             label={
               <span>
@@ -633,20 +676,7 @@ const AddAsset: React.FC = () => {
               </span>
             }
             className={styles["formItem"]}
-            validateStatus={
-              !formData.warranty_period &&
-              requiredFields.includes("warranty_period") &&
-              formSubmitted
-                ? "error"
-                : ""
-            }
-            help={
-              !formData.warranty_period &&
-              requiredFields.includes("warranty_period") &&
-              formSubmitted
-                ? "Required"
-                : ""
-            }
+           
           >
             <Input
               className={styles["input"]}
@@ -662,28 +692,14 @@ const AddAsset: React.FC = () => {
               }
             />
           </Form.Item>
-
-          <Form.Item
+           <Form.Item
             label={
               <span>
                 Product Location<span className={styles["star"]}>*</span>
               </span>
             }
             className={styles["formItem"]}
-            validateStatus={
-              !formData.location &&
-              requiredFields.includes("location") &&
-              formSubmitted
-                ? "error"
-                : ""
-            }
-            help={
-              !formData.location &&
-              requiredFields.includes("location") &&
-              formSubmitted
-                ? "Required"
-                : ""
-            }
+           
           >
             <Select
               className={styles["input"]}
@@ -703,20 +719,7 @@ const AddAsset: React.FC = () => {
               </span>
             }
             className={styles["formItem"]}
-            validateStatus={
-              !formData.invoice_location &&
-              requiredFields.includes("invoice_location") &&
-              formSubmitted
-                ? "error"
-                : ""
-            }
-            help={
-              !formData.invoice_location &&
-              requiredFields.includes("invoice_location") &&
-              formSubmitted
-                ? "Required"
-                : ""
-            }
+           
           >
             <Select
               className={styles["input"]}
@@ -732,20 +735,7 @@ const AddAsset: React.FC = () => {
           <Form.Item
             label="Business Unit"
             className={styles["formItem"]}
-            validateStatus={
-              !formData.business_unit &&
-              requiredFields.includes("business_unit") &&
-              formSubmitted
-                ? "error"
-                : ""
-            }
-            help={
-              !formData.business_unit &&
-              requiredFields.includes("business_unit") &&
-              formSubmitted
-                ? "Required"
-                : ""
-            }
+          
           >
             <Select
               className={styles["input"]}
@@ -757,24 +747,10 @@ const AddAsset: React.FC = () => {
               ))}
             </Select>
           </Form.Item>
-
           <Form.Item
             label="OS:"
             className={styles["formItem"]}
-            validateStatus={
-              !formData.business_unit &&
-              requiredFields.includes("business_unit") &&
-              formSubmitted
-                ? "error"
-                : ""
-            }
-            help={
-              !formData.business_unit &&
-              requiredFields.includes("business_unit") &&
-              formSubmitted
-                ? "Required"
-                : ""
-            }
+           
           >
             <Select
               className={styles["input"]}
@@ -898,22 +874,18 @@ const AddAsset: React.FC = () => {
             </Select>
           </Form.Item>
 
-          <Form.Item label="Asset Remark/s:" className={styles["formItem"]}>
-            <TextArea
-              rows={4}
-              className={styles["input"]}
-              placeholder="Enter asset remarks/s"
-              onChange={(e) => handleInputChange("remark", e.target.value)}
-            />
-          </Form.Item>
-
-          <Form.Item label="Reason of creation:" className={styles["formItem"]}>
+       
+          <Form.Item label="Notes:" className={styles["formItem"]}>
             <Input
               placeholder="Enter reason for creation"
               className={styles["input"]}
               onChange={(e) => handleInputChange("message", e.target.value)}
             />
           </Form.Item>
+              {/* Add more hardware specific fields as needed */}
+            </>
+          )}
+        
           <Form.Item>
             <Button
               className={styles["button"]}
