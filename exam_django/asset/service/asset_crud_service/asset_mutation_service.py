@@ -1,4 +1,3 @@
-
 from jwt import decode, InvalidTokenError
 from django.conf import settings
 from asset.models import Asset
@@ -101,6 +100,9 @@ class AssetMutationService:
         return None, "Invalid data provided", status.HTTP_400_BAD_REQUEST
     def _construct_create_email_body(self, asset_data, requester_name):
         asset_info = (
+            f"Dear Lead,\n"
+            f"This is to inform you that a new asset has been created by {requester_name}\n"
+            f"The asset deatails are given below\n\n"
             f"Asset Name: {asset_data['product_name']}\n"
             f"Model: {asset_data['model_number']}\n"
             f"Serial Number: {asset_data['serial_number']}\n"
@@ -116,7 +118,7 @@ class AssetMutationService:
             f"Configuration: {asset_data['configuration']}\n"
             f"Accessories: {asset_data['accessories']}\n"
             f"Notes: {asset_data['notes']}\n\n"
-            f"Please make sure to familiarize yourself with the specifications of the assigned asset.\n\n"
+            f"Please make sure to familiarize yourself with the specifications of the newly created asset.\n\n"
             f"We trust that the asset will be utilized effectively to enhance the productivity.\n\n"
             f"This asset was created by {requester_name}.\n\n"
             f"For any inquiries, please contact our IT support team at support@example.com or call us at +1 234-567-8901.\n"
