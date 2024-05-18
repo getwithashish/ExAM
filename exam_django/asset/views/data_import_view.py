@@ -6,18 +6,26 @@ from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework import status
 from asset.service.data_import_service.data_import_service import AssetImportService
-from user_auth.rbac import IsLead
+from user_auth.rbac import IsManager, IsSystemAdmin
+from rest_framework.permissions import IsAuthenticated
 from response import APIResponse
-from messages import INVALID_FILE_TYPE, FILE_NOT_FOUND
+from messages import INVALID_FILE_TYPE, FILE_NOT_FOUND, USER_UNAUTHORIZED
 
 
 class DataImportView(APIView):
-    permission_classes = (IsLead,)
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request, format=None):
         try:
+            if request.user.user_scope not in ["SYSTEM_ADMIN", "MANAGER"]:
+                return APIResponse(
+                    data={},
+                    message=USER_UNAUTHORIZED,
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
             user = request.user
             file = request.FILES.get("file")
+            # Specifies whether the data being imported is the data from the old system
             file_type = request.query_params.get(
                 "file_type", ""
             ).lower()  # Get file type from query parameters
@@ -73,7 +81,6 @@ class DataImportView(APIView):
                             result["missing_fields_assets"]
                         )
                     )
-                    # content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                 else:
                     return APIResponse(
                         data=[],
@@ -94,16 +101,7 @@ class DataImportView(APIView):
                 base64_encoded = base64.b64encode(
                     data_to_be_returned.getvalue()
                 ).decode("utf-8")
-                response = HttpResponse(base64_encoded, content_type='text/plain')
-                # response = HttpResponse(data_to_be_returned, content_type=content_type)
-                # response["Content-Disposition"] = (
-                #     'attachment; filename="import_status.zip"'
-                # )
-
-                # response = HttpResponse(missing_fields_data, content_type=content_type)
-                # response["Content-Disposition"] = (
-                #     'attachment; filename="missing_fields.xlsx"'
-                # )
+                response = HttpResponse(base64_encoded, content_type="text/plain")
                 return response
             else:
                 return APIResponse(
