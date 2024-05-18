@@ -122,7 +122,7 @@ const TableNavbar: React.FC<TableNavbarProps> = ({
 
   return (
     <nav className={styles["navbar"]}>
-      {getUserScope() === "LEAD" && (
+      {["MANAGER", "SYSTEM_ADMIN"].includes(getUserScope()) && (
         <DropDown
           onSelect={handleDropDownSelect}
           items={[
