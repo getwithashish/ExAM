@@ -19,6 +19,12 @@ class AssetImportService:
         else:
             raise ValueError("Invalid file type. Must be 'csv' or 'xlsx'.")
 
+        asset_detail_status = "CREATE_PENDING"
+        approved_by = None
+        if user.user_scope == "MANAGER":
+            asset_detail_status = "CREATED"
+            approved_by = user
+
         existing_asset_ids = set(Asset.objects.values_list("asset_id", flat=True))
         existing_serial_numbers = set(
             Asset.objects.values_list("serial_number", flat=True)
@@ -107,12 +113,12 @@ class AssetImportService:
                 configuration=row["configuration"],
                 accessories=row["accessories"],
                 notes=row["notes"],
-                asset_detail_status="CREATED",
+                asset_detail_status=asset_detail_status,
                 approval_status_message=row["approval_status_message"],
                 created_at=row["created_at"],
                 updated_at=row["updated_at"],
                 is_deleted=row["is_deleted"],
-                approved_by=user,
+                approved_by=approved_by,
                 requester_id=user.id,
                 asset_type_id=asset_type.id if asset_type else None,
                 business_unit_id=business_unit.id if business_unit else None,
