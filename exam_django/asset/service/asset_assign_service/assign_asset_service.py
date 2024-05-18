@@ -10,10 +10,8 @@ from messages import (
 from asset.service.asset_assign_service.asset_sysadmin_role_assignasset_service import (
     AssetSysadminRoleAssignService,
 )
-from asset.service.asset_assign_service.asset_lead_role_assignasset_service import (
-    AssetLeadRoleAssignService,
-)
 from notification.service.email_service import EmailService
+
 
 class AssignAssetService:
     @staticmethod
@@ -21,25 +19,37 @@ class AssignAssetService:
         try:
             employee = Employee.objects.get(id=employee_id)
         except Employee.DoesNotExist:
-            return {"message": EMPLOYEE_NOT_FOUND_ERROR, "status": status.HTTP_404_NOT_FOUND}
-        
+            return {
+                "message": EMPLOYEE_NOT_FOUND_ERROR,
+                "status": status.HTTP_404_NOT_FOUND,
+            }
+
         try:
             asset = Asset.objects.get(asset_uuid=asset_uuid)
         except Asset.DoesNotExist:
             return {"message": ASSET_NOT_FOUND, "status": status.HTTP_404_NOT_FOUND}
 
         if asset.status in ["EXPIRED", "DISPOSED"]:
-            return {"message": STATUS_EXPIRED_OR_DISPOSED, "status": status.HTTP_400_BAD_REQUEST}
+            return {
+                "message": STATUS_EXPIRED_OR_DISPOSED,
+                "status": status.HTTP_400_BAD_REQUEST,
+            }
 
         if requester_role == "SYSTEM_ADMIN":
-            message = AssetSysadminRoleAssignService.assign_asset(asset, employee, requester)
-        elif requester_role == "LEAD":
-            message = AssetLeadRoleAssignService.assign_asset(asset, employee, requester)
+            message = AssetSysadminRoleAssignService.assign_asset(
+                asset, employee, requester
+            )
         else:
-            return {"message": UNAUTHORIZED_NO_PERMISSION, "status": status.HTTP_403_FORBIDDEN}
+            return {
+                "message": UNAUTHORIZED_NO_PERMISSION,
+                "status": status.HTTP_403_FORBIDDEN,
+            }
 
         if not message:
-            return {"message": "Failed to assign asset", "status": status.HTTP_500_INTERNAL_SERVER_ERROR}
+            return {
+                "message": "Failed to assign asset",
+                "status": status.HTTP_500_INTERNAL_SERVER_ERROR,
+            }
 
         # Determine the recipient and adjust email content accordingly
         if employee == requester:
@@ -49,7 +59,7 @@ class AssignAssetService:
 
         # Create a more structured and professional email content
         email_subject = "Asset Assignment Notification"
-        
+
         email_body = (
             f"{recipient}"
             f"Asset Name: {asset.product_name}\n"
@@ -80,16 +90,21 @@ class AssignAssetService:
             email_service.send_email(
                 email_subject,
                 email_body,
-        [
-            "astg7542@gmail.com",
-            "acj88178@gmail.com",
-            "asimapalexperion23@gmail.com",
-            "aidrin.varghese@experionglobal.com",
-            "pavithraexperion@gmail.com",
-        ],
-                
+                [
+                    "astg7542@gmail.com",
+                    "acj88178@gmail.com",
+                    "asimapalexperion23@gmail.com",
+                    "aidrin.varghese@experionglobal.com",
+                    "pavithraexperion@gmail.com",
+                ],
             )
         except Exception as e:
-            return {"message": "Asset assigned but failed to send notification email.", "status": status.HTTP_500_INTERNAL_SERVER_ERROR}
+            return {
+                "message": "Asset assigned but failed to send notification email.",
+                "status": status.HTTP_500_INTERNAL_SERVER_ERROR,
+            }
 
-        return {"message": "Asset assigned successfully and email notification sent.", "status": status.HTTP_200_OK}
+        return {
+            "message": "Asset assigned successfully and email notification sent.",
+            "status": status.HTTP_200_OK,
+        }
