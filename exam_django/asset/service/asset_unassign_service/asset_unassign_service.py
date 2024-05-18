@@ -2,9 +2,6 @@ from exceptions import PermissionDeniedException
 from asset.service.asset_unassign_service.asset_unassign_sys_admin_service import (
     AssetSysadminRoleUnassignService,
 )
-from asset.service.asset_unassign_service.asset_unassign_lead_service import (
-    AssetLeadRoleUnassignService,
-)
 from rest_framework import status
 from messages import (
     USER_UNAUTHORIZED,
@@ -23,8 +20,6 @@ class UnassignAssetService:
 
         if requester_role == "SYSTEM_ADMIN":
             asset_user_role_unassign_service = AssetSysadminRoleUnassignService()
-        elif requester_role == "LEAD":
-            asset_user_role_unassign_service = AssetLeadRoleUnassignService()
         else:
             raise PermissionDeniedException(
                 {}, USER_UNAUTHORIZED, status.HTTP_401_UNAUTHORIZED

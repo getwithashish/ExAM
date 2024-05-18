@@ -6,9 +6,6 @@ from asset.models import Asset, Memory, BusinessUnit, AssetType
 from rest_framework.permissions import IsAuthenticated, AllowAny
 import json
 from asset.service.asset_crud_service.asset_mutation_service import AssetMutationService
-from asset.service.asset_crud_service.asset_lead_role_mutation_service import (
-    AssetLeadRoleMutationService,
-)
 from asset.service.asset_crud_service.asset_sysadmin_role_mutation_service import (
     AssetSysadminRoleMutationService,
 )
@@ -88,8 +85,6 @@ class AssetView(APIView):
 
             if user_scope == "SYSTEM_ADMIN":
                 asset_user_role_mutation_service = AssetSysadminRoleMutationService()
-            elif user_scope == "LEAD":
-                asset_user_role_mutation_service = AssetLeadRoleMutationService()
             else:
                 return APIResponse(
                     data={},
@@ -122,8 +117,6 @@ class AssetView(APIView):
 
             if user_scope == "SYSTEM_ADMIN":
                 asset_user_role_mutation_service = AssetSysadminRoleMutationService()
-            elif user_scope == "LEAD":
-                asset_user_role_mutation_service = AssetLeadRoleMutationService()
             else:
                 raise PermissionDeniedException(
                     {}, USER_UNAUTHORIZED, status.HTTP_401_UNAUTHORIZED
