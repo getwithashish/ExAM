@@ -73,6 +73,10 @@ const AddAsset: React.FC = () => {
 
   const [value, setValue] = React.useState("");
   const [assettypeValue, setassettypeValue] = React.useState("");
+  const[assetLocation,setAssetLocation]=React.useState("");
+  const[assetInLocation,setAssetInLocation]=React.useState("");
+
+  const[assetBu,setAssetBu]=React.useState("");
 
 
 
@@ -81,7 +85,7 @@ const AddAsset: React.FC = () => {
   };
 
   const handleInputChange = (key: string, value: any) => {
-    setFormData({ ...formData, [key]: value });
+    setFormData({ ...formData, [key]: value,assettypeValue, assetLocation,assetInLocation,assetBu});
   };
 
   const [warningShown, setWarningShown] = useState(false);
@@ -460,24 +464,15 @@ const AddAsset: React.FC = () => {
                 }
                 className={styles["formItem"]}
               >
-                {/* <Input
-                  placeholder="Enter Product name"
-                  className={styles["input"]}
-                  onChange={(e) =>
-                    handleInputChange("product_name", e.target.value)
-                  }
-                  suffix={
-                    <Tooltip title="Product name should not exceed 20 characters">
-                      <InfoCircleOutlined
-                        style={{ color: "rgba(0,0,0,.45)" }}
-                      />
-                    </Tooltip>
-                  }
-                /> */}
+               
                  <AssetFieldAutoComplete
               assetField="product_name"
               value={value}
               setValue={setValue}
+              onChange={(e: { target: { value: any; }; }) =>
+                handleInputChange("product_name", e.target.value)
+              }
+              
             />
               </Form.Item>
               <Form.Item
@@ -532,21 +527,22 @@ const AddAsset: React.FC = () => {
                 }
                 className={styles["formItem"]}
               >
-                <Select
-                  className={styles["input"]}
-                  placeholder="Select product location"
-                  onChange={(value) => handleInputChange("location", value)}
-                >
-                  {locations.map((location: any) => (
-                    <Option key={location.id}>{location.name}</Option>
-                  ))}
-                </Select>
+                 <AssetFieldAutoComplete
+              assetField="location"
+              value={assetLocation}
+              setValue={setAssetLocation}
+              onChange={(assetLocation: any) => handleInputChange("location", assetLocation)}
+
+              
+            />
               </Form.Item>
               <Form.Item label="Business Unit" className={styles["formItem"]}>
               <AssetFieldAutoComplete
               assetField="business_unit"
-              value={value}
-              setValue={setValue}
+              value={assetBu}
+              setValue={setAssetBu}
+              onChange={(assetBu: any) => handleInputChange("business_unit", assetBu["id"])}
+
             />
               </Form.Item>
               <Form.Item label="Notes:" className={styles["formItem"]}>
@@ -601,6 +597,8 @@ const AddAsset: React.FC = () => {
               assetField="asset_type"
               value={assettypeValue}
               setValue={setassettypeValue}
+              onChange={(assettypeValue: any) => handleInputChange("asset_type", assettypeValue["id"])}
+
             />
               </Form.Item>
               <Form.Item
@@ -723,7 +721,7 @@ const AddAsset: React.FC = () => {
               <Form.Item
                 label={
                   <span>
-                    Product Location<span className={styles["star"]}>*</span>
+                    Asset Location<span className={styles["star"]}>*</span>
                   </span>
                 }
                 className={styles["formItem"]}
@@ -732,6 +730,8 @@ const AddAsset: React.FC = () => {
               assetField="location"
               value={value}
               setValue={setValue}
+              onChange={(assetLocation: any) => handleInputChange("location", assetLocation["id"])}
+
             />
               
               
@@ -747,23 +747,22 @@ const AddAsset: React.FC = () => {
               >
                  <AssetFieldAutoComplete
               assetField="invoice_location"
-              value={value}
-              setValue={setValue}
+              value={assetInLocation}
+              setValue={setAssetInLocation}
+              onChange={(assetInLocation: any) => handleInputChange("invoice_location", assetInLocation["id"])}
+
+             
             />
               </Form.Item>
 
               <Form.Item label="Business Unit" className={styles["formItem"]}>
-                <Select
-                  className={styles["input"]}
-                  placeholder="Select business unit"
-                  onChange={(value) =>
-                    handleInputChange("business_unit", value)
-                  }
-                >
-                  {business_units.map((item: any) => (
-                    <Option key={item.id}>{item.name}</Option>
-                  ))}
-                </Select>
+              <AssetFieldAutoComplete
+              assetField="business_unit"
+              value={assetBu}
+              setValue={setAssetBu}
+              onChange={(assetBu: any) => handleInputChange("business_unit", assetBu["id"])}
+
+            />
               </Form.Item>
               <Form.Item label="OS:" className={styles["formItem"]}>
                 <Select
