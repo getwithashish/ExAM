@@ -151,6 +151,7 @@ export interface DataType {
     asset_uuid: string;
     assetPageDataFetch: (params: string) => void;    
     searchTerm: string;
+    json_query: string;
   }
   
   
