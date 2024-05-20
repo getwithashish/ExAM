@@ -342,7 +342,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
           ))}
         </select>
       </div>
-      <div className="items-center justify-center mx-auto">
+      <div className="items-center justify-center flex">
         <Stack
           direction="row"
           spacing={1}

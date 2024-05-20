@@ -20,6 +20,7 @@ import {
 import DashboardAssetTable from "./DashboardAssetTable";
 
 import TimelineViewDrawer from "../TimelineLog/TimeLineDrawer";
+import { json } from "react-router";
 
 interface ExpandedDataType {
   key: React.Key;
@@ -48,7 +49,7 @@ const DashboardAssetHandler = ({
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [sortOrders, setSortOrders] = useState({});
   const [searchTerm, setSearchTerm] = useState<string>("");
-
+  const [json_query, setJson_query] = useState<string>("");
 
   useEffect(() => {
     if (selectedTypeId !== 0) {
@@ -161,7 +162,7 @@ const DashboardAssetHandler = ({
       const queryParams = Object.keys(newSortOrders)
         .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
         .join("");  
-      const additionalQueryParams = `&global_search=${searchTerm}&offset=${0}`;  
+      const additionalQueryParams = `&global_search=${searchTerm}&offset=${0}&json_logic=${json_query}`;  
       refetchAssetData(queryParams + additionalQueryParams);
     };
     
@@ -602,6 +603,8 @@ const columns = [
       }}
       searchTerm={searchTerm}
       setSearchTerm={setSearchTerm}
+      setJson_query={setJson_query}
+      json_query={json_query}
     />
   );
 };
