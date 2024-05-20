@@ -22,6 +22,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
   setAssetState,
   setDetailState,
   setAssignState,
+  onClick
 }) => {
   const [assetTypeData, setAssetTypeData] = useState<AssetDetailData[]>([]);
   const [selectedType, setSelectedType] = useState<string>("");
@@ -47,7 +48,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
   } = useQuery<AssetData>({
     queryKey: ["assetData"],
     queryFn: fetchAssetData,
-  });
+  }); 
 
   useEffect(() => {
     fetchAssetTypeData()
@@ -89,6 +90,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
     }
     console.log("Clicked Asset Chart Label: ", chartLabel);
     setAssetState(chartLabel ?? null);
+    onClick();
   };
 
   useEffect(() => {
@@ -105,6 +107,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
     }
     console.log("Clicked Detail Chart Label: ", chartLabel);
     setDetailState(chartLabel ?? null);
+    onClick();
   };
 
   useEffect(() => {
@@ -118,6 +121,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
     }
     console.log("Clicked Assign Chart Label: ", chartLabel);
     setAssignState(chartLabel ?? null);
+    onClick();
   };
 
   useEffect(() => {
@@ -342,7 +346,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
           ))}
         </select>
       </div>
-      <div className="items-center justify-center flex">
+      <div className="items-center justify-center flex" >
         <Stack
           direction="row"
           spacing={1}

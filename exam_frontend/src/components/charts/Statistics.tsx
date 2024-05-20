@@ -85,7 +85,7 @@ export const Statistics = ({
           <div className="">
             <AssetCountComponent />
           </div>
-          <div className="items-center justify-center" onClick={onClick}>
+          <div className="items-center justify-center">
             <ChartHandlers
               assetCountData={assetCountData}
               setSelectedTypeId={setSelectedTypeId}
@@ -93,6 +93,7 @@ export const Statistics = ({
               setAssetState={setAssetState}
               setDetailState={setDetailState}
               setAssignState={setAssignState}
+              onClick = {onClick}
             />
           </div>
         </div>
