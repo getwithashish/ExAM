@@ -35,24 +35,19 @@ const DashboardAssetTable = ({
   sortedColumn,
   isAssetDataLoading,
   searchTerm,
-  setSearchTerm
+  setSearchTerm,
+  setJson_query,
+  json_query
 }: AssetTableProps) => {
   
   // const [searchTerm, setSearchTerm] = useState<string>("");
+ 
 
 
   const handleSearch = (searchTerm: string) => {
     setSearchTerm(searchTerm);
     const queryParams = `&global_search=${searchTerm}&sort_by=${sortedColumn}&sort_order=${sortOrder}&offset=20`;
     assetDataRefetch(queryParams);
-  };
-
-  const rowRender = (record: { key: string }, expanded: any) => {
-    if (isSuccess) {
-      if (expanded && selectedAssetId && expandedRowRender)
-        return expandedRowRender(record.key);
-      else return;
-    } else return <>not loaded</>;
   };
 
   const [showUpload, setShowUpload] = useState(false);
@@ -74,9 +69,10 @@ const DashboardAssetTable = ({
           searchTerm={searchTerm}
           onSearch={handleSearch}
           setSearchTerm={setSearchTerm}
+          setJson_query={setJson_query}
+          json_query={json_query}
         />
       </div>
-
       <div
         style={{ position: "relative", display: "inline-block", width: "80vw" }}
       >
@@ -117,7 +113,7 @@ const DashboardAssetTable = ({
               total={totalItemCount}
               onChange={(page, pageSize) => {
                 const offset = (page - 1) * pageSize;
-                const queryParams = `&offset=${offset}&global_search=${searchTerm}&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
+                const queryParams = `&offset=${offset}&global_search=${searchTerm}&sort_by=${sortedColumn}&sort_order=${sortOrder}&json_logic=${json_query}`;
                 assetPageDataFetch(queryParams);
               }}
               hideOnSinglePage={true}
