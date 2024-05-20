@@ -65,7 +65,7 @@ const DashboardAssetHandler = ({
     }
   }, [selectedTypeId, assetState, detailState, assignState]);
 
-  useEffect(() => {});
+  useEffect(() => { });
 
   const {
     data: assetData,
@@ -138,39 +138,39 @@ const DashboardAssetHandler = ({
     );
   };
   const renderClickableColumn = (columnName, dataIndex) => (_, record) =>
-    (
-      <div
-        data-column-name={columnName}
-        onClick={() => handleColumnClick(record, columnName)}
-        style={{ cursor: "pointer" }}
-      >
-        {record[dataIndex]}
-      </div>
-    );
+  (
+    <div
+      data-column-name={columnName}
+      onClick={() => handleColumnClick(record, columnName)}
+      style={{ cursor: "pointer" }}
+    >
+      {record[dataIndex]}
+    </div>
+  );
 
 
-    const handleSort = (column: string) => {
-      const isCurrentColumn = column === sortedColumn;  
-      let newSortOrders = { ...sortOrders };  
-      if (!isCurrentColumn) {
-        newSortOrders = { [column]: "asc" };
-      } else {
-        newSortOrders[column] = sortOrders[column] === "asc" ? "desc" : "asc";
-      }  
-      setSortedColumn(column);
-      setSortOrders(newSortOrders);  
-      const queryParams = Object.keys(newSortOrders)
-        .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
-        .join("");  
-      const additionalQueryParams = `&global_search=${searchTerm}&offset=${0}&json_logic=${json_query}`;  
-      refetchAssetData(queryParams + additionalQueryParams);
-    };
-    
+  const handleSort = (column: string) => {
+    const isCurrentColumn = column === sortedColumn;
+    let newSortOrders = { ...sortOrders };
+    if (!isCurrentColumn) {
+      newSortOrders = { [column]: "asc" };
+    } else {
+      newSortOrders[column] = sortOrders[column] === "asc" ? "desc" : "asc";
+    }
+    setSortedColumn(column);
+    setSortOrders(newSortOrders);
+    const queryParams = Object.keys(newSortOrders)
+      .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
+      .join("");
+    const additionalQueryParams = `&global_search=${searchTerm}&offset=${0}&json_logic=${json_query}`;
+    refetchAssetData(queryParams + additionalQueryParams);
+  };
+
   <div>
     <h1>Asset Overview</h1>
   </div>;
 
-const columns = [
+  const columns = [
     {
       title: "Product Name",
       dataIndex: "product_name",
@@ -577,35 +577,39 @@ const columns = [
   const drawerTitle = "Asset Details";
 
   return (
-    <DashboardAssetTable
-      drawerTitle={drawerTitle}
-      isAssetDataLoading={isAssetDataLoading}
-      handleRowClick={handleRowClick}
-      onCloseDrawer={onCloseDrawer}
-      selectedRow={selectedRow}
-      drawerVisible={drawerVisible}
-      assetData={data}
-      sortOrder={sortOrder}
-      sortedColumn={sortedColumn}
-      totalItemCount={assetData?.count}
-      assetPageDataFetch={setQueryParam}
-      columns={columns}
-      reset={reset}
-      memoryData={memoryData}
-      assetTypeData={assetTypeData}
-      locations={locations}
-      statusOptions={statusOptions}
-      bordered={false}
-      businessUnitOptions={businessUnitOptions}
-      assetDataRefetch={refetchAssetData}
-      handleUpdateData={function (updatedData: { key: any }): void {
-        throw new Error("Function not implemented.");
-      }}
-      searchTerm={searchTerm}
-      setSearchTerm={setSearchTerm}
-      setJson_query={setJson_query}
-      json_query={json_query}
-    />
+    <div>
+      <DashboardAssetTable
+        drawerTitle={drawerTitle}
+        isAssetDataLoading={isAssetDataLoading}
+        handleRowClick={handleRowClick}
+        onCloseDrawer={onCloseDrawer}
+        selectedRow={selectedRow}
+        drawerVisible={drawerVisible}
+        assetData={data}
+        sortOrder={sortOrder}
+        sortedColumn={sortedColumn}
+        totalItemCount={assetData?.count}
+        assetPageDataFetch={setQueryParam}
+        columns={columns}
+        reset={reset}
+        memoryData={memoryData}
+        assetTypeData={assetTypeData}
+        locations={locations}
+        statusOptions={statusOptions}
+        bordered={false}
+        businessUnitOptions={businessUnitOptions}
+        assetDataRefetch={refetchAssetData}
+        handleUpdateData={function (updatedData: { key: any }): void {
+          throw new Error("Function not implemented.");
+        }}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        setJson_query={setJson_query}
+        json_query={json_query}
+      />
+
+    </div>
+
   );
 };
 

@@ -8,6 +8,7 @@ interface StatisticsProps {
   setAssetState: React.Dispatch<React.SetStateAction<string | null>>;
   setDetailState: React.Dispatch<React.SetStateAction<string | null>>;
   setAssignState: React.Dispatch<React.SetStateAction<string | null>>;
+  onClick: ()=>void;
 }
 
 export const Statistics = ({
@@ -15,6 +16,7 @@ export const Statistics = ({
   setAssetState,
   setDetailState,
   setAssignState,
+  onClick
 }: StatisticsProps) => {
   const [assetCountData, setAssetCountData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -83,7 +85,7 @@ export const Statistics = ({
           <div className="">
             <AssetCountComponent />
           </div>
-          <div className="items-center justify-center">
+          <div className="items-center justify-center" onClick={onClick}>
             <ChartHandlers
               assetCountData={assetCountData}
               setSelectedTypeId={setSelectedTypeId}
