@@ -9,6 +9,7 @@ import { Button, DatePicker, Input, Form, InputNumber, Select } from "antd";
 import dayjs from "dayjs";
 const { TextArea } = Input;
 import styles from "./AddAsset.module.css";
+import AssetFieldAutoComplete from "../AutocompleteBox/AssetFieldAutoComplete";
 
 const { Option } = Select;
 
@@ -38,6 +39,12 @@ const AddAsset: React.FC = () => {
   const [componentSize, setComponentSize] = useState<SizeType | "default">(
     "default"
   );
+
+  const [productValue, setProductValue] = React.useState({ product_name: "" });
+  const [assetTypeValue, setAssetTypeValue] = React.useState({
+    asset_type_name: "",
+    id: "0",
+  });
 
   const onFormLayoutChange = ({ size }: { size: SizeType }) => {
     setComponentSize(size);
@@ -337,6 +344,46 @@ const AddAsset: React.FC = () => {
           className={styles["formContainer"]}
         >
           {/* Form items... */}
+
+          <Form.Item
+            label={
+              <span>
+                Autocomplete<span className={styles["star"]}>*</span>
+              </span>
+            }
+            className={styles["formItem"]}
+            validateStatus={
+              !formData.asset_category &&
+              requiredFields.includes("asset_category") &&
+              formSubmitted
+                ? "error"
+                : ""
+            }
+            help={
+              !formData.asset_category &&
+              requiredFields.includes("asset_category") &&
+              formSubmitted
+                ? "Required"
+                : ""
+            }
+          >
+            <React.Fragment>
+              <AssetFieldAutoComplete
+                key="0"
+                assetField="product_name"
+                value={productValue}
+                setValue={setProductValue}
+              />
+            </React.Fragment>
+            <React.Fragment>
+              <AssetFieldAutoComplete
+                key="1"
+                assetField="asset_type"
+                value={assetTypeValue}
+                setValue={setAssetTypeValue}
+              />
+            </React.Fragment>
+          </Form.Item>
 
           {/* Category */}
           <Form.Item

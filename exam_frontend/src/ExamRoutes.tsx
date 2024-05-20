@@ -73,11 +73,23 @@ const ExamRoutes = () => {
               <SidebarComponentNew>
                 <Routes>
                   <Route path="/dashboard" element={<DashboardPage />} />
-                  <Route path="/updatable_assets" element={<UpdatableAsset/>}/>
-                  <Route path="/assignable_asset" element={<Assignableasset />}/>
-                  <Route path= "/deallocate" element = {<Deallocate />} />
-                  <Route path="/creation_requests" element={<CreateRequestPage />} />
-                  <Route path="/updation_requests" element={<ModificationRequests />} />
+                  <Route
+                    path="/updatable_assets"
+                    element={<UpdatableAsset />}
+                  />
+                  <Route
+                    path="/assignable_asset"
+                    element={<Assignableasset />}
+                  />
+                  <Route path="/deallocate" element={<Deallocate />} />
+                  <Route
+                    path="/creation_requests"
+                    element={<CreateRequestPage />}
+                  />
+                  <Route
+                    path="/updation_requests"
+                    element={<ModificationRequests />}
+                  />
                   <Route path="/assign_requests" element={<AssignPage />} />
                   <Route path="/rejected_assets" element={<RejectedAsset/>}/>
                   <Route path="/rejected_allocation" element={<RejectedAllocationAsset/>}/>

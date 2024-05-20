@@ -1,36 +1,10 @@
-import React, {
-  Key,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
-import {
-  Badge,
-  Button,
-  Dropdown,
-  Input,
-  Space,
-  Table,
-  TableColumnsType,
-} from "antd";
-import DrawerComponent from "../DrawerComponent/DrawerComponent";
+import React, { Key, SetStateAction, useCallback, useState } from "react";
+import { Button } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import "./AssetTable.css";
-import CardComponent from "../CardComponent/CardComponent";
-import { CloseOutlined } from "@ant-design/icons";
-import axiosInstance from "../../config/AxiosConfig";
-import { isError, useQuery } from "@tanstack/react-query";
-import { DataType, LogData } from "../AssetTable/types";
-import { ColumnFilterItem } from "../AssetTable/types";
+import { useQuery } from "@tanstack/react-query";
+import { DataType } from "../AssetTable/types";
 import { AssetResult } from "../AssetTable/types";
-import { FilterDropdownProps } from "../AssetTable/types";
-import { useInfiniteQuery } from "react-query";
-
-import { DownOutlined } from "@ant-design/icons";
-import ExportButton from "../Export/Export";
-import { getAssetLog } from "./api/getAssetLog";
-import { AxiosError } from "axios";
 import AssetTable from "./AssetTable";
 import {
   getAssetDetails,
@@ -64,10 +38,15 @@ const AssetTableHandler = ({
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [sortedColumn, setSortedColumn] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
- 
-  
+  const [sortOrders, setSortOrders] = useState({});
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
   const [queryParam, setQueryParam] = useState("");
-  const { data: assetData, isLoading: isAssetDataLoading, refetch: assetDataRefetch } = useQuery({
+  const {
+    data: assetData,
+    isLoading: isAssetDataLoading,
+    refetch: assetDataRefetch,
+  } = useQuery({
     queryKey: ["assetList", queryParam],
     queryFn: () => getAssetDetails(`${queryParamProp + queryParam}`),
   });
@@ -100,9 +79,9 @@ const AssetTableHandler = ({
   };
 
   const statusOptions =
-  (assetData?.results?.map((item: AssetResult) =>
-    item.status === 'IN STORE' ? 'IN STOCK' : item.status
-  ) || []);
+    assetData?.results?.map((item: AssetResult) =>
+      item.status === "IN STORE" ? "IN STOCK" : item.status
+    ) || [];
   const businessUnitOptions =
     assetData?.results?.map(
       (item: AssetResult) => item.business_unit.business_unit_name
@@ -169,14 +148,25 @@ const AssetTableHandler = ({
         {record[dataIndex]}
       </div>
     );
+
     const handleSort = (column: string) => {
-      const newSortOrder =
-        column === sortedColumn ? (sortOrder === "asc" ? "desc" : "asc") : "asc";
+      const isCurrentColumn = column === sortedColumn;  
+      let newSortOrders = { ...sortOrders };  
+      if (!isCurrentColumn) {
+        newSortOrders = { [column]: "asc" };
+      } else {
+        newSortOrders[column] = sortOrders[column] === "asc" ? "desc" : "asc";
+      }  
       setSortedColumn(column);
-      setSortOrder(newSortOrder);
-      const queryParams = `&sort_by=${column}&sort_order=${newSortOrder}`;
-      refetchAssetData(queryParams);
+      setSortOrders(newSortOrders);  
+      const queryParams = Object.keys(newSortOrders)
+        .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
+        .join("");  
+      const additionalQueryParams = `&global_search=${searchTerm}&offset=${0}`;  
+      refetchAssetData(queryParams + additionalQueryParams);
     };
+
+
   const columns = [
     {
       title: "Product Name",
@@ -201,7 +191,7 @@ const AssetTableHandler = ({
       filterIcon: <SearchOutlined />,
       render: renderClickableColumn("Serial Number", "serial_number"),
     },
-  
+
     {
       title: "Location",
       dataIndex: "location",
@@ -277,8 +267,7 @@ const AssetTableHandler = ({
       width: 140,
       render: renderClickableColumn("Asset Category", "asset_category"),
     },
- 
-    
+
     {
       title: "Asset Status",
       dataIndex: "Status",
@@ -449,8 +438,10 @@ const AssetTableHandler = ({
       dataIndex: "asset_detail_status",
       responsive: ["md"],
       width: 140,
-      render: renderClickableColumn("Asset Detail Status", "asset_detail_status"),
-
+      render: renderClickableColumn(
+        "Asset Detail Status",
+        "asset_detail_status"
+      ),
     },
     {
       title: "Asset Assign Status",
@@ -483,7 +474,6 @@ const AssetTableHandler = ({
       }),
       render: renderClickableColumn("Updated At", "updated_at"),
     },
-
 
     {
       title: "Accessories",
@@ -607,6 +597,8 @@ const AssetTableHandler = ({
       selectedRow={selectedRow}
       drawerVisible={drawerVisible}
       assetData={data}
+      sortOrder={sortOrder}
+      sortedColumn={sortedColumn}
       columns={columns}
       memoryData={memoryData}
       assetTypeData={assetTypeData}
@@ -619,7 +611,8 @@ const AssetTableHandler = ({
       handleUpdateData={function (updatedData: { key: any }): void {
         throw new Error("Function not implemented.");
       }}
-      // drawerTitle={""}
+      searchTerm={searchTerm}
+      setSearchTerm={setSearchTerm}
     />
   );
 };

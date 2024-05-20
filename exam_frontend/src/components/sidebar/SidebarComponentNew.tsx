@@ -241,7 +241,7 @@ const SidebarComponentNew = ({ children }) => {
                 <Link to="/exam/dashboard">Dashboard</Link>
               </ToolTip>
             </Menu.Item>
-            {userRole !== "MANAGER" ? (
+            {userRole == "SYSTEM_ADMIN" ? (
               <React.Fragment>
                 <Menu.Item
                   onClick={() => showDefaultDrawer()}

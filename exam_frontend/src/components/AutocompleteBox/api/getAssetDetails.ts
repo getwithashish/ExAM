@@ -1,11 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../../../config/AxiosConfig";
-import { AssetResult } from "../types";
 
-const getAssetDetails = async (query_params="") => {
+const getAssetDetails = async (queryParam) => {
   try {
-    const res = await axiosInstance.get(`/asset/?limit=20${query_params}`);
-    console.log("Returned Data: ", res.data.data.results);
+    const res = await axiosInstance.get(`/asset/${queryParam}`);
+    console.log("Returned Data: ", res.data.data);
     return res.data.data;
   } catch (error) {
     console.error("Error fetching asset details:", error);
@@ -17,8 +16,8 @@ export { getAssetDetails };
 
 const getLocationOptions = () => {
   const res = axiosInstance.get("/asset/location").then((res) => {
-    console.log("Location Data Returned: ", res.data.results);
-    return res.data.results;
+    console.log("Location Data Returned: ", res.data.data);
+    return res.data.data;
   });
   return res;
 };
@@ -44,3 +43,13 @@ const getMemoryOptions = () => {
 };
 
 export { getMemoryOptions };
+
+const getBusinessUnitOptions = () => {
+  const res = axiosInstance.get("/asset/business_unit").then((res) => {
+    console.log("Business Unit Data Returned: ", res.data.data);
+    return res.data.data;
+  });
+  return res;
+};
+
+export { getBusinessUnitOptions };

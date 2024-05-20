@@ -122,7 +122,7 @@ const TableNavbar: React.FC<TableNavbarProps> = ({
 
   return (
     <nav className={styles["navbar"]}>
-      {getUserScope() === "LEAD" && (
+      {["MANAGER", "SYSTEM_ADMIN"].includes(getUserScope()) && (
         <DropDown
           onSelect={handleDropDownSelect}
           items={[
@@ -140,7 +140,7 @@ const TableNavbar: React.FC<TableNavbarProps> = ({
       <GlobalSearch
         assetDataRefetch={assetDataRefetch}
         searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm} // Pass searchTerm prop
+        setSearchTerm={setSearchTerm}
       />
 
       <button className={styles["button"]} onClick={reset}>

@@ -1,36 +1,10 @@
-import React, {
-  Key,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
-import {
-  Badge,
-  Button,
-  Dropdown,
-  Input,
-  Space,
-  Table,
-  TableColumnsType,
-} from "antd";
-import DrawerComponent from "../../DrawerComponent/DrawerComponent";
+import React, { Key, SetStateAction, useCallback, useState } from "react";
+import { Button, Input, Space } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import "./AssetTable.css";
-import CardComponent from "../CardComponent/CardComponent";
-import { CloseOutlined } from "@ant-design/icons";
-import axiosInstance from "../../config/AxiosConfig";
-import { isError, useQuery } from "@tanstack/react-query";
-import { DataType, LogData } from "../AssetTable/types";
-import { ColumnFilterItem } from "../AssetTable/types";
+import { useQuery } from "@tanstack/react-query";
+import { DataType } from "../AssetTable/types";
 import { AssetResult } from "../AssetTable/types";
-import { FilterDropdownProps } from "../AssetTable/types";
-import { useInfiniteQuery } from "react-query";
-
-import { DownOutlined } from "@ant-design/icons";
-import ExportButton from "../../Export/Export";
-import { getAssetLog } from "./api/getAssetLog";
-import { AxiosError } from "axios";
 import AssetTable from "./AssetTable";
 import {
   getAssetDetails,
@@ -38,28 +12,27 @@ import {
   getLocationOptions,
   getMemoryOptions,
 } from "./api/getAssetDetails";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBookOpenReader } from "@fortawesome/free-solid-svg-icons";
+// interface ExpandedDataType {
+//   key: React.Key;
+//   date: string;
+//   name: string;
+//   upgradeNum: string;
+// }
 
-interface ExpandedDataType {
-  key: React.Key;
-  date: string;
-  name: string;
-  upgradeNum: string;
-}
-
-const AssetTableHandler = ({ showAssignDrawer,queryParamProp }) => {
+const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [sortedColumn, setSortedColumn] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  // const { data: assetData } = useQuery({
-  //   queryKey: ["assetList"],
-  //   queryFn: () => getAssetDetails(),
-  // });
+  const [sortOrders, setSortOrders] = useState({});
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   const [queryParam, setQueryParam] = useState("");
-  const { data: assetData, isLoading: isAssetDataLoading, refetch: assetDataRefetch } = useQuery({
+  const {
+    data: assetData,
+    isLoading: isAssetDataLoading,
+    refetch: assetDataRefetch,
+  } = useQuery({
     queryKey: ["assetList", queryParam],
     queryFn: () => getAssetDetails(`${queryParamProp + queryParam}`),
   });
@@ -92,9 +65,9 @@ const AssetTableHandler = ({ showAssignDrawer,queryParamProp }) => {
   };
 
   const statusOptions =
-  (assetData?.results?.map((item: AssetResult) =>
-    item.status === 'IN STORE' ? 'IN STOCK' : item.status
-  ) || []);
+    assetData?.results?.map((item: AssetResult) =>
+      item.status === "IN STORE" ? "IN STOCK" : item.status
+    ) || [];
 
   const businessUnitOptions =
     assetData?.results?.map(
@@ -148,14 +121,25 @@ const AssetTableHandler = ({ showAssignDrawer,queryParamProp }) => {
       )
     );
   };
+
   const handleSort = (column: string) => {
-    const newSortOrder =
-      column === sortedColumn ? (sortOrder === "asc" ? "desc" : "asc") : "asc";
+    const isCurrentColumn = column === sortedColumn;  
+    let newSortOrders = { ...sortOrders };  
+    if (!isCurrentColumn) {
+      newSortOrders = { [column]: "asc" };
+    } else {
+      newSortOrders[column] = sortOrders[column] === "asc" ? "desc" : "asc";
+    }  
     setSortedColumn(column);
-    setSortOrder(newSortOrder);
-    const queryParams = `&sort_by=${column}&sort_order=${newSortOrder}`;
-    refetchAssetData(queryParams);
+    setSortOrders(newSortOrders);  
+    const queryParams = Object.keys(newSortOrders)
+      .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
+      .join("");  
+    const additionalQueryParams = `&global_search=${searchTerm}&offset=${0}`;  
+    refetchAssetData(queryParams + additionalQueryParams);
   };
+
+  
   <div>
     <h1>Asset Overview</h1>
   </div>;
@@ -628,7 +612,7 @@ const AssetTableHandler = ({ showAssignDrawer,queryParamProp }) => {
 
   return (
     <AssetTable
-     totalItemCount={assetData?.count}
+      totalItemCount={assetData?.count}
       handleRowClick={handleRowClick}
       assetPageDataFetch={refetchAssetData}
       isAssetDataLoading={isAssetDataLoading}
@@ -637,6 +621,8 @@ const AssetTableHandler = ({ showAssignDrawer,queryParamProp }) => {
       drawerVisible={drawerVisible}
       assetData={data}
       columns={columns}
+      sortOrder={sortOrder}
+      sortedColumn={sortedColumn}
       memoryData={memoryData}
       assetTypeData={assetTypeData}
       locations={locations}
@@ -647,6 +633,8 @@ const AssetTableHandler = ({ showAssignDrawer,queryParamProp }) => {
         throw new Error("Function not implemented.");
       }}
       drawerTitle={""}
+      searchTerm={searchTerm}
+      setSearchTerm={setSearchTerm}
     />
   );
 };

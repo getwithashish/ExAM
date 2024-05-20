@@ -1,5 +1,3 @@
-import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from "@tanstack/react-query";
-
 export interface DataType {
   [x: string]: any;
   asset_uuid: any;
@@ -159,6 +157,5 @@ export interface AssetTableProps {
   modifiedData:any
   reset:()=> void;
   sortOrder:string;
-  sortedColumn:string;
 }
 

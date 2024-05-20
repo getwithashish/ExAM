@@ -1,20 +1,27 @@
+import { AxiosInstance } from 'axios';
 import { AssetData } from '../types/ChartTypes';
-import axiosInstance from '../../../config/AxiosConfig'; // Assuming AxiosConfig is an ES6 module
 
-let axiosInstanceInitialized = false;
+let axiosInstance: AxiosInstance | null = null;
 
 const initializeAxiosInstance = () => {
-  if (!axiosInstanceInitialized) {
-    axiosInstanceInitialized = true;
+  if (!axiosInstance) {
+    return import('../../../config/AxiosConfig').then(({ default: instance }) => {
+      axiosInstance = instance;
+      return axiosInstance;
+    });
+  } else {
+    return Promise.resolve(axiosInstance);
   }
 };
 
 export const fetchAssetData = (): Promise<AssetData> => {
-  initializeAxiosInstance();
-  return axiosInstance.get('/asset/asset_count').then((res: any) => res.data.data);
+  return initializeAxiosInstance().then((instance) => {
+    return instance.get('/asset/asset_count').then((res: any) => res.data.data);
+  });
 };
 
-export const fetchAssetTypeData = () => {
-  initializeAxiosInstance();
-  return axiosInstance.get('/asset/asset_type').then((res: any) => res.data.data);
-}
+export const fetchAssetTypeData = (): Promise<any> => { 
+  return initializeAxiosInstance().then((instance) => {
+    return instance.get('/asset/asset_type').then((res: any) => res.data.data);
+  });
+};
