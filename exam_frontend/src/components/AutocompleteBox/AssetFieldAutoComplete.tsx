@@ -26,7 +26,7 @@ import { getUserOptions } from "./api/getUserDetails";
 
 const filter = createFilterOptions();
 
-const AssetFieldAutoComplete = ({ assetField, value, setValue, onChange }) => {
+const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
   const [open, toggleOpen] = React.useState(false);
 
   const [dialogValue, setDialogValue] = React.useState({
@@ -169,7 +169,7 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue, onChange }) => {
                 });
               } else {
                 setValue(newValue);
-                onChange && onChange(event);
+            
               }
             }}
             onOpen={() => {
@@ -256,21 +256,21 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue, onChange }) => {
           onInputChange={(event, newValue) => {
             if (newValue !== "") {
               setValue({ [assetFieldKeyName()]: newValue });
-              onChange && onChange(event);
+             
             }
           }}
           onChange={(event, newValue) => {
             if (typeof newValue === "string") {
               setTimeout(() => {
                 setValue({ [assetFieldKeyName()]: newValue });
-                onChange && onChange(event);
+               
               });
             } else if (newValue && newValue.inputValue) {
               setValue({ [assetFieldKeyName()]: newValue });
-              onChange && onChange(event);
+              
             } else {
               setValue(newValue);
-              onChange && onChange(event);
+          
             }
           }}
           onOpen={() => {

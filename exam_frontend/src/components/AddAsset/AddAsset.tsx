@@ -47,8 +47,8 @@ const AddAsset: React.FC = () => {
       "location",
       "invoice_location",
       "business_unit",
-      "os",
-      "status",
+      // "os",
+      // "status",
       "warranty_period",
       "date_of_purchase",
     ];
@@ -75,8 +75,38 @@ const AddAsset: React.FC = () => {
   const [assettypeValue, setassettypeValue] = React.useState("");
   const[assetLocation,setAssetLocation]=React.useState("");
   const[assetInLocation,setAssetInLocation]=React.useState("");
-
   const[assetBu,setAssetBu]=React.useState("");
+  const[modelNumber,setModelNumber]=React.useState("");
+  const[processor,setProcessor]=React.useState("");
+  const[processorGen,setProcessorGen]=React.useState("");
+  const[memory,setMemory]=React.useState("");
+  const[os,setOs]=React.useState("");
+  const[osVersion,setOsVersion]=React.useState("");
+  const[mobileOs,setMobileOs]=React.useState("");
+
+  const[storage,setStorage]=React.useState("");
+
+
+  useEffect(() => {
+    handleInputChange("asset_type",assettypeValue["id"]);
+  }, [assettypeValue]);
+
+  useEffect(() => {
+    handleInputChange("location",assetLocation["id"]);
+  }, [assetLocation]);
+
+  useEffect(() => {
+    handleInputChange("invoice_location",assetInLocation["id"]);
+  }, [assetInLocation]);
+
+  useEffect(() => {
+    handleInputChange("business_unit",assetBu["id"]);
+  }, [assetBu]);
+
+  useEffect(() => {
+    let fieldName=Object.keys(value)[0]
+    handleInputChange(fieldName,value[fieldName]);
+  }, [value]);
 
 
 
@@ -85,8 +115,9 @@ const AddAsset: React.FC = () => {
   };
 
   const handleInputChange = (key: string, value: any) => {
-    setFormData({ ...formData, [key]: value,assettypeValue, assetLocation,assetInLocation,assetBu});
+    setFormData({ ...formData, [key]: value});
   };
+
 
   const [warningShown, setWarningShown] = useState(false);
 
@@ -295,7 +326,12 @@ const AddAsset: React.FC = () => {
 
     // Check if all mandatory fields are filled for software
     const isAllSoftwareFieldsFilled = softwareSpecificFields.every(
-      (field) => !!formData[field]
+      (field) => {
+        console.log("asset",field)
+        return !!formData[field]
+
+      }
+
     );
 
     // Check if all mandatory fields are filled for hardware
@@ -469,10 +505,7 @@ const AddAsset: React.FC = () => {
               assetField="product_name"
               value={value}
               setValue={setValue}
-              onChange={(e: { target: { value: any; }; }) =>
-                handleInputChange("product_name", e.target.value)
-              }
-              
+             
             />
               </Form.Item>
               <Form.Item
@@ -531,7 +564,6 @@ const AddAsset: React.FC = () => {
               assetField="location"
               value={assetLocation}
               setValue={setAssetLocation}
-              onChange={(assetLocation: any) => handleInputChange("location", assetLocation)}
 
               
             />
@@ -541,7 +573,6 @@ const AddAsset: React.FC = () => {
               assetField="business_unit"
               value={assetBu}
               setValue={setAssetBu}
-              onChange={(assetBu: any) => handleInputChange("business_unit", assetBu["id"])}
 
             />
               </Form.Item>
@@ -597,7 +628,6 @@ const AddAsset: React.FC = () => {
               assetField="asset_type"
               value={assettypeValue}
               setValue={setassettypeValue}
-              onChange={(assettypeValue: any) => handleInputChange("asset_type", assettypeValue["id"])}
 
             />
               </Form.Item>
@@ -609,20 +639,12 @@ const AddAsset: React.FC = () => {
                 }
                 className={styles["formItem"]}
               >
-                <Input
-                  placeholder="Enter Product name"
-                  className={styles["input"]}
-                  onChange={(e) =>
-                    handleInputChange("product_name", e.target.value)
-                  }
-                  suffix={
-                    <Tooltip title="Product name should not exceed 20 characters">
-                      <InfoCircleOutlined
-                        style={{ color: "rgba(0,0,0,.45)" }}
-                      />
-                    </Tooltip>
-                  }
-                />
+               <AssetFieldAutoComplete
+              assetField="product_name"
+              value={value}
+              setValue={setValue}
+             
+            />
               </Form.Item>
               <Form.Item
                 label={
@@ -650,23 +672,12 @@ const AddAsset: React.FC = () => {
                 }
                 className={styles["formItem"]}
               >
-                <Input
-                  placeholder="Enter Model number"
-                  className={styles["input"]}
-                  onChange={(e) =>
-                    handleInputChange("model_number", e.target.value)
-                  }
-                  suffix={
-                    <Tooltip
-                      placement="top"
-                      title="Model number should be alphanumeric Eg:MN101"
-                    >
-                      <InfoCircleOutlined
-                        style={{ color: "rgba(0,0,0,.45)" }}
-                      />
-                    </Tooltip>
-                  }
-                />
+                <AssetFieldAutoComplete
+              assetField="model_number"
+              value={modelNumber}
+              setValue={setModelNumber}
+             
+            />
               </Form.Item>
               <Form.Item
                 label={
@@ -730,7 +741,6 @@ const AddAsset: React.FC = () => {
               assetField="location"
               value={value}
               setValue={setValue}
-              onChange={(assetLocation: any) => handleInputChange("location", assetLocation["id"])}
 
             />
               
@@ -749,7 +759,6 @@ const AddAsset: React.FC = () => {
               assetField="invoice_location"
               value={assetInLocation}
               setValue={setAssetInLocation}
-              onChange={(assetInLocation: any) => handleInputChange("invoice_location", assetInLocation["id"])}
 
              
             />
@@ -760,111 +769,73 @@ const AddAsset: React.FC = () => {
               assetField="business_unit"
               value={assetBu}
               setValue={setAssetBu}
-              onChange={(assetBu: any) => handleInputChange("business_unit", assetBu["id"])}
 
             />
               </Form.Item>
               <Form.Item label="OS:" className={styles["formItem"]}>
-                <Select
-                  className={styles["input"]}
-                  placeholder="Select OS"
-                  onChange={(value) => handleInputChange("os", value)}
-                >
-                  <Option value="WINDOWS">Windows</Option>
+              <AssetFieldAutoComplete
+              assetField="os"
+              value={os}
+              setValue={setOs}
 
-                  <Option value="MAC">Mac</Option>
-                  <Option value="LINUX">Linux</Option>
-                </Select>
+            />
               </Form.Item>
 
               <Form.Item label="OS  version" className={styles["formItem"]}>
-                <Input
-                  placeholder="Enter OS version "
-                  className={styles["input"]}
-                  onChange={(e) => validateOsVersion(e)}
-                  suffix={
-                    <Tooltip title="Enter OS version in X.Y.Z format">
-                      <InfoCircleOutlined
-                        style={{ color: "rgba(0,0,0,.45)" }}
-                      />
-                    </Tooltip>
-                  }
-                />
+              <AssetFieldAutoComplete
+              assetField="os_version"
+              value={osVersion}
+              setValue={setOsVersion}
+
+            />
               </Form.Item>
 
               <Form.Item label="Mobile OS" className={styles["formItem"]}>
-                <Input
-                  placeholder="Enter Mobile OS"
-                  className={styles["input"]}
-                  onChange={(e) =>
-                    handleInputChange("mobile_os", e.target.value)
-                  }
-                />
+              <AssetFieldAutoComplete
+              assetField="mobile_os"
+              value={mobileOs}
+              setValue={setMobileOs}
+
+            />
               </Form.Item>
 
               <Form.Item label="Processor" className={styles["formItem"]}>
-                <Input
-                  placeholder="Enter processor"
-                  className={styles["input"]}
-                  onChange={(e) =>
-                    handleInputChange("processor", e.target.value)
-                  }
-                  suffix={
-                    <Tooltip title="Processor should be alphanumeric">
-                      <InfoCircleOutlined
-                        style={{ color: "rgba(0,0,0,.45)" }}
-                      />
-                    </Tooltip>
-                  }
-                />
+              <AssetFieldAutoComplete
+              assetField="processor"
+              value={processor}
+              setValue={setProcessor}
+
+             
+            />
               </Form.Item>
 
               <Form.Item label="Processor Gen:" className={styles["formItem"]}>
-                <Input
-                  placeholder="Enter processor generation"
-                  className={styles["input"]}
-                  onChange={(e) => {
-                    validateProcessorGeneration(e.target.value);
-                    handleInputChange("processor_gen", e.target.value);
-                  }}
-                  suffix={
-                    <Tooltip title="Processor gen should be alphanumeric">
-                      <InfoCircleOutlined
-                        style={{ color: "rgba(0,0,0,.45)" }}
-                      />
-                    </Tooltip>
-                  }
-                />
+              <AssetFieldAutoComplete
+              assetField="processor_gen"
+              value={processorGen}
+              setValue={setProcessorGen}
+
+             
+            />
               </Form.Item>
 
               <Form.Item label="Memory:" className={styles["formItem"]}>
-                <Select
-                  className={styles["input"]}
-                  placeholder="Select memory space"
-                >
-                  {memory_space.map((item: any) => (
-                    <Option key={item.id}>{item.memory_space}</Option>
-                  ))}
-                </Select>
+              <AssetFieldAutoComplete
+              assetField="memory"
+              value={memory}
+              setValue={setMemory}
+
+             
+            />
               </Form.Item>
 
               <Form.Item label="Storage:" className={styles["formItem"]}>
-                <Input
-                  placeholder="Enter Storage"
-                  className={styles["input"]}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    validateStorage(value); // Validate the storage input
-                    handleInputChange("storage", value); // Update the form data
-                  }}
-                  suffix={
-                    <Tooltip title="Storage should be in the format ###GB Eg:512GB">
-                      <InfoCircleOutlined
-                        style={{ color: "rgba(0,0,0,.45)" }}
-                      />
-                    </Tooltip>
-                  }
-                />
+              <AssetFieldAutoComplete
+              assetField="storage"
+              value={storage}
+              setValue={setStorage}
+
+            />
               </Form.Item>
 
               <Form.Item label="Configuration:" className={styles["formItem"]}>
