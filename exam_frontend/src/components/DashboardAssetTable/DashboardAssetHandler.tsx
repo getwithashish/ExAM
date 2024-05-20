@@ -170,7 +170,6 @@ const DashboardAssetHandler = ({
     if (json_query !== "" && json_query !== null) {
       additionalQueryParams += `&json_logic=${json_query}`;
     }
-    // additionalQueryParams = `&global_search=${searchTerm}&offset=${0}&json_logic=${json_query}`;
     refetchAssetData(queryParams + additionalQueryParams);
   };
 

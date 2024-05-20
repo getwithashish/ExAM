@@ -117,7 +117,6 @@ const DashboardAssetTable = ({
                 if (json_query !== "" && json_query !== null) {
                   additionalQueryParams += `&json_logic=${json_query}`;
                 }
-                // const queryParams = `&offset=${offset}&global_search=${searchTerm}&sort_by=${sortedColumn}&sort_order=${sortOrder}&json_logic=${json_query}`;
                 const queryParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}` + additionalQueryParams
                 assetPageDataFetch(queryParams);
               }}
