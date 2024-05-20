@@ -18,7 +18,7 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import { getUserOptions } from "./api/getUserDetails";
+import { getEmployeeOptions, getUserOptions } from "./api/getUserDetails";
 import type {
   MuiAutocompleteProps,
   FieldValues,
@@ -66,6 +66,11 @@ const MuiAutocomplete = ({
       queryFieldName: "business_unit",
     },
     {
+      label: "Custodian",
+      value: "custodian",
+      queryFieldName: "custodian",
+    },
+    {
       label: "Requester",
       value: "requester",
       queryFieldName: "requester",
@@ -83,6 +88,7 @@ const MuiAutocomplete = ({
     "invoice_location",
     "business_unit_name",
     "memory_space",
+    "custodian",
     "requester",
     "approved_by",
   ];
@@ -117,6 +123,8 @@ const MuiAutocomplete = ({
           return getMemoryOptions();
         } else if (fieldName == "requester" || fieldName == "approved_by") {
           return getUserOptions();
+        } else if (fieldName == "custodian") {
+          return getEmployeeOptions();
         } else {
           return getAssetDetails(
             `?asset_field_value_filter={"${fieldName}":""}`
@@ -134,6 +142,8 @@ const MuiAutocomplete = ({
       return "location_name";
     } else if (fieldName == "requester" || fieldName == "approved_by") {
       return "username";
+    } else if (fieldName == "custodian") {
+      return "employee_name";
     } else {
       return fieldName;
     }
