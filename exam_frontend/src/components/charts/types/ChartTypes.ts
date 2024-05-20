@@ -31,6 +31,7 @@ export interface PieChartGraphProps {
   setAssetState: React.Dispatch<React.SetStateAction<string | null>>;
   setDetailState: React.Dispatch<React.SetStateAction<string | null>>;
   setAssignState: React.Dispatch<React.SetStateAction<string | null>>;
+  onClick: () => void
 }
 export interface AssetDetailData {
   id: number;
