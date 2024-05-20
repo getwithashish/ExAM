@@ -37,6 +37,7 @@ class AssetNormalQueryService(AssetQueryAbstract):
         if global_search:
             queryset = self.get_queryset_from_global_search(global_search, queryset)
 
+        asset_status = request.query_params.get("status")
         assign_status = request.query_params.get("assign_status")
         asset_detail_status = request.query_params.get("asset_detail_status")
 
@@ -61,6 +62,7 @@ class AssetNormalQueryService(AssetQueryAbstract):
         query_params_to_exclude = [
             "limit",
             "offset",
+            "status",
             "assign_status",
             "asset_detail_status",
             "requester_id",
@@ -83,6 +85,10 @@ class AssetNormalQueryService(AssetQueryAbstract):
             self.pagination.default_limit = limit
         if offset:
             self.pagination.default_offset = offset
+
+        if asset_status:
+            statuses = asset_status.split("|")
+            queryset = queryset.filter(status__in=statuses)
 
         if asset_detail_status:
             statuses = asset_detail_status.split("|")

@@ -495,7 +495,7 @@ const AddAsset: React.FC = () => {
               <Form.Item
                 label={
                   <span>
-                    Product Name<span className={styles["star"]}>*</span>
+                    Asset Name<span className={styles["star"]}>*</span>
                   </span>
                 }
                 className={styles["formItem"]}
@@ -634,7 +634,7 @@ const AddAsset: React.FC = () => {
               <Form.Item
                 label={
                   <span>
-                    Product Name<span className={styles["star"]}>*</span>
+                    Asset Name<span className={styles["star"]}>*</span>
                   </span>
                 }
                 className={styles["formItem"]}
