@@ -68,7 +68,7 @@ const DashboardAssetTable = ({
           reset={reset}
           searchTerm={searchTerm}
           onSearch={handleSearch}
-          setSearchTerm={setSearchTerm}git 
+          setSearchTerm={setSearchTerm}
           setJson_query={setJson_query}
           json_query={json_query}
         />
