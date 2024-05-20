@@ -1,7 +1,7 @@
 import { Spin } from "antd";
 import React, { useEffect, useState } from "react";
 import AssetTableHandler from "../../components/AssetTable/AssetTableHandler";
-import { getAssetDetails } from "../../components/DashboardAssetTable/api/getDasboardAssetDetails";
+import { getAssetDetails } from "../../components/DashboardAssetTable/api/getDashboardAssetDetails"
 
 const ExpiredAssets = () => {
   const [expiredAssets, setExpiredAssets] = useState([]);
