@@ -57,6 +57,8 @@ const AssetTableHandler = ({
   queryParamProp,
   heading,
   isMyApprovalPage,
+  assets,
+
 }) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -612,6 +614,7 @@ const AssetTableHandler = ({
       isMyApprovalPage={isMyApprovalPage}
       statusOptions={statusOptions}
       assetDataRefetch={refetchAssetData}
+      dataSource={assets}
       businessUnitOptions={businessUnitOptions}
       handleUpdateData={function (updatedData: { key: any }): void {
         throw new Error("Function not implemented.");
