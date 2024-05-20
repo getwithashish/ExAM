@@ -22,7 +22,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
   setAssetState,
   setDetailState,
   setAssignState,
-  onClick
+  onClick,
 }) => {
   const [assetTypeData, setAssetTypeData] = useState<AssetDetailData[]>([]);
   const [selectedType, setSelectedType] = useState<string>("");
@@ -48,7 +48,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
   } = useQuery<AssetData>({
     queryKey: ["assetData"],
     queryFn: fetchAssetData,
-  }); 
+  });
 
   useEffect(() => {
     fetchAssetTypeData()
@@ -64,18 +64,35 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
   useEffect(() => {
     fetchAssetData()
       .then((assetCountData) => {
+        let inServiceCount = 0;
         console.log("assetCountData", assetCountData);
         const assetTypeData = Object.entries(
           assetCountData?.status_counts ?? {}
-        ).map(([label, value]) => ({
-          label: statusMapping[label] ?? label,
-          value: value as number,
-          color: statusColors[label],
-        }));
+        ).map(([label, value]) => {
+          if (label == "IN USE" || label == "IN STORE"){
+            if (inServiceCount == 0){
+              inServiceCount += value as number;
+              return
+            }
+            else{
+              inServiceCount += value as number;
+              return ({
+                label: "IN SERVICE",
+                value: inServiceCount,
+                color: statusColors[label],
+              });
+            }
+          }
+          return ({
+            label: statusMapping[label] ?? label,
+            value: value as number,
+            color: statusColors[label],
+          });
+        });
         setAssetChartData(assetTypeData);
         setAssetFilteredChartData(assetTypeData);
-        console.log('asset filtered data:', assetChartData)
-      })  
+        console.log("asset filtered data:", assetChartData);
+      })
       .catch((error) => {
         console.error("Error fetching asset count data:", error);
         setAssetFilteredChartData([]);
@@ -87,6 +104,9 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
     let chartLabel = assetFilteredChartData[params["dataIndex"]]?.label;
     if (chartLabel === "IN STOCK") {
       chartLabel = "IN STORE";
+    }
+    if (chartLabel === "IN SERVICE") {
+      chartLabel = "IN STORE|IN USE";
     }
     console.log("Clicked Asset Chart Label: ", chartLabel);
     setAssetState(chartLabel ?? null);
@@ -131,7 +151,6 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
   useEffect(() => {
     fetchAssetData()
       .then((res) => {
-
         const assetDetailData = res.asset_detail_status;
         console.log("response data", assetDetailData);
 
@@ -346,7 +365,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
           ))}
         </select>
       </div>
-      <div className="items-center justify-center flex" >
+      <div className="items-center justify-center flex">
         <Stack
           direction="row"
           spacing={1}
@@ -392,8 +411,8 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                   ]}
                   sx={{
                     [`& .${pieArcLabelClasses.root}`]: {
-                      fill: 'white',
-                      fontWeight: 'light',
+                      fill: "white",
+                      fontWeight: "light",
                       fontSize: 20,
                     },
                   }}
@@ -447,8 +466,8 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                   ]}
                   sx={{
                     [`& .${pieArcLabelClasses.root}`]: {
-                      fill: 'white',
-                      fontWeight: 'light',
+                      fill: "white",
+                      fontWeight: "light",
                       fontSize: 20,
                     },
                   }}
@@ -502,8 +521,8 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                   ]}
                   sx={{
                     [`& .${pieArcLabelClasses.root}`]: {
-                      fill: 'white',
-                      fontWeight: 'light',
+                      fill: "white",
+                      fontWeight: "light",
                       fontSize: 20,
                     },
                   }}

@@ -2,6 +2,7 @@ export const statusColors: { [key: string]: string } = {
     "IN STORE": "#FFB92A",
     "IN REPAIR": "#FEEB51",
     "IN USE": "#9BCA3E",
+    "IN SERVICE": "#9BCA3E",
     DISPOSED: "#3ABBC9",
     EXPIRED: "#CC0000",
     UNASSIGNED: "#E6E6E6",
