@@ -65,7 +65,7 @@ const DashboardAssetHandler = ({
     }
   }, [selectedTypeId, assetState, detailState, assignState]);
 
-  useEffect(() => { });
+  useEffect(() => {});
 
   const {
     data: assetData,
@@ -81,7 +81,9 @@ const DashboardAssetHandler = ({
     assetDataRefetch({ force: true });
   };
   const reset = () => {
-    setQueryParam(" ");
+    setQueryParam("");
+    setJson_query("");
+    setSearchTerm("");
     refetchAssetData();
   };
   const statusOptions =
@@ -138,16 +140,15 @@ const DashboardAssetHandler = ({
     );
   };
   const renderClickableColumn = (columnName, dataIndex) => (_, record) =>
-  (
-    <div
-      data-column-name={columnName}
-      onClick={() => handleColumnClick(record, columnName)}
-      style={{ cursor: "pointer" }}
-    >
-      {record[dataIndex]}
-    </div>
-  );
-
+    (
+      <div
+        data-column-name={columnName}
+        onClick={() => handleColumnClick(record, columnName)}
+        style={{ cursor: "pointer" }}
+      >
+        {record[dataIndex]}
+      </div>
+    );
 
   const handleSort = (column: string) => {
     const isCurrentColumn = column === sortedColumn;
@@ -162,7 +163,13 @@ const DashboardAssetHandler = ({
     const queryParams = Object.keys(newSortOrders)
       .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
       .join("");
-    const additionalQueryParams = `&global_search=${searchTerm}&offset=${0}&json_logic=${json_query}`;
+    let additionalQueryParams = "&offset=${0}";
+    if (searchTerm !== "" && searchTerm !== null) {
+      additionalQueryParams += `&global_search=${searchTerm}`;
+    }
+    if (json_query !== "" && json_query !== null) {
+      additionalQueryParams += `&json_logic=${json_query}`;
+    }
     refetchAssetData(queryParams + additionalQueryParams);
   };
 
@@ -607,9 +614,7 @@ const DashboardAssetHandler = ({
         setJson_query={setJson_query}
         json_query={json_query}
       />
-
     </div>
-
   );
 };
 

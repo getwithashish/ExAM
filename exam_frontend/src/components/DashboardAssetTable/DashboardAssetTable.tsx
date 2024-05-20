@@ -37,12 +37,9 @@ const DashboardAssetTable = ({
   searchTerm,
   setSearchTerm,
   setJson_query,
-  json_query
+  json_query,
 }: AssetTableProps) => {
-  
   // const [searchTerm, setSearchTerm] = useState<string>("");
- 
-
 
   const handleSearch = (searchTerm: string) => {
     setSearchTerm(searchTerm);
@@ -113,7 +110,14 @@ const DashboardAssetTable = ({
               total={totalItemCount}
               onChange={(page, pageSize) => {
                 const offset = (page - 1) * pageSize;
-                const queryParams = `&offset=${offset}&global_search=${searchTerm}&sort_by=${sortedColumn}&sort_order=${sortOrder}&json_logic=${json_query}`;
+                let additionalQueryParams = `&offset=${offset}`;
+                if (searchTerm !== "" && searchTerm !== null) {
+                  additionalQueryParams += `&global_search=${searchTerm}`;
+                }
+                if (json_query !== "" && json_query !== null) {
+                  additionalQueryParams += `&json_logic=${json_query}`;
+                }
+                const queryParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}` + additionalQueryParams
                 assetPageDataFetch(queryParams);
               }}
               hideOnSinglePage={true}
