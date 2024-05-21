@@ -235,7 +235,7 @@ const MuiAutocomplete = ({
             renderOption={(props, option) => (
               <li {...props}>{option[fieldName]}</li>
             )}
-            sx={{ width: 300 }}
+            sx={{ width: 300, marginLeft: 5, marginRight: 5 }}
             freeSolo
             renderInput={(params) => <TextField {...params} label="Search" />}
           />
@@ -300,7 +300,7 @@ const MuiAutocomplete = ({
                 {option[getFieldName()]}
               </li>
             )}
-            sx={{ width: 300 }}
+            sx={{ width: 300, marginLeft: 5, marginRight: 5 }}
             renderInput={(params) => <TextField {...params} label="Search" />}
           />
         )}
@@ -308,7 +308,7 @@ const MuiAutocomplete = ({
       {fieldName !== "" &&
         !foreignFieldValueNames.includes(fieldName) &&
         DropDownFieldValueNames.includes(fieldName) && (
-          <FormControl>
+          <FormControl sx={{ marginLeft: 5, marginRight: 5 }}>
             <InputLabel id="simple-status-select">Select Status</InputLabel>
             <Select
               labelId="simple-status-select"
@@ -316,7 +316,6 @@ const MuiAutocomplete = ({
               multiple
               value={value}
               label="Select Status"
-              sx={{ minWidth: 300 }}
               onChange={(event) => {
                 const newValue = event.target.value;
                 const newFieldValues = allFieldValues.filter(
@@ -363,6 +362,7 @@ const MuiAutocomplete = ({
                   ))}
                 </Box>
               )}
+              sx={{ width: 300, paddingY: 0 }}
             >
               {DropDownFieldValue[fieldName].map(
                 (field: string, index: number) => (
