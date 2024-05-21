@@ -168,8 +168,11 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
                   [assetFieldKeyName()]: newValue.inputValue,
                 });
               } else {
-                setValue(newValue);
-            
+                if (newValue == null) {
+                  setValue("");
+                } else {
+                  setValue(newValue);
+                }
               }
             }}
             onOpen={() => {
@@ -210,7 +213,7 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
                 {option[assetFieldKeyName()]}
               </li>
             )}
-            sx={{ width: 300 }}
+            sx={{ width: "100%" }}
             renderInput={(params) => <TextField {...params} label="Search" />}
           />
 
@@ -256,21 +259,17 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
           onInputChange={(event, newValue) => {
             if (newValue !== "") {
               setValue({ [assetFieldKeyName()]: newValue });
-             
             }
           }}
           onChange={(event, newValue) => {
             if (typeof newValue === "string") {
               setTimeout(() => {
                 setValue({ [assetFieldKeyName()]: newValue });
-               
               });
             } else if (newValue && newValue.inputValue) {
               setValue({ [assetFieldKeyName()]: newValue });
-              
             } else {
               setValue(newValue);
-          
             }
           }}
           onOpen={() => {
@@ -305,7 +304,7 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
           renderOption={(props, option) => (
             <li {...props}>{option[assetFieldKeyName()]}</li>
           )}
-          sx={{ width: 300 }}
+          sx={{ width: "100%" }}
           renderInput={(params) => <TextField {...params} label="Search" />}
         />
       )}
@@ -314,17 +313,6 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
 };
 
 export default AssetFieldAutoComplete;
-
-
-
-
-
-
-
-
-
-
-
 
 // import React from "react";
 
@@ -411,11 +399,11 @@ export default AssetFieldAutoComplete;
 //     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 //     let result = '';
 //     const charactersLength = characters.length;
-  
+
 //     for (let i = 0; i < length; i++) {
 //       result += characters.charAt(Math.floor(Math.random() * charactersLength));
 //     }
-  
+
 //     return result;
 //   }
 
