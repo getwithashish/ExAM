@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import type { Field } from "react-querybuilder";
-import { Button, message } from "antd";
+import { message } from "antd";
 import MuiAutocomplete from "./MuiAutocomplete";
 import type { FieldValues } from "./types/types";
+import { Button, IconButton, Stack, createSvgIcon } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Delete, DeleteOutlined } from "@mui/icons-material";
+import { blue, green, pink } from "@mui/material/colors";
 
 interface QueryBuilderComponentProps {
   assetDataRefetch: (queryParam: string) => void;
@@ -13,11 +17,9 @@ interface QueryBuilderProps {
   setJson_query: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps & QueryBuilderProps> = ({
-  assetDataRefetch,
-  setJson_query,
-
-}) => {
+export const QueryBuilderComponent: React.FC<
+  QueryBuilderComponentProps & QueryBuilderProps
+> = ({ assetDataRefetch, setJson_query }) => {
   const [selectedFields, setSelectedFields] = useState<
     { field: string; value: string; id: number }[]
   >([]);
@@ -81,27 +83,28 @@ export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps & QueryB
     assetDataRefetch(queryParams);
   };
 
+  const PlusIcon = createSvgIcon(
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M12 4.5v15m7.5-7.5h-15"
+      />
+    </svg>,
+    "Plus"
+  );
+
   return (
     <div>
-      <button onClick={handleReset} className="h-50 w-50 m-5 p-2 text-white">
-        Reset
-      </button>
-      <button
-        onClick={() => {
-          handleSubmitFieldValues(allFieldValues);
-        }}
-        className="h-50 w-50 m-5 p-2 text-white"
-      >
-        Search
-      </button>
-      <Button onClick={handleAddField} className="m-5">
-        +
-      </Button>
-      <br />
       <div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           {newFields.map((_, index) => (
-
             <div
               key={index}
               style={{
@@ -115,11 +118,47 @@ export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps & QueryB
                 allFieldValues={allFieldValues}
                 setAllFieldValues={setAllFieldValues}
               />
-              <Button onClick={() => handleRemoveField(index)}>X</Button>
+              <IconButton
+                onClick={() => handleRemoveField(index)}
+                aria-label="remove"
+                size="large"
+              >
+                <Delete sx={{ color: pink[500] }} />
+              </IconButton>
             </div>
           ))}
         </div>
       </div>
+      <div className="w-fit">
+        <Stack>
+          <div className="text-center mb-5">
+            <IconButton onClick={handleAddField} aria-label="add" size="large">
+              <PlusIcon sx={{ color: blue[500] }} />
+            </IconButton>
+          </div>
+          <div>
+            <Button
+              sx={{ paddingX: 5, marginX: 5 }}
+              onClick={handleReset}
+              variant="outlined"
+              color="error"
+            >
+              Reset
+            </Button>
+            <Button
+              sx={{ paddingX: 5, marginX: 5 }}
+              onClick={() => {
+                handleSubmitFieldValues(allFieldValues);
+              }}
+              variant="outlined"
+              color="success"
+            >
+              Search
+            </Button>
+          </div>
+        </Stack>
+      </div>
+      <br />
     </div>
   );
 };

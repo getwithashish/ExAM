@@ -34,37 +34,22 @@ const ExamRoutes = () => {
   const { authenticated, setAuthenticated, userRole } = useAuth();
 
   useLayoutEffect(() => {
-    // Code to execute before initial render
-    console.log("Code executed before initial render");
     const storedValue = localStorage.getItem("jwt");
     if (storedValue) {
       setAuthenticated(true);
-      //   setValue(JSON.parse(storedValue));
     }
   }, []);
 
   useEffect(() => {
-    // Load value from localStorage when component mounts
     const storedValue = localStorage.getItem("jwt");
     console.log("JWT in auth context: ", storedValue);
     if (storedValue) {
       setAuthenticated(true);
-      //   setValue(JSON.parse(storedValue));
     }
   }, []);
 
   return (
     <BrowserRouter>
-      {/* <SidebarComponentNew>
-            <Routes>
-              <Route path="/" element={<Login />} />
-
-              <Route path="/dashboard" element={<DashboardPage />} index />
-              <Route path="/logout" element={<Logout />} />
-              <Route path="/requests" element={<RequestPage />} />
-            </Routes>
-          </SidebarComponentNew> */}
-
       <Routes>
         <Route element={<ProtectedRoute />}>
           <Route
