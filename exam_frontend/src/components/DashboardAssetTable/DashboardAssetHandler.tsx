@@ -379,28 +379,29 @@ const DashboardAssetHandler = ({
       }),
       render: renderClickableColumn("Warranty Period", "warranty_period"),
     },
+   
 
+    
     {
       title: "Expiry Date",
       dataIndex: "expiry_date",
       responsive: ["md"],
       width: 120,
       render: (_, record) => {
-        const dateOfPurchase = record.date_of_purchase
-          ? new Date(record.date_of_purchase)
-          : null;
+        const dateOfPurchase = record.date_of_purchase ? new Date(record.date_of_purchase) : null;
         const warrantyPeriod = parseInt(record.warranty_period) || 0; // Defaulting to 0 if warranty_period is not provided or invalid
         if (dateOfPurchase instanceof Date && !isNaN(dateOfPurchase)) {
-          const expiryDate = new Date(
-            dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000
-          ); // Calculating expiry date in milliseconds
-          const formattedExpiryDate = expiryDate.toISOString().split("T")[0];
+          const expiryDate = new Date(dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000); // Calculating expiry date in milliseconds
+          const formattedExpiryDate = expiryDate.toISOString().split('T')[0];
+          const currentDate = new Date();
+          const isExpired = expiryDate < currentDate;
+    
           // Apply renderClickableColumn logic here
           return (
             <div
               data-column-name="Expiry Date"
               onClick={() => handleColumnClick(record, "Expiry Date")}
-              style={{ cursor: "pointer", color: "red" }}
+              style={{ cursor: "pointer", color: isExpired ? "red" : "green", fontWeight: isExpired ? "bold" : "bold" }}
             >
               {formattedExpiryDate}
             </div>
@@ -410,6 +411,10 @@ const DashboardAssetHandler = ({
         }
       },
     },
+    
+    
+,    
+
 
     {
       title: "Model Number",
@@ -579,6 +584,7 @@ const DashboardAssetHandler = ({
     AssignAsset: "assign",
     created_at: result.created_at,
     updated_at: result.updated_at,
+    
   }));
 
   const drawerTitle = "Asset Details";

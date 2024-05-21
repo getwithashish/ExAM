@@ -12,8 +12,28 @@ import {
   getLocationOptions,
   getMemoryOptions,
 } from "./api/getAssetDetails";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBookOpenReader } from "@fortawesome/free-solid-svg-icons";
+import { Notes } from "@mui/icons-material";
 
-const AssetTableHandler = ({  isRejectedPage,  queryParamProp,  heading,  isMyApprovalPage,}) => {
+interface ExpandedDataType {
+  key: React.Key;
+  date: string;
+  name: string;
+  upgradeNum: string;
+}
+interface AssetTableHandlerProps {
+  isRejectedPage: boolean;
+}
+
+const AssetTableHandler = ({
+  isRejectedPage,
+  queryParamProp,
+  heading,
+  isMyApprovalPage,
+  assets,
+
+}) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [sortedColumn, setSortedColumn] = useState<string | null>(null);
@@ -332,21 +352,20 @@ const AssetTableHandler = ({  isRejectedPage,  queryParamProp,  heading,  isMyAp
       responsive: ["md"],
       width: 120,
       render: (_, record) => {
-        const dateOfPurchase = record.date_of_purchase
-          ? new Date(record.date_of_purchase)
-          : null;
+        const dateOfPurchase = record.date_of_purchase ? new Date(record.date_of_purchase) : null;
         const warrantyPeriod = parseInt(record.warranty_period) || 0; // Defaulting to 0 if warranty_period is not provided or invalid
         if (dateOfPurchase instanceof Date && !isNaN(dateOfPurchase)) {
-          const expiryDate = new Date(
-            dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000
-          ); // Calculating expiry date in milliseconds
-          const formattedExpiryDate = expiryDate.toISOString().split("T")[0];
+          const expiryDate = new Date(dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000); // Calculating expiry date in milliseconds
+          const formattedExpiryDate = expiryDate.toISOString().split('T')[0];
+          const currentDate = new Date();
+          const isExpired = expiryDate < currentDate;
+    
           // Apply renderClickableColumn logic here
           return (
             <div
               data-column-name="Expiry Date"
               onClick={() => handleColumnClick(record, "Expiry Date")}
-              style={{ cursor: "pointer", color: "red" }}
+              style={{ cursor: "pointer", color: isExpired ? "red" : "green", fontWeight: isExpired ? "bold" : "bold" }}
             >
               {formattedExpiryDate}
             </div>
@@ -356,6 +375,7 @@ const AssetTableHandler = ({  isRejectedPage,  queryParamProp,  heading,  isMyAp
         }
       },
     },
+    
     {
       title: "Model Number",
       dataIndex: "ModelNumber", // Corrected dataIndex
@@ -586,6 +606,7 @@ const AssetTableHandler = ({  isRejectedPage,  queryParamProp,  heading,  isMyAp
       isMyApprovalPage={isMyApprovalPage}
       statusOptions={statusOptions}
       assetDataRefetch={refetchAssetData}
+      dataSource={assets}
       businessUnitOptions={businessUnitOptions}
       handleUpdateData={function (updatedData: { key: any }): void {
         throw new Error("Function not implemented.");
