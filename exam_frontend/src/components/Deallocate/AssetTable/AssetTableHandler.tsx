@@ -5,34 +5,11 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import {
-  Badge,
-  Button,
-  Dropdown,
-  Input,
-  Modal,
-  Space,
-  Table,
-  TableColumnsType,
-  message,
-} from "antd";
-import DrawerComponent from "../../DrawerComponent/DrawerComponent";
-import { SearchOutlined } from "@ant-design/icons";
+import { Button, Modal, message } from "antd";
 import "./AssetTable.css";
-import CardComponent from "../CardComponent/CardComponent";
-import { CloseOutlined } from "@ant-design/icons";
-import axiosInstance from "../../config/AxiosConfig";
-import { isError, useQuery } from "@tanstack/react-query";
-import { DataType, LogData } from "../AssetTable/types";
-import { ColumnFilterItem } from "../AssetTable/types";
+import { useQuery } from "@tanstack/react-query";
+import { DataType } from "../AssetTable/types";
 import { AssetResult } from "../AssetTable/types";
-import { FilterDropdownProps } from "../AssetTable/types";
-import { useInfiniteQuery } from "react-query";
-
-import { DownOutlined } from "@ant-design/icons";
-import ExportButton from "../../Export/Export";
-import { getAssetLog } from "./api/getAssetLog";
-import { AxiosError } from "axios";
 import AssetTable from "./AssetTable";
 import {
   getAssetDetails,
@@ -40,15 +17,6 @@ import {
   getLocationOptions,
   getMemoryOptions,
 } from "./api/getAssetDetails";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBookOpenReader } from "@fortawesome/free-solid-svg-icons";
-
-interface ExpandedDataType {
-  key: React.Key;
-  date: string;
-  name: string;
-  upgradeNum: string;
-}
 interface AssetTableHandlerProps {
   unassign: (record: DataType) => void;
   queryParamProp: any;
@@ -61,7 +29,8 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null); // State to store the selected asset ID
   const [sortedColumn, setSortedColumn] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-
+  const [sortOrders, setSortOrders] = useState({});
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [queryParam, setQueryParam] = useState("");
@@ -152,14 +121,24 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
       )
     );
   };
+  
   const handleSort = (column: string) => {
-    const newSortOrder =
-      column === sortedColumn ? (sortOrder === "asc" ? "desc" : "asc") : "asc";
+    const isCurrentColumn = column === sortedColumn;  
+    let newSortOrders = { ...sortOrders };  
+    if (!isCurrentColumn) {
+      newSortOrders = { [column]: "asc" };
+    } else {
+      newSortOrders[column] = sortOrders[column] === "asc" ? "desc" : "asc";
+    }  
     setSortedColumn(column);
-    setSortOrder(newSortOrder);
-    const queryParams = `&sort_by=${column}&sort_order=${newSortOrder}`;
-    refetchAssetData(queryParams);
+    setSortOrders(newSortOrders);  
+    const queryParams = Object.keys(newSortOrders)
+      .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
+      .join("");  
+    const additionalQueryParams = `&global_search=${searchTerm}&offset=${0}`;  
+    refetchAssetData(queryParams + additionalQueryParams);
   };
+
   const renderDeallocateButton = (_, record) => (
     <Button
       ghost
@@ -181,7 +160,10 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
 
     if (selectedRecord) {
       // Check if the selected record has a custodian
-      if (selectedRecord.custodian != null || selectedRecord.custodian != undefined) {
+      if (
+        selectedRecord.custodian != null ||
+        selectedRecord.custodian != undefined
+      ) {
         // Deallocate the asset
         unassign(selectedRecord);
       } else {
@@ -392,6 +374,37 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
       }),
       render: renderClickableColumn("Warranty Period", "warranty_period"),
     },
+    {
+      title: "Expiry Date",
+      dataIndex: "expiry_date",
+      responsive: ["md"],
+      width: 120,
+      render: (_, record) => {
+        const dateOfPurchase = record.date_of_purchase ? new Date(record.date_of_purchase) : null;
+        const warrantyPeriod = parseInt(record.warranty_period) || 0; // Defaulting to 0 if warranty_period is not provided or invalid
+        if (dateOfPurchase instanceof Date && !isNaN(dateOfPurchase)) {
+          const expiryDate = new Date(dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000); // Calculating expiry date in milliseconds
+          const formattedExpiryDate = expiryDate.toISOString().split('T')[0];
+          const currentDate = new Date();
+          const isExpired = expiryDate < currentDate;
+    
+          // Apply renderClickableColumn logic here
+          return (
+            <div
+              data-column-name="Expiry Date"
+              onClick={() => handleColumnClick(record, "Expiry Date")}
+              style={{ cursor: "pointer", color: isExpired ? "red" : "green", fontWeight: isExpired ? "bold" : "bold" }}
+            >
+              {formattedExpiryDate}
+            </div>
+          );
+        } else {
+          return "Invalid Date";
+        }
+      },
+    },
+    
+,    
 
     {
       title: "Model Number",
@@ -500,20 +513,7 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
       render: renderClickableColumn("Accessories", "accessories"),
     },
 
-    {
-      title: "Asset Log",
-      dataIndex: "Accessories",
-      responsive: ["md"],
-      fixed: "right",
-      width: 120,
-
-      render: () => (
-        <span>
-          <FontAwesomeIcon icon={faBookOpenReader} className="plus-icon" />{" "}
-          {/* Plus button icon */}
-        </span>
-      ),
-    },
+    
 
     {
       title: "Deallocate Asset",
@@ -584,13 +584,12 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
     <>
       {/* Confirmation Modal */}
       <Modal
-      
         title="Confirm Deallocation"
         visible={confirmModalVisible}
         onOk={handleConfirmDeallocate}
         onCancel={() => setConfirmModalVisible(false)}
-        okButtonProps={{ style: { backgroundColor: 'red' } }} 
-        style={{ marginTop:'100px'}}
+        okButtonProps={{ style: { backgroundColor: "red" } }}
+        style={{ marginTop: "100px" }}
       >
         <p>Are you sure you want to deallocate the asset?</p>
       </Modal>
@@ -611,6 +610,8 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
         memoryData={memoryData}
         assetTypeData={assetTypeData}
         locations={locations}
+        sortOrder={sortOrder}
+        sortedColumn={sortedColumn}
         statusOptions={statusOptions}
         assetDataRefetch={refetchAssetData}
         asset_uuid={selectedAssetId}
@@ -618,7 +619,8 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
         handleUpdateData={function (updatedData: { key: any }): void {
           throw new Error("Function not implemented.");
         }}
-        drawerTitle={""}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
       />
     </>
   );

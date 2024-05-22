@@ -1,53 +1,13 @@
-import React, {
-  Key,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import {
-  Badge,
-  Button,
-  Dropdown,
-  Input,
-  Pagination,
-  Space,
-  Table,
-  TableColumnsType,
-} from "antd";
-
-import { SearchOutlined } from "@ant-design/icons";
+import React, { useMemo, useState } from "react";
+import { Pagination, Table } from "antd";
 import "./AssetTable.css";
 import CardComponent from "./CardComponent/CardComponent";
 import { CloseOutlined } from "@ant-design/icons";
-import axiosInstance from "../../config/AxiosConfig";
-import { isError, useQuery } from "@tanstack/react-query";
-import { AssetTableProps, DataType, LogData } from "../AssetTable/types";
-import { ColumnFilterItem } from "../AssetTable/types";
-import { AssetResult } from "../AssetTable/types";
-import { FilterDropdownProps } from "../AssetTable/types";
-import { useInfiniteQuery } from "react-query";
-
-import { DownOutlined } from "@ant-design/icons";
-import ExportButton from "../../Export/Export";
-import { getAssetLog } from "./api/getAssetLog";
-import { AxiosError } from "axios";
-import TableNavbar from "../../TableNavBar/TableNavbar";
+import { AssetTableProps } from "../AssetTable/types";
 import SideDrawerComponent from "../../SideDrawerComponent/SideDrawerComponent";
 import UploadComponent from "../../Upload/UploadComponent";
 import DrawerViewRequest from "../../../pages/RequestPage/DrawerViewRequest";
 import GlobalSearch from "../../GlobalSearch/GlobalSearch";
-
-interface ExpandedDataType {
-  key: React.Key;
-  date: string;
-  name: string;
-  upgradeNum: string;
-}
-const items = [
-  { key: "1", label: "Action 1" },
-  { key: "2", label: "Action 2" },
-];
 
 const AssetTable = ({
   asset_uuid,
@@ -73,22 +33,16 @@ const AssetTable = ({
   assetTypeData,
   expandedRowRender,
   assetDataRefetch,
+  sortOrder,
+  sortedColumn,
+  searchTerm,
+  setSearchTerm,
 }: AssetTableProps) => {
-  const [searchTerm, setSearchTerm] = useState<string>("");
-
   const handleSearch = (searchTerm: string) => {
     setSearchTerm(searchTerm);
-    assetDataRefetch(`&global_search=${searchTerm}`);
+    const queryParams = `&global_search=${searchTerm}&sort_by=${sortedColumn}&sort_order=${sortOrder}&offset=20`;
+    assetDataRefetch(queryParams);
   };
-
-  const rowRender = (record, expanded) => {
-    if (isSuccess) {
-      if (expanded && selectedAssetId && expandedRowRender)
-        return expandedRowRender(record.key);
-      else return;
-    } else return <>not loaded</>;
-  };
-  const memoizedRowRender = useMemo(() => rowRender, [isSuccess]);
 
   const [showUpload, setShowUpload] = useState(false);
   const closeImportDrawer = () => {
@@ -101,11 +55,11 @@ const AssetTable = ({
         <div className=" font-display">Deallocate Assets</div>
       </div>
       <div style={{ marginLeft: "40px", marginBottom: "30px" }}>
-      <GlobalSearch
-        assetDataRefetch={assetDataRefetch}
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm} // Pass searchTerm prop
-      />
+        <GlobalSearch
+          assetDataRefetch={assetDataRefetch}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+        />
       </div>
 
       <div
@@ -149,9 +103,9 @@ const AssetTable = ({
                 }
                 total={totalItemCount}
                 onChange={(page, pageSize) => {
-                  assetPageDataFetch(
-                    `&offset=${(page - 1) * pageSize}&global_search=${searchTerm}`
-                  );
+                  const offset = (page - 1) * pageSize;
+                  const queryParams = `&offset=${offset}&global_search=${searchTerm}&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
+                  assetPageDataFetch(queryParams);
                 }}
                 hideOnSinglePage={true}
               />
@@ -173,7 +127,6 @@ const AssetTable = ({
             <h2 className="drawerHeading">{selectedRow.ProductName}</h2>
           </div>
         )}
-
         {selectedRow && (
           <CardComponent
             selectedAssetId={selectedAssetId}

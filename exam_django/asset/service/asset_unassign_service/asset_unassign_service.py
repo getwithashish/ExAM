@@ -3,9 +3,6 @@ from exceptions import PermissionDeniedException
 from asset.service.asset_unassign_service.asset_unassign_sys_admin_service import (
     AssetSysadminRoleUnassignService,
 )
-from asset.service.asset_unassign_service.asset_unassign_lead_service import (
-    AssetLeadRoleUnassignService,
-)
 from rest_framework import status
 from messages import USER_UNAUTHORIZED
 from notification.service.email_service import EmailService

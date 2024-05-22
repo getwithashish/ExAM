@@ -1,4 +1,3 @@
-
 from jwt import decode, InvalidTokenError
 from django.conf import settings
 from asset.models import Asset
@@ -176,7 +175,7 @@ class AssetMutationService:
 
 
             # Fields to be excluded from comparison
-            excluded_fields = {'created_at', 'updated_at', 'asset_uuid'}
+            excluded_fields = {'created_at', 'updated_at', 'asset_uuid', 'asset_detail_status'}
 
             # Find changed fields and their actual values
             changed_fields = []
@@ -193,15 +192,21 @@ class AssetMutationService:
                 email_body = self._construct_update_email_body(
                     asset, changed_fields, request.user.get_full_name()
                 )
-
+                
+                email_subject=f"ASSET UPDATION SUCCESSFUL"
                 email_service.send_email(
                     email_subject,
                     email_body,
-                    ["asimapalexperion23@gmail.com"],
+                    ["asimapalexperion23@gmail.com",
+                     "astg7542@gmail.com",
+                    "acj88178@gmail.com",
+                    "aidrin.varghese@experionglobal.com",
+                    "pavithraexperion@gmail.com",],
                 )
 
             return new_asset_data, message, status.HTTP_200_OK
     def _construct_update_email_body(self, asset, changed_fields, requester_name):
+            
             email_body = f"""
         Dear Lead,
 

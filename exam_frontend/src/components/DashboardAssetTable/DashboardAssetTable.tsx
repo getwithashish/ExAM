@@ -9,7 +9,7 @@ import UploadComponent from "../Upload/UploadComponent";
 import DashBoardCardComponent from "../DashBoardCardComponent/DashBoardCardComponent";
 import DrawerViewRequest from "../../pages/RequestPage/DrawerViewRequest";
 
-const DasboardAssetTable = ({
+const DashboardAssetTable = ({
   asset_uuid,
   isSuccess,
   selectedAssetId,
@@ -34,21 +34,17 @@ const DasboardAssetTable = ({
   sortOrder,
   sortedColumn,
   isAssetDataLoading,
+  searchTerm,
+  setSearchTerm,
+  setJson_query,
+  json_query,
 }: AssetTableProps) => {
-
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  // const [searchTerm, setSearchTerm] = useState<string>("");
 
   const handleSearch = (searchTerm: string) => {
     setSearchTerm(searchTerm);
-    assetDataRefetch(`&global_search=${searchTerm}`);
-  };
-
-  const rowRender = (record: { key: string }, expanded: any) => {
-    if (isSuccess) {
-      if (expanded && selectedAssetId && expandedRowRender)
-        return expandedRowRender(record.key);
-      else return;
-    } else return <>not loaded</>;
+    const queryParams = `&global_search=${searchTerm}&sort_by=${sortedColumn}&sort_order=${sortOrder}&offset=20`;
+    assetDataRefetch(queryParams);
   };
 
   const [showUpload, setShowUpload] = useState(false);
@@ -62,7 +58,7 @@ const DasboardAssetTable = ({
         <h6>Asset Details</h6>
       </div>
       <div className="ml-2">
-      <TableNavbar
+        <TableNavbar
           showUpload={showUpload}
           setShowUpload={setShowUpload}
           assetDataRefetch={assetDataRefetch}
@@ -70,10 +66,13 @@ const DasboardAssetTable = ({
           searchTerm={searchTerm}
           onSearch={handleSearch}
           setSearchTerm={setSearchTerm}
+          setJson_query={setJson_query}
+          json_query={json_query}
         />
       </div>
-
-      <div style={{ position: "relative", display: "inline-block", width: "80vw" }}>
+      <div
+        style={{ position: "relative", display: "inline-block", width: "80vw" }}
+      >
         <SideDrawerComponent
           displayDrawer={showUpload}
           closeDrawer={closeImportDrawer}
@@ -83,9 +82,11 @@ const DasboardAssetTable = ({
         <br></br>
         <br></br>
         <Table
-          columns={columns.map((column: { dataIndex: string; }) => ({ ...column, sortOrder: column.dataIndex === sortedColumn ? sortOrder : undefined }))} 
-
-          // columns={columns}
+          columns={columns.map((column: { dataIndex: string }) => ({
+            ...column,
+            sortOrder:
+              column.dataIndex === sortedColumn ? sortOrder : undefined,
+          }))}
           dataSource={assetData}
           className="mainTable"
           loading={isAssetDataLoading}
@@ -108,9 +109,16 @@ const DasboardAssetTable = ({
               }
               total={totalItemCount}
               onChange={(page, pageSize) => {
-                assetPageDataFetch(
-                  `&offset=${(page - 1) * pageSize}&global_search=${searchTerm}`
-                );
+                const offset = (page - 1) * pageSize;
+                let additionalQueryParams = `&offset=${offset}`;
+                if (searchTerm !== "" && searchTerm !== null) {
+                  additionalQueryParams += `&global_search=${searchTerm}`;
+                }
+                if (json_query !== "" && json_query !== null) {
+                  additionalQueryParams += `&json_logic=${json_query}`;
+                }
+                const queryParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}` + additionalQueryParams
+                assetPageDataFetch(queryParams);
               }}
               hideOnSinglePage={true}
             />
@@ -152,4 +160,4 @@ const DasboardAssetTable = ({
   );
 };
 
-export default React.memo(DasboardAssetTable);
+export default React.memo(DashboardAssetTable);

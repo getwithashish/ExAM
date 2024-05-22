@@ -10,9 +10,6 @@ from messages import (
 from asset.service.asset_assign_service.asset_sysadmin_role_assignasset_service import (
     AssetSysadminRoleAssignService,
 )
-from asset.service.asset_assign_service.asset_lead_role_assignasset_service import (
-    AssetLeadRoleAssignService,
-)
 from notification.service.email_service import EmailService
 
 
@@ -27,6 +24,8 @@ class AssignAssetService:
                 "status": status.HTTP_404_NOT_FOUND,
             }
 
+           
+
         try:
             asset = Asset.objects.get(asset_uuid=asset_uuid)
         except Asset.DoesNotExist:
@@ -37,6 +36,7 @@ class AssignAssetService:
                 "message": STATUS_EXPIRED_OR_DISPOSED,
                 "status": status.HTTP_400_BAD_REQUEST,
             }
+            
 
         if requester_role == "SYSTEM_ADMIN":
             message = AssetSysadminRoleAssignService.assign_asset(
@@ -51,20 +51,21 @@ class AssignAssetService:
                 "message": UNAUTHORIZED_NO_PERMISSION,
                 "status": status.HTTP_403_FORBIDDEN,
             }
+            
 
         if not message:
             return {
                 "message": "Failed to assign asset",
                 "status": status.HTTP_500_INTERNAL_SERVER_ERROR,
             }
+            return {
+                "message": "Failed to assign asset",
+                "status": status.HTTP_500_INTERNAL_SERVER_ERROR,
+            }
 
-        # Determine the recipient and adjust email content accordingly
-        # if employee == requester:
+        
         recipient = f"{employee.employee_name}\n\n"
-        # else:
-        #     recipient = f"Dear {employee.employee_name},\n\nThe following asset has been assigned to you:\n\n"
-
-        # Create a more structured and professional email content
+      
         email_subject = "Asset Assignment Notification"
 
         email_body = (
