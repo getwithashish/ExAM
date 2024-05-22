@@ -28,8 +28,7 @@ class AssetNormalQueryService(AssetQueryAbstract):
 
     def get_asset_details(self, serializer, request):
         self.pagination = LimitOffsetPagination()
-        queryset = Asset.objects.all()
-        queryset = queryset.filter(is_deleted=False)
+        queryset = Asset.objects.all().filter(is_deleted=False)
 
         global_search = request.query_params.get("global_search")
 
