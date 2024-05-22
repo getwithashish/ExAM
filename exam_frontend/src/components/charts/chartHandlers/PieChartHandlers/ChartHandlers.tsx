@@ -244,6 +244,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     console.log("assetTypeData", assetTypeData);
     const assetTypeValue = parseInt(e.target.value);
+    
 
     if (assetTypeValue === 0) {
       console.log("Selected Asset Type: None");

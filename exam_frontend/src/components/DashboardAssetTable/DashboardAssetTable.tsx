@@ -38,6 +38,10 @@ const DashboardAssetTable = ({
   setSearchTerm,
   setJson_query,
   json_query,
+  assetState,
+  assignState,
+  detailState,
+  selectedTypeId
 }: AssetTableProps) => {
   // const [searchTerm, setSearchTerm] = useState<string>("");
 
@@ -117,6 +121,18 @@ const DashboardAssetTable = ({
                 if (json_query !== "" && json_query !== null) {
                   additionalQueryParams += `&json_logic=${json_query}`;
                 }
+                if (assetState !== "" && assetState!== null){
+                  additionalQueryParams +=`&status=${assetState}`;
+                }
+                if (detailState !== "" && detailState!== null){
+                  additionalQueryParams +=`&asset_detail_status=${detailState}`;
+                }
+                if (assignState !== "" && assignState!== null){
+                  additionalQueryParams +=`&assign_status=${assignState}`;
+                }
+                if (selectedTypeId !== 0) {
+                  additionalQueryParams += `&asset_type=${selectedTypeId}`;
+                }                
                 const queryParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}` + additionalQueryParams
                 assetPageDataFetch(queryParams);
               }}

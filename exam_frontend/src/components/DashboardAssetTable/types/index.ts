@@ -152,6 +152,9 @@ export interface DataType {
     assetPageDataFetch: (params: string) => void;    
     searchTerm: string;
     json_query: string;
+    assetState: string | null;
+    detailState :string | null;
+    assignState: string | null;
   }
   
   
