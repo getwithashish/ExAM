@@ -423,6 +423,14 @@ const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
     },
     
 ,    
+{
+  title: "License Type",
+  dataIndex: "license_type",
+  responsive: ["md"],
+  width: 120,
+ 
+  render: renderClickableColumn("license_type", "license_type"),
+},
 
     {
       title: "Model Number",
@@ -599,6 +607,7 @@ const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
     configuration: result.configuration,
     custodian: result.custodian?.employee_name,
     product_name: result.product_name,
+    license_type:result.license_type,
     owner: result.owner,
     requester: result.requester?.username,
     AssignAsset: "assign",
