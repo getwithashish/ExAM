@@ -20,6 +20,7 @@ import {
 import DashboardAssetTable from "./DashboardAssetTable";
 
 import TimelineViewDrawer from "../TimelineLog/TimeLineDrawer";
+import { json } from "react-router";
 
 interface ExpandedDataType {
   key: React.Key;
@@ -48,7 +49,7 @@ const DashboardAssetHandler = ({
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [sortOrders, setSortOrders] = useState({});
   const [searchTerm, setSearchTerm] = useState<string>("");
-
+  const [json_query, setJson_query] = useState<string>("");
 
   useEffect(() => {
     if (selectedTypeId !== 0) {
@@ -80,7 +81,9 @@ const DashboardAssetHandler = ({
     assetDataRefetch({ force: true });
   };
   const reset = () => {
-    setQueryParam(" ");
+    setQueryParam("");
+    setJson_query("");
+    setSearchTerm("");
     refetchAssetData();
   };
   const statusOptions =
@@ -147,29 +150,34 @@ const DashboardAssetHandler = ({
       </div>
     );
 
+  const handleSort = (column: string) => {
+    const isCurrentColumn = column === sortedColumn;
+    let newSortOrders = { ...sortOrders };
+    if (!isCurrentColumn) {
+      newSortOrders = { [column]: "asc" };
+    } else {
+      newSortOrders[column] = sortOrders[column] === "asc" ? "desc" : "asc";
+    }
+    setSortedColumn(column);
+    setSortOrders(newSortOrders);
+    const queryParams = Object.keys(newSortOrders)
+      .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
+      .join("");
+    let additionalQueryParams = "&offset=${0}";
+    if (searchTerm !== "" && searchTerm !== null) {
+      additionalQueryParams += `&global_search=${searchTerm}`;
+    }
+    if (json_query !== "" && json_query !== null) {
+      additionalQueryParams += `&json_logic=${json_query}`;
+    }
+    refetchAssetData(queryParams + additionalQueryParams);
+  };
 
-    const handleSort = (column: string) => {
-      const isCurrentColumn = column === sortedColumn;  
-      let newSortOrders = { ...sortOrders };  
-      if (!isCurrentColumn) {
-        newSortOrders = { [column]: "asc" };
-      } else {
-        newSortOrders[column] = sortOrders[column] === "asc" ? "desc" : "asc";
-      }  
-      setSortedColumn(column);
-      setSortOrders(newSortOrders);  
-      const queryParams = Object.keys(newSortOrders)
-        .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
-        .join("");  
-      const additionalQueryParams = `&global_search=${searchTerm}&offset=${0}`;  
-      refetchAssetData(queryParams + additionalQueryParams);
-    };
-    
   <div>
     <h1>Asset Overview</h1>
   </div>;
 
-const columns = [
+  const columns = [
     {
       title: "Product Name",
       dataIndex: "product_name",
@@ -371,28 +379,29 @@ const columns = [
       }),
       render: renderClickableColumn("Warranty Period", "warranty_period"),
     },
+   
 
+    
     {
       title: "Expiry Date",
       dataIndex: "expiry_date",
       responsive: ["md"],
       width: 120,
       render: (_, record) => {
-        const dateOfPurchase = record.date_of_purchase
-          ? new Date(record.date_of_purchase)
-          : null;
+        const dateOfPurchase = record.date_of_purchase ? new Date(record.date_of_purchase) : null;
         const warrantyPeriod = parseInt(record.warranty_period) || 0; // Defaulting to 0 if warranty_period is not provided or invalid
         if (dateOfPurchase instanceof Date && !isNaN(dateOfPurchase)) {
-          const expiryDate = new Date(
-            dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000
-          ); // Calculating expiry date in milliseconds
-          const formattedExpiryDate = expiryDate.toISOString().split("T")[0];
+          const expiryDate = new Date(dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000); // Calculating expiry date in milliseconds
+          const formattedExpiryDate = expiryDate.toISOString().split('T')[0];
+          const currentDate = new Date();
+          const isExpired = expiryDate < currentDate;
+    
           // Apply renderClickableColumn logic here
           return (
             <div
               data-column-name="Expiry Date"
               onClick={() => handleColumnClick(record, "Expiry Date")}
-              style={{ cursor: "pointer", color: "red" }}
+              style={{ cursor: "pointer", color: isExpired ? "red" : "green", fontWeight: isExpired ? "bold" : "bold" }}
             >
               {formattedExpiryDate}
             </div>
@@ -402,6 +411,10 @@ const columns = [
         }
       },
     },
+    
+    
+,    
+
 
     {
       title: "Model Number",
@@ -571,38 +584,43 @@ const columns = [
     AssignAsset: "assign",
     created_at: result.created_at,
     updated_at: result.updated_at,
+    
   }));
 
   const drawerTitle = "Asset Details";
 
   return (
-    <DashboardAssetTable
-      drawerTitle={drawerTitle}
-      isAssetDataLoading={isAssetDataLoading}
-      handleRowClick={handleRowClick}
-      onCloseDrawer={onCloseDrawer}
-      selectedRow={selectedRow}
-      drawerVisible={drawerVisible}
-      assetData={data}
-      sortOrder={sortOrder}
-      sortedColumn={sortedColumn}
-      totalItemCount={assetData?.count}
-      assetPageDataFetch={setQueryParam}
-      columns={columns}
-      reset={reset}
-      memoryData={memoryData}
-      assetTypeData={assetTypeData}
-      locations={locations}
-      statusOptions={statusOptions}
-      bordered={false}
-      businessUnitOptions={businessUnitOptions}
-      assetDataRefetch={refetchAssetData}
-      handleUpdateData={function (updatedData: { key: any }): void {
-        throw new Error("Function not implemented.");
-      }}
-      searchTerm={searchTerm}
-      setSearchTerm={setSearchTerm}
-    />
+    <div>
+      <DashboardAssetTable
+        drawerTitle={drawerTitle}
+        isAssetDataLoading={isAssetDataLoading}
+        handleRowClick={handleRowClick}
+        onCloseDrawer={onCloseDrawer}
+        selectedRow={selectedRow}
+        drawerVisible={drawerVisible}
+        assetData={data}
+        sortOrder={sortOrder}
+        sortedColumn={sortedColumn}
+        totalItemCount={assetData?.count}
+        assetPageDataFetch={setQueryParam}
+        columns={columns}
+        reset={reset}
+        memoryData={memoryData}
+        assetTypeData={assetTypeData}
+        locations={locations}
+        statusOptions={statusOptions}
+        bordered={false}
+        businessUnitOptions={businessUnitOptions}
+        assetDataRefetch={refetchAssetData}
+        handleUpdateData={function (updatedData: { key: any }): void {
+          throw new Error("Function not implemented.");
+        }}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        setJson_query={setJson_query}
+        json_query={json_query}
+      />
+    </div>
   );
 };
 

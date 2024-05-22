@@ -1,13 +1,5 @@
 import React from "react";
-
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
-import {
-  getAssetTypeOptions,
-  getLocationOptions,
-  getMemoryOptions,
-  getBusinessUnitOptions,
-  getAssetDetails,
-} from "./api/getAssetDetails";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -17,6 +9,13 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import { useQuery } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
+import {
+  getAssetTypeOptions,
+  getLocationOptions,
+  getMemoryOptions,
+  getBusinessUnitOptions,
+  getAssetDetails,
+} from "./api/getAssetDetails";
 import {
   createAssetType,
   createBusinessUnit,
@@ -50,7 +49,7 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
     toggleOpen(false);
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     mutate(dialogValue);
     handleClose();
@@ -60,11 +59,11 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
     if (!foreignFieldValueNames.includes(assetField)) {
       return assetField;
     } else {
-      if (assetField == "location" || assetField == "invoice_location") {
+      if (assetField === "location" || assetField === "invoice_location") {
         return "location_name";
-      } else if (assetField == "memory") {
+      } else if (assetField === "memory") {
         return "memory_space";
-      } else if (assetField == "user") {
+      } else if (assetField === "user") {
         return "username";
       } else {
         return `${assetField}_name`;
@@ -80,16 +79,17 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
   };
 
   const generateRandomString = (length) => {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let result = "";
     const charactersLength = characters.length;
-  
+
     for (let i = 0; i < length; i++) {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
-  
+
     return result;
-  }
+  };
 
   const [isQueryEnabled, setIsQueryEnabled] = React.useState(false);
 
@@ -101,18 +101,18 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
     queryKey: ["assetList", assetField],
     queryFn: () => {
       if (assetField !== "") {
-        if (assetField == "asset_type") {
+        if (assetField === "asset_type") {
           return getAssetTypeOptions();
         } else if (
-          assetField == "location" ||
-          assetField == "invoice_location"
+          assetField === "location" ||
+          assetField === "invoice_location"
         ) {
           return getLocationOptions();
-        } else if (assetField == "business_unit") {
+        } else if (assetField === "business_unit") {
           return getBusinessUnitOptions();
-        } else if (assetField == "memory") {
+        } else if (assetField === "memory") {
           return getMemoryOptions();
-        } else if (assetField == "user") {
+        } else if (assetField === "user") {
           return getUserOptions();
         } else {
           return getAssetDetails(
@@ -128,16 +128,16 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
   const { mutate } = useMutation({
     mutationFn: (dialogValue) => {
       if (assetField !== "") {
-        if (assetField == "asset_type") {
+        if (assetField === "asset_type") {
           return createAssetType(dialogValue);
         } else if (
-          assetField == "location" ||
-          assetField == "invoice_location"
+          assetField === "location" ||
+          assetField === "invoice_location"
         ) {
           return createLocation(dialogValue);
-        } else if (assetField == "business_unit") {
+        } else if (assetField === "business_unit") {
           return createBusinessUnit(dialogValue);
-        } else if (assetField == "memory") {
+        } else if (assetField === "memory") {
           return createMemory(dialogValue);
         }
       }
@@ -168,7 +168,11 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
                   [assetFieldKeyName()]: newValue.inputValue,
                 });
               } else {
-                setValue(newValue);
+                if (newValue == null) {
+                  setValue("");
+                } else {
+                  setValue(newValue);
+                }
               }
             }}
             onOpen={() => {
@@ -209,7 +213,7 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
                 {option[assetFieldKeyName()]}
               </li>
             )}
-            sx={{ width: 300 }}
+            sx={{ width: "100%" }}
             renderInput={(params) => <TextField {...params} label="Search" />}
           />
 
@@ -300,7 +304,7 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
           renderOption={(props, option) => (
             <li {...props}>{option[assetFieldKeyName()]}</li>
           )}
-          sx={{ width: 300 }}
+          sx={{ width: "100%" }}
           renderInput={(params) => <TextField {...params} label="Search" />}
         />
       )}

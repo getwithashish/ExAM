@@ -29,42 +29,27 @@ import MyApprovalPage from "./pages/MyApprovals/MyApprovalPage";
 import Deallocate from "./pages/Deallocate/Deallocate";
 import RejectedAllocationAsset from "./pages/RejectedAssetPage/RejectedAllocation";
 import AssetSense from "./components/ChatBot/assetSense";
-
+import ExpiredAssets from "./pages/ExpiredAssets/ExpiredAssets"
 const ExamRoutes = () => {
   const { authenticated, setAuthenticated, userRole } = useAuth();
 
   useLayoutEffect(() => {
-    // Code to execute before initial render
-    console.log("Code executed before initial render");
     const storedValue = localStorage.getItem("jwt");
     if (storedValue) {
       setAuthenticated(true);
-      //   setValue(JSON.parse(storedValue));
     }
   }, []);
 
   useEffect(() => {
-    // Load value from localStorage when component mounts
     const storedValue = localStorage.getItem("jwt");
     console.log("JWT in auth context: ", storedValue);
     if (storedValue) {
       setAuthenticated(true);
-      //   setValue(JSON.parse(storedValue));
     }
   }, []);
 
   return (
     <BrowserRouter>
-      {/* <SidebarComponentNew>
-            <Routes>
-              <Route path="/" element={<Login />} />
-
-              <Route path="/dashboard" element={<DashboardPage />} index />
-              <Route path="/logout" element={<Logout />} />
-              <Route path="/requests" element={<RequestPage />} />
-            </Routes>
-          </SidebarComponentNew> */}
-
       <Routes>
         <Route element={<ProtectedRoute />}>
           <Route
@@ -91,17 +76,12 @@ const ExamRoutes = () => {
                     element={<ModificationRequests />}
                   />
                   <Route path="/assign_requests" element={<AssignPage />} />
-                  <Route path="/rejected_assets" element={<RejectedAsset />} />
-                  <Route
-                    path="/rejected_allocation"
-                    element={<RejectedAllocationAsset />}
-                  />
-                  <Route
-                    path="/approved_requests"
-                    element={<ApprovedRequestPage />}
-                  />
-                  <Route path="/my_approvals" element={<MyApprovalPage />} />
-                  <Route path="/chat" element={<AssetSense />} />
+                  <Route path="/rejected_assets" element={<RejectedAsset/>}/>
+                  <Route path="/rejected_allocation" element={<RejectedAllocationAsset/>}/>
+                  <Route  path="/approved_requests" element={<ApprovedRequestPage />}/>
+                  <Route path="/my_approvals" element={<MyApprovalPage />}/>
+                  <Route path="/chat" element={<AssetSense/>}/>
+                  <Route path="/expired_assets" element={<ExpiredAssets/>} />
                 </Routes>
               </SidebarComponentNew>
             }
