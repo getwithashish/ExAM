@@ -244,7 +244,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     console.log("assetTypeData", assetTypeData);
     const assetTypeValue = parseInt(e.target.value);
-    
+
 
     if (assetTypeValue === 0) {
       console.log("Selected Asset Type: None");
@@ -366,12 +366,9 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
           ))}
         </select>
       </div>
-      <div className="items-center justify-center flex">
+      <>
         <Stack
           direction="row"
-          spacing={1}
-          sx={{ flexWrap: "wrap" }}
-          className="ml-6"
         >
           {assetFilteredChartData.length === 0 &&
           detailFilteredChartData.length === 0 &&
@@ -380,26 +377,28 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
               <NoData />
             </div>
           ) : (
-            <>
-              <div className=" pt-6 mt-4">
-                <div className="text-center">
+            < Stack
+            direction="row"
+            sx={{ flexWrap: "wrap" }}
+            className="m-auto lg:p-10" 
+          >
+              <div className=" pt-6 mt-4 text-center items-center justify-center">
                   <span className="font-semibold font-display leading-none text-gray-900 dark:text-white text-lg">
                     Asset Status
                   </span>
-                </div>
                 <PieChart
-                  margin={{ top: 10, bottom: 0, left: 10, right: 0 }}
+                  margin={{ top: 0, bottom: 0, left: 0, right: 0 }}
                   series={[
                     {
                       data: assetFilteredChartData,
-                      innerRadius: 40,
-                      outerRadius: 140,
+                      innerRadius: 60,
+                      outerRadius: 150,
                       paddingAngle: 1,
                       cornerRadius: 10,
                       startAngle: 0,
                       endAngle: 360,
-                      cx: 130,
-                      cy: 160,
+                      cx: 200,
+                      cy: 200,
                       highlightScope: { faded: "global", highlighted: "item" },
                       arcLabel: (item) => `${item.value}`,
                       arcLabelMinAngle: 10,
@@ -418,8 +417,8 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                     },
                   }}
                   onClick={handleAssetItemClick}
-                  width={300}
-                  height={380}
+                  width={400}
+                  height={400}
                   slotProps={{
                     legend: {
                       direction: "row",
@@ -436,25 +435,23 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                   }}
                 />
               </div>
-              <div className="item pt-6 mt-4">
-                <div className="text-center">
+              <div className=" pt-6 mt-4 text-center items-center justify-center">
                   <span className="font-semibold font-display leading-none text-gray-900 dark:text-white text-lg">
                     Approval Status
                   </span>
-                </div>
                 <PieChart
-                  margin={{ top: 10, bottom: 0, left: 10, right: 0 }}
+                  margin={{ top: 0, bottom: 0, left: 0, right: 0 }}
                   series={[
                     {
                       data: detailFilteredChartData,
                       innerRadius: 60,
-                      outerRadius: 140,
+                      outerRadius: 150,
                       paddingAngle: 1,
                       cornerRadius: 10,
                       startAngle: 0,
                       endAngle: 360,
-                      cx: 135,
-                      cy: 160,
+                      cx: 200,
+                      cy: 200,
                       highlightScope: { faded: "global", highlighted: "item" },
                       arcLabel: (item) => `${item.value}`,
                       arcLabelMinAngle: 10,
@@ -473,8 +470,8 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                     },
                   }}
                   onClick={handleDetailItemClick}
-                  width={300}
-                  height={380}
+                  width={400}
+                  height={400}
                   slotProps={{
                     legend: {
                       direction: "row",
@@ -491,25 +488,23 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                   }}
                 />
               </div>
-              <div className="item pt-6 mt-4">
-                <div className="text-center">
+              <div className=" pt-6 mt-4 text-center items-center justify-center">
                   <span className="font-semibold font-display leading-none text-gray-900 dark:text-white text-lg">
                     Allocation Status
                   </span>
-                </div>
                 <PieChart
-                  margin={{ top: 10, bottom: 0, left: 10, right: 0 }}
+                  margin={{ top: 0, bottom: 0, left: 0, right: 0 }}
                   series={[
                     {
                       data: assignFilteredChartData,
                       innerRadius: 60,
-                      outerRadius: 140,
+                      outerRadius: 150,
                       paddingAngle: 1,
                       cornerRadius: 10,
                       startAngle: 0,
                       endAngle: 360,
-                      cx: 135,
-                      cy: 160,
+                      cx: 200,
+                      cy: 200,
                       highlightScope: { faded: "global", highlighted: "item" },
                       arcLabel: (item) => `${item.value}`,
                       arcLabelMinAngle: 10,
@@ -528,8 +523,8 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                     },
                   }}
                   onClick={handleAssignItemClick}
-                  width={300}
-                  height={380}
+                  width={400}
+                  height={400}
                   slotProps={{
                     legend: {
                       direction: "row",
@@ -546,10 +541,10 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                   }}
                 />
               </div>
-            </>
+            </Stack>
           )}
         </Stack>
-      </div>
+      </>
     </Stack>
   );
 };

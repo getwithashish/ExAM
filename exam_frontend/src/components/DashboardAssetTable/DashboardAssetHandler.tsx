@@ -201,10 +201,6 @@ const DashboardAssetHandler = ({
     refetchAssetData(queryParams + additionalQueryParams)
   };
 
-  <div>
-    <h1>Asset Overview</h1>
-  </div>;
-
   const columns = [
     {
       title: "Product Name",

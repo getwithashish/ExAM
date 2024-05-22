@@ -28,7 +28,6 @@ const DashboardAssetTable = ({
   locations,
   memoryData,
   assetTypeData,
-  expandedRowRender,
   assetDataRefetch,
   reset,
   sortOrder,
@@ -43,7 +42,6 @@ const DashboardAssetTable = ({
   detailState,
   selectedTypeId
 }: AssetTableProps) => {
-  // const [searchTerm, setSearchTerm] = useState<string>("");
 
   const handleSearch = (searchTerm: string) => {
     setSearchTerm(searchTerm);
@@ -57,11 +55,13 @@ const DashboardAssetTable = ({
   };
 
   return (
-    <div className="bg-white py-4 pt-20">
+    <div className="bg-white py-4">
       <div className="mainHeading font-medium font-display font-semibold">
-        <h6>Asset Details</h6>
+        <span className="font-semibold font-display text-grey-900 dark:text-white text-xl">
+          Asset Details
+        </span>
       </div>
-      <div className="ml-2">
+      <div className="mx-10">
         <TableNavbar
           showUpload={showUpload}
           setShowUpload={setShowUpload}
@@ -75,7 +75,7 @@ const DashboardAssetTable = ({
         />
       </div>
       <div
-        style={{ position: "relative", display: "inline-block", width: "80vw" }}
+        style={{ position: "relative", display: "inline-block", width: "83vw" }}
       >
         <SideDrawerComponent
           displayDrawer={showUpload}
@@ -101,7 +101,6 @@ const DashboardAssetTable = ({
           style={{
             fontSize: "50px",
             borderColor: "white",
-            // width: "fit-content",
             marginLeft: "3.5%",
             boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
           }}
@@ -121,18 +120,18 @@ const DashboardAssetTable = ({
                 if (json_query !== "" && json_query !== null) {
                   additionalQueryParams += `&json_logic=${json_query}`;
                 }
-                if (assetState !== "" && assetState!== null){
-                  additionalQueryParams +=`&status=${assetState}`;
+                if (assetState !== "" && assetState !== null) {
+                  additionalQueryParams += `&status=${assetState}`;
                 }
-                if (detailState !== "" && detailState!== null){
-                  additionalQueryParams +=`&asset_detail_status=${detailState}`;
+                if (detailState !== "" && detailState !== null) {
+                  additionalQueryParams += `&asset_detail_status=${detailState}`;
                 }
-                if (assignState !== "" && assignState!== null){
-                  additionalQueryParams +=`&assign_status=${assignState}`;
+                if (assignState !== "" && assignState !== null) {
+                  additionalQueryParams += `&assign_status=${assignState}`;
                 }
                 if (selectedTypeId !== 0) {
                   additionalQueryParams += `&asset_type=${selectedTypeId}`;
-                }                
+                }
                 const queryParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}` + additionalQueryParams
                 assetPageDataFetch(queryParams);
               }}
@@ -142,11 +141,11 @@ const DashboardAssetTable = ({
         />
       </div>
       <DrawerViewRequest
+        title=""
         open={drawerVisible}
         onClose={onCloseDrawer}
         selectedRow={selectedRow}
         drawerTitle={drawerTitle}
-        // button={button}
         onUpdateData={handleUpdateData}
         closeIcon={<CloseOutlined rev={undefined} />}
       >
