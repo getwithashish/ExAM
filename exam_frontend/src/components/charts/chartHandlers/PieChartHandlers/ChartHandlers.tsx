@@ -12,7 +12,7 @@ import {
   PieChartGraphProps,
 } from "../../types/ChartTypes";
 import axiosInstance from "../../../../config/AxiosConfig";
-import NoData from "../../../NoData/NoData";
+import { NoData } from "../../../NoData/NoData";
 import { statusColors } from "./StatusColors";
 import { statusMapping } from "./statusMapping";
 
@@ -374,7 +374,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
           detailFilteredChartData.length === 0 &&
           assignFilteredChartData.length === 0 ? (
             <div className="flex justify-center items-center h-full w-full">
-              <NoData />
+              <NoData/>
             </div>
           ) : (
             < Stack
