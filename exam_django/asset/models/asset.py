@@ -2,6 +2,7 @@ from django.db import models
 import uuid
 from user_auth.models import User
 
+
 asset_category_choices = (("HARDWARE", "HARDWARE"), ("SOFTWARE", "SOFTWARE"))
 
 owner_choices = (("EXPERION", "EXPERION"),)

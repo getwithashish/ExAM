@@ -5,26 +5,26 @@ import { getAssetDetails } from "../../components/DashboardAssetTable/api/getDas
 
 const ExpiredAssets = () => {
   const [expiredAssets, setExpiredAssets] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const queryParamProp = "&status=IN STORE";
+  const [loading, setLoading] = useState(false);
+  const queryParamProp = "&expired=true";
   const heading = "Expired Assets";
 
-  useEffect(() => {
-    // Fetch asset details
-    const fetchData = async () => {
-      try {
-        const currentDate = new Date().toISOString().split("T")[0];
-        const assetData = await getAssetDetails(`expiry_date=${currentDate}`);
-        setExpiredAssets(assetData.results);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching asset details:", error);
-        setLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   // Fetch asset details
+  //   const fetchData = async () => {
+  //     try {
+  //       const currentDate = new Date().toISOString().split("T")[0];
+  //       const assetData = await getAssetDetails(`expiry_date=${currentDate}`);
+  //       setExpiredAssets(assetData.results);
+  //       setLoading(false);
+  //     } catch (error) {
+  //       console.error("Error fetching asset details:", error);
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
 
   return (
     <div style={{ background: "white" }}>
@@ -83,6 +83,7 @@ const ExpiredAssets = () => {
             queryParamProp={queryParamProp}
             heading={heading}
             isMyApprovalPage={true}
+            // It seems like the below assets is not used, remove if not used
             assets={expiredAssets} // Pass the expired assets to the handler
           />
         )}

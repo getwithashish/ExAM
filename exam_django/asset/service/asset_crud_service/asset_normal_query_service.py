@@ -5,9 +5,8 @@ from rest_framework.pagination import LimitOffsetPagination
 from asset.serializers.asset_serializer import AssetReadSerializer
 from asset.service.asset_crud_service.asset_query_abstract import AssetQueryAbstract
 from messages import ASSET_LIST_SUCCESSFULLY_RETRIEVED
-from datetime import datetime
-from django.db.models import F, ExpressionWrapper, fields
-from django.db.models.functions import Now
+from dateutil.relativedelta import relativedelta
+from django.utils import timezone
 
 
 class AssetNormalQueryService(AssetQueryAbstract):
@@ -29,8 +28,7 @@ class AssetNormalQueryService(AssetQueryAbstract):
 
     def get_asset_details(self, serializer, request):
         self.pagination = LimitOffsetPagination()
-        queryset = Asset.objects.all()
-        queryset = queryset.filter(is_deleted=False)
+        queryset = Asset.objects.all().filter(is_deleted=False)
 
         global_search = request.query_params.get("global_search")
 
@@ -56,7 +54,7 @@ class AssetNormalQueryService(AssetQueryAbstract):
         sort_by = request.query_params.get("sort_by")
         sort_order = request.query_params.get("sort_order")  # 'asc' or 'desc'
 
-        expiry_date_str = request.query_params.get("expiry_date")
+        expired = request.query_params.get("expired")
 
         query_params = request.query_params
         query_params_to_exclude = [
@@ -75,7 +73,7 @@ class AssetNormalQueryService(AssetQueryAbstract):
             "global_search",
             "sort_by",
             "sort_order",
-            "expiry_date",
+            "expired",
         ]
         required_query_params = self.remove_fields_from_dict(
             query_params, query_params_to_exclude
@@ -129,20 +127,20 @@ class AssetNormalQueryService(AssetQueryAbstract):
 
         queryset = queryset.filter(**filter_kwargs)
 
-        # Annotate queryset with expiry_date
-        queryset = queryset.annotate(
-            expiry_date=ExpressionWrapper(
-                F("date_of_purchase") + F("warranty_period"),
-                output_field=fields.DateField(),
-            )
-        )
-
-        if expiry_date_str:
+        if expired:
             try:
-                expiry_date = datetime.strptime(expiry_date_str, "%Y-%m-%d").date()
-                queryset = queryset.filter(expiry_date__lte=expiry_date)
-            except ValueError:
-                pass
+                current_date = timezone.now().date()
+
+                queryset = queryset.exclude(date_of_purchase__isnull=True).exclude(
+                    warranty_period__isnull=True
+                )
+                for ele in queryset:
+                    if (
+                        ele.date_of_purchase + relativedelta(months=ele.warranty_period)
+                    ) > current_date:
+                        queryset = queryset.exclude(asset_uuid=ele.asset_uuid)
+            except Exception as e:
+                print("Error Occured: ", e)
 
         page = self.pagination.paginate_queryset(queryset, request)
 
