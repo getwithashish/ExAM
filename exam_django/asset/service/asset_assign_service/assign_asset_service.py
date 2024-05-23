@@ -1,5 +1,6 @@
 # asset_assign_service.py
 from rest_framework import status
+from asset.service.asset_assign_service.asset_lead_role_assignasset_service import AssetLeadRoleAssignService
 from asset.models import Employee, Asset
 from messages import (
     UNAUTHORIZED_NO_PERMISSION,
@@ -58,11 +59,7 @@ class AssignAssetService:
                 "message": "Failed to assign asset",
                 "status": status.HTTP_500_INTERNAL_SERVER_ERROR,
             }
-            return {
-                "message": "Failed to assign asset",
-                "status": status.HTTP_500_INTERNAL_SERVER_ERROR,
-            }
-
+          
         
         recipient = f"{employee.employee_name}\n\n"
       

@@ -17,6 +17,7 @@ class AssetLeadRoleApproveService(AssetUserRoleApproveAbstract):
 
     def approve_request(self, asset, request):
         approval_type = request.data.get("approval_type")
+       
         if approval_type == "ASSET_DETAIL_STATUS":
             asset_operation_approve_service = AssetDetailLeadRoleApproveService()
         elif approval_type == "ASSIGN_STATUS":
