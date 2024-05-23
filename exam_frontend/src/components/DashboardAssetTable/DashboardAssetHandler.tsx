@@ -195,7 +195,7 @@ const DashboardAssetHandler = ({
     if (assignState !== "" && assignState !== null) {
       additionalQueryParams += `&assign_status=${assignState}`;
     }
-    if (selectedTypeId !== null) {
+    if (selectedTypeId !== 0) {
       additionalQueryParams += `&asset_type=${selectedTypeId}`;
     }
     refetchAssetData(queryParams + additionalQueryParams)
