@@ -116,6 +116,7 @@ class AssetMutationService:
             f"Configuration: {asset_data['configuration']}\n"
             f"Accessories: {asset_data['accessories']}\n"
             f"Notes: {asset_data['notes']}\n\n"
+            f"LicenseType: {asset_data['license_type']}\n"
             f"Please make sure to familiarize yourself with the specifications of the assigned asset.\n\n"
             f"We trust that the asset will be utilized effectively to enhance the productivity.\n\n"
             f"This asset was created by {requester_name}.\n\n"
