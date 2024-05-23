@@ -101,60 +101,6 @@ const AssetCountComponent = () => {
           </div>
         </div>
       </div>
-      {/* <div
-        className=" my-2 py-4 items-center justify-center bg-gradient-to-r from-blue-800 to-blue-800 hover:from-blue-900 hover:to-blue-900 rounded-lg lg:p-6 md:p-4 sm:p-2 shadow-md"
-        style={{ boxShadow: "0 0 5px rgba(0, 0, 0, 0.5)" }}
-      >
-        <div className="text-white text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-light text-center">
-          Remaining approvals
-        <div className="text-white text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-light text-center">
-          Remaining approvals
-        </div>
-        <div
-          className=" font-semibold text-center flex-row gap-4"
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-          }}
-        >
-          <div className="text-white text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-medium">
-            Pending: <br />
-            <div className="text-white text-xl sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-semibold">
-              {pendingAssetsCount + pendingAssignsCount}
-            </div>
-          </div>
-          <div className="text-white text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-medium">
-            Asset approvals: <br />
-            <div className="text-white text-xl sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-semibold">
-        <div
-          className=" font-semibold text-center flex-row gap-4"
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-          }}
-        >
-          <div className="text-white text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-medium">
-            Pending: <br />
-            <div className="text-white text-xl sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-semibold">
-              {pendingAssetsCount + pendingAssignsCount}
-            </div>
-          </div>
-          <div className="text-white text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-medium">
-            Asset approvals: <br />
-            <div className="text-white text-xl sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-semibold">
-              {pendingAssetsCount}
-            </div>
-          </div>
-          <div className="text-white text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-medium">
-            Assign approvals: <br />
-            <div className="text-white text-xl sm:text-sm md:text-md lg:text-lg xl:text-xl font-display font-semibold">
-              {pendingAssignsCount}
-            </div>
-          </div>
-        </div>
-      </div> */}
       <div
         className="col-span-3 rounded-lg shadow-md m-2"
         style={{ boxShadow: "0 0 5px rgba(0, 0, 0, 0.5)" }}

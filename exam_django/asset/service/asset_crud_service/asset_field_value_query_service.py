@@ -22,7 +22,7 @@ class AssetFieldValueQueryService(AssetQueryAbstract):
     def get_asset_details(self, serializer, request):
 
         self.pagination = LimitOffsetPagination()
-        queryset = Asset.objects.all()
+        queryset = Asset.objects.all().filter(is_deleted=False)
 
         unfilterable_fields = [
             "asset_uuid",

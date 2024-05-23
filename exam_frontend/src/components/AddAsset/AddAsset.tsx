@@ -342,7 +342,7 @@ const AddAsset: React.FC = () => {
     // If it's a software asset and all mandatory fields are filled
     if (formData.asset_category === "SOFTWARE") {
       // Set the asset type to "software"
-      formData.asset_type = 1;
+      formData.asset_type = 9;
 
       if (isAllSoftwareFieldsFilled) {
         // Your software-specific validation logic goes here

@@ -20,7 +20,6 @@ import {
 import DashboardAssetTable from "./DashboardAssetTable";
 
 import TimelineViewDrawer from "../TimelineLog/TimeLineDrawer";
-import { json } from "react-router";
 
 interface ExpandedDataType {
   key: React.Key;
@@ -34,6 +33,10 @@ interface DashboardAssetHandlerProps {
   assetState: string | null;
   detailState: string | null;
   assignState: string | null;
+  setSelectedTypeId: (id: number) => void;
+  setAssetState: (state: string | null) => void;
+  setAssignState: (state: string | null) => void;
+  setDetailState: (state: string | null) => void;
 }
 
 const DashboardAssetHandler = ({
@@ -41,31 +44,37 @@ const DashboardAssetHandler = ({
   assetState,
   detailState,
   assignState,
+  setSelectedTypeId,
+  setAssetState,
+  setAssignState,
+  setDetailState,
 }: DashboardAssetHandlerProps) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [queryParam, setQueryParam] = useState("");
   const [sortedColumn, setSortedColumn] = useState<string | null>(null);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortOrder, _setSortOrder] = useState<"asc" | "desc">("asc");
   const [sortOrders, setSortOrders] = useState({});
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [json_query, setJson_query] = useState<string>("");
 
   useEffect(() => {
-    if (selectedTypeId !== 0) {
-      setQueryParam(`&asset_type=${selectedTypeId}`);
-    } else if (assetState) {
-      setQueryParam(`&status=${assetState}`);
-    } else if (detailState) {
-      setQueryParam(`&asset_detail_status=${detailState}`);
-    } else if (assignState) {
-      setQueryParam(`&assign_status=${assignState}`);
-    } else {
-      setQueryParam(``);
-    }
-  }, [selectedTypeId, assetState, detailState, assignState]);
+    let additionalParams = "";
 
-  useEffect(() => {});
+    if (selectedTypeId !== 0) {
+      additionalParams += `&asset_type=${selectedTypeId}`;
+    }
+    if (assetState) {
+      additionalParams += `&status=${assetState}`;
+    }
+    if (detailState) {
+      additionalParams += `&asset_detail_status=${detailState}`;
+    }
+    if (assignState) {
+      additionalParams += `&assign_status=${assignState}`;
+    }
+    setQueryParam(additionalParams);
+  }, [selectedTypeId, assetState, detailState, assignState]);
 
   const {
     data: assetData,
@@ -80,12 +89,19 @@ const DashboardAssetHandler = ({
     setQueryParam(queryParam);
     assetDataRefetch({ force: true });
   };
+
   const reset = () => {
     setQueryParam("");
     setJson_query("");
     setSearchTerm("");
+    setSelectedTypeId(0);
+    setAssetState("");
+    setDetailState("");
+    setAssignState("");
     refetchAssetData();
   };
+
+
   const statusOptions =
     assetData?.results?.map((item: AssetResult) =>
       item.status === "IN STORE" ? "IN STOCK" : item.status
@@ -140,15 +156,15 @@ const DashboardAssetHandler = ({
     );
   };
   const renderClickableColumn = (columnName, dataIndex) => (_, record) =>
-    (
-      <div
-        data-column-name={columnName}
-        onClick={() => handleColumnClick(record, columnName)}
-        style={{ cursor: "pointer" }}
-      >
-        {record[dataIndex]}
-      </div>
-    );
+  (
+    <div
+      data-column-name={columnName}
+      onClick={() => handleColumnClick(record, columnName)}
+      style={{ cursor: "pointer" }}
+    >
+      {record[dataIndex]}
+    </div>
+  );
 
   const handleSort = (column: string) => {
     const isCurrentColumn = column === sortedColumn;
@@ -170,12 +186,20 @@ const DashboardAssetHandler = ({
     if (json_query !== "" && json_query !== null) {
       additionalQueryParams += `&json_logic=${json_query}`;
     }
-    refetchAssetData(queryParams + additionalQueryParams);
+    if (assetState !== "" && assetState !== null) {
+      additionalQueryParams += `&status=${assetState}`;
+    }
+    if (detailState !== "" && detailState !== null) {
+      additionalQueryParams += `&asset_detail_status=${detailState}`;
+    }
+    if (assignState !== "" && assignState !== null) {
+      additionalQueryParams += `&assign_status=${assignState}`;
+    }
+    if (selectedTypeId !== 0) {
+      additionalQueryParams += `&asset_type=${selectedTypeId}`;
+    }
+    refetchAssetData(queryParams + additionalQueryParams)
   };
-
-  <div>
-    <h1>Asset Overview</h1>
-  </div>;
 
   const columns = [
     {
@@ -379,9 +403,7 @@ const DashboardAssetHandler = ({
       }),
       render: renderClickableColumn("Warranty Period", "warranty_period"),
     },
-   
 
-    
     {
       title: "Expiry Date",
       dataIndex: "expiry_date",
@@ -395,7 +417,6 @@ const DashboardAssetHandler = ({
           const formattedExpiryDate = expiryDate.toISOString().split('T')[0];
           const currentDate = new Date();
           const isExpired = expiryDate < currentDate;
-    
           // Apply renderClickableColumn logic here
           return (
             <div
@@ -414,7 +435,14 @@ const DashboardAssetHandler = ({
     
     
 ,    
-
+{
+  title: "License Type",
+  dataIndex: "license_type",
+  responsive: ["md"],
+  width: 120,
+ 
+  render: renderClickableColumn("license_type", "license_type"),
+},
 
     {
       title: "Model Number",
@@ -540,16 +568,20 @@ const DashboardAssetHandler = ({
     },
   ];
 
+
+
   const handleColumnClick = (record: string[], columnName: string) => {
     if (columnName !== "Assign Asset") {
       handleOtherColumnClick(record);
     }
   };
-
-  const handleOtherColumnClick = (record: SetStateAction<null>) => {
-    setSelectedRow(record);
-    setDrawerVisible(true);
+  const handleOtherColumnClick = (record: any) => {
+    if (record) {
+      setSelectedRow(record);
+      setDrawerVisible(true);
+    }
   };
+
 
   const data = assetData?.results?.map((result) => ({
     key: result.asset_uuid,
@@ -580,11 +612,12 @@ const DashboardAssetHandler = ({
     custodian: result.custodian?.employee_name,
     product_name: result.product_name,
     owner: result.owner,
+    license_type:result.license_type,
     requester: result.requester?.username,
     AssignAsset: "assign",
     created_at: result.created_at,
     updated_at: result.updated_at,
-    
+
   }));
 
   const drawerTitle = "Asset Details";
@@ -619,6 +652,10 @@ const DashboardAssetHandler = ({
         setSearchTerm={setSearchTerm}
         setJson_query={setJson_query}
         json_query={json_query}
+        assetState={assetState}
+        assignState={assignState}
+        detailState={detailState}
+        selectedTypeId={selectedTypeId}
       />
     </div>
   );

@@ -2,6 +2,7 @@ from django.db import models
 import uuid
 from user_auth.models import User
 
+
 asset_category_choices = (("HARDWARE", "HARDWARE"), ("SOFTWARE", "SOFTWARE"))
 
 owner_choices = (("EXPERION", "EXPERION"),)
@@ -99,7 +100,7 @@ class Asset(models.Model):
     configuration = models.CharField(max_length=255, null=True, blank=False)
     accessories = models.CharField(max_length=50, null=True, blank=False)
     notes = models.TextField(null=True)
-    LicenseType=models.CharField(max_length=50,null=True,blank=False)
+    license_type=models.CharField(max_length=50,null=True,blank=False)
     approved_by = models.ForeignKey(
         User,
         related_name="%(app_label)s_%(class)s_conceder",
