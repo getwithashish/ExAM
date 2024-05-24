@@ -1,164 +1,25 @@
-import React, { useState, useEffect } from "react";
-import axiosInstance from "../../config/AxiosConfig";
+import React, { useState } from "react";
 import type { Field } from "react-querybuilder";
-import { Autocomplete } from "@mui/material";
-import TextField from "@mui/material/TextField";
-import { Button, message } from "antd";
+import { message } from "antd";
 import MuiAutocomplete from "./MuiAutocomplete";
 import type { FieldValues } from "./types/types";
-
-const fields: Field[] = [
-  { name: "product_name", label: "Product Name" },
-  { name: "asset_type", label: "Asset Type" },
-  { name: "model_number", label: "Model Number" },
-  { name: "location", label: "Location" },
-  { name: "invoice_location", label: "Invoice Location" },
-  { name: "business_unit", label: "Business Unit" },
-  { name: "os", label: "Operating System" },
-  { name: "processor", label: "Processor" },
-  { name: "memory", label: "Memory" },
-  { name: "storage", label: "Storage" },
-];
-
-interface AutocompleteProps {
-  selectedFieldIndex: number;
-  field: string;
-  value: string;
-  onFieldChange: (
-    event: React.ChangeEvent<HTMLSelectElement>,
-    index: number
-  ) => void;
-  onInputChange: (event: React.ChangeEvent<{}>, newValue: string) => void;
-  setSelectedFields: React.Dispatch<
-    React.SetStateAction<{ field: string; value: string; id: number | null }[]>
-  >; // Add setSelectedFields prop
-}
-
-const CustomAutocomplete: React.FC<AutocompleteProps> = ({
-  selectedFieldIndex,
-  field,
-  value,
-  onFieldChange,
-  onInputChange,
-  setSelectedFields,
-  setFilterValue,
-  suggestion,
-  setSuggestion,
-  fieldEndpointMapping,
-}) => {
-  // Add setSelectedFields to props
-
-  useEffect(() => {
-    const fetchSuggestions = async () => {
-      if (field && value) {
-        try {
-          const endpoint = fieldEndpointMapping[field];
-          let suggestions;
-          const url = endpoint
-            ? `${endpoint}?query=${value}`
-            : `/asset/?limit=20&asset_field_value_filter={"${field}":"${value}"}`;
-
-          const res = await axiosInstance.get(url);
-          console.warn(res);
-          if (res.data.data.results) {
-            const data = res.data.data.results;
-            if (data[0].product_name)
-              suggestions = data.map((result) => result.product_name);
-            else if (data[0].os) suggestions = data.map((result) => result.os);
-            else if (data[0].storage)
-              suggestions = data.map((result) => result.storage);
-            else if (data[0].model_number)
-              suggestions = data.map((result) => result.model_number);
-            else if (data[0].processor)
-              suggestions = data.map((result) => result.processor);
-          } else if (res.data.data) {
-            const data = res.data.data;
-
-            if (data[0].asset_type_name)
-              suggestions = data?.map((result) => ({
-                label: result.asset_type_name,
-                id: result.id,
-              }));
-            else if (data[0].memory_space)
-              suggestions = data?.map((result) => ({
-                label: result.memory_space,
-                id: result.id,
-              }));
-            else if (data[0].business_unit_name)
-              suggestions = data?.map((result) => ({
-                label: result.business_unit_name,
-                id: result.id,
-              }));
-            else if (data[0].location_name) {
-              // suggestions =data?.map(result => result.location_name)
-              suggestions = data?.map((result) => ({
-                label: result.location_name,
-                id: result.id,
-              }));
-              console.error(suggestions);
-            }
-
-            console.warn(suggestions);
-          }
-
-          setSuggestion(suggestions);
-          if (endpoint && suggestions) {
-            // Use the id of the respective field as the filter value
-            setFilterValue(suggestions.find((item) => item.label === value).id);
-          } else {
-            // Use the original value as the filter value
-            setFilterValue(value);
-          }
-        } catch (error) {
-          console.error("Error fetching asset details:", error);
-        }
-      }
-    };
-
-    fetchSuggestions();
-  }, [field, value, axiosInstance]);
-
-  const handleSuggestionClick = (suggestedValue: string | null) => {
-    if (suggestedValue) {
-      setSelectedFields((prev) => {
-        const updatedFields = [...prev];
-        updatedFields[selectedFieldIndex].value = suggestedValue;
-        const suggestedItem = suggestion.find(
-          (item) => item === suggestedValue
-        );
-        updatedFields[selectedFieldIndex].id = suggestedItem
-          ? suggestedItem.id
-          : null; // Update id if the suggestion exists
-        return updatedFields;
-      });
-    }
-    setSuggestion([]); // Clear the suggestion array
-  };
-
-  return (
-    <Autocomplete
-      disablePortal
-      freeSolo
-      autoSelect
-      value={value}
-      inputValue={value}
-      onInputChange={onInputChange}
-      options={suggestion}
-      renderInput={(params) => <TextField {...params} margin="normal" />}
-      onChange={(event, newValue) => handleSuggestionClick(newValue)}
-    />
-  );
-};
+import { Button, IconButton, Stack, createSvgIcon } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Delete, DeleteOutlined } from "@mui/icons-material";
+import { blue, green, pink } from "@mui/material/colors";
 
 interface QueryBuilderComponentProps {
   assetDataRefetch: (queryParam: string) => void;
   setJson_query: (queryParams: string) => void;
 }
 
-export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({
-  assetDataRefetch,
-  setJson_query,
-}) => {
+interface QueryBuilderProps {
+  setJson_query: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export const QueryBuilderComponent: React.FC<
+  QueryBuilderComponentProps & QueryBuilderProps
+> = ({ assetDataRefetch, setJson_query }) => {
   const [selectedFields, setSelectedFields] = useState<
     { field: string; value: string; id: number }[]
   >([]);
@@ -166,108 +27,6 @@ export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({
   const initialState = { selectedFields: [], newFields: [] };
   const [filterValue, setFilterValue] = useState<number | string>();
   const [suggestion, setSuggestion] = useState<string[]>([]);
-
-  const fieldEndpointMapping = {
-    location: "/asset/location",
-    invoice_location: "/asset/location",
-    business_unit: "/asset/business_unit",
-    memory: "/asset/memory_list",
-    asset_type: "/asset/asset_type",
-    // ... define mappings for other relevant fields with separate endpoints
-  };
-
-  const handleInputChange = (
-    event: React.ChangeEvent<{}>,
-    newValue: string | null,
-    index: number
-  ) => {
-    if (newValue !== null) {
-      setSelectedFields((prev) => {
-        const updatedFields = [...prev];
-        updatedFields[index].value = newValue; // Directly assign newValue if it's not null
-        return updatedFields;
-      });
-    } else {
-      // Handle the case where newValue is null (e.g., when the Autocomplete box is cleared)
-      // You might want to clear the value for the specific field or handle it differently
-      setSelectedFields((prev) => {
-        const updatedFields = [...prev];
-        updatedFields[index].value = ""; // Clear the value for the specific field
-        return updatedFields;
-      });
-    }
-  };
-
-  const handleFieldChange = async (
-    event: React.ChangeEvent<HTMLSelectElement>,
-    index: number
-  ) => {
-    const { value } = event.target;
-
-    if (value) {
-      try {
-        const endpoint = fieldEndpointMapping[value];
-        let suggestions = [];
-
-        if (value) {
-          const url = endpoint
-            ? `${endpoint}`
-            : `/asset/?limit=20&asset_field_value_filter={"${value}":""}`;
-
-          const res = await axiosInstance.get(url);
-          console.warn(res);
-          if (res.data.data.results) {
-            const data = res.data.data.results;
-            if (data[0].product_name)
-              suggestions = data.map((result) => result.product_name);
-            else if (data[0].os) suggestions = data.map((result) => result.os);
-            else if (data[0].storage)
-              suggestions = data.map((result) => result.storage);
-            else if (data[0].model_number)
-              suggestions = data.map((result) => result.model_number);
-            else if (data[0].processor)
-              suggestions = data.map((result) => result.processor);
-          } else if (res.data.data) {
-            const data = res.data.data;
-
-            if (data[0].asset_type_name) {
-              suggestions = data.map((result) => ({
-                label: result.asset_type_name,
-                id: result.id,
-              }));
-            } else if (data[0].memory_space) {
-              suggestions = data.map((result) => ({
-                label: result.memory_space,
-                id: result.id,
-              }));
-            } else if (data[0].business_unit_name) {
-              suggestions = data.map((result) => ({
-                label: result.business_unit_name,
-                id: result.id,
-              }));
-            } else if (data[0].location_name) {
-              suggestions = data.map((result) => ({
-                label: result.location_name,
-                id: result.id,
-              }));
-            }
-
-            console.warn(suggestions);
-          }
-        }
-
-        setSuggestion(suggestions);
-      } catch (error) {
-        console.error("Error fetching asset details:", error);
-      }
-    }
-
-    setSelectedFields((prev) => {
-      const updatedFields = [...prev];
-      updatedFields[index].field = value;
-      return updatedFields;
-    });
-  };
 
   const handleAddField = () => {
     setNewFields((prev) => [...prev, prev.length]);
@@ -278,38 +37,6 @@ export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({
   const handleRemoveField = (index: number) => {
     setNewFields((prev) => prev.filter((_, i) => i !== index));
     setSelectedFields((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const handleQueryButtonClick = () => {
-    if (selectedFields.some((field) => !field.field || !field.value)) {
-      message.error(
-        "Please select appropriate fields and values for all conditions."
-      );
-      return;
-    }
-
-    console.log(suggestion);
-    console.log("selected fields", selectedFields);
-    // Construct an array of query conditions for each selected field
-    const queryConditions = selectedFields.map((field) => ({
-      "==": [{ var: field.field }, field.id ? field.id : field.value],
-    }));
-
-    // Construct the JSON logic expression for the 'and' operation
-    const jsonLogic = { and: queryConditions };
-
-    // Convert the JSON logic expression to a string
-    const jsonLogicString = JSON.stringify(jsonLogic);
-
-    // Construct the query parameters with the JSON logic expression
-    const queryParams = `&json_logic=${encodeURIComponent(jsonLogicString)}`;
-
-    // Display the constructed query parameters
-    message.success(queryParams);
-    console.log(queryParams);
-    setJson_query(queryParams);
-    // Call the assetDataRefetch function with the constructed query parameters
-    assetDataRefetch(queryParams);
   };
 
   const handleReset = () => {
@@ -356,27 +83,28 @@ export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({
     assetDataRefetch(queryParams);
   };
 
+  const PlusIcon = createSvgIcon(
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M12 4.5v15m7.5-7.5h-15"
+      />
+    </svg>,
+    "Plus"
+  );
+
   return (
     <div>
-      <button onClick={handleReset} className="h-50 w-50 m-5 p-2 text-white">
-        Reset
-      </button>
-      <button
-        onClick={() => {
-          handleSubmitFieldValues(allFieldValues);
-        }}
-        className="h-50 w-50 m-5 p-2 text-white"
-      >
-        Search
-      </button>
-      <Button onClick={handleAddField} className="m-5">
-        +
-      </Button>
-      <br />
       <div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           {newFields.map((_, index) => (
-
             <div
               key={index}
               style={{
@@ -390,17 +118,47 @@ export const QueryBuilderComponent: React.FC<QueryBuilderComponentProps> = ({
                 allFieldValues={allFieldValues}
                 setAllFieldValues={setAllFieldValues}
               />
-              <Button onClick={() => handleRemoveField(index)}>X</Button>
+              <IconButton
+                onClick={() => handleRemoveField(index)}
+                aria-label="remove"
+                size="large"
+              >
+                <Delete sx={{ color: pink[500] }} />
+              </IconButton>
             </div>
           ))}
         </div>
       </div>
-
-      {/* <Button
-        onClick={() => {
-          handleSubmitFieldValues(allFieldValues)
-        }}
-      >Click To See all the values</Button> */}
+      <div className="w-fit">
+        <Stack>
+          <div className="text-center mb-5">
+            <IconButton onClick={handleAddField} aria-label="add" size="large">
+              <PlusIcon sx={{ color: blue[500] }} />
+            </IconButton>
+          </div>
+          <div>
+            <Button
+              sx={{ paddingX: 5, marginX: 5 }}
+              onClick={handleReset}
+              variant="outlined"
+              color="error"
+            >
+              Reset
+            </Button>
+            <Button
+              sx={{ paddingX: 5, marginX: 5 }}
+              onClick={() => {
+                handleSubmitFieldValues(allFieldValues);
+              }}
+              variant="outlined"
+              color="success"
+            >
+              Search
+            </Button>
+          </div>
+        </Stack>
+      </div>
+      <br />
     </div>
   );
 };

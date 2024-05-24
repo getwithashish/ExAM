@@ -14,6 +14,7 @@ export interface CardType{
     selectedRow:string;
     onDelete:any
     onClose:any
+    formattedExpiryDate:string
     
 
 }

@@ -19,9 +19,11 @@ const TableNavbar: React.FC<TableNavbarProps> = ({
   reset,
   searchTerm, 
   setSearchTerm,
+  setJson_query,
+  json_query
 }) => {
   const [visible, setVisible] = useState(false);
-  const [json_query, setJson_query] = useState<string>("");
+ 
 
   const decodeJWT = (token: string) => {
     try {
@@ -122,7 +124,7 @@ const TableNavbar: React.FC<TableNavbarProps> = ({
 
   return (
     <nav className={styles["navbar"]}>
-      {getUserScope() === "LEAD" && (
+      {["MANAGER", "SYSTEM_ADMIN"].includes(getUserScope()) && (
         <DropDown
           onSelect={handleDropDownSelect}
           items={[

@@ -12,7 +12,7 @@ import {
   PieChartGraphProps,
 } from "../../types/ChartTypes";
 import axiosInstance from "../../../../config/AxiosConfig";
-import NoData from "../../../NoData/NoData";
+import { NoData } from "../../../NoData/NoData";
 import { statusColors } from "./StatusColors";
 import { statusMapping } from "./statusMapping";
 
@@ -22,6 +22,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
   setAssetState,
   setDetailState,
   setAssignState,
+  onClick,
 }) => {
   const [assetTypeData, setAssetTypeData] = useState<AssetDetailData[]>([]);
   const [selectedType, setSelectedType] = useState<string>("");
@@ -63,18 +64,35 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
   useEffect(() => {
     fetchAssetData()
       .then((assetCountData) => {
+        let inServiceCount = 0;
         console.log("assetCountData", assetCountData);
         const assetTypeData = Object.entries(
           assetCountData?.status_counts ?? {}
-        ).map(([label, value]) => ({
-          label: statusMapping[label] ?? label,
-          value: value as number,
-          color: statusColors[label],
-        }));
+        ).map(([label, value]) => {
+          if (label == "IN USE" || label == "IN STORE"){
+            if (inServiceCount == 0){
+              inServiceCount += value as number;
+              return
+            }
+            else{
+              inServiceCount += value as number;
+              return ({
+                label: "IN SERVICE",
+                value: inServiceCount,
+                color: statusColors[label],
+              });
+            }
+          }
+          return ({
+            label: statusMapping[label] ?? label,
+            value: value as number,
+            color: statusColors[label],
+          });
+        });
         setAssetChartData(assetTypeData);
         setAssetFilteredChartData(assetTypeData);
-        console.log('asset filtered data:', assetChartData)
-      })  
+        console.log("asset filtered data:", assetChartData);
+      })
       .catch((error) => {
         console.error("Error fetching asset count data:", error);
         setAssetFilteredChartData([]);
@@ -87,8 +105,12 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
     if (chartLabel === "IN STOCK") {
       chartLabel = "IN STORE";
     }
+    if (chartLabel === "IN SERVICE") {
+      chartLabel = "IN STORE|IN USE";
+    }
     console.log("Clicked Asset Chart Label: ", chartLabel);
     setAssetState(chartLabel ?? null);
+    onClick();
   };
 
   useEffect(() => {
@@ -105,6 +127,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
     }
     console.log("Clicked Detail Chart Label: ", chartLabel);
     setDetailState(chartLabel ?? null);
+    onClick();
   };
 
   useEffect(() => {
@@ -118,6 +141,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
     }
     console.log("Clicked Assign Chart Label: ", chartLabel);
     setAssignState(chartLabel ?? null);
+    onClick();
   };
 
   useEffect(() => {
@@ -127,7 +151,6 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
   useEffect(() => {
     fetchAssetData()
       .then((res) => {
-
         const assetDetailData = res.asset_detail_status;
         console.log("response data", assetDetailData);
 
@@ -221,6 +244,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     console.log("assetTypeData", assetTypeData);
     const assetTypeValue = parseInt(e.target.value);
+
 
     if (assetTypeValue === 0) {
       console.log("Selected Asset Type: None");
@@ -342,40 +366,39 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
           ))}
         </select>
       </div>
-      <div className="items-center justify-center mx-auto">
+      <>
         <Stack
           direction="row"
-          spacing={1}
-          sx={{ flexWrap: "wrap" }}
-          className="ml-6"
         >
           {assetFilteredChartData.length === 0 &&
           detailFilteredChartData.length === 0 &&
           assignFilteredChartData.length === 0 ? (
             <div className="flex justify-center items-center h-full w-full">
-              <NoData />
+              <NoData/>
             </div>
           ) : (
-            <>
-              <div className=" pt-6 mt-4">
-                <div className="text-center">
+            < Stack
+            direction="row"
+            sx={{ flexWrap: "wrap" }}
+            className="m-auto lg:p-10" 
+          >
+              <div className=" pt-6 mt-4 text-center items-center justify-center">
                   <span className="font-semibold font-display leading-none text-gray-900 dark:text-white text-lg">
                     Asset Status
                   </span>
-                </div>
                 <PieChart
-                  margin={{ top: 10, bottom: 0, left: 10, right: 0 }}
+                  margin={{ top: 0, bottom: 0, left: 0, right: 0 }}
                   series={[
                     {
                       data: assetFilteredChartData,
-                      innerRadius: 40,
-                      outerRadius: 140,
+                      innerRadius: 60,
+                      outerRadius: 150,
                       paddingAngle: 1,
                       cornerRadius: 10,
                       startAngle: 0,
                       endAngle: 360,
-                      cx: 130,
-                      cy: 160,
+                      cx: 200,
+                      cy: 200,
                       highlightScope: { faded: "global", highlighted: "item" },
                       arcLabel: (item) => `${item.value}`,
                       arcLabelMinAngle: 10,
@@ -388,14 +411,14 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                   ]}
                   sx={{
                     [`& .${pieArcLabelClasses.root}`]: {
-                      fill: 'white',
-                      fontWeight: 'light',
+                      fill: "white",
+                      fontWeight: "light",
                       fontSize: 20,
                     },
                   }}
                   onClick={handleAssetItemClick}
-                  width={300}
-                  height={380}
+                  width={400}
+                  height={400}
                   slotProps={{
                     legend: {
                       direction: "row",
@@ -412,25 +435,23 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                   }}
                 />
               </div>
-              <div className="item pt-6 mt-4">
-                <div className="text-center">
+              <div className=" pt-6 mt-4 text-center items-center justify-center">
                   <span className="font-semibold font-display leading-none text-gray-900 dark:text-white text-lg">
                     Approval Status
                   </span>
-                </div>
                 <PieChart
-                  margin={{ top: 10, bottom: 0, left: 10, right: 0 }}
+                  margin={{ top: 0, bottom: 0, left: 0, right: 0 }}
                   series={[
                     {
                       data: detailFilteredChartData,
                       innerRadius: 60,
-                      outerRadius: 140,
+                      outerRadius: 150,
                       paddingAngle: 1,
                       cornerRadius: 10,
                       startAngle: 0,
                       endAngle: 360,
-                      cx: 135,
-                      cy: 160,
+                      cx: 200,
+                      cy: 200,
                       highlightScope: { faded: "global", highlighted: "item" },
                       arcLabel: (item) => `${item.value}`,
                       arcLabelMinAngle: 10,
@@ -443,14 +464,14 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                   ]}
                   sx={{
                     [`& .${pieArcLabelClasses.root}`]: {
-                      fill: 'white',
-                      fontWeight: 'light',
+                      fill: "white",
+                      fontWeight: "light",
                       fontSize: 20,
                     },
                   }}
                   onClick={handleDetailItemClick}
-                  width={300}
-                  height={380}
+                  width={400}
+                  height={400}
                   slotProps={{
                     legend: {
                       direction: "row",
@@ -467,25 +488,23 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                   }}
                 />
               </div>
-              <div className="item pt-6 mt-4">
-                <div className="text-center">
+              <div className=" pt-6 mt-4 text-center items-center justify-center">
                   <span className="font-semibold font-display leading-none text-gray-900 dark:text-white text-lg">
                     Allocation Status
                   </span>
-                </div>
                 <PieChart
-                  margin={{ top: 10, bottom: 0, left: 10, right: 0 }}
+                  margin={{ top: 0, bottom: 0, left: 0, right: 0 }}
                   series={[
                     {
                       data: assignFilteredChartData,
                       innerRadius: 60,
-                      outerRadius: 140,
+                      outerRadius: 150,
                       paddingAngle: 1,
                       cornerRadius: 10,
                       startAngle: 0,
                       endAngle: 360,
-                      cx: 135,
-                      cy: 160,
+                      cx: 200,
+                      cy: 200,
                       highlightScope: { faded: "global", highlighted: "item" },
                       arcLabel: (item) => `${item.value}`,
                       arcLabelMinAngle: 10,
@@ -498,14 +517,14 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                   ]}
                   sx={{
                     [`& .${pieArcLabelClasses.root}`]: {
-                      fill: 'white',
-                      fontWeight: 'light',
+                      fill: "white",
+                      fontWeight: "light",
                       fontSize: 20,
                     },
                   }}
                   onClick={handleAssignItemClick}
-                  width={300}
-                  height={380}
+                  width={400}
+                  height={400}
                   slotProps={{
                     legend: {
                       direction: "row",
@@ -522,10 +541,10 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                   }}
                 />
               </div>
-            </>
+            </Stack>
           )}
         </Stack>
-      </div>
+      </>
     </Stack>
   );
 };

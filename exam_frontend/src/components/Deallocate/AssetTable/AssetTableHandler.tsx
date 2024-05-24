@@ -380,21 +380,20 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
       responsive: ["md"],
       width: 120,
       render: (_, record) => {
-        const dateOfPurchase = record.date_of_purchase
-          ? new Date(record.date_of_purchase)
-          : null;
+        const dateOfPurchase = record.date_of_purchase ? new Date(record.date_of_purchase) : null;
         const warrantyPeriod = parseInt(record.warranty_period) || 0; // Defaulting to 0 if warranty_period is not provided or invalid
         if (dateOfPurchase instanceof Date && !isNaN(dateOfPurchase)) {
-          const expiryDate = new Date(
-            dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000
-          ); // Calculating expiry date in milliseconds
-          const formattedExpiryDate = expiryDate.toISOString().split("T")[0];
+          const expiryDate = new Date(dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000); // Calculating expiry date in milliseconds
+          const formattedExpiryDate = expiryDate.toISOString().split('T')[0];
+          const currentDate = new Date();
+          const isExpired = expiryDate < currentDate;
+    
           // Apply renderClickableColumn logic here
           return (
             <div
               data-column-name="Expiry Date"
               onClick={() => handleColumnClick(record, "Expiry Date")}
-              style={{ cursor: "pointer", color: "red" }}
+              style={{ cursor: "pointer", color: isExpired ? "red" : "green", fontWeight: isExpired ? "bold" : "bold" }}
             >
               {formattedExpiryDate}
             </div>
@@ -404,6 +403,17 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
         }
       },
     },
+    
+,    
+{
+  title: "License Type",
+  dataIndex: "license_type",
+  responsive: ["md"],
+  width: 120,
+ 
+  render: renderClickableColumn("license_type", "license_type"),
+},
+
     {
       title: "Model Number",
       dataIndex: "ModelNumber", // Corrected dataIndex
@@ -511,6 +521,8 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
       render: renderClickableColumn("Accessories", "accessories"),
     },
 
+    
+
     {
       title: "Deallocate Asset",
       dataIndex: "DeallocateAsset",
@@ -559,6 +571,7 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
     configuration: result.configuration,
     custodian: result.custodian?.employee_name,
     product_name: result.product_name,
+    license_type:result.license_type,
     owner: result.owner,
     requester: result.requester?.username,
     AssignAsset: "assign",

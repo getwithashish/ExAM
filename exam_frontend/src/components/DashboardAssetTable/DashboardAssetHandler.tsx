@@ -33,6 +33,10 @@ interface DashboardAssetHandlerProps {
   assetState: string | null;
   detailState: string | null;
   assignState: string | null;
+  setSelectedTypeId: (id: number) => void;
+  setAssetState: (state: string | null) => void;
+  setAssignState: (state: string | null) => void;
+  setDetailState: (state: string | null) => void;
 }
 
 const DashboardAssetHandler = ({
@@ -40,31 +44,37 @@ const DashboardAssetHandler = ({
   assetState,
   detailState,
   assignState,
+  setSelectedTypeId,
+  setAssetState,
+  setAssignState,
+  setDetailState,
 }: DashboardAssetHandlerProps) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [queryParam, setQueryParam] = useState("");
   const [sortedColumn, setSortedColumn] = useState<string | null>(null);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortOrder, _setSortOrder] = useState<"asc" | "desc">("asc");
   const [sortOrders, setSortOrders] = useState({});
   const [searchTerm, setSearchTerm] = useState<string>("");
-
+  const [json_query, setJson_query] = useState<string>("");
 
   useEffect(() => {
-    if (selectedTypeId !== 0) {
-      setQueryParam(`&asset_type=${selectedTypeId}`);
-    } else if (assetState) {
-      setQueryParam(`&status=${assetState}`);
-    } else if (detailState) {
-      setQueryParam(`&asset_detail_status=${detailState}`);
-    } else if (assignState) {
-      setQueryParam(`&assign_status=${assignState}`);
-    } else {
-      setQueryParam(``);
-    }
-  }, [selectedTypeId, assetState, detailState, assignState]);
+    let additionalParams = "";
 
-  useEffect(() => {});
+    if (selectedTypeId !== 0) {
+      additionalParams += `&asset_type=${selectedTypeId}`;
+    }
+    if (assetState) {
+      additionalParams += `&status=${assetState}`;
+    }
+    if (detailState) {
+      additionalParams += `&asset_detail_status=${detailState}`;
+    }
+    if (assignState) {
+      additionalParams += `&assign_status=${assignState}`;
+    }
+    setQueryParam(additionalParams);
+  }, [selectedTypeId, assetState, detailState, assignState]);
 
   const {
     data: assetData,
@@ -79,10 +89,19 @@ const DashboardAssetHandler = ({
     setQueryParam(queryParam);
     assetDataRefetch({ force: true });
   };
+
   const reset = () => {
-    setQueryParam(" ");
+    setQueryParam("");
+    setJson_query("");
+    setSearchTerm("");
+    setSelectedTypeId(0);
+    setAssetState("");
+    setDetailState("");
+    setAssignState("");
     refetchAssetData();
   };
+
+
   const statusOptions =
     assetData?.results?.map((item: AssetResult) =>
       item.status === "IN STORE" ? "IN STOCK" : item.status
@@ -137,39 +156,52 @@ const DashboardAssetHandler = ({
     );
   };
   const renderClickableColumn = (columnName, dataIndex) => (_, record) =>
-    (
-      <div
-        data-column-name={columnName}
-        onClick={() => handleColumnClick(record, columnName)}
-        style={{ cursor: "pointer" }}
-      >
-        {record[dataIndex]}
-      </div>
-    );
+  (
+    <div
+      data-column-name={columnName}
+      onClick={() => handleColumnClick(record, columnName)}
+      style={{ cursor: "pointer" }}
+    >
+      {record[dataIndex]}
+    </div>
+  );
 
+  const handleSort = (column: string) => {
+    const isCurrentColumn = column === sortedColumn;
+    let newSortOrders = { ...sortOrders };
+    if (!isCurrentColumn) {
+      newSortOrders = { [column]: "asc" };
+    } else {
+      newSortOrders[column] = sortOrders[column] === "asc" ? "desc" : "asc";
+    }
+    setSortedColumn(column);
+    setSortOrders(newSortOrders);
+    const queryParams = Object.keys(newSortOrders)
+      .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
+      .join("");
+    let additionalQueryParams = "&offset=${0}";
+    if (searchTerm !== "" && searchTerm !== null) {
+      additionalQueryParams += `&global_search=${searchTerm}`;
+    }
+    if (json_query !== "" && json_query !== null) {
+      additionalQueryParams += `&json_logic=${json_query}`;
+    }
+    if (assetState !== "" && assetState !== null) {
+      additionalQueryParams += `&status=${assetState}`;
+    }
+    if (detailState !== "" && detailState !== null) {
+      additionalQueryParams += `&asset_detail_status=${detailState}`;
+    }
+    if (assignState !== "" && assignState !== null) {
+      additionalQueryParams += `&assign_status=${assignState}`;
+    }
+    if (selectedTypeId !== 0) {
+      additionalQueryParams += `&asset_type=${selectedTypeId}`;
+    }
+    refetchAssetData(queryParams + additionalQueryParams)
+  };
 
-    const handleSort = (column: string) => {
-      const isCurrentColumn = column === sortedColumn;  
-      let newSortOrders = { ...sortOrders };  
-      if (!isCurrentColumn) {
-        newSortOrders = { [column]: "asc" };
-      } else {
-        newSortOrders[column] = sortOrders[column] === "asc" ? "desc" : "asc";
-      }  
-      setSortedColumn(column);
-      setSortOrders(newSortOrders);  
-      const queryParams = Object.keys(newSortOrders)
-        .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
-        .join("");  
-      const additionalQueryParams = `&global_search=${searchTerm}&offset=${0}`;  
-      refetchAssetData(queryParams + additionalQueryParams);
-    };
-    
-  <div>
-    <h1>Asset Overview</h1>
-  </div>;
-
-const columns = [
+  const columns = [
     {
       title: "Product Name",
       dataIndex: "product_name",
@@ -378,21 +410,19 @@ const columns = [
       responsive: ["md"],
       width: 120,
       render: (_, record) => {
-        const dateOfPurchase = record.date_of_purchase
-          ? new Date(record.date_of_purchase)
-          : null;
+        const dateOfPurchase = record.date_of_purchase ? new Date(record.date_of_purchase) : null;
         const warrantyPeriod = parseInt(record.warranty_period) || 0; // Defaulting to 0 if warranty_period is not provided or invalid
         if (dateOfPurchase instanceof Date && !isNaN(dateOfPurchase)) {
-          const expiryDate = new Date(
-            dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000
-          ); // Calculating expiry date in milliseconds
-          const formattedExpiryDate = expiryDate.toISOString().split("T")[0];
+          const expiryDate = new Date(dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000); // Calculating expiry date in milliseconds
+          const formattedExpiryDate = expiryDate.toISOString().split('T')[0];
+          const currentDate = new Date();
+          const isExpired = expiryDate < currentDate;
           // Apply renderClickableColumn logic here
           return (
             <div
               data-column-name="Expiry Date"
               onClick={() => handleColumnClick(record, "Expiry Date")}
-              style={{ cursor: "pointer", color: "red" }}
+              style={{ cursor: "pointer", color: isExpired ? "red" : "green", fontWeight: isExpired ? "bold" : "bold" }}
             >
               {formattedExpiryDate}
             </div>
@@ -402,6 +432,17 @@ const columns = [
         }
       },
     },
+    
+    
+,    
+{
+  title: "License Type",
+  dataIndex: "license_type",
+  responsive: ["md"],
+  width: 120,
+ 
+  render: renderClickableColumn("license_type", "license_type"),
+},
 
     {
       title: "Model Number",
@@ -527,16 +568,20 @@ const columns = [
     },
   ];
 
+
+
   const handleColumnClick = (record: string[], columnName: string) => {
     if (columnName !== "Assign Asset") {
       handleOtherColumnClick(record);
     }
   };
-
-  const handleOtherColumnClick = (record: SetStateAction<null>) => {
-    setSelectedRow(record);
-    setDrawerVisible(true);
+  const handleOtherColumnClick = (record: any) => {
+    if (record) {
+      setSelectedRow(record);
+      setDrawerVisible(true);
+    }
   };
+
 
   const data = assetData?.results?.map((result) => ({
     key: result.asset_uuid,
@@ -567,42 +612,52 @@ const columns = [
     custodian: result.custodian?.employee_name,
     product_name: result.product_name,
     owner: result.owner,
+    license_type:result.license_type,
     requester: result.requester?.username,
     AssignAsset: "assign",
     created_at: result.created_at,
     updated_at: result.updated_at,
+
   }));
 
   const drawerTitle = "Asset Details";
 
   return (
-    <DashboardAssetTable
-      drawerTitle={drawerTitle}
-      isAssetDataLoading={isAssetDataLoading}
-      handleRowClick={handleRowClick}
-      onCloseDrawer={onCloseDrawer}
-      selectedRow={selectedRow}
-      drawerVisible={drawerVisible}
-      assetData={data}
-      sortOrder={sortOrder}
-      sortedColumn={sortedColumn}
-      totalItemCount={assetData?.count}
-      assetPageDataFetch={setQueryParam}
-      columns={columns}
-      reset={reset}
-      memoryData={memoryData}
-      assetTypeData={assetTypeData}
-      locations={locations}
-      statusOptions={statusOptions}
-      bordered={false}
-      businessUnitOptions={businessUnitOptions}
-      assetDataRefetch={refetchAssetData}
-      handleUpdateData={function (updatedData: { key: any }): void {
-        throw new Error("Function not implemented.");
-      }}
-      searchTerm={searchTerm}
-      setSearchTerm={setSearchTerm}
-    />
+    <div>
+      <DashboardAssetTable
+        drawerTitle={drawerTitle}
+        isAssetDataLoading={isAssetDataLoading}
+        handleRowClick={handleRowClick}
+        onCloseDrawer={onCloseDrawer}
+        selectedRow={selectedRow}
+        drawerVisible={drawerVisible}
+        assetData={data}
+        sortOrder={sortOrder}
+        sortedColumn={sortedColumn}
+        totalItemCount={assetData?.count}
+        assetPageDataFetch={setQueryParam}
+        columns={columns}
+        reset={reset}
+        memoryData={memoryData}
+        assetTypeData={assetTypeData}
+        locations={locations}
+        statusOptions={statusOptions}
+        bordered={false}
+        businessUnitOptions={businessUnitOptions}
+        assetDataRefetch={refetchAssetData}
+        handleUpdateData={function (updatedData: { key: any }): void {
+          throw new Error("Function not implemented.");
+        }}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        setJson_query={setJson_query}
+        json_query={json_query}
+        assetState={assetState}
+        assignState={assignState}
+        detailState={detailState}
+        selectedTypeId={selectedTypeId}
+      />
+    </div>
   );
 };
 

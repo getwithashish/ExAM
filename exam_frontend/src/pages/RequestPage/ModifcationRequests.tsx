@@ -50,7 +50,7 @@ const ModificationRequests: FC = function () {
     if (selectedAsset) {
       console.log("Asset UUID:", selectedAsset.asset_uuid);
       const approvalData = {
-        approval_type: "",
+        approval_type: "ASSET_DETAIL_STATUS",
         asset_uuid: selectedAsset.asset_uuid,
         comments: selectedAsset.approverNotes,
       };

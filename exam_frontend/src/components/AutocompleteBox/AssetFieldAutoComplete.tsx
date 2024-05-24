@@ -168,8 +168,11 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
                   [assetFieldKeyName()]: newValue.inputValue,
                 });
               } else {
-                setValue(newValue);
-            
+                if (newValue == null) {
+                  setValue("");
+                } else {
+                  setValue(newValue);
+                }
               }
             }}
             onOpen={() => {
@@ -210,7 +213,7 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
                 {option[assetFieldKeyName()]}
               </li>
             )}
-            sx={{ width: 300 }}
+            sx={{ width: "100%" }}
             renderInput={(params) => <TextField {...params} label="Search" />}
           />
 
@@ -305,7 +308,7 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
           renderOption={(props, option) => (
             <li {...props}>{option[assetFieldKeyName()]}</li>
           )}
-          sx={{ width: 300 }}
+          sx={{ width: "100%" }}
           renderInput={(params) => <TextField {...params} label="Search" />}
         />
       )}
