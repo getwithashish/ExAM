@@ -5,6 +5,8 @@ const UpdatableAsset = () => {
   let queryParamProp =
     "&asset_detail_status=CREATED|UPDATED|CREATE_REJECTED|UPDATE_REJECTED";
   let heading = "Modify Assets";
+  const userRole = "SYSTEM_ADMIN"; // Replace with dynamic user role logic
+  
   return (
     <div className="bg-white font-display">
       <nav className="flex mb-4 mx-4 my-0 py-4" aria-label="Breadcrumb">
@@ -58,6 +60,7 @@ const UpdatableAsset = () => {
         queryParamProp={queryParamProp}
         heading={heading}
         isMyApprovalPage={true}
+        userRole={userRole}
       />
     </div>
   );

@@ -27,6 +27,7 @@ interface AssetTableHandlerProps {
 }
 
 const AssetTableHandler = ({
+  userRole,
   isRejectedPage,
   queryParamProp,
   heading,
@@ -595,6 +596,8 @@ const AssetTableHandler = ({
 
   return (
     <AssetTable
+     userRole={userRole}
+
       heading={heading}
       isAssetDataLoading={isAssetDataLoading}
       // drawerTitle={drawerTitle}
