@@ -432,7 +432,17 @@ const DashboardAssetHandler = ({
         }
       },
     },
-    ,
+    
+    
+,    
+{
+  title: "License Type",
+  dataIndex: "license_type",
+  responsive: ["md"],
+  width: 120,
+ 
+  render: renderClickableColumn("license_type", "license_type"),
+},
 
     {
       title: "Model Number",
@@ -602,6 +612,7 @@ const DashboardAssetHandler = ({
     custodian: result.custodian?.employee_name,
     product_name: result.product_name,
     owner: result.owner,
+    license_type:result.license_type,
     requester: result.requester?.username,
     AssignAsset: "assign",
     created_at: result.created_at,
