@@ -874,7 +874,7 @@ const AddAsset: React.FC = () => {
                 <Input
                   placeholder="Enter reason for creation"
                   className={styles["input"]}
-                  onChange={(e) => handleInputChange("message", e.target.value)}
+                  onChange={(e) => handleInputChange("notes", e.target.value)}
                 />
               </Form.Item>
               {/* Add more hardware specific fields as needed */}
