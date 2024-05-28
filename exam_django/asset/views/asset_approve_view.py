@@ -33,8 +33,6 @@ class AssetApproveView(APIView):
 
     def post(self, request):
         try:
-           
-           
             user_scope = request.user.user_scope
             if user_scope == "LEAD":
                 asset_user_role_approve_service = AssetLeadRoleApproveService()
@@ -42,11 +40,9 @@ class AssetApproveView(APIView):
                 raise PermissionDeniedException(
                     {}, USER_UNAUTHORIZED, status.HTTP_401_UNAUTHORIZED
                 )
-            print("Request.data is " , request.user)
+
             asset_approve_service = AssetApproveService(asset_user_role_approve_service)
-            
             data, message, http_status = asset_approve_service.approve_request(request)
-            
 
             return APIResponse(
                 data=data,
