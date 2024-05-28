@@ -1,15 +1,13 @@
 import React, {
   Key,
-  SetStateAction,
   useCallback,
   useEffect,
   useState,
 } from "react";
-
 import { SearchOutlined } from "@ant-design/icons";
 import "./DasboardAssetTable.css";
 import { useQuery } from "@tanstack/react-query";
-import { DataType } from "../AssetTable/types";
+import { AssetType, DataType } from "../AssetTable/types";
 import { AssetResult } from "../AssetTable/types";
 import {
   getAssetDetails,
@@ -18,15 +16,7 @@ import {
   getMemoryOptions,
 } from "./api/getDashboardAssetDetails";
 import DashboardAssetTable from "./DashboardAssetTable";
-
 import TimelineViewDrawer from "../TimelineLog/TimeLineDrawer";
-
-interface ExpandedDataType {
-  key: React.Key;
-  date: string;
-  name: string;
-  upgradeNum: string;
-}
 
 interface DashboardAssetHandlerProps {
   selectedTypeId: number;
@@ -52,15 +42,14 @@ const DashboardAssetHandler = ({
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [queryParam, setQueryParam] = useState("");
-  const [sortedColumn, setSortedColumn] = useState<string | null>(null);
-  const [sortOrder, _setSortOrder] = useState<"asc" | "desc">("asc");
-  const [sortOrders, setSortOrders] = useState({});
+  const [sortedColumn, setSortedColumn] = useState<string>('');
+  const [sortOrder, setSortOrder] = useState<string>('asc');
+  const [sortOrders, setSortOrders] = useState<{ [key: string]: string }>({});
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [json_query, setJson_query] = useState<string>("");
 
   useEffect(() => {
     let additionalParams = "";
-
     if (selectedTypeId !== 0) {
       additionalParams += `&asset_type=${selectedTypeId}`;
     }
@@ -87,7 +76,7 @@ const DashboardAssetHandler = ({
 
   const refetchAssetData = (queryParam = "") => {
     setQueryParam(queryParam);
-    assetDataRefetch({ force: true });
+    assetDataRefetch();
   };
 
   const reset = () => {
@@ -101,11 +90,11 @@ const DashboardAssetHandler = ({
     refetchAssetData();
   };
 
-
   const statusOptions =
     assetData?.results?.map((item: AssetResult) =>
       item.status === "IN STORE" ? "IN STOCK" : item.status
     ) || [];
+
   const businessUnitOptions =
     assetData?.results?.map(
       (item: AssetResult) => item.business_unit.business_unit_name
@@ -118,7 +107,7 @@ const DashboardAssetHandler = ({
 
   const locations = locationResults ? locationResults : [];
 
-  const locationFilters = locations.map((location) => ({
+  const locationFilters = locations.map((location:any) => ({
     text: location.location_name,
     value: location.location_name,
   }));
@@ -133,7 +122,7 @@ const DashboardAssetHandler = ({
     queryFn: () => getAssetTypeOptions(),
   });
   const assetTypeFilters =
-    assetTypeData?.map((assetType) => ({
+    assetTypeData?.map((assetType: AssetType) => ({
       text: assetType.asset_type_name,
       value: assetType.asset_type_name,
     })) ?? [];
@@ -148,6 +137,7 @@ const DashboardAssetHandler = ({
   }, []);
 
   const [tableData, setTableData] = useState<DataType[]>([]);
+
   const handleUpdateData = (updatedData: { key: any }) => {
     setTableData((prevData: any[]) =>
       prevData.map((item) =>
@@ -169,37 +159,43 @@ const DashboardAssetHandler = ({
   const handleSort = (column: string) => {
     const isCurrentColumn = column === sortedColumn;
     let newSortOrders = { ...sortOrders };
+
     if (!isCurrentColumn) {
       newSortOrders = { [column]: "asc" };
     } else {
       newSortOrders[column] = sortOrders[column] === "asc" ? "desc" : "asc";
     }
+
     setSortedColumn(column);
+    setSortOrder(newSortOrders[column]);
     setSortOrders(newSortOrders);
+
     const queryParams = Object.keys(newSortOrders)
       .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
       .join("");
-    let additionalQueryParams = "&offset=${0}";
-    if (searchTerm !== "" && searchTerm !== null) {
-      additionalQueryParams += `&global_search=${searchTerm}`;
-    }
-    if (json_query !== "" && json_query !== null) {
-      additionalQueryParams += `&json_logic=${json_query}`;
-    }
-    if (assetState !== "" && assetState !== null) {
-      additionalQueryParams += `&status=${assetState}`;
-    }
-    if (detailState !== "" && detailState !== null) {
-      additionalQueryParams += `&asset_detail_status=${detailState}`;
-    }
-    if (assignState !== "" && assignState !== null) {
-      additionalQueryParams += `&assign_status=${assignState}`;
-    }
-    if (selectedTypeId !== 0) {
-      additionalQueryParams += `&asset_type=${selectedTypeId}`;
-    }
-    refetchAssetData(queryParams + additionalQueryParams)
-  };
+      
+      let additionalQueryParams = '&offset=0';
+      if (searchTerm !== '' && searchTerm !== null) {
+        additionalQueryParams += `&global_search=${searchTerm}`;
+      }
+      if (json_query !== '' && json_query !== null) {
+        additionalQueryParams += `&json_logic=${json_query}`;
+      }
+      if (assetState !== '' && assetState !== null) {
+        additionalQueryParams += `&status=${assetState}`;
+      }
+      if (detailState !== '' && detailState !== null) {
+        additionalQueryParams += `&asset_detail_status=${detailState}`;
+      }
+      if (assignState !== '' && assignState !== null) {
+        additionalQueryParams += `&assign_status=${assignState}`;
+      }
+      if (selectedTypeId !== 0) {
+        additionalQueryParams += `&asset_type=${selectedTypeId}`;
+      }
+    
+      refetchAssetData(queryParams + additionalQueryParams);
+    };
 
   const columns = [
     {

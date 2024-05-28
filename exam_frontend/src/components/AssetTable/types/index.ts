@@ -43,8 +43,10 @@ export interface DataType {
 }
 export interface AssetResult {
   status: string; 
-  business_unit:string;
+  business_unit:any;
+  business_unit_name:string;
   location:string;
+ 
 
 }
 
@@ -65,7 +67,7 @@ interface BusinessUnit {
   business_unit_name: string;
 }
 
-interface AssetType {
+export interface AssetType {
   id: number;
   asset_type_name: string;
 }
