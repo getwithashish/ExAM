@@ -10,4 +10,6 @@ export interface CardType{
     onUpdate: (updatedData: DataType) => void;
     asset_uuid:string;
     selectedAssetId:number;
+    formattedExpiryDate:any
 }
+

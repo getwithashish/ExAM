@@ -1,31 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
-  Card,
   Form,
-  Space,
   Input,
-  Button,
   Select,
   ConfigProvider,
-  Row,
-  Col,
   message,
 } from "antd";
 import "./DashBoardCardComponent.css";
 import { DataType } from "../AssetTable/types/index";
 import { CardType } from "./types/index";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import axiosInstance from "../../config/AxiosConfig";
-import { CommentOutlined } from "@ant-design/icons";
 
-interface UpdateData {
-  asset_uuid: string;
-  data: Partial<DataType>; // Partial to allow updating only specific fields
-}
 const DashBoardCardComponent: React.FC<CardType> = ({
-  asset_uuid,
   data,
-  onUpdate,
   statusOptions,
   businessUnitOptions,
   locations,
@@ -50,15 +37,14 @@ const DashBoardCardComponent: React.FC<CardType> = ({
   };
 
   const [updatedData, setUpdatedData] = useState<Partial<DataType>>({});
+
   const handleUpdate = async () => {
     console.log("Asset UUID:", data.key);
-
     try {
       const updatePayload = {
         asset_uuid: data.key,
         data: updatedData,
       };
-
       const response = await axiosInstance.patch(
         "/asset/update",
         updatePayload,
@@ -68,10 +54,8 @@ const DashBoardCardComponent: React.FC<CardType> = ({
           },
         }
       );
-
       console.log("Updated data:", response.data);
       message.success("Asset Details successfully updated");
-
       setTimeout(() => {
         window.location.reload();
       }, 1500);
@@ -86,9 +70,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
       [field]: value,
     }));
   };
-
   const [searchQuery, setSearchQuery] = useState("");
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value.toLowerCase());
   };
@@ -140,7 +122,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
               fontWeight: "bold",
               opacity: "2",
               pointerEvents: "none",
-              background:"#f0f0f0"
+              background: "#f0f0f0"
             }}
             onChange={(value) => handleUpdateChange("asset_type", value)}
           >
@@ -185,7 +167,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>
           <Select
-          font-display 
+            font-display
             variant="filled"
             defaultValue={uniqueStatusOptions[0]}
             style={{
@@ -196,7 +178,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
               color: "black",
               opacity: "2",
               pointerEvents: "none",
-              background:"#f0f0f0"
+              background: "#f0f0f0"
             }}
             onChange={(value) => handleUpdateChange("status", value)} // Pass only the value
           >
@@ -216,13 +198,13 @@ const DashBoardCardComponent: React.FC<CardType> = ({
         <Form.Item
           name="location"
           style={{ boxShadow: "none", border: "none" }}
-          font-display 
+          font-display
         >
           <b> Asset Location:</b>
           <br></br>
           <br></br>
           <Select
-          font-display 
+            font-display
             variant="filled"
             defaultValue={data.location}
             style={{
@@ -232,7 +214,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
               height: "40px",
               opacity: "2",
               pointerEvents: "none",
-              background:"#f0f0f0"
+              background: "#f0f0f0"
             }}
             onChange={(value) => handleUpdateChange("location", value)}
           >
@@ -252,13 +234,13 @@ const DashBoardCardComponent: React.FC<CardType> = ({
         <Form.Item
           name="location"
           style={{ boxShadow: "none", border: "none" }}
-          font-display 
+          font-display
         >
           <b>Invoice Location:</b>
           <br></br>
           <br></br>
           <Select
-          font-display 
+            font-display
             variant="filled"
             defaultValue={data.invoice_location}
             style={{
@@ -268,7 +250,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
               height: "40px",
               opacity: "2",
               pointerEvents: "none",
-              background:"#f0f0f0"
+              background: "#f0f0f0"
             }}
             onChange={(value) => handleUpdateChange("invoice_location", value)} // Pass only the value
           >
@@ -359,7 +341,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
-            defaultValue={data.processor_gen}
+            defaultValue={data["processor_gen"]}
             onChange={(e) => handleUpdateChange("generation", e.target.value)}
             style={inputStyle}
             disabled
@@ -445,7 +427,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
-          disabled
+            disabled
             defaultValue={data.asset_detail_status}
             onChange={(e) =>
               handleUpdateChange("serail number", e.target.value)
@@ -464,7 +446,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
           <br></br>
           <br></br>{" "}
           <Input
-          disabled
+            disabled
             defaultValue={data.assign_status}
             onChange={(e) =>
               handleUpdateChange("serail number", e.target.value)
@@ -478,15 +460,15 @@ const DashBoardCardComponent: React.FC<CardType> = ({
       label: "Approver",
       name: "approver",
       value: (
-        <Form.Item name="date of purchase">
+        <Form.Item name="approver">
           <b>Approved By:</b>
           <br></br>
           <br></br>{" "}
           <Input
             disabled
-            defaultValue={data.conceder}
+            defaultValue={data["approved_by"]}
             onChange={(e) =>
-              handleUpdateChange("serail number", e.target.value)
+              handleUpdateChange("", e.target.value)
             }
             style={inputStyle}
           />{" "}
@@ -505,7 +487,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
             onChange={(e) =>
               handleUpdateChange("serail number", e.target.value)
             }
-            readOnly 
+            readOnly
             style={inputStyle}
           />{" "}
         </Form.Item>
@@ -619,7 +601,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
               height: "40px",
               opacity: "2",
               pointerEvents: "none",
-              background:"#f0f0f0"
+              background: "#f0f0f0"
             }}
             onChange={(value) => handleUpdateChange("business_unit", value)} // Pass only the value
           >
@@ -658,7 +640,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
               height: "40px",
               opacity: "2",
               pointerEvents: "none",
-              background:"#f0f0f0"
+              background: "#f0f0f0"
             }}
             onChange={(value) => handleUpdateChange("memory", value)} // Pass only the value
           >
@@ -701,9 +683,9 @@ const DashBoardCardComponent: React.FC<CardType> = ({
             onChange={(e) =>
               handleUpdateChange("configuration", e.target.value)
             }
-            readOnly 
+            readOnly
             style={inputStyle}
-           
+
           />{" "}
         </Form.Item>
       ),
@@ -750,7 +732,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
           <br></br>{" "}
           <Input
             defaultValue={data.notes}
-            onChange={(e) => handleUpdateChange("comments", e.target.value)}
+            onChange={(e) => handleUpdateChange("notes", e.target.value)}
             style={{
               width: "387px",
               height: "100px",
@@ -759,6 +741,30 @@ const DashBoardCardComponent: React.FC<CardType> = ({
               border: "0.5px solid #d3d3d3",
             }}
             disabled
+          />{" "}
+        </Form.Item>
+      ),
+    },
+    {
+      label: "approval_status_message",
+      name: "approval_status_message",
+      value: (
+        <Form.Item name="approval_status_message">
+          <b>Approver Message: </b>
+          <br></br>
+          <br></br>{" "}
+          <Input
+            defaultValue={data["approval_status_message"]}
+            onChange={(e) => handleUpdateChange("approval_status_message", e.target.value)}
+            style={{
+              width: "387px",
+              height: "100px",
+              background: "#f0f0f0",
+              borderRadius: "5px",
+              border: "0.5px solid #d3d3d3",
+              textAlign: "center"
+            }}
+            readOnly
           />{" "}
         </Form.Item>
       ),
@@ -780,11 +786,11 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     background: "white",
     marginLeft: "6%",
     alignItems: "flex-start",
-    gap: "-400px", 
+    gap: "-400px",
   };
   const formItemStyle = {
-    flex: "0 0 calc(16.66% - 20px)", 
-    margin: "10px", 
+    flex: "0 0 calc(16.66% - 20px)",
+    margin: "10px",
     boxSizing: "border-box",
   };
 
@@ -830,7 +836,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
       </div>
       <div className="scrollable-content" font-display>
         <Form
-          font-display 
+          font-display
           key={data.asset_id}
           className="mainCard"
           title=""

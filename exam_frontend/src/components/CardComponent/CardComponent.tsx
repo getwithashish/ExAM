@@ -875,6 +875,30 @@ const CardComponent: React.FC<CardType> = ({
         </Form.Item>
       ),
     },
+    {
+      label: "approval_status_message",
+      name: "approval_status_message",
+      value: (
+        <Form.Item name="approval_status_message">
+          <b>Approver Message: </b>
+          <br></br>
+          <br></br>{" "}
+          <Input
+            defaultValue={data["approval_status_message"]}
+            onChange={(e) => handleUpdateChange("approval_status_message", e.target.value)}
+            style={{
+              width: "387px",
+              height: "100px",
+              background: "#f0f0f0",
+              borderRadius: "5px",
+              border: "0.5px solid #d3d3d3",
+              textAlign: "center"
+            }}
+            readOnly
+          />{" "}
+        </Form.Item>
+      ),
+    },
   ];
 
   // Filter form items based on search query
