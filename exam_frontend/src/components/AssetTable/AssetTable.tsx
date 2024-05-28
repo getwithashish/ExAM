@@ -8,6 +8,7 @@ import DrawerViewRequest from "../../pages/RequestPage/DrawerViewRequest";
 import GlobalSearch from "../GlobalSearch/GlobalSearch";
 
 const AssetTable = ({
+  userRole,
   asset_uuid,
   // isLoading,
   isAssetDataLoading,
@@ -42,11 +43,19 @@ const AssetTable = ({
     const queryParams = `&global_search=${searchTerm}&sort_by=${sortedColumn}&sort_order=${sortOrder}&offset=20`;
     assetDataRefetch(queryParams);
   };
+  
+  let pageHeading = heading;
+  if (userRole === "SYSTEM_ADMIN") {
+    pageHeading = "Modify Asset";
+  } else if (userRole === "LEAD") {
+    pageHeading = "Delete Assets";
+  }
+  
 
   return (
     <>
       <div className="mainHeading" font-display>
-        <h1>{heading}</h1>
+        <h1>{pageHeading}</h1>
       </div>
       <div style={{ marginLeft: "40px", marginBottom: "30px" }}>
         <GlobalSearch
@@ -60,6 +69,7 @@ const AssetTable = ({
         style={{ position: "relative", display: "inline-block", width: "80vw" }}
       >
         <Table
+          userRole={userRole}
           columns={columns}
           loading={isAssetDataLoading}
           dataSource={assetData}
