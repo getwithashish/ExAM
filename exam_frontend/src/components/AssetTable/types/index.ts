@@ -159,5 +159,13 @@ export interface AssetTableProps {
   modifiedData:any
   reset:()=> void;
   sortOrder:string;
+  sortedColumn:any;
+  setSearchTerm:any;
+  searchTerm:any;
+  assetPageDataFetch:any
+  isAssetDataLoading:any
+  totalItemCount:any
+  userRole:any
+  isMyApprovalPage:any
 }
 
