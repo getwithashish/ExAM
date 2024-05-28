@@ -405,7 +405,7 @@ const DashboardAssetHandler = ({
       dataIndex: "expiry_date",
       responsive: ["md"],
       width: 120,
-      render: (_, record) => {
+      render: (_:any, record:any) => {
         const dateOfPurchase = record.date_of_purchase ? new Date(record.date_of_purchase) : null;
         const warrantyPeriod = parseInt(record.warranty_period) || 0; // Defaulting to 0 if warranty_period is not provided or invalid
         if (dateOfPurchase instanceof Date && !isNaN(dateOfPurchase)) {
@@ -560,7 +560,7 @@ const DashboardAssetHandler = ({
       responsive: ["md"],
       fixed: "right",
       width: 140,
-      render: (_, record) => <TimelineViewDrawer assetUuid={record.key} />,
+      render: (_: any, record: { key: string; }) => <TimelineViewDrawer assetUuid={record.key} />,
     },
   ];
 
@@ -579,7 +579,7 @@ const DashboardAssetHandler = ({
   };
 
 
-  const data = assetData?.results?.map((result) => ({
+  const data = assetData?.results?.map((result: { asset_uuid: any; asset_id: any; asset_category: any; asset_type: { asset_type_name: any; }; version: any; status: string; location: { location_name: any; }; invoice_location: { location_name: any; }; business_unit: { business_unit_name: any; }; os: any; os_version: any; mobile_os: any; processor: any; processor_gen: any; accessories: any; date_of_purchase: any; warranty_period: any; asset_detail_status: any; assign_status: any; approved_by: { username: any; }; model_number: any; serial_number: any; memory: { memory_space: any; }; storage: any; configuration: any; custodian: { employee_name: any; }; product_name: any; owner: any; license_type: any; requester: { username: any; }; created_at: any; updated_at: any; }) => ({
     key: result.asset_uuid,
     asset_id: result.asset_id,
     asset_category: result.asset_category,
