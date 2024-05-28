@@ -545,8 +545,7 @@ const DashboardAssetHandler = ({
         onClick: () => handleSort("updated_at"),
       }),
       render: renderClickableColumn("Updated At", "updated_at"),
-    },
-
+    },    
     {
       title: "Accessories",
       dataIndex: "Accessories",
@@ -563,8 +562,6 @@ const DashboardAssetHandler = ({
       render: (_: any, record: { key: string; }) => <TimelineViewDrawer assetUuid={record.key} />,
     },
   ];
-
-
 
   const handleColumnClick = (record: string[], columnName: string) => {
     if (columnName !== "Assign Asset") {

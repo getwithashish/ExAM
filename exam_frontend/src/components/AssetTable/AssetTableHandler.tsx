@@ -494,6 +494,13 @@ const AssetTableHandler = ({
       render: renderClickableColumn("notes", "notes"),
     },
     {
+      title: 'Approver Notes',
+      dataIndex: 'approval_status_message',
+      responsive: ['md'],
+      width: 120,
+      render:renderClickableColumn("approval_status_message", "approval_status_message")
+    },
+    {
       title: "Custodian",
       dataIndex: "custodian",
       responsive: ["md"],
@@ -583,6 +590,7 @@ const AssetTableHandler = ({
     AssignAsset: "assign",
     created_at: result.created_at,
     updated_at: result.updated_at,
+    approval_status_message: result.approval_status_message,
   }));
 
   const drawerTitle = "Asset Details";
