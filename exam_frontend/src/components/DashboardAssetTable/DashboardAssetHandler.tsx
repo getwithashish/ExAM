@@ -514,7 +514,6 @@ const DashboardAssetHandler = ({
         "asset_detail_status"
       ),
     },
-
     {
       title: "Asset Assign Status",
       dataIndex: "assign_status",
@@ -545,14 +544,20 @@ const DashboardAssetHandler = ({
         onClick: () => handleSort("updated_at"),
       }),
       render: renderClickableColumn("Updated At", "updated_at"),
-    },
-
+    },    
     {
       title: "Accessories",
       dataIndex: "Accessories",
       responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Accessories", "accessories"),
+    },
+    {
+      title: "Approver Notes",
+      dataIndex: "approval_status_message",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("approval_status_message", "approval_status_message"),
     },
     {
       title: "View Asset Log",
@@ -563,8 +568,6 @@ const DashboardAssetHandler = ({
       render: (_: any, record: { key: string; }) => <TimelineViewDrawer assetUuid={record.key} />,
     },
   ];
-
-
 
   const handleColumnClick = (record: string[], columnName: string) => {
     if (columnName !== "Assign Asset") {
@@ -579,7 +582,7 @@ const DashboardAssetHandler = ({
   };
 
 
-  const data = assetData?.results?.map((result: { asset_uuid: any; asset_id: any; asset_category: any; asset_type: { asset_type_name: any; }; version: any; status: string; location: { location_name: any; }; invoice_location: { location_name: any; }; business_unit: { business_unit_name: any; }; os: any; os_version: any; mobile_os: any; processor: any; processor_gen: any; accessories: any; date_of_purchase: any; warranty_period: any; asset_detail_status: any; assign_status: any; approved_by: { username: any; }; model_number: any; serial_number: any; memory: { memory_space: any; }; storage: any; configuration: any; custodian: { employee_name: any; }; product_name: any; owner: any; license_type: any; requester: { username: any; }; created_at: any; updated_at: any; }) => ({
+  const data = assetData?.results?.map((result: { asset_uuid: any; asset_id: any; asset_category: any; asset_type: { asset_type_name: any; }; version: any; status: string; location: { location_name: any; }; invoice_location: { location_name: any; }; business_unit: { business_unit_name: any; }; os: any; os_version: any; mobile_os: any; processor: any; processor_gen: any; accessories: any; date_of_purchase: any; warranty_period: any; asset_detail_status: any; assign_status: any; approved_by: { username: any; }; model_number: any; serial_number: any; memory: { memory_space: any; }; storage: any; configuration: any; custodian: { employee_name: any; }; product_name: any; owner: any; license_type: any; requester: { username: any; }; created_at: any; updated_at: any; approval_status_message:any }) => ({
     key: result.asset_uuid,
     asset_id: result.asset_id,
     asset_category: result.asset_category,
@@ -613,6 +616,7 @@ const DashboardAssetHandler = ({
     AssignAsset: "assign",
     created_at: result.created_at,
     updated_at: result.updated_at,
+    approval_status_message: result.approval_status_message
 
   }));
 

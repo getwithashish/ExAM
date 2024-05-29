@@ -527,9 +527,13 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
       width: 120,
       render: renderClickableColumn("Accessories", "accessories"),
     },
-
-    
-
+    {
+      title: "Approver Notes",
+      dataIndex: "approval_status_message",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("approval_status_message", "approval_status_message"),
+    },
     {
       title: "Deallocate Asset",
       dataIndex: "DeallocateAsset",
@@ -584,6 +588,7 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
     AssignAsset: "assign",
     created_at: result.created_at,
     updated_at: result.updated_at,
+    approval_status_message:result.approval_status_message,
   }));
 
   const drawerTitle = "Asset Details";
