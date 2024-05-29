@@ -53,7 +53,6 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
   useEffect(() => {
     fetchAssetTypeData()
       .then((data) => {
-        console.log("Asset types", data);
         setAssetTypeData(data);
       })
       .catch((error) => {
@@ -65,7 +64,6 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
     fetchAssetData()
       .then((assetCountData) => {
         let inServiceCount = 0;
-        console.log("assetCountData", assetCountData);
         const assetTypeData = Object.entries(
           assetCountData?.status_counts ?? {}
         ).map(([label, value]) => {
@@ -91,7 +89,6 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
         });
         setAssetChartData(assetTypeData);
         setAssetFilteredChartData(assetTypeData);
-        console.log("asset filtered data:", assetChartData);
       })
       .catch((error) => {
         console.error("Error fetching asset count data:", error);
@@ -108,13 +105,11 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
     if (chartLabel === "IN SERVICE") {
       chartLabel = "IN STORE|IN USE";
     }
-    console.log("Clicked Asset Chart Label: ", chartLabel);
     setAssetState(chartLabel ?? null);
     onClick();
   };
 
   useEffect(() => {
-    console.log("assetState:", assetState);
   }, [assetState]);
 
   const handleDetailItemClick = (_event: React.MouseEvent, params: any) => {
@@ -125,13 +120,11 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
     if (chartLabel === "REJECTED") {
       chartLabel = "CREATE_REJECTED|UPDATE_REJECTED";
     }
-    console.log("Clicked Detail Chart Label: ", chartLabel);
     setDetailState(chartLabel ?? null);
     onClick();
   };
 
   useEffect(() => {
-    console.log("detailState:", detailState);
   }, [detailState]);
 
   const handleAssignItemClick = (_event: React.MouseEvent, params: any) => {
@@ -139,21 +132,17 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
     if (chartLabel === "PENDING") {
       chartLabel = "ASSIGN_PENDING";
     }
-    console.log("Clicked Assign Chart Label: ", chartLabel);
     setAssignState(chartLabel ?? null);
     onClick();
   };
 
   useEffect(() => {
-    console.log("assignState:", assignState);
   }, [assignState]);
 
   useEffect(() => {
     fetchAssetData()
       .then((res) => {
         const assetDetailData = res.asset_detail_status;
-        console.log("response data", assetDetailData);
-
         const mergedStatusData = Object.entries(assetDetailData ?? {}).reduce(
           (acc, [label, value]) => {
             const mappedLabel = statusMapping[label] ?? label;
@@ -238,30 +227,25 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
   }, []);
 
   useEffect(() => {
-    console.log("Selected Asset Type ID:", selectedTypeId);
   }, [selectedTypeId]);
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log("assetTypeData", assetTypeData);
     const assetTypeValue = parseInt(e.target.value);
 
 
     if (assetTypeValue === 0) {
-      console.log("Selected Asset Type: None");
       setSelectedTypeId(0);
     }
 
     const selectedAssetType = assetTypeData.find(
       (assetType) => assetType.id === assetTypeValue
     );
-    console.log("selectedAssetType", selectedAssetType);
 
     if (selectedAssetType) {
-      console.log("Selected Asset Type:", selectedAssetType.asset_type_name);
       setSelectedTypeId(selectedAssetType.id);
       setSelectedType(assetTypeValue.toString());
     } else {
-      console.log("Selected asset type not found.");
+      alert("Selected asset type not found.");
     }
 
     if (assetTypeValue === 0) {
@@ -273,7 +257,6 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
         .get(`/asset/asset_count?asset_type=${assetTypeValue}`)
         .then((assetRes) => {
           const assetCountData = assetRes.data.data;
-          console.log("assetCountData: ", assetCountData);
           const assetFilteredData = Object.entries(
             assetCountData?.status_counts ?? {}
           ).map(([label, value]) => ({
