@@ -12,19 +12,7 @@ import {
   getLocationOptions,
   getMemoryOptions,
 } from "./api/getAssetDetails";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBookOpenReader } from "@fortawesome/free-solid-svg-icons";
-import { Notes } from "@mui/icons-material";
 
-interface ExpandedDataType {
-  key: React.Key;
-  date: string;
-  name: string;
-  upgradeNum: string;
-}
-interface AssetTableHandlerProps {
-  isRejectedPage: boolean;
-}
 
 const AssetTableHandler = ({
   userRole,
@@ -37,11 +25,10 @@ const AssetTableHandler = ({
 }) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [sortedColumn, setSortedColumn] = useState<string | null>(null);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [sortOrders, setSortOrders] = useState({});
+  const [sortedColumn, setSortedColumn] = useState<string>('');
+  const [sortOrder, setSortOrder] = useState<string>('asc');
+  const [sortOrders, setSortOrders] = useState<{ [key: string]: string }>({});
   const [searchTerm, setSearchTerm] = useState<string>("");
-
   const [queryParam, setQueryParam] = useState("");
   const {
     data: assetData,
@@ -151,21 +138,29 @@ const AssetTableHandler = ({
     );
 
     const handleSort = (column: string) => {
-      const isCurrentColumn = column === sortedColumn;  
-      let newSortOrders = { ...sortOrders };  
+      const isCurrentColumn = column === sortedColumn;
+      let newSortOrders = { ...sortOrders };
+    
       if (!isCurrentColumn) {
         newSortOrders = { [column]: "asc" };
       } else {
         newSortOrders[column] = sortOrders[column] === "asc" ? "desc" : "asc";
-      }  
+      }
+    
       setSortedColumn(column);
-      setSortOrders(newSortOrders);  
+      setSortOrder(newSortOrders[column]);
+      setSortOrders(newSortOrders);
+    
       const queryParams = Object.keys(newSortOrders)
-        .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
-        .join("");  
-      const additionalQueryParams = `&global_search=${searchTerm}&offset=${0}`;  
+      .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
+      .join("");
+      let additionalQueryParams = '&offset=0';
+      if (searchTerm !== '' && searchTerm !== null) {
+        additionalQueryParams += `&global_search=${searchTerm}`;
+      }
       refetchAssetData(queryParams + additionalQueryParams);
     };
+    
 
 
   const columns = [

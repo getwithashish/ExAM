@@ -38,6 +38,7 @@ const AssetTable = ({
   searchTerm,
   setSearchTerm,
 }: AssetTableProps) => {
+
   const handleSearch = (searchTerm: string) => {
     setSearchTerm(searchTerm);
     const queryParams = `&global_search=${searchTerm}&sort_by=${sortedColumn}&sort_order=${sortOrder}&offset=20`;
@@ -55,9 +56,10 @@ const AssetTable = ({
         <div className=" font-display">Deallocate Assets</div>
       </div>
       <div style={{ marginLeft: "40px", marginBottom: "30px" }}>
-        <GlobalSearch
-          assetDataRefetch={assetDataRefetch}
+      <GlobalSearch    
+          assetDataRefetch={assetDataRefetch}      
           searchTerm={searchTerm}
+          onSearch={handleSearch}
           setSearchTerm={setSearchTerm}
         />
       </div>
@@ -97,18 +99,20 @@ const AssetTable = ({
             }}
             footer={() => (
               <Pagination
-                pageSize={20}
-                showTotal={(total, range) =>
-                  `${range[0]}-${range[1]} of ${total} assets`
+            pageSize={20}
+            showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} assets`}
+            total={totalItemCount}
+            onChange={(page, pageSize) => {
+              const offset = (page - 1) * pageSize;
+              let additionalQueryParams = `&offset=${offset}`;
+              if (searchTerm !== "" && searchTerm !== null) {
+                  additionalQueryParams += `&global_search=${searchTerm}`;
                 }
-                total={totalItemCount}
-                onChange={(page, pageSize) => {
-                  const offset = (page - 1) * pageSize;
-                  const queryParams = `&offset=${offset}&global_search=${searchTerm}&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
-                  assetPageDataFetch(queryParams);
-                }}
-                hideOnSinglePage={true}
-              />
+              const queryParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}` + additionalQueryParams;
+              assetPageDataFetch(queryParams);
+            }}
+            hideOnSinglePage={true}
+          />
             )}
           />
         </div>
