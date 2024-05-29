@@ -298,6 +298,12 @@ const SidebarComponentNew = ({ children }) => {
                     <Link to="/exam/approved_requests">Approved</Link>
                   </ToolTip>
                 </Menu.Item>
+                <Menu.Item icon={<CheckCircleOutlined />}>
+                  {/* For sysadmin */}
+                  <ToolTip title="Show the requests which are in pending status">
+                    <Link to="/exam/pending_requests">Pending Requests</Link>
+                  </ToolTip>
+                </Menu.Item>
                 <Menu.Item icon={<CloseCircleOutlined />}>
                   {/* For sysadmin */}
                   <ToolTip title="Show my Asset creation and updation Requests which have been rejected">

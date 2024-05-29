@@ -243,18 +243,28 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
       setDetailFilteredChartData(detailChartData);
       setAssignFilteredChartData(assignChartData);
     } else {
-      
+
       axiosInstance
         .get(`/asset/asset_count?asset_type=${assetTypeValue}`)
         .then((assetRes) => {
           const assetCountData = assetRes.data.data;
-          const assetFilteredData = Object.entries(
-            assetCountData?.status_counts ?? {}
-          ).map(([label, value]) => ({
-            label,
-            value: value as number,
-            color: statusColors[label],
-          }));
+          const assetFilteredData = Object.entries(assetCountData?.status_counts ?? {})
+            .filter(([label, _]) => label !== "DISPOSED")
+            .map(([label, value]) => ({
+              label,
+              value: value as number,
+              color: statusColors[label],
+            }));
+          const inUseCount = assetFilteredData.find(item => item.label === 'IN USE')?.value ?? 0;
+          const inStoreCount = assetFilteredData.find(item => item.label === 'IN STORE')?.value ?? 0;
+          const inServiceCount = inUseCount + inStoreCount;
+          if (inServiceCount > 0) {
+            assetFilteredData.push({
+              label: 'IN SERVICE',
+              value: inServiceCount,
+              color: statusColors['IN SERVICE'],
+            });
+          }
           setAssetFilteredChartData(assetFilteredData);
         })
         .catch((error) => {
