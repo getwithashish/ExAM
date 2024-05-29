@@ -20,18 +20,16 @@ const AddAsset: React.FC = () => {
   
 
   const hardwareSpecificFields = [
-    "model_number",
-    "asset_id",
+  
     "asset_type",
     "serial_number",
-    "warranty_period",
     "location",
     "invoice_location",
     "date_of_purchase",
   ];
 
   const softwareSpecificFields = [
-    "asset_id",
+    
     "product_name",
     "location",
     "date_of_purchase",
@@ -41,15 +39,10 @@ const AddAsset: React.FC = () => {
   const setRequiredFieldsByCategory = (category: string) => {
     let requiredFieldsArray: string[] = [
       "asset_category",
-      "asset_id",
       "product_name",
       "serial_number",
       "location",
       "invoice_location",
-      "business_unit",
-      // "os",
-      // "status",
-      "warranty_period",
       "date_of_purchase",
     ];
     if (category === "HARDWARE") {
@@ -107,6 +100,11 @@ const AddAsset: React.FC = () => {
     let fieldName=Object.keys(value)[0]
     handleInputChange(fieldName,value[fieldName]);
   }, [value]);
+
+  useEffect(() => {
+    let fieldName=Object.keys(modelNumber)[0]
+    handleInputChange(fieldName,modelNumber[fieldName]);
+  }, [modelNumber]);
 
 
 
@@ -318,10 +316,10 @@ const AddAsset: React.FC = () => {
     // Ensure that warranty_period is not undefined for hardware assets
     if (
       formData.asset_category === "HARDWARE" &&
-      !formData.warranty_period &&
+     
       !formData.asset_type
     ) {
-      formData.warranty_period = "";
+      
     }
 
     // Check if all mandatory fields are filled for software
@@ -376,12 +374,7 @@ const AddAsset: React.FC = () => {
 
     // If it's a hardware asset and all mandatory fields are filled
     if (formData.asset_category === "HARDWARE" && isAllHardwareFieldsFilled) {
-      // Your hardware-specific validation logic goes here
-      const warrantyPeriodValue = formData.warranty_period.trim();
-      if (warrantyPeriodValue !== "" && !/^\d+$/.test(warrantyPeriodValue)) {
-        message.error("Warranty period should be a valid integer.");
-        return;
-      }
+      
 
       const storageValue = formData.storage?.trim();
       const formatPattern = /^\d{1,3}GB$/;
@@ -471,7 +464,7 @@ const AddAsset: React.FC = () => {
               <Form.Item
                 label={
                   <span>
-                    Asset ID<span className={styles["star"]}>*</span>
+                    Asset ID
                   </span>
                 }
                 className={styles["formItem"]}
@@ -595,7 +588,7 @@ const AddAsset: React.FC = () => {
               <Form.Item
                 label={
                   <span>
-                    Asset ID<span className={styles["star"]}>*</span>
+                    Asset ID
                   </span>
                 }
                 className={styles["formItem"]}
@@ -667,7 +660,7 @@ const AddAsset: React.FC = () => {
               <Form.Item
                 label={
                   <span>
-                    Model Number<span className={styles["star"]}>*</span>
+                    Model Number
                   </span>
                 }
                 className={styles["formItem"]}
@@ -678,7 +671,11 @@ const AddAsset: React.FC = () => {
               setValue={setModelNumber}
              
             />
+
+
               </Form.Item>
+            
+              {/* </Form.Item> */}
               <Form.Item
                 label={
                   <span>
@@ -708,7 +705,7 @@ const AddAsset: React.FC = () => {
               <Form.Item
                 label={
                   <span>
-                    Warranty Period<span className={styles["star"]}>*</span>
+                    Warranty Period
                   </span>
                 }
                 className={styles["formItem"]}
@@ -739,8 +736,8 @@ const AddAsset: React.FC = () => {
               >
                  <AssetFieldAutoComplete
               assetField="location"
-              value={value}
-              setValue={setValue}
+              value={assetLocation}
+              setValue={setAssetLocation}
 
             />
               
@@ -854,20 +851,6 @@ const AddAsset: React.FC = () => {
                   className={styles["input"]}
                   onChange={(e) => handleAccessoryChange(e)}
                 />
-              </Form.Item>
-
-              <Form.Item label="Status:" className={styles["formItem"]}>
-                <Select
-                  className={styles["input"]}
-                  defaultValue="in store"
-                  placeholder="Select Approval"
-                  onChange={(value) => handleInputChange("status", value)}
-                >
-                  <Option value="in store">IN-STOCK</Option>
-                  <Option value="in repair">IN-REPAIR</Option>
-                  <Option value="expired">EXPIRED</Option>
-                  <Option value="disposed">DISPOSED</Option>
-                </Select>
               </Form.Item>
 
               <Form.Item label="Notes:" className={styles["formItem"]}>
