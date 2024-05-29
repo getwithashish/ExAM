@@ -271,14 +271,14 @@ const AssetTableHandler = ({
 
     {
       title: "Asset Status",
-      dataIndex: "Status",
+      dataIndex: "status",
       responsive: ["md"],
       width: 140,
       render: renderClickableColumn("Asset Status", "status"),
     },
     {
       title: "Business Unit",
-      dataIndex: "BusinessUnit",
+      dataIndex: "business_unit",
       responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Business Unit", "business_unit"),
@@ -387,7 +387,7 @@ const AssetTableHandler = ({
     
     {
       title: "Model Number",
-      dataIndex: "ModelNumber", // Corrected dataIndex
+      dataIndex: "model_number", // Corrected dataIndex
       responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Asset Status", "model_number"),
