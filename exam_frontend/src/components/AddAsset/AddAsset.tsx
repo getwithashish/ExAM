@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { message, Tooltip } from "antd";
-import { message, Tooltip } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons"; //
 import axiosInstance from "../../config/AxiosConfig";
-import { Button, DatePicker, Input, Form, Select } from "antd";
 import { Button, DatePicker, Input, Form, Select } from "antd";
 import styles from "./AddAsset.module.css";
 import AssetFieldAutoComplete from "../AutocompleteBox/AssetFieldAutoComplete";
