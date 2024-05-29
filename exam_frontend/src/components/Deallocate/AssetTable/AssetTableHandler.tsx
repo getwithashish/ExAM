@@ -27,9 +27,9 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
   unassign,
 }) => {
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null); // State to store the selected asset ID
-  const [sortedColumn, setSortedColumn] = useState<string | null>(null);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [sortOrders, setSortOrders] = useState({});
+  const [sortedColumn, setSortedColumn] = useState<string>('');
+  const [sortOrder, setSortOrder] = useState<string>('asc');
+  const [sortOrders, setSortOrders] = useState<{ [key: string]: string }>({});
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -123,19 +123,26 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
   };
   
   const handleSort = (column: string) => {
-    const isCurrentColumn = column === sortedColumn;  
-    let newSortOrders = { ...sortOrders };  
+    const isCurrentColumn = column === sortedColumn;
+    let newSortOrders = { ...sortOrders };
+  
     if (!isCurrentColumn) {
       newSortOrders = { [column]: "asc" };
     } else {
       newSortOrders[column] = sortOrders[column] === "asc" ? "desc" : "asc";
-    }  
+    }
+  
     setSortedColumn(column);
-    setSortOrders(newSortOrders);  
+    setSortOrder(newSortOrders[column]);
+    setSortOrders(newSortOrders);
+  
     const queryParams = Object.keys(newSortOrders)
-      .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
-      .join("");  
-    const additionalQueryParams = `&global_search=${searchTerm}&offset=${0}`;  
+    .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
+    .join("");
+    let additionalQueryParams = '&offset=0';
+    if (searchTerm !== '' && searchTerm !== null) {
+      additionalQueryParams += `&global_search=${searchTerm}`;
+    }
     refetchAssetData(queryParams + additionalQueryParams);
   };
 

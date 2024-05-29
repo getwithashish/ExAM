@@ -11,7 +11,6 @@ import DrawerViewRequest from "../../pages/RequestPage/DrawerViewRequest";
 
 const DashboardAssetTable = ({
   asset_uuid,
-  isSuccess,
   selectedAssetId,
   handleRowClick,
   onCloseDrawer,
@@ -132,7 +131,7 @@ const DashboardAssetTable = ({
                 if (selectedTypeId !== 0) {
                   additionalQueryParams += `&asset_type=${selectedTypeId}`;
                 }
-                const queryParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}` + additionalQueryParams
+                const queryParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}` + additionalQueryParams;
                 assetPageDataFetch(queryParams);
               }}
               hideOnSinglePage={true}
