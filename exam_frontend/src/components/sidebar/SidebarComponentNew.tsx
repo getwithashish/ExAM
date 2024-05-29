@@ -2,48 +2,36 @@ import { Layout, Menu, Dropdown } from "antd";
 import {
   AppstoreAddOutlined,
   CarryOutOutlined,
-  DashboardOutlined,
-  LogoutOutlined,
   MailOutlined,
   PieChartOutlined,
-  SelectOutlined,
-  UploadOutlined,
-  UserOutlined,
   UserSwitchOutlined,
-  VideoCameraOutlined,
-  ExclamationOutlined,
   CheckCircleOutlined,
   CheckSquareOutlined,
   CloseCircleOutlined,
   RobotOutlined,
+  LogoutOutlined
 } from "@ant-design/icons";
-import React, { useEffect, useState } from "react";
-import ExampleNavbar from "../Navbar/navbar";
-
-import type { FC } from "react";
-import { Avatar, Button, DarkThemeToggle, Navbar } from "flowbite-react";
-import { FaBell, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
+import React, { ReactNode, useEffect, useState } from "react";
+import { Button } from "flowbite-react";
+import { FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 import styles from "../Navbar/navbar.module.css";
-import AccountMenu from "../notificationMenuItem";
-import MenuListComposition from "../menuItem";
 import SideDrawerComponent from "../SideDrawerComponent/SideDrawerComponent";
 import AddAsset from "../AddAsset/AddAsset";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../pages/authentication/AuthContext";
 import Avatars from "../Avatar/Avatar";
 import SubMenu from "antd/es/menu/SubMenu";
-import {
-  CheckOutlined,
-  EditOutlined,
-  WarningOutlined,
-} from "@mui/icons-material";
+import { EditOutlined } from "@mui/icons-material";
 import ToolTip from "../Tooltip/Tooltip";
-
 import { Footer as FlowbiteFooter } from "flowbite-react";
 import { MdFacebook } from "react-icons/md";
 
-const SidebarComponentNew = ({ children }) => {
-  const { userRole, setUserRole, login, logout } = useAuth();
+interface SidebarComponentNewProps {
+  children: ReactNode;
+}
+
+const SidebarComponentNew: React.FC<SidebarComponentNewProps> = ({ children }) => {
+  const { userRole, setUserRole } = useAuth();
 
   const handleDownload = async () => {
     const fileUrl = "/static/asset_management_windows.exe";
@@ -63,37 +51,24 @@ const SidebarComponentNew = ({ children }) => {
     }
   };
 
-  // const { addAssetState, setAddAssetState } = useMyContext();
   const [displaydrawer, setDisplayDrawer] = useState(false);
   const closeDrawer = () => {
     setDisplayDrawer(false);
-    console.log("displaydrwer value is ", displaydrawer);
   };
   const showDefaultDrawer = () => {
     setDisplayDrawer(true);
-    console.log("displaydrawer value is ", displaydrawer);
   };
 
   const { Header, Content, Footer, Sider } = Layout;
-  const items = [
-    UserOutlined,
-    VideoCameraOutlined,
-    UploadOutlined,
-    UserOutlined,
-  ].map((icon, index) => ({
-    key: String(index + 1),
-    icon: React.createElement(icon),
-    label: `nav ${index + 1}`,
-  }));
-
   const [jwtPayload, setJwtPayload] = useState<any>(null);
-  const [showLogout, setShowLogout] = useState(false);
 
   useEffect(() => {
-    // Function to decode JWT token
     const decodeJWT = (token: string) => {
       try {
         const base64Url = token.split(".")[1];
+        if (!base64Url) {
+          throw new Error('Invalid JWT token')
+        }
         const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
         const jsonPayload = decodeURIComponent(
           atob(base64)
@@ -110,48 +85,37 @@ const SidebarComponentNew = ({ children }) => {
       }
     };
 
-    // Get JWT token from localStorage
     const jwtToken = localStorage.getItem("jwt");
-    console.log(jwtToken);
 
-    // Decode JWT token and set payload
     if (jwtToken) {
       const payload = decodeJWT(jwtToken);
-      console.log(payload);
-      console.log(payload.username);
       setJwtPayload(payload);
-      // login()
       setUserRole(payload.user_scope);
     }
   }, []);
 
   const navigate = useNavigate();
 
-  const toggleLogout = () => {
-    setShowLogout(!showLogout);
-  };
-
   const handleLogout = () => {
     localStorage.removeItem("jwt");
     localStorage.removeItem("refresh_token");
-    // logout()
     setUserRole("None");
     navigate("/login", { replace: true });
   };
-  const menu = (
-    <Menu>
-      {/* Use Button component instead of Menu.Item */}
-      <Menu.Item key="logout" onClick={handleLogout}>
+
+  const menuItems = [
+    {
+      key: 'logout',
+      label: (
         <Button
-          type="link"
-          icon={<LogoutOutlined />}
           style={{ color: "white", backgroundColor: "rgb(22, 119, 255)" }}
+          onClick={handleLogout}
         >
-          Logout
+          Logout < LogoutOutlined />
         </Button>
-      </Menu.Item>
-    </Menu>
-  );
+      ),
+    },
+  ];
 
   return (
     <Layout>
@@ -168,15 +132,12 @@ const SidebarComponentNew = ({ children }) => {
         }}
       >
         {/* <ExampleNavbar /> */}
-
         <div className="w-full p-2.5 lg:px-5 lg:pl-3">
           <div className="flex items-center justify-between ">
             <div className="text-left  font-display text-lg p-0 mb-10">
               <b>Asset Management System</b>
             </div>
-
             {/* </Navbar.Brand> */}
-
             <div className="flex items-center gap-3">
               <div
                 className={`flex items-center gap-3 ${styles["button-components"]}`}
@@ -194,7 +155,7 @@ const SidebarComponentNew = ({ children }) => {
                   </div>
                 )}
                 <div className="flex items-center gap-3 ml-5  -mt-10">
-                  <Dropdown overlay={menu} placement="bottom" arrow>
+                  <Dropdown menu={{ items: menuItems }} placement="bottom" arrow>
                     <div className="cursor-pointer">
                       <Avatars />
                     </div>
@@ -209,7 +170,6 @@ const SidebarComponentNew = ({ children }) => {
         <Sider
           theme="light"
           style={{
-            // overflow: "auto",
             zIndex: 100,
             height: "100vh",
             position: "sticky",
@@ -221,7 +181,6 @@ const SidebarComponentNew = ({ children }) => {
             paddingTop: 100,
             paddingLeft: 15,
             borderRight: "1px solid  #e8e8e8",
-            // marginRight:"30px"
           }}
           width="250px"
           breakpoint="lg"
@@ -308,7 +267,6 @@ const SidebarComponentNew = ({ children }) => {
             ) : (
               ""
             )}
-
             {userRole === "LEAD" ? (
               <Menu.Item icon={<MailOutlined />}>
                 {/* For lead */}
@@ -367,7 +325,6 @@ const SidebarComponentNew = ({ children }) => {
           >
             <AddAsset />
           </SideDrawerComponent>
-
           <Footer className="bg-white">
             <FlowbiteFooter container>
               <div className="flex w-full flex-col gap-y-6 lg:flex-row lg:justify-between lg:gap-y-0">
