@@ -178,29 +178,29 @@ const CardComponent: React.FC<CardType> = ({
   };
 
   const handleUpdateChange = (field: string, value: any) => {
-     if (field === "business_unit") {
-    // Map the business unit name to its primary key
-    const businessUnitPK = uniqueBusinessOptions.find(
-      (option) => option.name === value
-    )?.id;
-    setUpdatedData((prevData) => ({
-      ...prevData,
-      [field]: businessUnitPK,
-    }));
-  } else {
-    if (field === "status" && value === "IN STORE") {
-      // Change the status to "IN STOCK" when the value is "IN STORE"
+    if (field === "business_unit") {
+      // Map the business unit name to its primary key
+      const businessUnitPK = uniqueBusinessOptions.find(
+        (option) => option.name === value
+      )?.id;
       setUpdatedData((prevData) => ({
         ...prevData,
-        [field]: "IN STOCK",
+        [field]: businessUnitPK,
       }));
     } else {
-      setUpdatedData((prevData) => ({
-        ...prevData,
-        [field]: value,
-      }));
+      if (field === "status" && value === "IN STORE") {
+        // Change the status to "IN STOCK" when the value is "IN STORE"
+        setUpdatedData((prevData) => ({
+          ...prevData,
+          [field]: "IN STOCK",
+        }));
+      } else {
+        setUpdatedData((prevData) => ({
+          ...prevData,
+          [field]: value,
+        }));
+      }
     }
-  }
   };
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -597,7 +597,7 @@ const CardComponent: React.FC<CardType> = ({
             onChange={(e) =>
               handleUpdateChange("serial_number", e.target.value)
             }
-            readOnly 
+            readOnly
             style={inputStyle}
           />{" "}
         </Form.Item>
@@ -801,7 +801,7 @@ const CardComponent: React.FC<CardType> = ({
             onChange={(e) =>
               handleUpdateChange("configuration", e.target.value)
             }
-            readOnly 
+            readOnly
             style={inputStyle}
           />{" "}
         </Form.Item>
@@ -871,6 +871,30 @@ const CardComponent: React.FC<CardType> = ({
               borderRadius: "5px",
               border: "0.5px solid #d3d3d3",
             }}
+          />{" "}
+        </Form.Item>
+      ),
+    },
+    {
+      label: "approval_status_message",
+      name: "approval_status_message",
+      value: (
+        <Form.Item name="approval_status_message">
+          <b>Approver Message: </b>
+          <br></br>
+          <br></br>{" "}
+          <Input
+            defaultValue={data["approval_status_message"]}
+            onChange={(e) => handleUpdateChange("approval_status_message", e.target.value)}
+            style={{
+              width: "387px",
+              height: "100px",
+              background: "#f0f0f0",
+              borderRadius: "5px",
+              border: "0.5px solid #d3d3d3",
+              textAlign: "center"
+            }}
+            readOnly
           />{" "}
         </Form.Item>
       ),
@@ -1012,7 +1036,7 @@ const CardComponent: React.FC<CardType> = ({
             }}
           />
 
-          {isMyApprovalPage && (
+          {/* {isMyApprovalPage && (
             <>
               {isLoading ? (
                 <Spin size="large" />
@@ -1039,6 +1063,46 @@ const CardComponent: React.FC<CardType> = ({
                       onClick={handleDeleteClick}
                       style={{
                         marginLeft: "290px",
+                        marginTop: "0px",
+                      }}
+                    >
+                      Delete Asset
+                    </Button>
+                  )}
+                </>
+              )}
+            </>
+          )} */}
+
+          {isMyApprovalPage && (
+            <>
+              {isLoading ? (
+                <Spin size="large" />
+              ) : (
+                <>
+                  {getUserScope() === "SYSTEM_ADMIN" && (
+                    <Button
+                      style={{
+                        marginBottom: "0px",
+                        marginTop: "0px",
+                        color: "white",
+                        border: "none",
+                        background: "blue",
+                        marginLeft: "600px",
+                      }}
+                      onClick={handleUpdate}
+                      disabled={isLoading} // Disable button while updating
+                    >
+                      Update
+                    </Button>
+                  )}
+                  {getUserScope() === "LEAD" && (
+                    <Button
+                      type="primary"
+                      danger
+                      onClick={handleDeleteClick}
+                      style={{
+                        marginLeft: "570px",
                         marginTop: "0px",
                       }}
                     >

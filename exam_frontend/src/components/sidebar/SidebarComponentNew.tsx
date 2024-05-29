@@ -15,7 +15,7 @@ import {
   CheckCircleOutlined,
   CheckSquareOutlined,
   CloseCircleOutlined,
-  RobotOutlined 
+  RobotOutlined,
 } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import ExampleNavbar from "../Navbar/navbar";
@@ -241,33 +241,46 @@ const SidebarComponentNew = ({ children }) => {
                 <Link to="/exam/dashboard">Dashboard</Link>
               </ToolTip>
             </Menu.Item>
-            {userRole == "SYSTEM_ADMIN" ? (
-              <React.Fragment>
-                <Menu.Item
-                  onClick={() => showDefaultDrawer()}
-                  icon={<AppstoreAddOutlined />}
-                >
-                  <ToolTip title="To create a new Asset">Create Assets</ToolTip>
-                </Menu.Item>
-                <Menu.Item icon={<EditOutlined />}>
-                  <ToolTip title="To modify an Asset">
-                    <Link to="/exam/updatable_assets">Modify Assets</Link>
-                  </ToolTip>
-                </Menu.Item>
-                <Menu.Item icon={<UserSwitchOutlined />}>
-                  <ToolTip title="To allocate an Asset to an employee">
-                    <Link to="/exam/assignable_asset">Allocate Assets</Link>
-                  </ToolTip>
-                </Menu.Item>
-                <Menu.Item icon={<UserSwitchOutlined />}>
-                  <ToolTip title="To deallocate an Asset from an employee">
-                    <Link to="/exam/deallocate">Deallocate Assets</Link>
-                  </ToolTip>
-                </Menu.Item>
-              </React.Fragment>
-            ) : (
-              ""
-            )}
+            <React.Fragment>
+              {userRole === "SYSTEM_ADMIN" ? (
+                <React.Fragment>
+                  <Menu.Item
+                    onClick={() => showDefaultDrawer()}
+                    icon={<AppstoreAddOutlined />}
+                  >
+                    <ToolTip title="To create a new Asset">
+                      Create Assets
+                    </ToolTip>
+                  </Menu.Item>
+                  <Menu.Item icon={<EditOutlined />}>
+                    <ToolTip title="To modify an Asset">
+                      <Link to="/exam/updatable_assets">Modify Assets</Link>
+                    </ToolTip>
+                  </Menu.Item>
+                  <Menu.Item icon={<UserSwitchOutlined />}>
+                    <ToolTip title="To allocate an Asset to an employee">
+                      <Link to="/exam/assignable_asset">Allocate Assets</Link>
+                    </ToolTip>
+                  </Menu.Item>
+                  <Menu.Item icon={<UserSwitchOutlined />}>
+                    <ToolTip title="To deallocate an Asset from an employee">
+                      <Link to="/exam/deallocate">Deallocate Assets</Link>
+                    </ToolTip>
+                  </Menu.Item>
+                </React.Fragment>
+              ) : userRole === "LEAD" ? (
+                <React.Fragment>
+                  <Menu.Item icon={<EditOutlined />}>
+                    <ToolTip title="To delete an Asset">
+                      <Link to="/exam/updatable_assets">Delete Assets</Link>
+                    </ToolTip>
+                  </Menu.Item>
+                </React.Fragment>
+              ) : (
+                ""
+              )}
+            </React.Fragment>
+
             {userRole === "LEAD" ? (
               <SubMenu
                 key="sub1"
@@ -329,12 +342,11 @@ const SidebarComponentNew = ({ children }) => {
             ) : (
               ""
             )}
-                <Menu.Item icon={<UserSwitchOutlined />}>
-                  <ToolTip title="To view the expired assets">
-                    <Link to="/exam/expired_assets">Expired Assets</Link>
-                  </ToolTip>
-
-                </Menu.Item>
+            <Menu.Item icon={<UserSwitchOutlined />}>
+              <ToolTip title="To view the expired assets">
+                <Link to="/exam/expired_assets">Expired Assets</Link>
+              </ToolTip>
+            </Menu.Item>
             <Menu.Item icon={<CarryOutOutlined />}>
               <ToolTip title="Download user agent">
                 <div onClick={handleDownload}>Download</div>
@@ -344,7 +356,7 @@ const SidebarComponentNew = ({ children }) => {
               <ToolTip title="AI Assistant">
                 <Link to="/exam/chat">AssetSense Ai</Link>
               </ToolTip>
-            </Menu.Item>         
+            </Menu.Item>
           </Menu>
         </Sider>
         <Content className="bg-white">

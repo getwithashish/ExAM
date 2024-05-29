@@ -27,9 +27,9 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
   unassign,
 }) => {
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null); // State to store the selected asset ID
-  const [sortedColumn, setSortedColumn] = useState<string | null>(null);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [sortOrders, setSortOrders] = useState({});
+  const [sortedColumn, setSortedColumn] = useState<string>('');
+  const [sortOrder, setSortOrder] = useState<string>('asc');
+  const [sortOrders, setSortOrders] = useState<{ [key: string]: string }>({});
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -123,19 +123,26 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
   };
   
   const handleSort = (column: string) => {
-    const isCurrentColumn = column === sortedColumn;  
-    let newSortOrders = { ...sortOrders };  
+    const isCurrentColumn = column === sortedColumn;
+    let newSortOrders = { ...sortOrders };
+  
     if (!isCurrentColumn) {
       newSortOrders = { [column]: "asc" };
     } else {
       newSortOrders[column] = sortOrders[column] === "asc" ? "desc" : "asc";
-    }  
+    }
+  
     setSortedColumn(column);
-    setSortOrders(newSortOrders);  
+    setSortOrder(newSortOrders[column]);
+    setSortOrders(newSortOrders);
+  
     const queryParams = Object.keys(newSortOrders)
-      .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
-      .join("");  
-    const additionalQueryParams = `&global_search=${searchTerm}&offset=${0}`;  
+    .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
+    .join("");
+    let additionalQueryParams = '&offset=0';
+    if (searchTerm !== '' && searchTerm !== null) {
+      additionalQueryParams += `&global_search=${searchTerm}`;
+    }
     refetchAssetData(queryParams + additionalQueryParams);
   };
 
@@ -405,6 +412,14 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
     },
     
 ,    
+{
+  title: "License Type",
+  dataIndex: "license_type",
+  responsive: ["md"],
+  width: 120,
+ 
+  render: renderClickableColumn("license_type", "license_type"),
+},
 
     {
       title: "Model Number",
@@ -512,9 +527,13 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
       width: 120,
       render: renderClickableColumn("Accessories", "accessories"),
     },
-
-    
-
+    {
+      title: "Approver Notes",
+      dataIndex: "approval_status_message",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("approval_status_message", "approval_status_message"),
+    },
     {
       title: "Deallocate Asset",
       dataIndex: "DeallocateAsset",
@@ -563,11 +582,13 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
     configuration: result.configuration,
     custodian: result.custodian?.employee_name,
     product_name: result.product_name,
+    license_type:result.license_type,
     owner: result.owner,
     requester: result.requester?.username,
     AssignAsset: "assign",
     created_at: result.created_at,
     updated_at: result.updated_at,
+    approval_status_message:result.approval_status_message,
   }));
 
   const drawerTitle = "Asset Details";

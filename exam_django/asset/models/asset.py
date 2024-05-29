@@ -2,6 +2,7 @@ from django.db import models
 import uuid
 from user_auth.models import User
 
+
 asset_category_choices = (("HARDWARE", "HARDWARE"), ("SOFTWARE", "SOFTWARE"))
 
 owner_choices = (("EXPERION", "EXPERION"),)
@@ -87,7 +88,7 @@ class Asset(models.Model):
     business_unit = models.ForeignKey(
         "BusinessUnit",
         on_delete=models.CASCADE,
-        null=False,
+        null=True,blank=False
     )
     os = models.CharField(max_length=50, null=True, blank=False, choices=os_choices)
     os_version = models.CharField(max_length=50, null=True, blank=False)
