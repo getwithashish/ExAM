@@ -94,8 +94,8 @@ export default function MenuListComposition() {
                     aria-labelledby="composition-button"
                     onKeyDown={handleListKeyDown}
                   >
-                    <MenuItem onClick={handleClose}>My account</MenuItem>
-                    <MenuItem onClick={handleClose}>Logout</MenuItem>
+                    <MenuItem key="my-account" onClick={handleClose}>My account</MenuItem>
+                    <MenuItem key="logout" onClick={handleClose}>Logout</MenuItem>
                   </MenuList>
                 </ClickAwayListener>
               </Paper>
