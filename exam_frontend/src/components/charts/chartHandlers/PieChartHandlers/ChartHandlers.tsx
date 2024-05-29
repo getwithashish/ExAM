@@ -25,7 +25,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
   onClick,
 }) => {
   const [assetTypeData, setAssetTypeData] = useState<AssetDetailData[]>([]);
-  const [selectedType, setSelectedType] = useState<string>("");
+  const [_selectedType, setSelectedType] = useState<string>("");
   const [assetChartData, setAssetChartData] = useState<ChartData[]>([]);
   const [assetFilteredChartData, setAssetFilteredChartData] = useState<
     ChartData[]
@@ -63,39 +63,36 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
   useEffect(() => {
     fetchAssetData()
       .then((assetCountData) => {
-        let inServiceCount = 0;
-        const assetTypeData = Object.entries(
-          assetCountData?.status_counts ?? {}
-        ).map(([label, value]) => {
-          if (label == "IN USE" || label == "IN STORE"){
-            if (inServiceCount == 0){
-              inServiceCount += value as number;
-              return
-            }
-            else{
-              inServiceCount += value as number;
-              return ({
-                label: "IN SERVICE",
-                value: inServiceCount,
-                color: statusColors[label],
-              });
-            }
-          }
-          return ({
-            label: statusMapping[label] ?? label,
-            value: value as number,
-            color: statusColors[label],
-          });
-        });
-        setAssetChartData(assetTypeData);
-        setAssetFilteredChartData(assetTypeData);
+        const filteredAssetCountData = Object.entries(assetCountData?.status_counts ?? {})
+          .filter(([label, _]) => label !== "DISPOSED");
+
+        const assetTypeData = filteredAssetCountData.map(([label, value]) => ({
+          label: statusMapping[label] ?? label,
+          value: value as number,
+          color: statusColors[label],
+        }));
+
+        const inUseCount = assetCountData?.status_counts?.["IN USE"] ?? 0;
+        const inStoreCount = assetCountData?.status_counts?.["IN STORE"] ?? 0;
+        const inServiceCount = inUseCount + inStoreCount;
+
+        const inServiceData = {
+          label: "IN SERVICE",
+          value: inServiceCount,
+          color: statusColors["IN SERVICE"],
+        };
+
+        setAssetChartData([...assetTypeData, inServiceData]);
+        setAssetFilteredChartData([...assetTypeData, inServiceData]);
       })
       .catch((error) => {
         console.error("Error fetching asset count data:", error);
         setAssetFilteredChartData([]);
       });
-    return () => {};
+    return () => { };
   }, []);
+
+
 
   const handleAssetItemClick = (_event: React.MouseEvent, params: any) => {
     let chartLabel = assetFilteredChartData[params["dataIndex"]]?.label;
@@ -231,28 +228,22 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const assetTypeValue = parseInt(e.target.value);
-
-
     if (assetTypeValue === 0) {
       setSelectedTypeId(0);
     }
-
     const selectedAssetType = assetTypeData.find(
       (assetType) => assetType.id === assetTypeValue
     );
-
     if (selectedAssetType) {
       setSelectedTypeId(selectedAssetType.id);
       setSelectedType(assetTypeValue.toString());
-    } else {
-      alert("Selected asset type not found.");
     }
-
     if (assetTypeValue === 0) {
       setAssetFilteredChartData(assetChartData);
       setDetailFilteredChartData(detailChartData);
       setAssignFilteredChartData(assignChartData);
     } else {
+      
       axiosInstance
         .get(`/asset/asset_count?asset_type=${assetTypeValue}`)
         .then((assetRes) => {
@@ -354,21 +345,21 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
           direction="row"
         >
           {assetFilteredChartData.length === 0 &&
-          detailFilteredChartData.length === 0 &&
-          assignFilteredChartData.length === 0 ? (
+            detailFilteredChartData.length === 0 &&
+            assignFilteredChartData.length === 0 ? (
             <div className="flex justify-center items-center h-full w-full">
-              <NoData/>
+              <NoData />
             </div>
           ) : (
             < Stack
-            direction="row"
-            sx={{ flexWrap: "wrap" }}
-            className="m-auto lg:p-10" 
-          >
+              direction="row"
+              sx={{ flexWrap: "wrap" }}
+              className="m-auto lg:p-10"
+            >
               <div className=" pt-6 mt-4 text-center items-center justify-center">
-                  <span className="font-semibold font-display leading-none text-gray-900 dark:text-white text-lg">
-                    Asset Status
-                  </span>
+                <span className="font-semibold font-display leading-none text-gray-900 dark:text-white text-lg">
+                  Asset Status
+                </span>
                 <PieChart
                   margin={{ top: 0, bottom: 0, left: 0, right: 0 }}
                   series={[
@@ -419,9 +410,9 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                 />
               </div>
               <div className=" pt-6 mt-4 text-center items-center justify-center">
-                  <span className="font-semibold font-display leading-none text-gray-900 dark:text-white text-lg">
-                    Approval Status
-                  </span>
+                <span className="font-semibold font-display leading-none text-gray-900 dark:text-white text-lg">
+                  Approval Status
+                </span>
                 <PieChart
                   margin={{ top: 0, bottom: 0, left: 0, right: 0 }}
                   series={[
@@ -472,9 +463,9 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                 />
               </div>
               <div className=" pt-6 mt-4 text-center items-center justify-center">
-                  <span className="font-semibold font-display leading-none text-gray-900 dark:text-white text-lg">
-                    Allocation Status
-                  </span>
+                <span className="font-semibold font-display leading-none text-gray-900 dark:text-white text-lg">
+                  Allocation Status
+                </span>
                 <PieChart
                   margin={{ top: 0, bottom: 0, left: 0, right: 0 }}
                   series={[
