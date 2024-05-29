@@ -9,14 +9,9 @@ import "./DasboardAssetTable.css";
 import { useQuery } from "@tanstack/react-query";
 import { AssetType, DataType } from "../AssetTable/types";
 import { AssetResult } from "../AssetTable/types";
-import {
-  getAssetDetails,
-  getAssetTypeOptions,
-  getLocationOptions,
-  getMemoryOptions,
-} from "./api/getDashboardAssetDetails";
 import DashboardAssetTable from "./DashboardAssetTable";
 import TimelineViewDrawer from "../TimelineLog/TimeLineDrawer";
+import { getAssetDetails, getLocationOptions, getAssetTypeOptions, getMemoryOptions } from "../AssetTable/api/getAssetDetails";
 
 interface DashboardAssetHandlerProps {
   selectedTypeId: number;

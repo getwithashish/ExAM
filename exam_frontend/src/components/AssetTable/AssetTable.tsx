@@ -53,7 +53,7 @@ const AssetTable = ({
 
   return (
     <>
-      <div className="mainHeading" font-display>
+      <div className="mainHeading font-display">
         <h1>{pageHeading}</h1>
       </div>
       <div style={{ marginLeft: "40px", marginBottom: "30px" }}>

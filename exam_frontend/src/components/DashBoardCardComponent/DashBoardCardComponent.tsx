@@ -82,8 +82,8 @@ const DashBoardCardComponent: React.FC<CardType> = ({
         <Form.Item
           name="assetCategory"
           style={{ flex: "1" }}
-          className="formItem"
-          font-display
+          className="formItem  font-display"
+         
         >
           <b style={{ display: "block" }}>Asset Category: </b> <br></br>
           <Input
@@ -103,14 +103,12 @@ const DashBoardCardComponent: React.FC<CardType> = ({
         <Form.Item
           name="status"
           style={{ flex: "1", marginLeft: "8px" }}
-          className="formItem"
-          font-display
+          className="formItem  font-display"  
         >
           <b> Asset Type:</b>
           <br></br>
           <br></br>
           <Select
-            font-display
             variant="filled"
             defaultValue={data.asset_type}
             style={{
@@ -141,14 +139,12 @@ const DashBoardCardComponent: React.FC<CardType> = ({
         <Form.Item
           name="version"
           style={{ flex: "1", marginLeft: "8px" }}
-          className="formItem"
-          font-display
+          className="formItem  font-display"
         >
           <b>Version: </b>
           <br></br>
           <br></br>{" "}
           <Input
-            font-display
             defaultValue={data.version}
             onChange={(e) => handleUpdateChange("version", e.target.value)}
             style={inputStyle}
@@ -162,12 +158,11 @@ const DashBoardCardComponent: React.FC<CardType> = ({
       label: "Asset Status",
       name: "assetStatus",
       value: (
-        <Form.Item font-display name="status" style={{ boxShadow: "none", border: "none" }}>
+        <Form.Item name="status" style={{ boxShadow: "none", border: "none" }}>
           <b> Asset Status:</b>
           <br></br>
           <br></br>
           <Select
-            font-display
             variant="filled"
             defaultValue={uniqueStatusOptions[0]}
             style={{
@@ -198,13 +193,11 @@ const DashBoardCardComponent: React.FC<CardType> = ({
         <Form.Item
           name="location"
           style={{ boxShadow: "none", border: "none" }}
-          font-display
         >
           <b> Asset Location:</b>
           <br></br>
           <br></br>
           <Select
-            font-display
             variant="filled"
             defaultValue={data.location}
             style={{
@@ -234,13 +227,11 @@ const DashBoardCardComponent: React.FC<CardType> = ({
         <Form.Item
           name="location"
           style={{ boxShadow: "none", border: "none" }}
-          font-display
         >
           <b>Invoice Location:</b>
           <br></br>
           <br></br>
           <Select
-            font-display
             variant="filled"
             defaultValue={data.invoice_location}
             style={{
@@ -817,7 +808,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
 
   return (
     <div>
-      <div className="fixed-header" font-display>
+      <div className="fixed-header  font-display">
         <Input
           placeholder="Search..."
           onChange={handleChange}
@@ -834,9 +825,8 @@ const DashBoardCardComponent: React.FC<CardType> = ({
           }}
         />
       </div>
-      <div className="scrollable-content" font-display>
+      <div className="scrollable-content  font-display" >
         <Form
-          font-display
           key={data.asset_id}
           className="mainCard"
           title=""

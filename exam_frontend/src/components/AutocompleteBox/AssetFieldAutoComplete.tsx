@@ -9,13 +9,7 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import { useQuery } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
-import {
-  getAssetTypeOptions,
-  getLocationOptions,
-  getMemoryOptions,
-  getBusinessUnitOptions,
-  getAssetDetails,
-} from "./api/getAssetDetails";
+import { getAssetDetails, getAssetTypeOptions, getLocationOptions, getMemoryOptions } from "../AssetTable/api/getAssetDetails";
 import {
   createAssetType,
   createBusinessUnit,

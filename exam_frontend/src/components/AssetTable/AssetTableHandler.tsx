@@ -600,7 +600,6 @@ const AssetTableHandler = ({
   return (
     <AssetTable
      userRole={userRole}
-
       heading={heading}
       isAssetDataLoading={isAssetDataLoading}
       // drawerTitle={drawerTitle}

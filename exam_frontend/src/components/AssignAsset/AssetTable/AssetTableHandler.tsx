@@ -6,18 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { DataType } from "../AssetTable/types";
 import { AssetResult } from "../AssetTable/types";
 import AssetTable from "./AssetTable";
-import {
-  getAssetDetails,
-  getAssetTypeOptions,
-  getLocationOptions,
-  getMemoryOptions,
-} from "./api/getAssetDetails";
-// interface ExpandedDataType {
-//   key: React.Key;
-//   date: string;
-//   name: string;
-//   upgradeNum: string;
-// }
+import { getAssetDetails,getAssetTypeOptions, getLocationOptions, getMemoryOptions } from "../../AssetTable/api/getAssetDetails";
 
 const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
   const [selectedRow, setSelectedRow] = useState(null);
