@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { message, Popover, Tooltip } from "antd";
+import { message, Tooltip } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons"; //
 import axiosInstance from "../../config/AxiosConfig";
-import { AssetData } from "./types";
-import { Button, DatePicker, Input, Form, InputNumber, Select } from "antd";
-import dayjs from "dayjs";
-const { TextArea } = Input;
+import { Button, DatePicker, Input, Form, Select } from "antd";
 import styles from "./AddAsset.module.css";
 import AssetFieldAutoComplete from "../AutocompleteBox/AssetFieldAutoComplete";
 const { Option } = Select;
@@ -17,41 +13,33 @@ const AddAsset: React.FC = () => {
   // State to store form data
   const [formData, setFormData] = useState<any>({});
   const [requiredFields, setRequiredFields] = useState<string[]>([]);
-  
 
   const hardwareSpecificFields = [
-    "model_number",
-    "asset_id",
+  
     "asset_type",
     "serial_number",
-    "warranty_period",
     "location",
     "invoice_location",
     "date_of_purchase",
   ];
 
   const softwareSpecificFields = [
-    "asset_id",
+    
     "product_name",
     "location",
     "date_of_purchase",
-
-    // Add other software specific fields here...
   ];
+
   const setRequiredFieldsByCategory = (category: string) => {
     let requiredFieldsArray: string[] = [
       "asset_category",
-      "asset_id",
       "product_name",
       "serial_number",
       "location",
       "invoice_location",
-      "business_unit",
-      // "os",
-      // "status",
-      "warranty_period",
       "date_of_purchase",
     ];
+
     if (category === "HARDWARE") {
       requiredFieldsArray = requiredFieldsArray.concat(hardwareSpecificFields);
     } else if (category === "SOFTWARE") {
@@ -64,61 +52,59 @@ const AddAsset: React.FC = () => {
   useEffect(() => {
     setRequiredFieldsByCategory(formData.asset_category);
   }, [formData.asset_category]);
-
   const [formSubmitted, setFormSubmitted] = useState(false);
-
   const [componentSize, setComponentSize] = useState<SizeType | "default">(
     "default"
   );
-
   const [value, setValue] = React.useState("");
   const [assettypeValue, setassettypeValue] = React.useState("");
-  const[assetLocation,setAssetLocation]=React.useState("");
-  const[assetInLocation,setAssetInLocation]=React.useState("");
-  const[assetBu,setAssetBu]=React.useState("");
-  const[modelNumber,setModelNumber]=React.useState("");
-  const[processor,setProcessor]=React.useState("");
-  const[processorGen,setProcessorGen]=React.useState("");
-  const[memory,setMemory]=React.useState("");
-  const[os,setOs]=React.useState("");
-  const[osVersion,setOsVersion]=React.useState("");
-  const[mobileOs,setMobileOs]=React.useState("");
-
-  const[storage,setStorage]=React.useState("");
+  const [assetLocation, setAssetLocation] = React.useState("");
+  const [assetInLocation, setAssetInLocation] = React.useState("");
+  const [assetBu, setAssetBu] = React.useState("");
+  const [modelNumber, setModelNumber] = React.useState("");
+  const [processor, setProcessor] = React.useState("");
+  const [processorGen, setProcessorGen] = React.useState("");
+  const [memory, setMemory] = React.useState("");
+  const [os, setOs] = React.useState("");
+  const [osVersion, setOsVersion] = React.useState("");
+  const [mobileOs, setMobileOs] = React.useState("");
+  const [storage, setStorage] = React.useState("");
 
 
   useEffect(() => {
-    handleInputChange("asset_type",assettypeValue["id"]);
+    handleInputChange("asset_type", assettypeValue["id"]);
   }, [assettypeValue]);
 
   useEffect(() => {
-    handleInputChange("location",assetLocation["id"]);
+    handleInputChange("location", assetLocation["id"]);
   }, [assetLocation]);
 
   useEffect(() => {
-    handleInputChange("invoice_location",assetInLocation["id"]);
+    handleInputChange("invoice_location", assetInLocation["id"]);
   }, [assetInLocation]);
 
   useEffect(() => {
-    handleInputChange("business_unit",assetBu["id"]);
+    handleInputChange("business_unit", assetBu["id"]);
   }, [assetBu]);
 
   useEffect(() => {
-    let fieldName=Object.keys(value)[0]
-    handleInputChange(fieldName,value[fieldName]);
+    let fieldName = Object.keys(value)[0]
+    handleInputChange(fieldName, value[fieldName]);
   }, [value]);
+
+  useEffect(() => {
+    let fieldName=Object.keys(modelNumber)[0]
+    handleInputChange(fieldName,modelNumber[fieldName]);
+  }, [modelNumber]);
 
 
 
   const onFormLayoutChange = ({ size }: { size: SizeType }) => {
     setComponentSize(size);
   };
-
   const handleInputChange = (key: string, value: any) => {
-    setFormData({ ...formData, [key]: value});
+    setFormData({ ...formData, [key]: value });
   };
-
-
   const [warningShown, setWarningShown] = useState(false);
 
   const validateWarrantyPeriod = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -142,6 +128,7 @@ const AddAsset: React.FC = () => {
     }
     handleInputChange("os_version", value);
   };
+
   const validateVersion = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     if (!warningShown && isNaN(value as any)) {
@@ -191,13 +178,9 @@ const AddAsset: React.FC = () => {
       setTouched(false); // Reset touched state if input is empty
       return; // Exit validation
     }
-
     setTouched(true);
-
     const formatPattern = /^\d{1,3}GB$/;
-
     const maxLength = 5;
-
     if (value.length > maxLength) {
       if (!maxLengthWarningShown) {
         message.warning(
@@ -208,7 +191,6 @@ const AddAsset: React.FC = () => {
     } else {
       setMaxLengthWarningShown(false);
     }
-
     if (!formatPattern.test(value)) {
       if (!warningShown && touched) {
         // Only show warning if the field has been touched
@@ -224,22 +206,18 @@ const AddAsset: React.FC = () => {
 
   const [accessoryValue, setAccessoryValue] = useState("");
   const [accessoryWarningShown, setAccessoryWarningShown] = useState(false);
-
   const handleAccessoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     const accessories = value.split(",").map((accessory) => accessory.trim()); // Split and trim accessories
-
     if (accessories.length > 4 && !accessoryWarningShown) {
       message.warning("Only four accessories are allowed");
       setAccessoryWarningShown(true);
     } else if (accessories.length <= 4 && accessoryWarningShown) {
       setAccessoryWarningShown(false);
     }
-
     setAccessoryValue(value);
   };
 
-  // Fetch the asset type details
   const {
     data: assetTypeData,
     isLoading: isAssetTypeLoading,
@@ -318,16 +296,16 @@ const AddAsset: React.FC = () => {
     // Ensure that warranty_period is not undefined for hardware assets
     if (
       formData.asset_category === "HARDWARE" &&
-      !formData.warranty_period &&
+     
       !formData.asset_type
     ) {
-      formData.warranty_period = "";
+      
     }
 
     // Check if all mandatory fields are filled for software
     const isAllSoftwareFieldsFilled = softwareSpecificFields.every(
       (field) => {
-        console.log("asset",field)
+        console.log("asset", field)
         return !!formData[field]
 
       }
@@ -376,12 +354,7 @@ const AddAsset: React.FC = () => {
 
     // If it's a hardware asset and all mandatory fields are filled
     if (formData.asset_category === "HARDWARE" && isAllHardwareFieldsFilled) {
-      // Your hardware-specific validation logic goes here
-      const warrantyPeriodValue = formData.warranty_period.trim();
-      if (warrantyPeriodValue !== "" && !/^\d+$/.test(warrantyPeriodValue)) {
-        message.error("Warranty period should be a valid integer.");
-        return;
-      }
+      
 
       const storageValue = formData.storage?.trim();
       const formatPattern = /^\d{1,3}GB$/;
@@ -471,7 +444,7 @@ const AddAsset: React.FC = () => {
               <Form.Item
                 label={
                   <span>
-                    Asset ID<span className={styles["star"]}>*</span>
+                    Asset ID
                   </span>
                 }
                 className={styles["formItem"]}
@@ -500,13 +473,13 @@ const AddAsset: React.FC = () => {
                 }
                 className={styles["formItem"]}
               >
-               
-                 <AssetFieldAutoComplete
-              assetField="product_name"
-              value={value}
-              setValue={setValue}
-             
-            />
+
+                <AssetFieldAutoComplete
+                  assetField="product_name"
+                  value={value}
+                  setValue={setValue}
+
+                />
               </Form.Item>
               <Form.Item
                 label={
@@ -560,27 +533,27 @@ const AddAsset: React.FC = () => {
                 }
                 className={styles["formItem"]}
               >
-                 <AssetFieldAutoComplete
-              assetField="location"
-              value={assetLocation}
-              setValue={setAssetLocation}
+                <AssetFieldAutoComplete
+                  assetField="location"
+                  value={assetLocation}
+                  setValue={setAssetLocation}
 
-              
-            />
+
+                />
               </Form.Item>
               <Form.Item label="Business Unit" className={styles["formItem"]}>
-              <AssetFieldAutoComplete
-              assetField="business_unit"
-              value={assetBu}
-              setValue={setAssetBu}
+                <AssetFieldAutoComplete
+                  assetField="business_unit"
+                  value={assetBu}
+                  setValue={setAssetBu}
 
-            />
+                />
               </Form.Item>
               <Form.Item label="Notes:" className={styles["formItem"]}>
                 <Input
                   placeholder="Enter reason for creation"
                   className={styles["input"]}
-                  onChange={(e) => handleInputChange("message", e.target.value)}
+                  onChange={(e) => handleInputChange("notes", e.target.value)}
                 />
               </Form.Item>
 
@@ -595,7 +568,7 @@ const AddAsset: React.FC = () => {
               <Form.Item
                 label={
                   <span>
-                    Asset ID<span className={styles["star"]}>*</span>
+                    Asset ID
                   </span>
                 }
                 className={styles["formItem"]}
@@ -624,12 +597,12 @@ const AddAsset: React.FC = () => {
                 }
                 className={styles["formItem"]}
               >
-                 <AssetFieldAutoComplete
-              assetField="asset_type"
-              value={assettypeValue}
-              setValue={setassettypeValue}
+                <AssetFieldAutoComplete
+                  assetField="asset_type"
+                  value={assettypeValue}
+                  setValue={setassettypeValue}
 
-            />
+                />
               </Form.Item>
               <Form.Item
                 label={
@@ -639,12 +612,12 @@ const AddAsset: React.FC = () => {
                 }
                 className={styles["formItem"]}
               >
-               <AssetFieldAutoComplete
-              assetField="product_name"
-              value={value}
-              setValue={setValue}
-             
-            />
+                <AssetFieldAutoComplete
+                  assetField="product_name"
+                  value={value}
+                  setValue={setValue}
+
+                />
               </Form.Item>
               <Form.Item
                 label={
@@ -667,7 +640,7 @@ const AddAsset: React.FC = () => {
               <Form.Item
                 label={
                   <span>
-                    Model Number<span className={styles["star"]}>*</span>
+                    Model Number
                   </span>
                 }
                 className={styles["formItem"]}
@@ -678,7 +651,11 @@ const AddAsset: React.FC = () => {
               setValue={setModelNumber}
              
             />
+
+
               </Form.Item>
+            
+              {/* </Form.Item> */}
               <Form.Item
                 label={
                   <span>
@@ -708,7 +685,7 @@ const AddAsset: React.FC = () => {
               <Form.Item
                 label={
                   <span>
-                    Warranty Period<span className={styles["star"]}>*</span>
+                    Warranty Period
                   </span>
                 }
                 className={styles["formItem"]}
@@ -739,12 +716,12 @@ const AddAsset: React.FC = () => {
               >
                  <AssetFieldAutoComplete
               assetField="location"
-              value={value}
-              setValue={setValue}
+              value={assetLocation}
+              setValue={setAssetLocation}
 
-            />
-              
-              
+                />
+
+
               </Form.Item>
 
               <Form.Item
@@ -755,87 +732,87 @@ const AddAsset: React.FC = () => {
                 }
                 className={styles["formItem"]}
               >
-                 <AssetFieldAutoComplete
-              assetField="invoice_location"
-              value={assetInLocation}
-              setValue={setAssetInLocation}
+                <AssetFieldAutoComplete
+                  assetField="invoice_location"
+                  value={assetInLocation}
+                  setValue={setAssetInLocation}
 
-             
-            />
+
+                />
               </Form.Item>
 
               <Form.Item label="Business Unit" className={styles["formItem"]}>
-              <AssetFieldAutoComplete
-              assetField="business_unit"
-              value={assetBu}
-              setValue={setAssetBu}
+                <AssetFieldAutoComplete
+                  assetField="business_unit"
+                  value={assetBu}
+                  setValue={setAssetBu}
 
-            />
+                />
               </Form.Item>
               <Form.Item label="OS:" className={styles["formItem"]}>
-              <AssetFieldAutoComplete
-              assetField="os"
-              value={os}
-              setValue={setOs}
+                <AssetFieldAutoComplete
+                  assetField="os"
+                  value={os}
+                  setValue={setOs}
 
-            />
+                />
               </Form.Item>
 
               <Form.Item label="OS  version" className={styles["formItem"]}>
-              <AssetFieldAutoComplete
-              assetField="os_version"
-              value={osVersion}
-              setValue={setOsVersion}
+                <AssetFieldAutoComplete
+                  assetField="os_version"
+                  value={osVersion}
+                  setValue={setOsVersion}
 
-            />
+                />
               </Form.Item>
 
               <Form.Item label="Mobile OS" className={styles["formItem"]}>
-              <AssetFieldAutoComplete
-              assetField="mobile_os"
-              value={mobileOs}
-              setValue={setMobileOs}
+                <AssetFieldAutoComplete
+                  assetField="mobile_os"
+                  value={mobileOs}
+                  setValue={setMobileOs}
 
-            />
+                />
               </Form.Item>
 
               <Form.Item label="Processor" className={styles["formItem"]}>
-              <AssetFieldAutoComplete
-              assetField="processor"
-              value={processor}
-              setValue={setProcessor}
+                <AssetFieldAutoComplete
+                  assetField="processor"
+                  value={processor}
+                  setValue={setProcessor}
 
-             
-            />
+
+                />
               </Form.Item>
 
               <Form.Item label="Processor Gen:" className={styles["formItem"]}>
-              <AssetFieldAutoComplete
-              assetField="processor_gen"
-              value={processorGen}
-              setValue={setProcessorGen}
+                <AssetFieldAutoComplete
+                  assetField="processor_gen"
+                  value={processorGen}
+                  setValue={setProcessorGen}
 
-             
-            />
+
+                />
               </Form.Item>
 
               <Form.Item label="Memory:" className={styles["formItem"]}>
-              <AssetFieldAutoComplete
-              assetField="memory"
-              value={memory}
-              setValue={setMemory}
+                <AssetFieldAutoComplete
+                  assetField="memory"
+                  value={memory}
+                  setValue={setMemory}
 
-             
-            />
+
+                />
               </Form.Item>
 
               <Form.Item label="Storage:" className={styles["formItem"]}>
-              <AssetFieldAutoComplete
-              assetField="storage"
-              value={storage}
-              setValue={setStorage}
+                <AssetFieldAutoComplete
+                  assetField="storage"
+                  value={storage}
+                  setValue={setStorage}
 
-            />
+                />
               </Form.Item>
 
               <Form.Item label="Configuration:" className={styles["formItem"]}>
@@ -854,20 +831,6 @@ const AddAsset: React.FC = () => {
                   className={styles["input"]}
                   onChange={(e) => handleAccessoryChange(e)}
                 />
-              </Form.Item>
-
-              <Form.Item label="Status:" className={styles["formItem"]}>
-                <Select
-                  className={styles["input"]}
-                  defaultValue="in store"
-                  placeholder="Select Approval"
-                  onChange={(value) => handleInputChange("status", value)}
-                >
-                  <Option value="in store">IN-STOCK</Option>
-                  <Option value="in repair">IN-REPAIR</Option>
-                  <Option value="expired">EXPIRED</Option>
-                  <Option value="disposed">DISPOSED</Option>
-                </Select>
               </Form.Item>
 
               <Form.Item label="Notes:" className={styles["formItem"]}>
