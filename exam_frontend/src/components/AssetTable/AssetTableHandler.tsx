@@ -12,19 +12,7 @@ import {
   getLocationOptions,
   getMemoryOptions,
 } from "./api/getAssetDetails";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBookOpenReader } from "@fortawesome/free-solid-svg-icons";
-import { Notes } from "@mui/icons-material";
 
-interface ExpandedDataType {
-  key: React.Key;
-  date: string;
-  name: string;
-  upgradeNum: string;
-}
-interface AssetTableHandlerProps {
-  isRejectedPage: boolean;
-}
 
 const AssetTableHandler = ({
   userRole,
@@ -37,11 +25,10 @@ const AssetTableHandler = ({
 }) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [sortedColumn, setSortedColumn] = useState<string | null>(null);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [sortOrders, setSortOrders] = useState({});
+  const [sortedColumn, setSortedColumn] = useState<string>('');
+  const [sortOrder, setSortOrder] = useState<string>('asc');
+  const [sortOrders, setSortOrders] = useState<{ [key: string]: string }>({});
   const [searchTerm, setSearchTerm] = useState<string>("");
-
   const [queryParam, setQueryParam] = useState("");
   const {
     data: assetData,
@@ -116,7 +103,6 @@ const AssetTableHandler = ({
     })) ?? [];
 
   const assetDataList = assetData;
-  // console.log("Testing on 65:", assetDataList ? assetDataList[0].results : []);
 
   const handleRowClick = useCallback((record: React.SetStateAction<null>) => {
     setSelectedRow(record);
@@ -151,21 +137,29 @@ const AssetTableHandler = ({
     );
 
     const handleSort = (column: string) => {
-      const isCurrentColumn = column === sortedColumn;  
-      let newSortOrders = { ...sortOrders };  
+      const isCurrentColumn = column === sortedColumn;
+      let newSortOrders = { ...sortOrders };
+    
       if (!isCurrentColumn) {
         newSortOrders = { [column]: "asc" };
       } else {
         newSortOrders[column] = sortOrders[column] === "asc" ? "desc" : "asc";
-      }  
+      }
+    
       setSortedColumn(column);
-      setSortOrders(newSortOrders);  
+      setSortOrder(newSortOrders[column]);
+      setSortOrders(newSortOrders);
+    
       const queryParams = Object.keys(newSortOrders)
-        .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
-        .join("");  
-      const additionalQueryParams = `&global_search=${searchTerm}&offset=${0}`;  
+      .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
+      .join("");
+      let additionalQueryParams = '&offset=0';
+      if (searchTerm !== '' && searchTerm !== null) {
+        additionalQueryParams += `&global_search=${searchTerm}`;
+      }
       refetchAssetData(queryParams + additionalQueryParams);
     };
+    
 
 
   const columns = [
@@ -271,14 +265,14 @@ const AssetTableHandler = ({
 
     {
       title: "Asset Status",
-      dataIndex: "Status",
+      dataIndex: "status",
       responsive: ["md"],
       width: 140,
       render: renderClickableColumn("Asset Status", "status"),
     },
     {
       title: "Business Unit",
-      dataIndex: "BusinessUnit",
+      dataIndex: "business_unit",
       responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Business Unit", "business_unit"),
@@ -387,7 +381,7 @@ const AssetTableHandler = ({
     
     {
       title: "Model Number",
-      dataIndex: "ModelNumber", // Corrected dataIndex
+      dataIndex: "model_number", // Corrected dataIndex
       responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Asset Status", "model_number"),
@@ -499,6 +493,13 @@ const AssetTableHandler = ({
       render: renderClickableColumn("notes", "notes"),
     },
     {
+      title: 'Approver Notes',
+      dataIndex: 'approval_status_message',
+      responsive: ['md'],
+      width: 120,
+      render:renderClickableColumn("approval_status_message", "approval_status_message")
+    },
+    {
       title: "Custodian",
       dataIndex: "custodian",
       responsive: ["md"],
@@ -588,6 +589,7 @@ const AssetTableHandler = ({
     AssignAsset: "assign",
     created_at: result.created_at,
     updated_at: result.updated_at,
+    approval_status_message: result.approval_status_message,
   }));
 
   const drawerTitle = "Asset Details";
@@ -597,7 +599,6 @@ const AssetTableHandler = ({
   return (
     <AssetTable
      userRole={userRole}
-
       heading={heading}
       isAssetDataLoading={isAssetDataLoading}
       // drawerTitle={drawerTitle}

@@ -31,12 +31,9 @@ export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({
     enabled: fetchData && query.trim().length > 0,
     queryFn: (): Promise<ApiResponse> =>
       axiosInstance.get(`/asset/employee?name=${query}`).then((res) => {
-        console.log(res);
-        console.log("res.data", res.data.data);
         return res.data;
       }),
     onSuccess: () => {
-      console.log("success");
       setFetchData(false);
     },
     onError: () => {
@@ -58,7 +55,6 @@ export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({
       onError: (error) => {
         message.error("unsuccessful, the asset may be already assigned");
         setLoading(false);
-        console.log(error);
         closeAssignDrawer();
       },
     }
@@ -72,14 +68,11 @@ export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({
   }, [value]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(value, "value", name, "name");
     setdivVisible(true);
     const inputValue = event.target.value;
-    console.log("in the handleinputchange ", inputValue.trim().length);
     setQuery(inputValue);
     setValue(inputValue);
     if (inputValue.trim().length > 0) {
-      console.log("input value > 0", inputValue);
       setFetchData(true);
     }
     if (value != employeeName) setEmployeeId(undefined);
@@ -98,7 +91,6 @@ export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({
     setdivVisible(false);
     setEmployeeDepartment(department);
     setEmployeeDesignation(designation);
-    console.log("handle name clck worked");
   };
 
   const handleAssign = () => {
@@ -110,7 +102,6 @@ export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({
         id: employeeId,
         asset_uuid: record.key,
       };
-      console.log(requestBody);
       mutation.mutate(requestBody);
     } else {
       alert("Please select an employee");

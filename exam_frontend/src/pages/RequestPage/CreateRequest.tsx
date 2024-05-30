@@ -4,10 +4,8 @@ import { HiPencilAlt } from "react-icons/hi";
 import axiosInstance from "../../config/AxiosConfig";
 import React from "react";
 import DrawerViewRequest from "./DrawerViewRequest";
-import InfoIcon from '@mui/icons-material/Info'; 
+import InfoIcon from '@mui/icons-material/Info';
 import { Pagination } from 'antd';
-
-
 
 const CreateRequestPage: FC = function () {
   const [assets, setAssets] = useState<any[]>([]);
@@ -16,12 +14,16 @@ const CreateRequestPage: FC = function () {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1); // Step 2: Initialize currentPage state
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(10); 
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [approverNotes, setApproverNotes] = useState<string>("");
 
   useEffect(() => {
     fetchAssets();
-  },[currentPage, pageSize, searchQuery]);
+  }, [currentPage, pageSize, searchQuery]);
 
+  const handleApproverNotesChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setApproverNotes(e.target.value);
+  };
 
   const fetchAssets = () => {
     setLoading(true);
@@ -32,9 +34,8 @@ const CreateRequestPage: FC = function () {
       .then((response) => {
         const createPendingAssets = response.data.data.results;
         const totalAssets = response.data.data.count;
-        console.log("createPendingAssets", createPendingAssets);
         setAssets(createPendingAssets);
-        setTotalPages(Math.ceil(totalAssets / pageSize)); // Calculate total pages based on total assets
+        setTotalPages(Math.ceil(totalAssets / pageSize));
       })
       .catch((error) => {
         console.error("Error fetching assets:", error);
@@ -43,14 +44,14 @@ const CreateRequestPage: FC = function () {
         setLoading(false);
       });
   };
+
   const handleApprove = () => {
     if (selectedAsset) {
       const approvalData = {
         approval_type: "ASSET_DETAIL_STATUS",
         asset_uuid: selectedAsset.asset_uuid,
-        comments: selectedAsset.approverNotes,
-      };
-
+        comments: approverNotes,
+      };  
       axiosInstance
         .post("/asset/approve_asset", approvalData)
         .then(() => {
@@ -69,7 +70,7 @@ const CreateRequestPage: FC = function () {
         data: {
           approval_type: "ASSET_DETAIL_STATUS",
           asset_uuid: selectedAsset.asset_uuid,
-          comments: selectedAsset.approverNotes,
+          comments: approverNotes,
         },
       };
 
@@ -122,7 +123,7 @@ const CreateRequestPage: FC = function () {
     setCurrentPage(1);
   };
 
-  
+
   return (
     <React.Fragment>
       <div className="bg-white py-2">
@@ -228,29 +229,31 @@ const CreateRequestPage: FC = function () {
           </div>
         </div>
         <Pagination
-            showSizeChanger
-            onShowSizeChange={onShowSizeChange}
-            pageSize={pageSize}
-            current={currentPage}
-            total={totalPages * pageSize}
-            onChange={setCurrentPage}
-          />
+          showSizeChanger
+          onShowSizeChange={onShowSizeChange}
+          pageSize={pageSize}
+          current={currentPage}
+          total={totalPages * pageSize}
+          onChange={setCurrentPage}
+        />
         {selectedAsset && (
           <ViewRequestModal
             asset={selectedAsset}
             handleApprove={handleApprove}
             handleReject={handleReject}
             onClose={() => setSelectedAsset(null)}
-          />
+            handleApproverNotesChange={handleApproverNotesChange} 
+            approverNotes={""} setApproverNotes={function (_approval_status_message: string): void {
+              throw new Error("Function not implemented.");
+            } }          
+            />
         )}
       </div>
     </React.Fragment>
   );
 };
 
-const SearchRequests: FC<{
-  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
-}> = function ({ setSearchQuery }) {
+const SearchRequests: FC<{setSearchQuery: React.Dispatch<React.SetStateAction<string>>;}> = function ({ setSearchQuery }) {
   const [showInfo, setShowInfo] = useState(false)
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -259,42 +262,39 @@ const SearchRequests: FC<{
 
   return (
     <form className="mb-4 sm:mb-0 sm:pr-3 relative " action="#" method="GET">
-  <Label htmlFor="search-request" className="sr-only font-display">
-    Search
-  </Label>
-  <div className="relative mt-1 lg:w-64 xl:w-96 ">
-    <TextInput
-      id="search-request"
-      name="search-request"
-      placeholder="Search for requests"
-      onChange={handleSearchChange}
-    />
-    <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-      {showInfo && (
-        <div className="absolute top-0 right-full w-max bg-gray-700 p-2 rounded-lg shadow-lg">
-          <p className="text-white text-xs">Works with a few fields only,<br/>will expand in future.
-          <ol></ol>
-          </p>
+      <Label htmlFor="search-request" className="sr-only font-display">
+        Search
+      </Label>
+      <div className="relative mt-1 lg:w-64 xl:w-96 ">
+        <TextInput
+          id="search-request"
+          name="search-request"
+          placeholder="Search for requests"
+          onChange={handleSearchChange}
+        />
+        <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+          {showInfo && (
+            <div className="absolute top-0 right-full w-max bg-gray-700 p-2 rounded-lg shadow-lg">
+              <p className="text-white text-xs">Works with a few fields only,<br />will expand in future.
+                <ol></ol>
+              </p>
+            </div>
+          )}
+          <InfoIcon
+            className="h-5 w-5 text-gray-400 cursor-pointer"
+            aria-hidden="true"
+            onMouseEnter={() => setShowInfo(true)} // Show info on mouse enter
+            onMouseLeave={() => setShowInfo(false)} // Hide info on mouse leave
+          />
         </div>
-      )}
-      <InfoIcon
-        className="h-5 w-5 text-gray-400 cursor-pointer"
-        aria-hidden="true"
-        onMouseEnter={() => setShowInfo(true)} // Show info on mouse enter
-        onMouseLeave={() => setShowInfo(false)} // Hide info on mouse leave
-      />
-    </div>
-  </div>
-</form>
+      </div>
+    </form>
   );
 };
 
-const RequestTable: FC<{
-  assets: any[];
-  setSelectedAsset: (asset: any | null) => void;
-}> = function ({ assets, setSelectedAsset }) {
+const RequestTable: FC<{assets: any[];setSelectedAsset: (asset: any | null) => void;}> = function ({ assets, setSelectedAsset }) {
   return (
-     <Table className="min-w-full divide-y font-display divide-gray-200 dark:divide-gray-600 mx-2 my-2 rounded-lg">
+    <Table className="min-w-full divide-y font-display divide-gray-200 dark:divide-gray-600 mx-2 my-2 rounded-lg">
       <Table.Head className="bg-gray-100 dark:bg-gray-700">
         <Table.HeadCell>Asset Type</Table.HeadCell>
         <Table.HeadCell>Product Name</Table.HeadCell>
@@ -345,11 +345,12 @@ const ViewRequestModal: FC<{
   handleApprove: () => void;
   handleReject: () => void;
   onClose: () => void;
-}> = function ({ asset, handleApprove, handleReject, onClose }) {
-  const [notes, setNotes] = useState(asset.notes);
-  const [approverNotes, setApproverNotes] = useState(
-    asset.approval_status_message
-  );
+  approverNotes:string,
+  setApproverNotes:(approval_status_message: string) => void
+  handleApproverNotesChange:any,
+
+}> = function ({ asset, handleApprove, handleReject, onClose, approverNotes, handleApproverNotesChange })  {
+  const [notes, _setNotes] = useState(asset.notes);
   const [modalOpen, setModalOpen] = useState(false);
   const [actionType, setActionType] = useState("");
 
@@ -358,13 +359,6 @@ const ViewRequestModal: FC<{
     setModalOpen(!modalOpen);
   };
 
-  const handleNotesChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setNotes(e.target.value);
-  };
-
-  const handleApproverNotesChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setApproverNotes(e.target.value);
-  };
 
   const formFields = [
     {
@@ -524,7 +518,18 @@ const ViewRequestModal: FC<{
   ];
 
   return (
-    <DrawerViewRequest title="Request Details" onClose={onClose} open={true}>
+    <DrawerViewRequest
+      title="Request Details"
+      onClose={onClose}
+      open={true}
+      selectedRow={undefined}
+      drawerTitle={""}
+      onUpdateData={function (_updatedData: {
+        key: any;
+      }): void {
+        throw new Error("Function not implemented.");
+      }}
+      >
       <div>
         <form>
           <div className="grid font-display grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">
@@ -547,7 +552,6 @@ const ViewRequestModal: FC<{
                 name="notes"
                 rows={1}
                 value={notes}
-                onChange={handleNotesChange}
                 className="mt-1"
               />
             </div>

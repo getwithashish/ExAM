@@ -2,13 +2,7 @@ import React from "react";
 
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-import {
-  getAssetDetails,
-  getAssetTypeOptions,
-  getLocationOptions,
-  getMemoryOptions,
-  getBusinessUnitOptions,
-} from "./api/getAssetDetails";
+import { getAssetDetails, getLocationOptions, getAssetTypeOptions, getMemoryOptions } from "../AssetTable/api/getAssetDetails";
 import { useQuery } from "@tanstack/react-query";
 import {
   Box,

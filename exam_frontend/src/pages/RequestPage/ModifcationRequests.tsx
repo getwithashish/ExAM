@@ -48,7 +48,6 @@ const ModificationRequests: FC = function () {
 
   const handleApprove = () => {
     if (selectedAsset) {
-      console.log("Asset UUID:", selectedAsset.asset_uuid);
       const approvalData = {
         approval_type: "ASSET_DETAIL_STATUS",
         asset_uuid: selectedAsset.asset_uuid,
@@ -69,7 +68,6 @@ const ModificationRequests: FC = function () {
 
   const handleReject = () => {
     if (selectedAsset) {
-      console.log("Asset UUID:", selectedAsset.asset_uuid);
       const rejectedData = {
         data: {
           approval_type: "ASSET_DETAIL_STATUS",
@@ -320,10 +318,7 @@ const RequestTable: FC<{
       const response = await axiosInstance.get(
         `/asset/asset_logs/${asset.asset_uuid}?recency=latest`
       );
-      console.log("Response from server:", response.data.data.logs);
-      console.log("Asset UUID:", asset.asset_uuid);
       setLatestLogData(response.data.data);
-      console.log("setLatestLogData:", response.data.data);
     } catch (error) {
       console.error("Error fetching asset details:", error);
     }

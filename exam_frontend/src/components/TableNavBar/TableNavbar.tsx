@@ -108,12 +108,7 @@ const TableNavbar: React.FC<TableNavbarProps> = ({
     link.click();
     document.body.removeChild(link);
   };
-
-  // const handleSearch = (_searchTerm: string): void => {
-  //   console.log("Global Search Term: ", _searchTerm);
-  //   assetDataRefetch(`&global_search=${_searchTerm}`);
-  // };
-
+  
   const showQueryBuilder = () => {
     setVisible(true);
   };

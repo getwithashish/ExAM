@@ -41,8 +41,6 @@ export const AssetTimelineHandler = ({ assetUuid }: { assetUuid: string }) => {
           );
 
           setUpdatedFields(fields);
-          console.log(`Updated fields for assetUuid ${assetUuid}:`, fields);
-
           filteredLogs.forEach((log: any) => {
             Object.entries(log.changes).forEach(
               ([key, value]: [string, any]) => {

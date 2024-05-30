@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React from "react";
 import { Pagination, Table } from "antd";
 import "./AssetTable.css";
 import CardComponent from "../CardComponent/CardComponent";
@@ -10,7 +10,6 @@ import GlobalSearch from "../GlobalSearch/GlobalSearch";
 const AssetTable = ({
   userRole,
   asset_uuid,
-  // isLoading,
   isAssetDataLoading,
   selectedAssetId,
   handleRowClick,
@@ -54,14 +53,15 @@ const AssetTable = ({
 
   return (
     <>
-      <div className="mainHeading" font-display>
+      <div className="mainHeading font-display">
         <h1>{pageHeading}</h1>
       </div>
       <div style={{ marginLeft: "40px", marginBottom: "30px" }}>
-        <GlobalSearch
-          assetDataRefetch={assetDataRefetch}
+      <GlobalSearch    
+          assetDataRefetch={assetDataRefetch}      
           searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm} // Pass searchTerm prop
+          // onSearch={handleSearch}
+          setSearchTerm={setSearchTerm}
         />
       </div>
 
@@ -69,7 +69,7 @@ const AssetTable = ({
         style={{ position: "relative", display: "inline-block", width: "80vw" }}
       >
         <Table
-          userRole={userRole}
+          // userRole={userRole}
           columns={columns}
           loading={isAssetDataLoading}
           dataSource={assetData}
@@ -81,20 +81,21 @@ const AssetTable = ({
           style={{
             fontSize: "50px",
             borderColor: "white",
-            // width: "29%",
             marginLeft: "3.5%",
             boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
           }}
           footer={() => (
             <Pagination
             pageSize={20}
-            showTotal={(total, range) =>
-              `${range[0]}-${range[1]} of ${total} assets`
-            }
+            showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} assets`}
             total={totalItemCount}
             onChange={(page, pageSize) => {
               const offset = (page - 1) * pageSize;
-              const queryParams = `&offset=${offset}&global_search=${searchTerm}&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
+              let additionalQueryParams = `&offset=${offset}`;
+              if (searchTerm !== "" && searchTerm !== null) {
+                  additionalQueryParams += `&global_search=${searchTerm}`;
+                }
+              const queryParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}` + additionalQueryParams;
               assetPageDataFetch(queryParams);
             }}
             hideOnSinglePage={true}
@@ -107,10 +108,8 @@ const AssetTable = ({
         onClose={onCloseDrawer}
         selectedRow={selectedRow}
         drawerTitle={drawerTitle}
-        // button={button}
         onUpdateData={handleUpdateData}
-        closeIcon={<CloseOutlined rev={undefined} />}
-      >
+        closeIcon={<CloseOutlined rev={undefined} />} title={""}      >
         {selectedRow && (
           <div>
             <h2 className="drawerHeading">{selectedRow.ProductName}</h2>

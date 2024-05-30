@@ -154,7 +154,6 @@ const CardComponent: React.FC<CardType> = ({
       setIsLoading(false); // Set loading to false when update fails
       return; // Exit the function without updating
     }
-    console.log("Asset UUID:", data.key);
 
     try {
       const updatePayload = {
@@ -167,8 +166,6 @@ const CardComponent: React.FC<CardType> = ({
           "Content-Type": "application/json",
         },
       });
-
-      console.log("Updated data:", response.data);
       message.success("Asset Details successfully updated");
     } catch (error) {
       console.error("Error updating data:", error);
@@ -875,6 +872,30 @@ const CardComponent: React.FC<CardType> = ({
         </Form.Item>
       ),
     },
+    {
+      label: "approval_status_message",
+      name: "approval_status_message",
+      value: (
+        <Form.Item name="approval_status_message">
+          <b>Approver Message: </b>
+          <br></br>
+          <br></br>{" "}
+          <Input
+            defaultValue={data["approval_status_message"]}
+            onChange={(e) => handleUpdateChange("approval_status_message", e.target.value)}
+            style={{
+              width: "387px",
+              height: "100px",
+              background: "#f0f0f0",
+              borderRadius: "5px",
+              border: "0.5px solid #d3d3d3",
+              textAlign: "center"
+            }}
+            readOnly
+          />{" "}
+        </Form.Item>
+      ),
+    },
   ];
 
   // Filter form items based on search query
@@ -962,7 +983,6 @@ const CardComponent: React.FC<CardType> = ({
   };
 
   const handleCancel = () => {
-    console.log("Asset deletion cancelled.");
     setIsModalVisible(false);
   };
 
@@ -986,7 +1006,6 @@ const CardComponent: React.FC<CardType> = ({
   };
   const getUserScope = () => {
     const jwtToken = localStorage.getItem("jwt");
-    console.log(jwtToken);
     if (jwtToken) {
       const payload = decodeJWT(jwtToken);
       return payload.user_scope;

@@ -6,27 +6,15 @@ import { useQuery } from "@tanstack/react-query";
 import { DataType } from "../AssetTable/types";
 import { AssetResult } from "../AssetTable/types";
 import AssetTable from "./AssetTable";
-import {
-  getAssetDetails,
-  getAssetTypeOptions,
-  getLocationOptions,
-  getMemoryOptions,
-} from "./api/getAssetDetails";
-// interface ExpandedDataType {
-//   key: React.Key;
-//   date: string;
-//   name: string;
-//   upgradeNum: string;
-// }
+import { getAssetDetails,getAssetTypeOptions, getLocationOptions, getMemoryOptions } from "../../AssetTable/api/getAssetDetails";
 
 const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [sortedColumn, setSortedColumn] = useState<string | null>(null);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [sortOrders, setSortOrders] = useState({});
+  const [sortedColumn, setSortedColumn] = useState<string>('');
+  const [sortOrder, setSortOrder] = useState<string>('asc');
+  const [sortOrders, setSortOrders] = useState<{ [key: string]: string }>({});
   const [searchTerm, setSearchTerm] = useState<string>("");
-
   const [queryParam, setQueryParam] = useState("");
   const {
     data: assetData,
@@ -101,9 +89,6 @@ const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
       value: assetType.asset_type_name,
     })) ?? [];
 
-  const assetDataList = assetData;
-  // console.log("Testing on 65:", assetDataList ? assetDataList[0].results : []);
-
   const handleRowClick = useCallback((record: React.SetStateAction<null>) => {
     setSelectedRow(record);
     setDrawerVisible(true);
@@ -121,21 +106,28 @@ const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
       )
     );
   };
-
+  
   const handleSort = (column: string) => {
-    const isCurrentColumn = column === sortedColumn;  
-    let newSortOrders = { ...sortOrders };  
+    const isCurrentColumn = column === sortedColumn;
+    let newSortOrders = { ...sortOrders };
+  
     if (!isCurrentColumn) {
       newSortOrders = { [column]: "asc" };
     } else {
       newSortOrders[column] = sortOrders[column] === "asc" ? "desc" : "asc";
-    }  
+    }
+  
     setSortedColumn(column);
-    setSortOrders(newSortOrders);  
+    setSortOrder(newSortOrders[column]);
+    setSortOrders(newSortOrders);
+  
     const queryParams = Object.keys(newSortOrders)
-      .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
-      .join("");  
-    const additionalQueryParams = `&global_search=${searchTerm}&offset=${0}`;  
+    .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
+    .join("");
+    let additionalQueryParams = '&offset=0';
+    if (searchTerm !== '' && searchTerm !== null) {
+      additionalQueryParams += `&global_search=${searchTerm}`;
+    }
     refetchAssetData(queryParams + additionalQueryParams);
   };
 
@@ -554,7 +546,6 @@ const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
             color: "black",
           }}
           onClick={() => {
-            console.log("button clicked ");
             if (record.custodian == null || record.custodian == undefined) {
               showAssignDrawer(record);
             } else {
