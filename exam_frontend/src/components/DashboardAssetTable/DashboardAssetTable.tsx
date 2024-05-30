@@ -39,9 +39,8 @@ const DashboardAssetTable = ({
   assetState,
   assignState,
   detailState,
-  selectedTypeId
+  selectedTypeId,
 }: AssetTableProps) => {
-
   const handleSearch = (searchTerm: string) => {
     setSearchTerm(searchTerm);
     const queryParams = `&global_search=${searchTerm}&sort_by=${sortedColumn}&sort_order=${sortOrder}&offset=20`;
@@ -131,7 +130,9 @@ const DashboardAssetTable = ({
                 if (selectedTypeId !== 0) {
                   additionalQueryParams += `&asset_type=${selectedTypeId}`;
                 }
-                const queryParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}` + additionalQueryParams;
+                const queryParams =
+                  `&sort_by=${sortedColumn}&sort_order=${sortOrder}` +
+                  additionalQueryParams;
                 assetPageDataFetch(queryParams);
               }}
               hideOnSinglePage={true}
