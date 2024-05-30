@@ -10,7 +10,6 @@ import GlobalSearch from "../GlobalSearch/GlobalSearch";
 const AssetTable = ({
   userRole,
   asset_uuid,
-  // isLoading,
   isAssetDataLoading,
   selectedAssetId,
   handleRowClick,
@@ -54,14 +53,14 @@ const AssetTable = ({
 
   return (
     <>
-      <div className="mainHeading" font-display>
+      <div className="mainHeading font-display">
         <h1>{pageHeading}</h1>
       </div>
       <div style={{ marginLeft: "40px", marginBottom: "30px" }}>
       <GlobalSearch    
           assetDataRefetch={assetDataRefetch}      
           searchTerm={searchTerm}
-          onSearch={handleSearch}
+          // onSearch={handleSearch}
           setSearchTerm={setSearchTerm}
         />
       </div>
@@ -70,7 +69,7 @@ const AssetTable = ({
         style={{ position: "relative", display: "inline-block", width: "80vw" }}
       >
         <Table
-          userRole={userRole}
+          // userRole={userRole}
           columns={columns}
           loading={isAssetDataLoading}
           dataSource={assetData}
@@ -82,7 +81,6 @@ const AssetTable = ({
           style={{
             fontSize: "50px",
             borderColor: "white",
-            // width: "29%",
             marginLeft: "3.5%",
             boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
           }}
@@ -110,7 +108,6 @@ const AssetTable = ({
         onClose={onCloseDrawer}
         selectedRow={selectedRow}
         drawerTitle={drawerTitle}
-        // button={button}
         onUpdateData={handleUpdateData}
         closeIcon={<CloseOutlined rev={undefined} />} title={""}      >
         {selectedRow && (

@@ -2,45 +2,33 @@ import { Layout, Menu, Dropdown } from "antd";
 import {
   AppstoreAddOutlined,
   CarryOutOutlined,
-  DashboardOutlined,
   LogoutOutlined,
   MailOutlined,
   PieChartOutlined,
-  SelectOutlined,
   UploadOutlined,
   UserOutlined,
   UserSwitchOutlined,
   VideoCameraOutlined,
-  ExclamationOutlined,
   CheckCircleOutlined,
   CheckSquareOutlined,
   CloseCircleOutlined,
   RobotOutlined,
 } from "@ant-design/icons";
-import React, { useEffect, useState } from "react";
-import ExampleNavbar from "../Navbar/navbar";
-
-import type { FC } from "react";
-import { Avatar, Button, DarkThemeToggle, Navbar } from "flowbite-react";
-import { FaBell, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
-import styles from "../Navbar/navbar.module.css";
-import AccountMenu from "../notificationMenuItem";
-import MenuListComposition from "../menuItem";
+import { Button } from "flowbite-react";
+import { FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
+import styles from "./sidebar.module.css"
 import SideDrawerComponent from "../SideDrawerComponent/SideDrawerComponent";
 import AddAsset from "../AddAsset/AddAsset";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../pages/authentication/AuthContext";
 import Avatars from "../Avatar/Avatar";
-import SubMenu from "antd/es/menu/SubMenu";
-import {
-  CheckOutlined,
-  EditOutlined,
-  WarningOutlined,
-} from "@mui/icons-material";
+import { EditOutlined } from "@mui/icons-material";
 import ToolTip from "../Tooltip/Tooltip";
-
 import { Footer as FlowbiteFooter } from "flowbite-react";
 import { MdFacebook } from "react-icons/md";
+import { useEffect, useState } from "react";
+import React from "react";
+import SubMenu from "antd/es/menu/SubMenu";
 
 const SidebarComponentNew = ({ children }) => {
   const { userRole, setUserRole, login, logout } = useAuth();
@@ -63,18 +51,16 @@ const SidebarComponentNew = ({ children }) => {
     }
   };
 
-  // const { addAssetState, setAddAssetState } = useMyContext();
   const [displaydrawer, setDisplayDrawer] = useState(false);
   const closeDrawer = () => {
     setDisplayDrawer(false);
-    console.log("displaydrwer value is ", displaydrawer);
   };
   const showDefaultDrawer = () => {
     setDisplayDrawer(true);
-    console.log("displaydrawer value is ", displaydrawer);
   };
 
   const { Header, Content, Footer, Sider } = Layout;
+  
   const items = [
     UserOutlined,
     VideoCameraOutlined,
@@ -90,7 +76,6 @@ const SidebarComponentNew = ({ children }) => {
   const [showLogout, setShowLogout] = useState(false);
 
   useEffect(() => {
-    // Function to decode JWT token
     const decodeJWT = (token: string) => {
       try {
         const base64Url = token.split(".")[1];
@@ -112,13 +97,8 @@ const SidebarComponentNew = ({ children }) => {
 
     // Get JWT token from localStorage
     const jwtToken = localStorage.getItem("jwt");
-    console.log(jwtToken);
-
-    // Decode JWT token and set payload
     if (jwtToken) {
       const payload = decodeJWT(jwtToken);
-      console.log(payload);
-      console.log(payload.username);
       setJwtPayload(payload);
       // login()
       setUserRole(payload.user_scope);
@@ -138,20 +118,20 @@ const SidebarComponentNew = ({ children }) => {
     setUserRole("None");
     navigate("/login", { replace: true });
   };
-  const menu = (
-    <Menu>
-      {/* Use Button component instead of Menu.Item */}
-      <Menu.Item key="logout" onClick={handleLogout}>
+
+  const menuItems = [
+    {
+      key: 'logout',
+      label: (
         <Button
-          type="link"
-          icon={<LogoutOutlined />}
           style={{ color: "white", backgroundColor: "rgb(22, 119, 255)" }}
+          onClick={handleLogout}
         >
-          Logout
+          Logout<LogoutOutlined />
         </Button>
-      </Menu.Item>
-    </Menu>
-  );
+      ),
+    },
+  ];
 
   return (
     <Layout>
@@ -194,7 +174,7 @@ const SidebarComponentNew = ({ children }) => {
                   </div>
                 )}
                 <div className="flex items-center gap-3 ml-5  -mt-10">
-                  <Dropdown overlay={menu} placement="bottom" arrow>
+                <Dropdown menu={{ items: menuItems }} placement="bottom" arrow>
                     <div className="cursor-pointer">
                       <Avatars />
                     </div>
@@ -226,12 +206,6 @@ const SidebarComponentNew = ({ children }) => {
           width="250px"
           breakpoint="lg"
           collapsedWidth="0"
-          onBreakpoint={(broken) => {
-            console.log(broken);
-          }}
-          onCollapse={(collapsed, type) => {
-            console.log(collapsed, type);
-          }}
         >
           <div className="demo-logo-vertical" />
 
@@ -322,6 +296,12 @@ const SidebarComponentNew = ({ children }) => {
                   {/* For sysadmin */}
                   <ToolTip title="Show my Asset Requests which have been approved">
                     <Link to="/exam/approved_requests">Approved</Link>
+                  </ToolTip>
+                </Menu.Item>
+                <Menu.Item icon={<CheckCircleOutlined />}>
+                  {/* For sysadmin */}
+                  <ToolTip title="Show the requests which are in pending status">
+                    <Link to="/exam/pending_requests">Pending Requests</Link>
                   </ToolTip>
                 </Menu.Item>
                 <Menu.Item icon={<CloseCircleOutlined />}>

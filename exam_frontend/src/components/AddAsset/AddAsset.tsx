@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { message, Tooltip } from "antd";
-import { InfoCircleOutlined } from "@ant-design/icons"; //
+import { InfoCircleOutlined } from "@ant-design/icons";
 import axiosInstance from "../../config/AxiosConfig";
 import { Button, DatePicker, Input, Form, Select } from "antd";
 import styles from "./AddAsset.module.css";
 import AssetFieldAutoComplete from "../AutocompleteBox/AssetFieldAutoComplete";
+
 const { Option } = Select;
 type SizeType = Parameters<typeof Form>[0]["size"];
 
 const AddAsset: React.FC = () => {
-  // State to store form data
   const [formData, setFormData] = useState<any>({});
-  const [requiredFields, setRequiredFields] = useState<string[]>([]);
+  const [_requiredFields, setRequiredFields] = useState<string[]>([]);
 
-  const hardwareSpecificFields = [
-  
+  const hardwareSpecificFields = [  
     "asset_type",
     "serial_number",
     "location",
@@ -23,8 +22,7 @@ const AddAsset: React.FC = () => {
     "date_of_purchase",
   ];
 
-  const softwareSpecificFields = [
-    
+  const softwareSpecificFields = [    
     "product_name",
     "location",
     "date_of_purchase",
@@ -52,7 +50,8 @@ const AddAsset: React.FC = () => {
   useEffect(() => {
     setRequiredFieldsByCategory(formData.asset_category);
   }, [formData.asset_category]);
-  const [formSubmitted, setFormSubmitted] = useState(false);
+
+  const [_formSubmitted, setFormSubmitted] = useState(false);
   const [componentSize, setComponentSize] = useState<SizeType | "default">(
     "default"
   );
@@ -305,7 +304,6 @@ const AddAsset: React.FC = () => {
     // Check if all mandatory fields are filled for software
     const isAllSoftwareFieldsFilled = softwareSpecificFields.every(
       (field) => {
-        console.log("asset", field)
         return !!formData[field]
 
       }
@@ -326,16 +324,10 @@ const AddAsset: React.FC = () => {
         // Your software-specific validation logic goes here
         try {
           // If software-specific validation passes, submit the form
-          console.log(
-            "Attempting to submit software asset form data:",
-            formData
-          );
           const response = await axiosInstance.post(
             import.meta.env["VITE_ADD_ASSET_URL"],
             formData
           );
-          console.log("Form Data Posted:", response.data);
-
           // Display success message and reload page
           message.success("Form data submitted successfully");
           setTimeout(() => {
@@ -380,13 +372,10 @@ const AddAsset: React.FC = () => {
       }
       try {
         // If hardware-specific validation passes, submit the form
-        console.log("Attempting to submit hardware asset form data:", formData);
         const response = await axiosInstance.post(
           import.meta.env["VITE_ADD_ASSET_URL"],
           formData
         );
-        console.log("Form Data Posted:", response.data);
-
         // Display success message and reload page
         message.success("Form data submitted successfully");
         setTimeout(() => {

@@ -6,18 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { DataType } from "../AssetTable/types";
 import { AssetResult } from "../AssetTable/types";
 import AssetTable from "./AssetTable";
-import {
-  getAssetDetails,
-  getAssetTypeOptions,
-  getLocationOptions,
-  getMemoryOptions,
-} from "./api/getAssetDetails";
-// interface ExpandedDataType {
-//   key: React.Key;
-//   date: string;
-//   name: string;
-//   upgradeNum: string;
-// }
+import { getAssetDetails,getAssetTypeOptions, getLocationOptions, getMemoryOptions } from "../../AssetTable/api/getAssetDetails";
 
 const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
   const [selectedRow, setSelectedRow] = useState(null);
@@ -99,9 +88,6 @@ const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
       text: assetType.asset_type_name,
       value: assetType.asset_type_name,
     })) ?? [];
-
-  const assetDataList = assetData;
-  // console.log("Testing on 65:", assetDataList ? assetDataList[0].results : []);
 
   const handleRowClick = useCallback((record: React.SetStateAction<null>) => {
     setSelectedRow(record);
@@ -560,7 +546,6 @@ const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
             color: "black",
           }}
           onClick={() => {
-            console.log("button clicked ");
             if (record.custodian == null || record.custodian == undefined) {
               showAssignDrawer(record);
             } else {

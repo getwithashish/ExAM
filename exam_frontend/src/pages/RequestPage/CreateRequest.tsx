@@ -34,9 +34,8 @@ const CreateRequestPage: FC = function () {
       .then((response) => {
         const createPendingAssets = response.data.data.results;
         const totalAssets = response.data.data.count;
-        console.log("createPendingAssets", createPendingAssets);
         setAssets(createPendingAssets);
-        setTotalPages(Math.ceil(totalAssets / pageSize)); // Calculate total pages based on total assets
+        setTotalPages(Math.ceil(totalAssets / pageSize));
       })
       .catch((error) => {
         console.error("Error fetching assets:", error);
@@ -52,10 +51,7 @@ const CreateRequestPage: FC = function () {
         approval_type: "ASSET_DETAIL_STATUS",
         asset_uuid: selectedAsset.asset_uuid,
         comments: approverNotes,
-      };
-  
-      console.log("comments:", approvalData);
-  
+      };  
       axiosInstance
         .post("/asset/approve_asset", approvalData)
         .then(() => {
@@ -246,8 +242,11 @@ const CreateRequestPage: FC = function () {
             handleApprove={handleApprove}
             handleReject={handleReject}
             onClose={() => setSelectedAsset(null)}
-            handleApproverNotesChange={handleApproverNotesChange}
-          />
+            handleApproverNotesChange={handleApproverNotesChange} 
+            approverNotes={""} setApproverNotes={function (_approval_status_message: string): void {
+              throw new Error("Function not implemented.");
+            } }          
+            />
         )}
       </div>
     </React.Fragment>
@@ -351,7 +350,7 @@ const ViewRequestModal: FC<{
   handleApproverNotesChange:any,
 
 }> = function ({ asset, handleApprove, handleReject, onClose, approverNotes, handleApproverNotesChange })  {
-  const [notes, setNotes] = useState(asset.notes);
+  const [notes, _setNotes] = useState(asset.notes);
   const [modalOpen, setModalOpen] = useState(false);
   const [actionType, setActionType] = useState("");
 
@@ -525,7 +524,7 @@ const ViewRequestModal: FC<{
       open={true}
       selectedRow={undefined}
       drawerTitle={""}
-      onUpdateData={function (updatedData: {
+      onUpdateData={function (_updatedData: {
         key: any;
       }): void {
         throw new Error("Function not implemented.");

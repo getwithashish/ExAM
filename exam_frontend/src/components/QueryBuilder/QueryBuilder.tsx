@@ -51,7 +51,6 @@ export const QueryBuilderComponent: React.FC<
   >([]);
 
   const handleSubmitFieldValues = (fieldValues) => {
-    console.log("Final Values: ", fieldValues);
     const uniqueKeys = Array.from(new Set(fieldValues.flatMap(Object.keys)));
     const valuesByKey = uniqueKeys.reduce((acc, key) => {
       acc[key] = fieldValues
@@ -60,8 +59,6 @@ export const QueryBuilderComponent: React.FC<
       return acc;
     }, {});
 
-    console.log("Final Values as array: ", valuesByKey);
-
     let andQueryConditions = [];
     for (const key in valuesByKey) {
       const queryConditions = valuesByKey[key].map((field) => ({
@@ -69,16 +66,13 @@ export const QueryBuilderComponent: React.FC<
       }));
       const orQueryCondition = { or: queryConditions };
       andQueryConditions = andQueryConditions.concat(orQueryCondition);
-      console.log("Query Conditions: ", orQueryCondition);
     }
 
     const jsonLogic = { and: andQueryConditions };
-    console.log("Final Json Logic: ", jsonLogic);
 
     const jsonLogicString = JSON.stringify(jsonLogic);
     const queryParams = `&json_logic=${encodeURIComponent(jsonLogicString)}`;
     message.success(queryParams);
-    console.log(queryParams);
     setJson_query(queryParams);
     assetDataRefetch(queryParams);
   };
