@@ -242,8 +242,11 @@ const CreateRequestPage: FC = function () {
             handleApprove={handleApprove}
             handleReject={handleReject}
             onClose={() => setSelectedAsset(null)}
-            handleApproverNotesChange={handleApproverNotesChange}
-          />
+            handleApproverNotesChange={handleApproverNotesChange} 
+            approverNotes={""} setApproverNotes={function (_approval_status_message: string): void {
+              throw new Error("Function not implemented.");
+            } }          
+            />
         )}
       </div>
     </React.Fragment>
@@ -347,7 +350,7 @@ const ViewRequestModal: FC<{
   handleApproverNotesChange:any,
 
 }> = function ({ asset, handleApprove, handleReject, onClose, approverNotes, handleApproverNotesChange })  {
-  const [notes, setNotes] = useState(asset.notes);
+  const [notes, _setNotes] = useState(asset.notes);
   const [modalOpen, setModalOpen] = useState(false);
   const [actionType, setActionType] = useState("");
 
@@ -521,7 +524,7 @@ const ViewRequestModal: FC<{
       open={true}
       selectedRow={undefined}
       drawerTitle={""}
-      onUpdateData={function (updatedData: {
+      onUpdateData={function (_updatedData: {
         key: any;
       }): void {
         throw new Error("Function not implemented.");

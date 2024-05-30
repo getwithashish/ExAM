@@ -619,7 +619,16 @@ const ViewRequestModal: FC<{
           </li>
         </ol>
       </nav>
-      <DrawerViewRequest title="Assign Details" onClose={onClose} open={true}>
+      <DrawerViewRequest 
+        title="Assign Details"
+        onClose={onClose}
+        open={true} 
+        selectedRow={undefined} 
+        drawerTitle={""} 
+        onUpdateData={function (_updatedData: { key: any; }): void {
+          throw new Error("Function not implemented.");
+        } } 
+        >
         <div>
           <form>
             <div className="grid font-display grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">
