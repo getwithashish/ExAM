@@ -28,6 +28,7 @@ from messages import (
     ASSET_CREATED_UNSUCCESSFUL,
     ASSET_LIST_RETRIEVAL_UNSUCCESSFUL,
     ASSET_NOT_FOUND,
+    ASSET_RESTORATION_SUCCESSFUL,
     USER_UNAUTHORIZED,
     ASSET_DELETION_SUCCESSFUL,
 )
@@ -173,6 +174,29 @@ class AssetView(APIView):
             return APIResponse(
                 data={},
                 message="Error occurred while deleting asset.",
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+    def put(self, request):
+        asset_uuid = request.data.get("asset_uuid")
+        print("Asset UUID: ", asset_uuid)
+        try:
+            asset = get_object_or_404(Asset, asset_uuid=asset_uuid)
+            asset.is_deleted = False
+            print("Reached before SAVE")
+            asset.save()
+            print("Reached after SAVE")
+            return APIResponse(
+                data={"asset_uuid": asset_uuid},
+                message=ASSET_RESTORATION_SUCCESSFUL,
+                status=status.HTTP_200_OK,
+            )
+
+        except Exception as e:
+            print("Error: ", e)
+            return APIResponse(
+                data={},
+                message="Error occurred while restoring asset.",
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
