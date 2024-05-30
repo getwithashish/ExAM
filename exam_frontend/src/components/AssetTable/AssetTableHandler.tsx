@@ -609,6 +609,7 @@ const AssetTableHandler = ({
       onCloseDrawer={onCloseDrawer}
       selectedRow={selectedRow}
       drawerVisible={drawerVisible}
+      setDrawerVisible={setDrawerVisible}
       assetData={data}
       sortOrder={sortOrder}
       sortedColumn={sortedColumn}

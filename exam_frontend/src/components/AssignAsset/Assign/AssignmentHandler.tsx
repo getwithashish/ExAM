@@ -15,6 +15,7 @@ interface AssignmentHandlerProps {
 export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({
   record,
   closeAssignDrawer,
+  assetDataRefetch,
 }) => {
   const [query, setQuery] = useState<string>("");
   const [value, setValue] = useState<string>("");
@@ -48,12 +49,13 @@ export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({
       axiosInstance.post("/asset/assign_asset", requestData),
     {
       onSuccess: () => {
-        message.success("successfully assigned");
+        message.success("Successfully Assigned");
         setLoading(false);
+        assetDataRefetch();
         closeAssignDrawer();
       },
       onError: (error) => {
-        message.error("unsuccessful, the asset may be already assigned");
+        message.error("Unsuccessful, the asset may be already assigned");
         setLoading(false);
         closeAssignDrawer();
       },
@@ -104,7 +106,7 @@ export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({
       };
       mutation.mutate(requestBody);
     } else {
-      alert("Please select an employee");
+      message.error("Please select an employee");
     }
   };
 
