@@ -14,7 +14,6 @@ import {
   CloseCircleOutlined,
   RobotOutlined,
 } from "@ant-design/icons";
-import { Button } from "flowbite-react";
 import { FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 import styles from "./sidebar.module.css"
 import SideDrawerComponent from "../SideDrawerComponent/SideDrawerComponent";
@@ -29,6 +28,7 @@ import { MdFacebook } from "react-icons/md";
 import { useEffect, useState } from "react";
 import React from "react";
 import SubMenu from "antd/es/menu/SubMenu";
+import { Button } from "@mui/material";
 
 const SidebarComponentNew = ({ children }) => {
   const { userRole, setUserRole, login, logout } = useAuth();
@@ -123,11 +123,10 @@ const SidebarComponentNew = ({ children }) => {
     {
       key: 'logout',
       label: (
-        <Button
-          style={{ color: "white", backgroundColor: "rgb(22, 119, 255)" }}
+        <Button color="error"
           onClick={handleLogout}
         >
-          Logout<LogoutOutlined />
+          Logout &nbsp;<LogoutOutlined />
         </Button>
       ),
     },
@@ -247,6 +246,14 @@ const SidebarComponentNew = ({ children }) => {
                   <Menu.Item icon={<EditOutlined />}>
                     <ToolTip title="To delete an Asset">
                       <Link to="/exam/updatable_assets">Delete Assets</Link>
+                    </ToolTip>
+                  </Menu.Item>
+                </React.Fragment>
+              ) : userRole === "MANAGER" ? (
+                <React.Fragment>
+                  <Menu.Item icon={<EditOutlined />}>
+                    <ToolTip title="View Deleted Assets">
+                      <Link to="/exam/updatable_assets">Deleted Assets</Link>
                     </ToolTip>
                   </Menu.Item>
                 </React.Fragment>

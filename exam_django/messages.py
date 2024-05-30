@@ -185,3 +185,4 @@ MEMORY_SUCCESSFULLY_RETRIEVED = "Memory retrieved succesfully"
 MEMORY_EXISTS = "Memory already exists"
 
 ASSET_DELETION_SUCCESSFUL = "Asset Deletion is sucessful"
+ASSET_RESTORATION_SUCCESSFUL = "Asset Restoration is sucessful"
