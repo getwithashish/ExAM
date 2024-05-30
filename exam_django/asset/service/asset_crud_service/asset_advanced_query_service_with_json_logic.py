@@ -6,6 +6,9 @@ from rest_framework.pagination import LimitOffsetPagination
 from asset.service.asset_crud_service.asset_query_abstract import AssetQueryAbstract
 from asset.models.asset import Asset
 from asset.serializers.asset_serializer import AssetReadSerializer
+from asset.service.asset_crud_service.asset_normal_query_service import (
+    AssetNormalQueryService,
+)
 from messages import ASSET_LIST_SUCCESSFULLY_RETRIEVED
 
 
@@ -29,6 +32,14 @@ class AssetAdvancedQueryServiceWithJsonLogic(AssetQueryAbstract):
 
         queryset = Asset.objects.all().filter(is_deleted=False)
         queryset = queryset.filter(q_objects)
+
+        global_search = request.query_params.get("global_search")
+
+        if global_search:
+            asset_normal_query_service = AssetNormalQueryService()
+            queryset = asset_normal_query_service.get_queryset_from_global_search(
+                global_search, queryset
+            )
 
         page = self.pagination.paginate_queryset(queryset, request)
         if page is not None:
