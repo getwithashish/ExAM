@@ -12,17 +12,17 @@ const Deallocate = () => {
       setLoading(true)
       const data = { asset_uuid: record?.key };
       const res = await axiosInstance.post("/asset/unassign_asset", data);
-      message.success("Asset successfully deallocated");
+      message.success("Asset Successfully Deallocated");
       console.log(res);
     } catch (error) {
-      message.error("Asset deallocation failed");
+      message.error("Asset Deallocation Failed");
     }
       finally {
         setLoading(false)
       }
   };
   let queryParamProp =
-  "&assign_status=ASSIGNED&status=IN USE"
+  "&assign_status=ASSIGNED|REJECTED&status=IN USE"
   return (
     
     <div style={{ background: "white" }}>
