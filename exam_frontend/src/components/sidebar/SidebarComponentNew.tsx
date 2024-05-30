@@ -60,7 +60,7 @@ const SidebarComponentNew = ({ children }) => {
   };
 
   const { Header, Content, Footer, Sider } = Layout;
-  
+
   const items = [
     UserOutlined,
     VideoCameraOutlined,
@@ -138,47 +138,42 @@ const SidebarComponentNew = ({ children }) => {
         style={{
           backgroundColor: "white",
           zIndex: 110,
-          position: "sticky",
+          position: "fixed",
           left: 0,
           top: 0,
           bottom: 0,
           borderBottom: "1px solid #e8e8e8",
           padding: 0,
+          width: "100%",
         }}
       >
-        {/* <ExampleNavbar /> */}
-
-        <div className="w-full p-2.5 lg:px-5 lg:pl-3">
-          <div className="flex items-center justify-between ">
-            <div className="text-left  font-display text-lg p-0 mb-10">
-              <b>Asset Management System</b>
-            </div>
-
-            {/* </Navbar.Brand> */}
-
-            <div className="flex items-center gap-3">
-              <div
-                className={`flex items-center gap-3 ${styles["button-components"]}`}
-              >
+        <div className="flex w-screen lg:px-5 lg:pl-3" >
+          <div className="text-left my-5 px-4 font-display text-lg p-0 m-0 items-center justify-between flex-1">
+            <b>Asset Management System</b>
+          </div>
+          <div className="flex-1 px-4">
+            <div className="flex gap-4">
+              <div className="flex-1 text-right">
                 {jwtPayload && jwtPayload.username && (
-                  <div className={styles["username-container"]}>
-                    <span className={styles["username"]}>
+                  <div >
+                    <div className={styles["username"]}> 
                       Hi, {jwtPayload.username}
-                    </span>
-                    {jwtPayload && jwtPayload.user_scope && (
-                      <span className={styles["userscope"]}>
+                    </div>
+                    {jwtPayload.user_scope && (
+                      <div className={styles["userscope"]}>
                         {jwtPayload.user_scope}
-                      </span>
+                      </div>
                     )}
                   </div>
                 )}
-                <div className="flex items-center gap-3 ml-5  -mt-10">
+              </div>
+
+              <div className="flex-2">
                 <Dropdown menu={{ items: menuItems }} placement="bottom" arrow>
-                    <div className="cursor-pointer">
-                      <Avatars />
-                    </div>
-                  </Dropdown>
-                </div>
+                  <div className="cursor-pointer">
+                    <Avatars />
+                  </div>
+                </Dropdown>
               </div>
             </div>
           </div>
