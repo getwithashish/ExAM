@@ -1,6 +1,4 @@
-import React from "react";
 import AssetTableHandler from "../../components/AssetTable/AssetTableHandler";
-import CardComponent from "../../components/CardComponent/CardComponent";
 const MyApprovalPage = () => {
   const decodeJWT = (token: string) => {
     try {
@@ -23,7 +21,6 @@ const MyApprovalPage = () => {
 
   const getUserId = () => {
     const jwtToken = localStorage.getItem("jwt");
-    console.log(jwtToken);
     if (jwtToken) {
       const payload = decodeJWT(jwtToken);
       return payload.user_id;

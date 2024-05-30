@@ -74,7 +74,7 @@ export default function Login() {
       ) {
         setUsernameError("Invalid username or password");
       } else {
-        console.log("Error:", error);
+        console.error("Error:", error);
       }
     }
   };

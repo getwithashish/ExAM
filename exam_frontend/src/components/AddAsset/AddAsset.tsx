@@ -304,7 +304,6 @@ const AddAsset: React.FC = () => {
     // Check if all mandatory fields are filled for software
     const isAllSoftwareFieldsFilled = softwareSpecificFields.every(
       (field) => {
-        console.log("asset", field)
         return !!formData[field]
 
       }
@@ -325,16 +324,10 @@ const AddAsset: React.FC = () => {
         // Your software-specific validation logic goes here
         try {
           // If software-specific validation passes, submit the form
-          console.log(
-            "Attempting to submit software asset form data:",
-            formData
-          );
           const response = await axiosInstance.post(
             import.meta.env["VITE_ADD_ASSET_URL"],
             formData
           );
-          console.log("Form Data Posted:", response.data);
-
           // Display success message and reload page
           message.success("Form data submitted successfully");
           setTimeout(() => {
@@ -379,13 +372,10 @@ const AddAsset: React.FC = () => {
       }
       try {
         // If hardware-specific validation passes, submit the form
-        console.log("Attempting to submit hardware asset form data:", formData);
         const response = await axiosInstance.post(
           import.meta.env["VITE_ADD_ASSET_URL"],
           formData
         );
-        console.log("Form Data Posted:", response.data);
-
         // Display success message and reload page
         message.success("Form data submitted successfully");
         setTimeout(() => {

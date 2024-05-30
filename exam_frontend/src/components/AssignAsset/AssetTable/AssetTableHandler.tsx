@@ -89,9 +89,6 @@ const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
       value: assetType.asset_type_name,
     })) ?? [];
 
-  const assetDataList = assetData;
-  // console.log("Testing on 65:", assetDataList ? assetDataList[0].results : []);
-
   const handleRowClick = useCallback((record: React.SetStateAction<null>) => {
     setSelectedRow(record);
     setDrawerVisible(true);
@@ -549,7 +546,6 @@ const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
             color: "black",
           }}
           onClick={() => {
-            console.log("button clicked ");
             if (record.custodian == null || record.custodian == undefined) {
               showAssignDrawer(record);
             } else {

@@ -34,9 +34,8 @@ const CreateRequestPage: FC = function () {
       .then((response) => {
         const createPendingAssets = response.data.data.results;
         const totalAssets = response.data.data.count;
-        console.log("createPendingAssets", createPendingAssets);
         setAssets(createPendingAssets);
-        setTotalPages(Math.ceil(totalAssets / pageSize)); // Calculate total pages based on total assets
+        setTotalPages(Math.ceil(totalAssets / pageSize));
       })
       .catch((error) => {
         console.error("Error fetching assets:", error);
@@ -52,10 +51,7 @@ const CreateRequestPage: FC = function () {
         approval_type: "ASSET_DETAIL_STATUS",
         asset_uuid: selectedAsset.asset_uuid,
         comments: approverNotes,
-      };
-  
-      console.log("comments:", approvalData);
-  
+      };  
       axiosInstance
         .post("/asset/approve_asset", approvalData)
         .then(() => {

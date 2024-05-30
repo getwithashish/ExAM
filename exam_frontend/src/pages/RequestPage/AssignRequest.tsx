@@ -36,7 +36,6 @@ const AssignPage: FC = function () {
         const totalAssets = response.data.data.count;
         setAssignRequests(assignPendingAssets);
         setTotalPages(Math.ceil(totalAssets / 10));
-        console.log(response.data.data.results);
       })
       .catch((error) => {
         console.error("Error fetching assign requests:", error);

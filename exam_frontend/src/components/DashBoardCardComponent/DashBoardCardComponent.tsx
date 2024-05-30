@@ -39,7 +39,6 @@ const DashBoardCardComponent: React.FC<CardType> = ({
   const [updatedData, setUpdatedData] = useState<Partial<DataType>>({});
 
   const handleUpdate = async () => {
-    console.log("Asset UUID:", data.key);
     try {
       const updatePayload = {
         asset_uuid: data.key,
@@ -54,7 +53,6 @@ const DashBoardCardComponent: React.FC<CardType> = ({
           },
         }
       );
-      console.log("Updated data:", response.data);
       message.success("Asset Details successfully updated");
       setTimeout(() => {
         window.location.reload();

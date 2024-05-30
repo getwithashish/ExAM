@@ -10,7 +10,6 @@ const Deallocate = () => {
   const unassign = async (record: DataType | null) => {
     try {
       setLoading(true)
-      console.log("record", record);
       const data = { asset_uuid: record?.key };
       const res = await axiosInstance.post("/asset/unassign_asset", data);
       message.success("Asset successfully deallocated");

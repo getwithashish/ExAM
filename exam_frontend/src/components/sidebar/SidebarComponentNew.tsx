@@ -16,7 +16,7 @@ import {
 } from "@ant-design/icons";
 import { Button } from "flowbite-react";
 import { FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
-import styles from "../Navbar/navbar.module.css";
+import styles from "./sidebar.module.css"
 import SideDrawerComponent from "../SideDrawerComponent/SideDrawerComponent";
 import AddAsset from "../AddAsset/AddAsset";
 import { Link, useNavigate } from "react-router-dom";

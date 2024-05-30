@@ -154,7 +154,6 @@ const CardComponent: React.FC<CardType> = ({
       setIsLoading(false); // Set loading to false when update fails
       return; // Exit the function without updating
     }
-    console.log("Asset UUID:", data.key);
 
     try {
       const updatePayload = {
@@ -167,8 +166,6 @@ const CardComponent: React.FC<CardType> = ({
           "Content-Type": "application/json",
         },
       });
-
-      console.log("Updated data:", response.data);
       message.success("Asset Details successfully updated");
     } catch (error) {
       console.error("Error updating data:", error);
@@ -986,7 +983,6 @@ const CardComponent: React.FC<CardType> = ({
   };
 
   const handleCancel = () => {
-    console.log("Asset deletion cancelled.");
     setIsModalVisible(false);
   };
 
@@ -1010,7 +1006,6 @@ const CardComponent: React.FC<CardType> = ({
   };
   const getUserScope = () => {
     const jwtToken = localStorage.getItem("jwt");
-    console.log(jwtToken);
     if (jwtToken) {
       const payload = decodeJWT(jwtToken);
       return payload.user_scope;
