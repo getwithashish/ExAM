@@ -42,6 +42,7 @@ const MuiAutocomplete = ({
       queryFieldName: "asset_type",
     },
     { label: "Warranty Period", value: "warranty_period" },
+    { label: "License Type", value: "license_type" },
     { label: "Version", value: "version" },
     { label: "Operating System", value: "os" },
     { label: "Operating System Version", value: "os_version" },
