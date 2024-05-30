@@ -184,7 +184,6 @@ class AssetNormalQueryService(AssetQueryAbstract):
             "approval_status_message",
             "created_at",
             "updated_at",
-            
         ]:
             query |= Q(**{f"{field}__icontains": global_search})
 
@@ -205,5 +204,3 @@ class AssetNormalQueryService(AssetQueryAbstract):
             for key, value in input_dict.items()
             if key not in fields_to_remove
         }
-
-
