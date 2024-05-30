@@ -882,14 +882,16 @@ const CardComponent: React.FC<CardType> = ({
           <br></br>{" "}
           <Input
             defaultValue={data["approval_status_message"]}
-            onChange={(e) => handleUpdateChange("approval_status_message", e.target.value)}
+            onChange={(e) =>
+              handleUpdateChange("approval_status_message", e.target.value)
+            }
             style={{
               width: "387px",
               height: "100px",
               background: "#f0f0f0",
               borderRadius: "5px",
               border: "0.5px solid #d3d3d3",
-              textAlign: "center"
+              textAlign: "center",
             }}
             readOnly
           />{" "}
@@ -976,6 +978,32 @@ const CardComponent: React.FC<CardType> = ({
     } catch (error) {
       console.error("Error deleting asset:", error);
       message.error("Error deleting asset. Please try again.");
+    } finally {
+      setIsLoading(false);
+      setIsModalVisible(false);
+    }
+  };
+
+  const handleRestore = async () => {
+    try {
+      setIsLoading(true);
+      const restorePayload = {
+        asset_uuid: data.key,
+      };
+      const response = await axiosInstance.put("/asset/", restorePayload);
+
+      if (response.status === 200) {
+        setTableData((prevData) =>
+          prevData.filter((item) => item.key !== data.key)
+        );
+
+        message.success("Asset successfully restored");
+        setIsModalVisible(false);
+      } else {
+        message.error("Failed to restore asset. Please try again.");
+      }
+    } catch (error) {
+      message.error("Error restore asset. Please try again.");
     } finally {
       setIsLoading(false);
       setIsModalVisible(false);
@@ -1104,6 +1132,19 @@ const CardComponent: React.FC<CardType> = ({
                       Delete Asset
                     </Button>
                   )}
+                  {getUserScope() === "MANAGER" && (
+                    <Button
+                      type="primary"
+                      danger
+                      onClick={handleDeleteClick}
+                      style={{
+                        marginLeft: "570px",
+                        marginTop: "0px",
+                      }}
+                    >
+                      Restore Asset
+                    </Button>
+                  )}
                 </>
               )}
             </>
@@ -1111,20 +1152,31 @@ const CardComponent: React.FC<CardType> = ({
         </div>
         <Modal
           title="Delete Asset"
-          visible={isModalVisible}
+          open={isModalVisible}
           onCancel={handleCancel}
           footer={[
             <Button key="cancel" onClick={handleCancel}>
               Cancel
             </Button>,
-            <Button key="delete" type="primary" danger onClick={handleDelete}>
-              Delete
-            </Button>,
+            getUserScope() === "LEAD" ? (
+              <Button key="delete" type="primary" danger onClick={handleDelete}>
+                Delete
+              </Button>
+            ) : (
+              <Button
+                key="restore"
+                type="primary"
+                danger
+                onClick={handleRestore}
+              >
+                Restore
+              </Button>
+            ),
           ]}
           width={400}
           centered
         >
-          <p>Are you sure you want to delete the asset?</p>
+          <p>Are you sure you want to restore the asset?</p>
         </Modal>
       </div>
 

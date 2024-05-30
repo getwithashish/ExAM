@@ -49,6 +49,9 @@ const AssetTable = ({
   } else if (userRole === "LEAD") {
     pageHeading = "Delete Assets";
   }
+  else if (userRole === "MANAGER"){
+    pageHeading = "Deleted Assets"
+  }
   
 
   return (
