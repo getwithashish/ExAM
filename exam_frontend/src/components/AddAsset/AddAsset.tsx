@@ -14,7 +14,7 @@ const AddAsset: React.FC = () => {
   const [formData, setFormData] = useState<any>({});
   const [_requiredFields, setRequiredFields] = useState<string[]>([]);
 
-  const hardwareSpecificFields = [  
+  const hardwareSpecificFields = [
     "asset_type",
     "serial_number",
     "location",
@@ -22,7 +22,7 @@ const AddAsset: React.FC = () => {
     "date_of_purchase",
   ];
 
-  const softwareSpecificFields = [    
+  const softwareSpecificFields = [
     "product_name",
     "location",
     "date_of_purchase",
@@ -69,7 +69,6 @@ const AddAsset: React.FC = () => {
   const [mobileOs, setMobileOs] = React.useState("");
   const [storage, setStorage] = React.useState("");
 
-
   useEffect(() => {
     handleInputChange("asset_type", assettypeValue["id"]);
   }, [assettypeValue]);
@@ -87,16 +86,14 @@ const AddAsset: React.FC = () => {
   }, [assetBu]);
 
   useEffect(() => {
-    let fieldName = Object.keys(value)[0]
+    let fieldName = Object.keys(value)[0];
     handleInputChange(fieldName, value[fieldName]);
   }, [value]);
 
   useEffect(() => {
-    let fieldName=Object.keys(modelNumber)[0]
-    handleInputChange(fieldName,modelNumber[fieldName]);
+    let fieldName = Object.keys(modelNumber)[0];
+    handleInputChange(fieldName, modelNumber[fieldName]);
   }, [modelNumber]);
-
-
 
   const onFormLayoutChange = ({ size }: { size: SizeType }) => {
     setComponentSize(size);
@@ -293,22 +290,13 @@ const AddAsset: React.FC = () => {
     setFormSubmitted(true);
 
     // Ensure that warranty_period is not undefined for hardware assets
-    if (
-      formData.asset_category === "HARDWARE" &&
-     
-      !formData.asset_type
-    ) {
-      
+    if (formData.asset_category === "HARDWARE" && !formData.asset_type) {
     }
 
     // Check if all mandatory fields are filled for software
-    const isAllSoftwareFieldsFilled = softwareSpecificFields.every(
-      (field) => {
-        return !!formData[field]
-
-      }
-
-    );
+    const isAllSoftwareFieldsFilled = softwareSpecificFields.every((field) => {
+      return !!formData[field];
+    });
 
     // Check if all mandatory fields are filled for hardware
     const isAllHardwareFieldsFilled = hardwareSpecificFields.every(
@@ -346,8 +334,6 @@ const AddAsset: React.FC = () => {
 
     // If it's a hardware asset and all mandatory fields are filled
     if (formData.asset_category === "HARDWARE" && isAllHardwareFieldsFilled) {
-      
-
       const storageValue = formData.storage?.trim();
       const formatPattern = /^\d{1,3}GB$/;
 
@@ -431,11 +417,7 @@ const AddAsset: React.FC = () => {
           {formData.asset_category === "SOFTWARE" && (
             <>
               <Form.Item
-                label={
-                  <span>
-                    Asset ID
-                  </span>
-                }
+                label={<span>Asset ID</span>}
                 className={styles["formItem"]}
               >
                 <Input
@@ -462,12 +444,10 @@ const AddAsset: React.FC = () => {
                 }
                 className={styles["formItem"]}
               >
-
                 <AssetFieldAutoComplete
                   assetField="product_name"
                   value={value}
                   setValue={setValue}
-
                 />
               </Form.Item>
               <Form.Item
@@ -500,8 +480,8 @@ const AddAsset: React.FC = () => {
                   placeholder="Select license type"
                   onChange={(value) => handleInputChange("license_type", value)}
                 >
-                  <Option value="monthly">Monthly</Option>
-                  <Option value="permanent">Permanent</Option>
+                  <Option value="Monthly">Monthly</Option>
+                  <Option value="Permanent">Permanent</Option>
                 </Select>
               </Form.Item>
 
@@ -526,8 +506,6 @@ const AddAsset: React.FC = () => {
                   assetField="location"
                   value={assetLocation}
                   setValue={setAssetLocation}
-
-
                 />
               </Form.Item>
               <Form.Item label="Business Unit" className={styles["formItem"]}>
@@ -535,7 +513,6 @@ const AddAsset: React.FC = () => {
                   assetField="business_unit"
                   value={assetBu}
                   setValue={setAssetBu}
-
                 />
               </Form.Item>
               <Form.Item label="Notes:" className={styles["formItem"]}>
@@ -555,11 +532,7 @@ const AddAsset: React.FC = () => {
               {/* Render hardware specific fields */}
               {/* Example: */}
               <Form.Item
-                label={
-                  <span>
-                    Asset ID
-                  </span>
-                }
+                label={<span>Asset ID</span>}
                 className={styles["formItem"]}
               >
                 <Input
@@ -590,7 +563,6 @@ const AddAsset: React.FC = () => {
                   assetField="asset_type"
                   value={assettypeValue}
                   setValue={setassettypeValue}
-
                 />
               </Form.Item>
               <Form.Item
@@ -605,7 +577,6 @@ const AddAsset: React.FC = () => {
                   assetField="product_name"
                   value={value}
                   setValue={setValue}
-
                 />
               </Form.Item>
               <Form.Item
@@ -627,23 +598,16 @@ const AddAsset: React.FC = () => {
               </Form.Item>
 
               <Form.Item
-                label={
-                  <span>
-                    Model Number
-                  </span>
-                }
+                label={<span>Model Number</span>}
                 className={styles["formItem"]}
               >
                 <AssetFieldAutoComplete
-              assetField="model_number"
-              value={modelNumber}
-              setValue={setModelNumber}
-             
-            />
-
-
+                  assetField="model_number"
+                  value={modelNumber}
+                  setValue={setModelNumber}
+                />
               </Form.Item>
-            
+
               {/* </Form.Item> */}
               <Form.Item
                 label={
@@ -672,11 +636,7 @@ const AddAsset: React.FC = () => {
                 />
               </Form.Item>
               <Form.Item
-                label={
-                  <span>
-                    Warranty Period
-                  </span>
-                }
+                label={<span>Warranty Period</span>}
                 className={styles["formItem"]}
               >
                 <Input
@@ -703,14 +663,11 @@ const AddAsset: React.FC = () => {
                 }
                 className={styles["formItem"]}
               >
-                 <AssetFieldAutoComplete
-              assetField="location"
-              value={assetLocation}
-              setValue={setAssetLocation}
-
+                <AssetFieldAutoComplete
+                  assetField="location"
+                  value={assetLocation}
+                  setValue={setAssetLocation}
                 />
-
-
               </Form.Item>
 
               <Form.Item
@@ -725,8 +682,6 @@ const AddAsset: React.FC = () => {
                   assetField="invoice_location"
                   value={assetInLocation}
                   setValue={setAssetInLocation}
-
-
                 />
               </Form.Item>
 
@@ -735,7 +690,6 @@ const AddAsset: React.FC = () => {
                   assetField="business_unit"
                   value={assetBu}
                   setValue={setAssetBu}
-
                 />
               </Form.Item>
               <Form.Item label="OS:" className={styles["formItem"]}>
@@ -743,7 +697,6 @@ const AddAsset: React.FC = () => {
                   assetField="os"
                   value={os}
                   setValue={setOs}
-
                 />
               </Form.Item>
 
@@ -752,7 +705,6 @@ const AddAsset: React.FC = () => {
                   assetField="os_version"
                   value={osVersion}
                   setValue={setOsVersion}
-
                 />
               </Form.Item>
 
@@ -761,7 +713,6 @@ const AddAsset: React.FC = () => {
                   assetField="mobile_os"
                   value={mobileOs}
                   setValue={setMobileOs}
-
                 />
               </Form.Item>
 
@@ -770,8 +721,6 @@ const AddAsset: React.FC = () => {
                   assetField="processor"
                   value={processor}
                   setValue={setProcessor}
-
-
                 />
               </Form.Item>
 
@@ -780,8 +729,6 @@ const AddAsset: React.FC = () => {
                   assetField="processor_gen"
                   value={processorGen}
                   setValue={setProcessorGen}
-
-
                 />
               </Form.Item>
 
@@ -790,8 +737,6 @@ const AddAsset: React.FC = () => {
                   assetField="memory"
                   value={memory}
                   setValue={setMemory}
-
-
                 />
               </Form.Item>
 
@@ -800,7 +745,6 @@ const AddAsset: React.FC = () => {
                   assetField="storage"
                   value={storage}
                   setValue={setStorage}
-
                 />
               </Form.Item>
 
