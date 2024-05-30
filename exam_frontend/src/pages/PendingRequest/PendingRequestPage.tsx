@@ -22,7 +22,6 @@ const PendingRequestPage = () => {
 
   const getUserId = () => {
     const jwtToken = localStorage.getItem("jwt");
-    console.log(jwtToken);
     if (jwtToken) {
       const payload = decodeJWT(jwtToken);
       return payload.user_id;

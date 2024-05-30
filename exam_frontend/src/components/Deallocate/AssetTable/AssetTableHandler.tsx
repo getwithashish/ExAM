@@ -11,7 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { DataType } from "../AssetTable/types";
 import { AssetResult } from "../AssetTable/types";
 import AssetTable from "./AssetTable";
-import { getAssetDetails, getLocationOptions, getAssetTypeOptions, getMemoryOptions } from "../AssetTable/api/getAssetDetails";
+import { getAssetDetails, getAssetTypeOptions, getLocationOptions, getMemoryOptions } from "../../AssetTable/api/getAssetDetails";
 interface AssetTableHandlerProps {
   unassign: (record: DataType) => void;
   queryParamProp: any;

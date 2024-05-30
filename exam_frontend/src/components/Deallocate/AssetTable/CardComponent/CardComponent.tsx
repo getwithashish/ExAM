@@ -227,9 +227,9 @@ const CardComponent: React.FC<CardType> = ({
             }}
             onChange={(value) => handleUpdateChange("location", value)}
           >
-            {uniqueLocationoptions.map((location, index) => (
-              <Select.Option key={index} value={location.id}>
-                {location.location_name}
+            {uniqueLocationoptions.map((locations, index) => (
+              <Select.Option key={index} value={locations.id}>
+                {locations.location_name}
               </Select.Option>
             ))}
           </Select>

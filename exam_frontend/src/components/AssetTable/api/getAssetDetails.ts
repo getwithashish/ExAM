@@ -1,33 +1,41 @@
 import axiosInstance from "../../../config/AxiosConfig";
 
-export const getAssetDetails = async (queryParam="") => {
+export const getAssetDetails = async (queryParam = "") => {
   try {
     const res = await axiosInstance.get(`/asset/?limit=20${queryParam}`);
-    return res.data.data;
+    return res.data.data || [];
   } catch (error) {
     console.error("Error fetching asset details:", error);
     return [];
   }
 };
 
-export const getLocationOptions = () => {
-  const res = axiosInstance.get("/asset/location").then((res) => {
-    return res.data.results;
-  });
-  return res;
+export const getLocationOptions = async () => {
+  try {
+    const res = await axiosInstance.get("/asset/location");
+    return res.data.results || [];
+  } catch (error) {
+    console.error("Error fetching location options:", error);
+    return [];
+  }
 };
 
-export const getAssetTypeOptions = () => {
-  const res = axiosInstance.get("/asset/asset_type").then((res) => {
-    return res.data.data;
-  });
-  return res;
+export const getAssetTypeOptions = async () => {
+  try {
+    const res = await axiosInstance.get("/asset/asset_type");
+    return res.data.data || [];
+  } catch (error) {
+    console.error("Error fetching asset type options:", error);
+    return [];
+  }
 };
 
-
-export const getMemoryOptions = () => {
-  const res = axiosInstance.get("/asset/memory_list").then((res) => {
-    return res.data.data;
-  });
-  return res;
+export const getMemoryOptions = async () => {
+  try {
+    const res = await axiosInstance.get("/asset/memory_list");
+    return res.data.data || [];
+  } catch (error) {
+    console.error("Error fetching memory options:", error);
+    return [];
+  }
 };
