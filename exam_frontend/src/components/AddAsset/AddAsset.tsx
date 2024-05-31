@@ -334,17 +334,17 @@ const AddAsset: React.FC = () => {
             import.meta.env["VITE_ADD_ASSET_URL"],
             formData
           );
-          console.log("Form Data Posted:", response.data);
+          console.log("Asset data Posted:", response.data);
 
           // Display success message and reload page
-          message.success("Form data submitted successfully");
+          message.success("Asset created successfully");
           setTimeout(() => {
             window.location.reload();
           }, 1500);
           return; // Exit the function after successful submission
         } catch (error) {
-          console.error("Error submitting form data:", error);
-          message.error("Failed to submit form data. Please try again later.");
+          console.error("Error in asset creation form data:", error);
+          message.error("Failed to create an asset. Please try again later.");
           return; // Exit the function after encountering an error
         }
       } else {
@@ -394,8 +394,8 @@ const AddAsset: React.FC = () => {
         }, 1500);
         return; // Exit the function after successful submission
       } catch (error) {
-        console.error("Error submitting form data:", error);
-        message.error("Failed to submit form data. Please try again later.");
+        console.error("Error in asset creation :", error);
+        message.error("Failed to create an asset. Please try again later.");
         return; // Exit the function after encountering an error
       }
     }
