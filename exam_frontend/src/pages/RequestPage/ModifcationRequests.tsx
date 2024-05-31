@@ -7,7 +7,7 @@ import DrawerViewRequest from "./DrawerViewRequest";
 import { styled } from "@mui/material/styles";
 import Tooltip, { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
 import InfoIcon from "@mui/icons-material/Info";
-import { Pagination } from "antd";
+import { Pagination, Spin, message } from "antd";
 
 const ModificationRequests: FC = function () {
   const [assets, setAssets] = useState<any[]>([]);
@@ -18,6 +18,7 @@ const ModificationRequests: FC = function () {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     fetchAssets();
@@ -47,8 +48,9 @@ const ModificationRequests: FC = function () {
   };
 
   const handleApprove = () => {
+    setLoading(true);
+    setModalOpen(false);
     if (selectedAsset) {
-      console.log("Asset UUID:", selectedAsset.asset_uuid);
       const approvalData = {
         approval_type: "ASSET_DETAIL_STATUS",
         asset_uuid: selectedAsset.asset_uuid,
@@ -62,14 +64,19 @@ const ModificationRequests: FC = function () {
           setSelectedAsset(null);
         })
         .catch((error) => {
+          message.error("Error Approving Asset");
           console.error("Error approving asset:", error);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   };
 
   const handleReject = () => {
+    setLoading(true);
+    setModalOpen(false);
     if (selectedAsset) {
-      console.log("Asset UUID:", selectedAsset.asset_uuid);
       const rejectedData = {
         data: {
           approval_type: "ASSET_DETAIL_STATUS",
@@ -85,7 +92,11 @@ const ModificationRequests: FC = function () {
           setSelectedAsset(null);
         })
         .catch((error) => {
+          message.error("Error Rejecting Asset");
           console.error("Error rejecting asset:", error);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   };
@@ -254,10 +265,13 @@ const ModificationRequests: FC = function () {
         />
         {selectedAsset && (
           <ViewRequestModal
+            loading={loading}
             asset={selectedAsset}
             handleApprove={handleApprove}
             handleReject={handleReject}
             onClose={() => setSelectedAsset(null)}
+            modalOpen={modalOpen}
+            setModalOpen={setModalOpen}
             latestLogData={latestLogData}
           />
         )}
@@ -320,10 +334,7 @@ const RequestTable: FC<{
       const response = await axiosInstance.get(
         `/asset/asset_logs/${asset.asset_uuid}?recency=latest`
       );
-      console.log("Response from server:", response.data.data.logs);
-      console.log("Asset UUID:", asset.asset_uuid);
       setLatestLogData(response.data.data);
-      console.log("setLatestLogData:", response.data.data);
     } catch (error) {
       console.error("Error fetching asset details:", error);
     }
@@ -387,18 +398,29 @@ const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
 }));
 
 const ViewRequestModal: FC<{
+  loading: boolean;
   asset: any;
   handleApprove: () => void;
   handleReject: () => void;
+  modalOpen: boolean;
+  setModalOpen: (flag: boolean) => void;
   onClose: () => void;
   latestLogData: any;
-}> = function ({ asset, handleApprove, handleReject, onClose, latestLogData }) {
+}> = function ({
+  loading,
+  modalOpen,
+  setModalOpen,
+  asset,
+  handleApprove,
+  handleReject,
+  onClose,
+  latestLogData,
+}) {
   const [notes, setNotes] = useState(asset.notes);
   const [approverNotes, setApproverNotes] = useState(
     asset.approval_status_message
   );
 
-  const [modalOpen, setModalOpen] = useState(false);
   const [actionType, setActionType] = useState("");
 
   const toggleModal = (type: string) => {
@@ -573,141 +595,143 @@ const ViewRequestModal: FC<{
 
   return (
     <DrawerViewRequest title="Request Details" onClose={onClose} open={true}>
-      <div>
-        <form>
-          <div className="grid font-display grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">
-            {formFields.map((field, index) => {
-              const latestLog = latestLogData?.logs[0]?.asset_log;
-              let changed = false;
+      <Spin spinning={loading}>
+        <div>
+          <form>
+            <div className="grid font-display grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">
+              {formFields.map((field, index) => {
+                const latestLog = latestLogData?.logs[0]?.asset_log;
+                let changed = false;
 
-              if (latestLog && latestLog.hasOwnProperty(field.id)) {
-                changed = field.value !== latestLog[field.id];
-              }
+                if (latestLog && latestLog.hasOwnProperty(field.id)) {
+                  changed = field.value !== latestLog[field.id];
+                }
 
-              return (
-                <div key={index}>
-                  <Label
-                    htmlFor={field.id}
-                    className={changed ? "text-blue-500" : ""}
-                  >
-                    {field.label}
-                  </Label>
-                  {changed && (
-                    <CustomTooltip
-                      title={`Previous value: ${
-                        latestLog[field.id]
-                      }, New value: ${field.value}`}
+                return (
+                  <div key={index}>
+                    <Label
+                      htmlFor={field.id}
+                      className={changed ? "text-blue-500" : ""}
                     >
+                      {field.label}
+                    </Label>
+                    {changed && (
+                      <CustomTooltip
+                        title={`Previous value: ${
+                          latestLog[field.id]
+                        }, New value: ${field.value}`}
+                      >
+                        <TextInput
+                          id={field.id}
+                          name={field.name}
+                          value={field.value}
+                          disabled={field.disabled}
+                          className={`mt-1 font-display border-blue-600 border-2 rounded-lg bg-blue-200`}
+                        />
+                      </CustomTooltip>
+                    )}
+                    {!changed && (
                       <TextInput
                         id={field.id}
                         name={field.name}
                         value={field.value}
                         disabled={field.disabled}
-                        className={`mt-1 font-display border-blue-600 border-2 rounded-lg bg-blue-200`}
+                        className={`mt-1 font-display`}
                       />
-                    </CustomTooltip>
-                  )}
-                  {!changed && (
-                    <TextInput
-                      id={field.id}
-                      name={field.name}
-                      value={field.value}
-                      disabled={field.disabled}
-                      className={`mt-1 font-display`}
-                    />
-                  )}
-                </div>
-              );
-            })}
-            <div className="lg:col-span-5">
-              <Label htmlFor="notes">NOTES</Label>
-              <Textarea
-                id="notes"
-                name="notes"
-                rows={1}
-                value={notes}
-                onChange={handleNotesChange}
-                className="mt-1"
-              />
-            </div>
-            <div className="lg:col-span-5">
-              <Label htmlFor="approverNotes">APPROVER NOTES</Label>
-              <Textarea
-                id="approverNotes"
-                name="approverNotes"
-                rows={1}
-                value={approverNotes}
-                onChange={handleApproverNotesChange}
-                className="mt-1"
-              />
-            </div>
-          </div>
-        </form>
-      </div>
-      <div className="flex gap-2 my-4">
-        <button
-          className="block font-display text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-3 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-          onClick={() => toggleModal("approve")}
-        >
-          Approve
-        </button>
-
-        <button
-          className="block font-display text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-6 py-3 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
-          onClick={() => toggleModal("reject")}
-        >
-          Reject
-        </button>
-
-        {modalOpen && (
-          <div
-            id="popup-modal"
-            className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen bg-black bg-opacity-50"
-          >
-            <div className="bg-white rounded-lg p-4 md:p-5 text-center">
-              <svg
-                className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                    )}
+                  </div>
+                );
+              })}
+              <div className="lg:col-span-5">
+                <Label htmlFor="notes">NOTES</Label>
+                <Textarea
+                  id="notes"
+                  name="notes"
+                  rows={1}
+                  value={notes}
+                  onChange={handleNotesChange}
+                  className="mt-1"
                 />
-              </svg>
-              <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                Are you sure you want to {actionType}?
-              </h3>
-              {actionType === "approve" ? (
-                <button
-                  onClick={handleApprove}
-                  className="text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
-                >
-                  Yes, I'm sure
-                </button>
-              ) : (
-                <button
-                  onClick={handleReject}
-                  className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
-                >
-                  Yes, I'm sure
-                </button>
-              )}
-              <button
-                onClick={() => setModalOpen(false)}
-                className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-              >
-                Cancel
-              </button>
+              </div>
+              <div className="lg:col-span-5">
+                <Label htmlFor="approverNotes">APPROVER NOTES</Label>
+                <Textarea
+                  id="approverNotes"
+                  name="approverNotes"
+                  rows={1}
+                  value={approverNotes}
+                  onChange={handleApproverNotesChange}
+                  className="mt-1"
+                />
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          </form>
+        </div>
+        <div className="flex gap-2 my-4">
+          <button
+            className="block font-display text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-3 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+            onClick={() => toggleModal("approve")}
+          >
+            Approve
+          </button>
+
+          <button
+            className="block font-display text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-6 py-3 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+            onClick={() => toggleModal("reject")}
+          >
+            Reject
+          </button>
+
+          {modalOpen && (
+            <div
+              id="popup-modal"
+              className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen bg-black bg-opacity-50"
+            >
+              <div className="bg-white rounded-lg p-4 md:p-5 text-center">
+                <svg
+                  className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                  />
+                </svg>
+                <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                  Are you sure you want to {actionType}?
+                </h3>
+                {actionType === "approve" ? (
+                  <button
+                    onClick={handleApprove}
+                    className="text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+                  >
+                    Yes, I'm sure
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleReject}
+                    className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+                  >
+                    Yes, I'm sure
+                  </button>
+                )}
+                <button
+                  onClick={() => setModalOpen(false)}
+                  className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </Spin>
     </DrawerViewRequest>
   );
 };

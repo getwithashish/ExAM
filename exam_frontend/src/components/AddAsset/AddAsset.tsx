@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { message, Tooltip } from "antd";
-import { InfoCircleOutlined } from "@ant-design/icons"; //
+import { InfoCircleOutlined } from "@ant-design/icons";
 import axiosInstance from "../../config/AxiosConfig";
 import { Button, DatePicker, Input, Form, Select } from "antd";
 import styles from "./AddAsset.module.css";
 import AssetFieldAutoComplete from "../AutocompleteBox/AssetFieldAutoComplete";
+
 const { Option } = Select;
 type SizeType = Parameters<typeof Form>[0]["size"];
 
 const AddAsset: React.FC = () => {
-  // State to store form data
   const [formData, setFormData] = useState<any>({});
-  const [requiredFields, setRequiredFields] = useState<string[]>([]);
+  const [_requiredFields, setRequiredFields] = useState<string[]>([]);
 
   const hardwareSpecificFields = [
     "asset_type",
@@ -50,7 +50,8 @@ const AddAsset: React.FC = () => {
   useEffect(() => {
     setRequiredFieldsByCategory(formData.asset_category);
   }, [formData.asset_category]);
-  const [formSubmitted, setFormSubmitted] = useState(false);
+
+  const [_formSubmitted, setFormSubmitted] = useState(false);
   const [componentSize, setComponentSize] = useState<SizeType | "default">(
     "default"
   );
@@ -507,8 +508,8 @@ const AddAsset: React.FC = () => {
                   placeholder="Select license type"
                   onChange={(value) => handleInputChange("license_type", value)}
                 >
-                  <Option value="monthly">Monthly</Option>
-                  <Option value="permanent">Permanent</Option>
+                  <Option value="Monthly">Monthly</Option>
+                  <Option value="Permanent">Permanent</Option>
                 </Select>
               </Form.Item>
 

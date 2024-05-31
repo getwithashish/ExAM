@@ -1,7 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../../../config/AxiosConfig";
 
-const getAssetDetails = async (queryParam) => {
+const getAssetDetails = async (queryParam: any) => {
   try {
     const res = await axiosInstance.get(`/asset/${queryParam}`);
     console.log("Returned Data: ", res.data.data);

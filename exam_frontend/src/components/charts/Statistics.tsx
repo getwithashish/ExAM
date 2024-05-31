@@ -28,7 +28,6 @@ export const Statistics = ({
   useEffect(() => {
     fetchAssetData()
       .then((assetCountData) => {
-        console.log("assetCountData", assetCountData);
         setAssetCountData(assetCountData);
         setLoading(false);
       })

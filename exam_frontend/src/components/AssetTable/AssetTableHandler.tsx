@@ -103,7 +103,6 @@ const AssetTableHandler = ({
     })) ?? [];
 
   const assetDataList = assetData;
-  // console.log("Testing on 65:", assetDataList ? assetDataList[0].results : []);
 
   const handleRowClick = useCallback((record: React.SetStateAction<null>) => {
     setSelectedRow(record);
@@ -494,6 +493,13 @@ const AssetTableHandler = ({
       render: renderClickableColumn("notes", "notes"),
     },
     {
+      title: 'Approver Notes',
+      dataIndex: 'approval_status_message',
+      responsive: ['md'],
+      width: 120,
+      render:renderClickableColumn("approval_status_message", "approval_status_message")
+    },
+    {
       title: "Custodian",
       dataIndex: "custodian",
       responsive: ["md"],
@@ -583,6 +589,7 @@ const AssetTableHandler = ({
     AssignAsset: "assign",
     created_at: result.created_at,
     updated_at: result.updated_at,
+    approval_status_message: result.approval_status_message,
   }));
 
   const drawerTitle = "Asset Details";
@@ -592,7 +599,6 @@ const AssetTableHandler = ({
   return (
     <AssetTable
      userRole={userRole}
-
       heading={heading}
       isAssetDataLoading={isAssetDataLoading}
       // drawerTitle={drawerTitle}
@@ -603,6 +609,7 @@ const AssetTableHandler = ({
       onCloseDrawer={onCloseDrawer}
       selectedRow={selectedRow}
       drawerVisible={drawerVisible}
+      setDrawerVisible={setDrawerVisible}
       assetData={data}
       sortOrder={sortOrder}
       sortedColumn={sortedColumn}

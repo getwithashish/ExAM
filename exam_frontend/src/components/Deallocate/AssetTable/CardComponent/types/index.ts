@@ -1,13 +1,19 @@
-import {DataType} from '../../AssetTable/types/index'
+import { DataType } from "../../../../AssetTable/types";
 
-export interface CardType{
-    data: DataType; 
-    statusOptions: string[];
-    businessUnitOptions:string[];
-    locations:string[];
-    memoryData:string[];
-    assetTypeData :string[];
-    onUpdate: (updatedData: DataType) => void;
-    asset_uuid:string;
-    selectedAssetId:string;
+export interface LocationType {
+    id: string;
+    location_name: string;
 }
+
+export interface CardType {
+    data: DataType;
+    statusOptions: string[];
+    businessUnitOptions: string[];
+    locations: LocationType[];
+    memoryData: string[];
+    assetTypeData: string[];
+    onUpdate: (updatedData: DataType) => void;
+    asset_uuid: string;
+    selectedAssetId: string;
+}
+
