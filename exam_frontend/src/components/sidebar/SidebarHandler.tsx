@@ -26,8 +26,6 @@ export const SidebarHandler = ({ addAsset }: { addAsset: () => void }) => {
   };
 
   const openSidebar = () => {
-    console.log("clicked");
-    // setIsClicked(true);
     setIsSidebarVisible(true);
   };
 

@@ -50,8 +50,6 @@ const CardComponent: React.FC<CardType> = ({
 
   const [updatedData, setUpdatedData] = useState<Partial<DataType>>({});
   const handleUpdate = async () => {
-    console.log("Asset UUID:", data.key);
-
     try {
       const updatePayload = {
         asset_uuid: data.key,
@@ -67,8 +65,6 @@ const CardComponent: React.FC<CardType> = ({
           },
         }
       );
-
-      console.log("Updated data:", response.data);
       message.success("Asset Details successfully updated");
 
       setTimeout(() => {
@@ -227,9 +223,9 @@ const CardComponent: React.FC<CardType> = ({
             }}
             onChange={(value) => handleUpdateChange("location", value)}
           >
-            {uniqueLocationoptions.map((location, index) => (
-              <Select.Option key={index} value={location.id}>
-                {location.location_name}
+            {uniqueLocationoptions.map((locations, index) => (
+              <Select.Option key={index} value={locations.id}>
+                {locations.location_name}
               </Select.Option>
             ))}
           </Select>

@@ -11,6 +11,8 @@ import { blue, green, pink } from "@mui/material/colors";
 interface QueryBuilderComponentProps {
   assetDataRefetch: (queryParam: string) => void;
   setJson_query: (queryParams: string) => void;
+  reset: () => void;
+  setVisible: (queryParams: boolean) => void;
 }
 
 interface QueryBuilderProps {
@@ -19,7 +21,7 @@ interface QueryBuilderProps {
 
 export const QueryBuilderComponent: React.FC<
   QueryBuilderComponentProps & QueryBuilderProps
-> = ({ assetDataRefetch, setJson_query }) => {
+> = ({ assetDataRefetch, setJson_query, reset, setVisible }) => {
   const [selectedFields, setSelectedFields] = useState<
     { field: string; value: string; id: number }[]
   >([]);
@@ -39,48 +41,49 @@ export const QueryBuilderComponent: React.FC<
     setSelectedFields((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleReset = () => {
-    setSelectedFields([]);
-    setNewFields([]);
-    assetDataRefetch("");
-    message.success("Query builder reset successfully");
-  };
-
   const [allFieldValues, setAllFieldValues] = React.useState<
     (string | FieldValues)[]
   >([]);
 
+  const handleReset = () => {
+    setSelectedFields([]);
+    setNewFields([]);
+    reset();
+    setAllFieldValues([]);
+    // assetDataRefetch("");
+    message.success("Query builder reset successfully");
+  };
+
   const handleSubmitFieldValues = (fieldValues) => {
-    console.log("Final Values: ", fieldValues);
-    const uniqueKeys = Array.from(new Set(fieldValues.flatMap(Object.keys)));
-    const valuesByKey = uniqueKeys.reduce((acc, key) => {
-      acc[key] = fieldValues
-        .map((item) => item[key]) // Extract values for this key
-        .filter((value) => value !== undefined); // Remove undefined values
-      return acc;
-    }, {});
+    if (fieldValues.length !== 0) {
+      const uniqueKeys = Array.from(new Set(fieldValues.flatMap(Object.keys)));
+      const valuesByKey = uniqueKeys.reduce((acc, key) => {
+        acc[key] = fieldValues
+          .map((item) => item[key]) // Extract values for this key
+          .filter((value) => value !== undefined); // Remove undefined values
+        return acc;
+      }, {});
 
-    console.log("Final Values as array: ", valuesByKey);
+      let andQueryConditions = [];
+      for (const key in valuesByKey) {
+        const queryConditions = valuesByKey[key].map((field) => ({
+          "==": [{ var: key }, field],
+        }));
+        const orQueryCondition = { or: queryConditions };
+        andQueryConditions = andQueryConditions.concat(orQueryCondition);
+      }
 
-    let andQueryConditions = [];
-    for (const key in valuesByKey) {
-      const queryConditions = valuesByKey[key].map((field) => ({
-        "==": [{ var: key }, field],
-      }));
-      const orQueryCondition = { or: queryConditions };
-      andQueryConditions = andQueryConditions.concat(orQueryCondition);
-      console.log("Query Conditions: ", orQueryCondition);
+      const jsonLogic = { and: andQueryConditions };
+
+      const jsonLogicString = JSON.stringify(jsonLogic);
+      const queryParams = `&json_logic=${encodeURIComponent(jsonLogicString)}`;
+      setJson_query(queryParams);
+      assetDataRefetch(queryParams);
+      message.success("Advanced Search Successful");
+      setVisible(false);
+    } else {
+      message.error("Search Parameters cannot be empty");
     }
-
-    const jsonLogic = { and: andQueryConditions };
-    console.log("Final Json Logic: ", jsonLogic);
-
-    const jsonLogicString = JSON.stringify(jsonLogic);
-    const queryParams = `&json_logic=${encodeURIComponent(jsonLogicString)}`;
-    message.success(queryParams);
-    console.log(queryParams);
-    setJson_query(queryParams);
-    assetDataRefetch(queryParams);
   };
 
   const PlusIcon = createSvgIcon(

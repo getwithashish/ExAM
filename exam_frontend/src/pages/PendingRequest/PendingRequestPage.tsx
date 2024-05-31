@@ -1,5 +1,6 @@
 import AssetTableHandler from "../../components/AssetTable/AssetTableHandler";
-const MyApprovalPage = () => {
+
+const PendingRequestPage = () => {
   const decodeJWT = (token: string) => {
     try {
       const base64Url = token.split(".")[1];
@@ -27,8 +28,8 @@ const MyApprovalPage = () => {
     }
   };
 
-  let queryParamProp = `&asset_detail_status=CREATED|UPDATED&assign_status=ASSIGNED|UNASSIGNED&approved_by_id=${getUserId()}`;
-  let heading = "My approved Request";
+    let queryParamProp = `&json_logic=%7B%0A%20%20%20%22and%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22or%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7B%22%3D%3D%22%3A%20%5B%7B%22var%22%3A%20%22asset_detail_status%22%7D%2C%20%22CREATE_PENDING%22%5D%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7B%22%3D%3D%22%3A%20%5B%7B%22var%22%3A%20%22asset_detail_status%22%7D%2C%20%22UPDATE_PENDING%22%5D%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7B%22%3D%3D%22%3A%20%5B%7B%22var%22%3A%20%22assign_status%22%7D%2C%20%22ASSIGN_PENDING%22%5D%7D%0A%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%7B%22%3D%3D%22%3A%20%5B%7B%22var%22%3A%20%22requester%22%7D%2C%20${getUserId()}%5D%7D%0A%20%20%20%20%20%20%5D%0A%7D%0A`
+    let heading = "My Pending Request";
 
   return (
     <div className="bg-white">
@@ -72,7 +73,32 @@ const MyApprovalPage = () => {
                 href="#"
                 className="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white font-display"
               >
-                My Approval History
+                My Requests
+              </a>
+            </div>
+          </li>
+          <li>
+            <div className="flex items-center">
+              <svg
+                className="w-3 h-3 text-gray-400 mx-1 rtl:rotate-180"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 6 10"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="m1 9 4-4-4-4"
+                />
+              </svg>
+              <a
+                href="#"
+                className="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white font-display"
+              >
+                Pending Requests
               </a>
             </div>
           </li>
@@ -82,10 +108,9 @@ const MyApprovalPage = () => {
         isRejectedPage={false}
         queryParamProp={queryParamProp}
         heading={heading}
-        isMyApprovalPage={false}
       />
     </div>
   );
 };
 
-export default MyApprovalPage;
+export default PendingRequestPage;

@@ -2,13 +2,6 @@ import React from "react";
 
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-import {
-  getAssetDetails,
-  getAssetTypeOptions,
-  getLocationOptions,
-  getMemoryOptions,
-  getBusinessUnitOptions,
-} from "./api/getAssetDetails";
 import { useQuery } from "@tanstack/react-query";
 import {
   Box,
@@ -18,7 +11,15 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import { getEmployeeOptions, getUserOptions } from "./api/getUserDetails";
+import {
+  getAssetDetails,
+  getLocationOptions,
+  getAssetTypeOptions,
+  getMemoryOptions,
+  getBusinessUnitOptions,
+  getEmployeeOptions,
+  getUserOptions,
+} from "./api/getUserDetails";
 import type {
   MuiAutocompleteProps,
   FieldValues,
@@ -41,6 +42,7 @@ const MuiAutocomplete = ({
       queryFieldName: "asset_type",
     },
     { label: "Warranty Period", value: "warranty_period" },
+    { label: "License Type", value: "license_type" },
     { label: "Version", value: "version" },
     { label: "Operating System", value: "os" },
     { label: "Operating System Version", value: "os_version" },
