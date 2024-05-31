@@ -291,48 +291,76 @@ const AddAsset: React.FC = () => {
 
     // Ensure that warranty_period is not undefined for hardware assets
     if (formData.asset_category === "HARDWARE" && !formData.asset_type) {
+      // Handle the case where warranty_period is not defined
     }
 
     // Check if all mandatory fields are filled for software
-    const isAllSoftwareFieldsFilled = softwareSpecificFields.every((field) => {
-      return !!formData[field];
-    });
+    const isAllSoftwareFieldsFilled = softwareSpecificFields.every(
+      (field) => !!formData[field]
+    );
 
     // Check if all mandatory fields are filled for hardware
     const isAllHardwareFieldsFilled = hardwareSpecificFields.every(
       (field) => !!formData[field]
     );
 
-    // If it's a software asset and all mandatory fields are filled
     if (formData.asset_category === "SOFTWARE") {
-      // Set the asset type to "software"
-      formData.asset_type = 9;
+      try {
+        // Fetch the asset type for software
+        const response = await axiosInstance.get(
+          import.meta.env["VITE_CREATE_ASSET_URL"],
+          {
+            params: { query: "Software" },
+          }
+        );
 
-      if (isAllSoftwareFieldsFilled) {
-        // Your software-specific validation logic goes here
-        try {
-          // If software-specific validation passes, submit the form
-          const response = await axiosInstance.post(
+        console.log("Asset type response:", response.data);
+
+        // Assuming response.data contains an array with asset type objects
+        if (
+          response.data &&
+          response.data.data &&
+          response.data.data.length > 0
+        ) {
+          // Set the asset type to the first matching asset type (adjust as needed)
+          formData.asset_type = response.data.data[0].id;
+          console.log("Asset Data after setting asset_type:", formData);
+        } else {
+          throw new Error("No asset type found for Software");
+        }
+
+        if (isAllSoftwareFieldsFilled) {
+          console.log(
+            "Attempting to submit software asset form data:",
+            formData
+          );
+          const submitResponse = await axiosInstance.post(
             import.meta.env["VITE_ADD_ASSET_URL"],
             formData
           );
+          console.log("Form Data Posted:", submitResponse.data);
+
           // Display success message and reload page
           message.success("Asset created successfully");
           setTimeout(() => {
             window.location.reload();
           }, 1500);
           return; // Exit the function after successful submission
-        } catch (error) {
-          console.error("Error in asset creation form data:", error);
-          message.error("Failed to create an asset. Please try again later.");
-          return; // Exit the function after encountering an error
+        } else {
+          message.error("Please fill in all mandatory fields.");
         }
-      } else {
-        message.error("Please fill in all mandatory fields.");
+      } catch (error) {
+        console.error(
+          "Error fetching asset type or submitting form data:",
+          error
+        );
+        message.error(
+          "Failed to fetch asset type or submit form data. Please try again later."
+        );
+        return; // Exit the function after encountering an error
       }
     }
 
-    // If it's a hardware asset and all mandatory fields are filled
     if (formData.asset_category === "HARDWARE" && isAllHardwareFieldsFilled) {
       const storageValue = formData.storage?.trim();
       const formatPattern = /^\d{1,3}GB$/;
@@ -357,12 +385,13 @@ const AddAsset: React.FC = () => {
         return;
       }
       try {
-        // If hardware-specific validation passes, submit the form
+        console.log("Attempting to submit hardware asset form data:", formData);
         const response = await axiosInstance.post(
           import.meta.env["VITE_ADD_ASSET_URL"],
           formData
         );
-        // Display success message and reload page
+        console.log("Form Data Posted:", response.data);
+
         message.success("Asset creation done successfully");
         setTimeout(() => {
           window.location.reload();
@@ -375,7 +404,6 @@ const AddAsset: React.FC = () => {
       }
     }
 
-    // If mandatory fields are not filled for either software or hardware
     message.error("Please fill in all mandatory fields.");
   };
 
