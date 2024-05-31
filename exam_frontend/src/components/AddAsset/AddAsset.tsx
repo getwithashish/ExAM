@@ -363,7 +363,7 @@ const AddAsset: React.FC = () => {
           formData
         );
         // Display success message and reload page
-        message.success("Form data submitted successfully");
+        message.success("Asset creation done successfully");
         setTimeout(() => {
           window.location.reload();
         }, 1500);
