@@ -5,8 +5,8 @@ import axiosInstance from "../../config/AxiosConfig";
 import React from "react";
 import DrawerViewRequest from "./DrawerViewRequest";
 import { ChangeEvent } from "react";
-import { Pagination } from "antd";
-import InfoIcon from '@mui/icons-material/Info';
+import { Pagination, Spin, message } from "antd";
+import InfoIcon from "@mui/icons-material/Info";
 
 const AssignPage: FC = function () {
   const [assignRequests, setAssignRequests] = useState<any[]>([]);
@@ -18,22 +18,25 @@ const AssignPage: FC = function () {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     fetchAssignRequests();
-  }, [currentPage, pageSize]);
+  }, [currentPage, pageSize, searchQuery]);
 
   const fetchAssignRequests = () => {
     setLoading(true);
     const offset = (currentPage - 1) * pageSize;
+    const searchQueryParam = searchQuery ? `&global_search=${searchQuery}` : "";
     axiosInstance
-      .get(`/asset/?limit=${pageSize}&offset=${offset}&assign_status=ASSIGN_PENDING`)
+      .get(
+        `/asset/?limit=${pageSize}&offset=${offset}&assign_status=ASSIGN_PENDING${searchQueryParam}`
+      )
       .then((response) => {
         const assignPendingAssets = response.data.data.results;
         const totalAssets = response.data.data.count;
         setAssignRequests(assignPendingAssets);
         setTotalPages(Math.ceil(totalAssets / 10));
-        console.log(response.data.data.results);
       })
       .catch((error) => {
         console.error("Error fetching assign requests:", error);
@@ -44,6 +47,8 @@ const AssignPage: FC = function () {
   };
 
   const handleApprove = () => {
+    setLoading(true);
+    setModalOpen(false);
     if (selectedAssignRequest) {
       const approvalData = {
         approval_type: "ASSIGN_STATUS",
@@ -58,12 +63,18 @@ const AssignPage: FC = function () {
           setSelectedAssignRequest(null);
         })
         .catch((error) => {
-          console.error("Error assigning asset:", error);
+          message.error("Error Allocating Asset")
+          console.error("Error allocating asset:", error);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   };
 
   const handleReject = () => {
+    setLoading(true);
+    setModalOpen(false);
     if (selectedAssignRequest) {
       const rejectedData = {
         data: {
@@ -80,7 +91,11 @@ const AssignPage: FC = function () {
           setSelectedAssignRequest(null);
         })
         .catch((error) => {
-          console.error("Error rejecting assigning asset:", error);
+          message.error("Error Rejecting Asset Allocation")
+          console.error("Error rejecting asset allocation:", error);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   };
@@ -152,7 +167,7 @@ const AssignPage: FC = function () {
   );
 
   const onShowSizeChange = (_: number, size: number) => {
-    setPageSize(size); 
+    setPageSize(size);
     setCurrentPage(1);
   };
 
@@ -261,18 +276,21 @@ const AssignPage: FC = function () {
           </div>
         </div>
         <Pagination
-            showSizeChanger
-            onShowSizeChange={onShowSizeChange}
-            pageSize={pageSize}
-            current={currentPage}
-            total={totalPages * pageSize}
-            onChange={setCurrentPage}
-          />
+          showSizeChanger
+          onShowSizeChange={onShowSizeChange}
+          pageSize={pageSize}
+          current={currentPage}
+          total={totalPages * pageSize}
+          onChange={setCurrentPage}
+        />
         {selectedAssignRequest && (
           <ViewRequestModal
+            loading={loading}
             assignRequest={selectedAssignRequest}
             handleApprove={handleApprove}
             handleReject={handleReject}
+            modalOpen={modalOpen}
+            setModalOpen={setModalOpen}
             onClose={() => setSelectedAssignRequest(null)}
           />
         )}
@@ -292,36 +310,38 @@ const SearchRequests: FC<{
 
   return (
     <form className="mb-4 sm:mb-0 sm:pr-3 relative " action="#" method="GET">
-  <Label htmlFor="search-request" className="sr-only font-display">
-    Search
-  </Label>
-  <div className="relative mt-1 lg:w-64 xl:w-96 ">
-    <TextInput
-      id="search-request"
-      name="search-request"
-      placeholder="Search for requests"
-      onChange={handleSearchChange}
-    />
-    <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-      {showInfo && (
-        <div className="absolute top-0 right-full w-max bg-gray-700 p-2 rounded-lg shadow-lg">
-          <p className="text-white text-xs">Works with a few fields only,<br/>will expand in future.
-          <ol></ol>
-          </p>
+      <Label htmlFor="search-request" className="sr-only font-display">
+        Search
+      </Label>
+      <div className="relative mt-1 lg:w-64 xl:w-96 ">
+        <TextInput
+          id="search-request"
+          name="search-request"
+          placeholder="Search for requests"
+          onChange={handleSearchChange}
+        />
+        <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+          {showInfo && (
+            <div className="absolute top-0 right-full w-max bg-gray-700 p-2 rounded-lg shadow-lg">
+              <p className="text-white text-xs">
+                Works with a few fields only,
+                <br />
+                will expand in future.
+                <ol></ol>
+              </p>
+            </div>
+          )}
+          <InfoIcon
+            className="h-5 w-5 text-gray-400 cursor-pointer"
+            aria-hidden="true"
+            onMouseEnter={() => setShowInfo(true)}
+            onMouseLeave={() => setShowInfo(false)}
+          />
         </div>
-      )}
-      <InfoIcon
-        className="h-5 w-5 text-gray-400 cursor-pointer"
-        aria-hidden="true"
-        onMouseEnter={() => setShowInfo(true)} 
-        onMouseLeave={() => setShowInfo(false)} 
-      />
-    </div>
-  </div>
-</form>
+      </div>
+    </form>
   );
 };
-
 
 const AssignRequestTable: FC<{
   assignRequests: any[];
@@ -378,16 +398,26 @@ const AssignRequestTable: FC<{
 };
 
 const ViewRequestModal: FC<{
+  loading: boolean;
   assignRequest: any;
   handleApprove: () => void;
   handleReject: () => void;
+  modalOpen: boolean;
+  setModalOpen: (flag: boolean) => void;
   onClose: () => void;
-}> = function ({ assignRequest, handleApprove, handleReject, onClose }) {
+}> = function ({
+  loading,
+  modalOpen,
+  setModalOpen,
+  assignRequest,
+  handleApprove,
+  handleReject,
+  onClose,
+}) {
   const [notes, setNotes] = useState(assignRequest.notes);
   const [approverNotes, setApproverNotes] = useState(
     assignRequest.approval_status_message
   );
-  const [modalOpen, setModalOpen] = useState(false);
   const [actionType, setActionType] = useState("");
 
   const toggleModal = (type: string) => {
@@ -412,6 +442,13 @@ const ViewRequestModal: FC<{
       disabled: true,
     },
     {
+      id: "assetType",
+      label: "ASSET TYPE",
+      name: "assetType",
+      value: assignRequest.asset_type.asset_type_name,
+      disabled: true,
+    },
+    {
       id: "version",
       label: "VERSION",
       name: "version",
@@ -426,59 +463,66 @@ const ViewRequestModal: FC<{
       disabled: true,
     },
     {
+      id: "productName",
+      label: "PRODUCT NAME",
+      name: "productName",
+      value: assignRequest.product_name,
+      disabled: true,
+    },
+    {
       id: "modelNumber",
       label: "MODEL NUMBER",
       name: "modelNumber",
-      value: assignRequest.model_number,
+      value: assignRequest?.model_number,
       disabled: true,
     },
     {
       id: "serialNumber",
       label: "SERIAL NUMBER",
       name: "serialNumber",
-      value: assignRequest.serial_number,
+      value: assignRequest?.serial_number,
       disabled: true,
     },
     {
       id: "owner",
       label: "OWNER",
       name: "owner",
-      value: assignRequest.owner,
+      value: assignRequest?.owner,
       disabled: true,
     },
     {
       id: "dop",
       label: "D.O.P",
       name: "dop",
-      value: assignRequest.date_of_purchase,
+      value: assignRequest?.date_of_purchase,
       disabled: true,
     },
     {
       id: "warranty_period",
       label: "WARRANTY",
       name: "warranty_period",
-      value: assignRequest.warranty_period,
+      value: assignRequest?.warranty_period,
       disabled: true,
     },
     {
       id: "os",
       label: "OS",
       name: "os",
-      value: assignRequest.os,
+      value: assignRequest?.os,
       disabled: true,
     },
     {
       id: "os_version",
       label: "OS VERSION",
       name: "os_version",
-      value: assignRequest.os_version,
+      value: assignRequest?.os_version,
       disabled: true,
     },
     {
       id: "mobile_os",
       label: "MOBILE OS",
       name: "mobile_os",
-      value: assignRequest.mobile_os,
+      value: assignRequest?.mobile_os,
       disabled: true,
     },
     {
@@ -492,28 +536,35 @@ const ViewRequestModal: FC<{
       id: "processor",
       label: "PROCESSOR",
       name: "processor",
-      value: assignRequest.processor,
+      value: assignRequest?.processor,
+      disabled: true,
+    },
+    {
+      id: "p_gen",
+      label: "PROCESSOR GEN",
+      name: "p_gen",
+      value: assignRequest?.processor_gen,
       disabled: true,
     },
     {
       id: "storage",
       label: "STORAGE",
       name: "storage",
-      value: assignRequest.storage,
+      value: assignRequest?.storage,
       disabled: true,
     },
     {
       id: "configuration",
       label: "CONFIGURATION",
       name: "configuration",
-      value: assignRequest.configuration,
+      value: assignRequest?.configuration,
       disabled: true,
     },
     {
       id: "accessories",
       label: "ACCESSORIES",
       name: "accessories",
-      value: assignRequest.accessories,
+      value: assignRequest?.accessories,
       disabled: true,
     },
     {
@@ -594,110 +645,121 @@ const ViewRequestModal: FC<{
           </li>
         </ol>
       </nav>
-      <DrawerViewRequest title="Assign Details" onClose={onClose} open={true}>
-        <div>
-          <form>
-            <div className="grid font-display grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">
-              {assignRequestFields.map((field, index) => (
-                <div key={index}>
-                  <Label htmlFor={field.id}>{field.label}</Label>
-                  <TextInput
-                    id={field.id}
-                    name={field.name}
-                    value={field.value}
-                    disabled={field.disabled}
-                    className="mt-1 font-display"
+      <DrawerViewRequest
+        title="Assign Details"
+        onClose={onClose}
+        open={true}
+        selectedRow={undefined}
+        drawerTitle={""}
+        onUpdateData={function (_updatedData: { key: any }): void {
+          throw new Error("Function not implemented.");
+        }}
+      >
+        <Spin spinning={loading}>
+          <div>
+            <form>
+              <div className="grid font-display grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">
+                {assignRequestFields.map((field, index) => (
+                  <div key={index}>
+                    <Label htmlFor={field.id}>{field.label}</Label>
+                    <TextInput
+                      id={field.id}
+                      name={field.name}
+                      value={field.value}
+                      disabled={field.disabled}
+                      className="mt-1 font-display"
+                    />
+                  </div>
+                ))}
+                <div className="lg:col-span-5">
+                  <Label htmlFor="notes">NOTES</Label>
+                  <Textarea
+                    id="notes"
+                    name="notes"
+                    rows={1}
+                    value={notes}
+                    onChange={handleNotesChange}
+                    className="mt-1"
                   />
                 </div>
-              ))}
-              <div className="lg:col-span-5">
-                <Label htmlFor="notes">NOTES</Label>
-                <Textarea
-                  id="notes"
-                  name="notes"
-                  rows={1}
-                  value={notes}
-                  onChange={handleNotesChange}
-                  className="mt-1"
-                />
-              </div>
-              <div className="lg:col-span-5">
-                <Label htmlFor="approverNotes">APPROVER NOTES</Label>
-                <Textarea
-                  id="approverNotes"
-                  name="approverNotes"
-                  rows={1}
-                  value={approverNotes}
-                  onChange={handleApproverNotesChange}
-                  className="mt-1"
-                />
-              </div>
-            </div>
-          </form>
-        </div>
-        <div className="flex gap-2 my-4">
-          <button
-            className="block font-display text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-3 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-            onClick={() => toggleModal("approve")}
-          >
-            Approve
-          </button>
-
-          <button
-            className="block font-display text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-6 py-3 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
-            onClick={() => toggleModal("reject")}
-          >
-            Reject
-          </button>
-          {modalOpen && (
-            <div
-              id="popup-modal"
-              className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen bg-black bg-opacity-50"
-            >
-              <div className="bg-white rounded-lg p-4 md:p-5 text-center">
-                <svg
-                  className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                <div className="lg:col-span-5">
+                  <Label htmlFor="approverNotes">APPROVER NOTES</Label>
+                  <Textarea
+                    id="approverNotes"
+                    name="approverNotes"
+                    rows={1}
+                    value={approverNotes}
+                    onChange={handleApproverNotesChange}
+                    className="mt-1"
                   />
-                </svg>
-                <h3 className="mb-5 text-lg font-display font-normal text-gray-500 dark:text-gray-400">
-                  Are you sure you want to {actionType}?
-                </h3>
-                {actionType === "approve" ? (
-                  <button
-                    onClick={handleApprove}
-                    className="text-white font-display bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
-                  >
-                    Yes, I'm sure
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleReject}
-                    className="text-white bg-red-600 font-display hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
-                  >
-                    Yes, I'm sure
-                  </button>
-                )}
-                <button
-                  onClick={() => setModalOpen(false)}
-                  className="py-2.5 px-5 ms-3 text-sm font-display font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                >
-                  Cancel
-                </button>
+                </div>
               </div>
-            </div>
-          )}
-        </div>
+            </form>
+          </div>
+          <div className="flex gap-2 my-4">
+            <button
+              className="block font-display text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-3 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+              onClick={() => toggleModal("approve")}
+            >
+              Approve
+            </button>
+
+            <button
+              className="block font-display text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-6 py-3 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+              onClick={() => toggleModal("reject")}
+            >
+              Reject
+            </button>
+            {modalOpen && (
+              <div
+                id="popup-modal"
+                className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen bg-black bg-opacity-50"
+              >
+                <div className="bg-white rounded-lg p-4 md:p-5 text-center">
+                  <svg
+                    className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                    />
+                  </svg>
+                  <h3 className="mb-5 text-lg font-display font-normal text-gray-500 dark:text-gray-400">
+                    Are you sure you want to {actionType}?
+                  </h3>
+                  {actionType === "approve" ? (
+                    <button
+                      onClick={handleApprove}
+                      className="text-white font-display bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+                    >
+                      Yes, I'm sure
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleReject}
+                      className="text-white bg-red-600 font-display hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+                    >
+                      Yes, I'm sure
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setModalOpen(false)}
+                    className="py-2.5 px-5 ms-3 text-sm font-display font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </Spin>
       </DrawerViewRequest>
       ,
     </div>

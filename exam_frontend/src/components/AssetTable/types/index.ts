@@ -1,5 +1,3 @@
-import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from "@tanstack/react-query";
-
 export interface DataType {
   [x: string]: any;
   asset_uuid: any;
@@ -45,8 +43,10 @@ export interface DataType {
 }
 export interface AssetResult {
   status: string; 
-  business_unit:string;
+  business_unit:any;
+  business_unit_name:string;
   location:string;
+ 
 
 }
 
@@ -67,7 +67,7 @@ interface BusinessUnit {
   business_unit_name: string;
 }
 
-interface AssetType {
+export interface AssetType {
   id: number;
   asset_type_name: string;
 }
@@ -158,5 +158,14 @@ export interface AssetTableProps {
   handleDelete:any
   modifiedData:any
   reset:()=> void;
+  sortOrder:string;
+  sortedColumn:any;
+  setSearchTerm:any;
+  searchTerm:any;
+  assetPageDataFetch:any
+  isAssetDataLoading:any
+  totalItemCount:any
+  userRole:any
+  isMyApprovalPage:any
 }
 

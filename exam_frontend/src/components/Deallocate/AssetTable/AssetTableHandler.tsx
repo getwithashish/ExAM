@@ -5,238 +5,38 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import {
-  Badge,
-  Button,
-  Dropdown,
-  Input,
-  Space,
-  Table,
-  TableColumnsType,
-  message
-} from "antd";
-import DrawerComponent from "../../DrawerComponent/DrawerComponent";
-import { SearchOutlined } from "@ant-design/icons";
+import { Button, Modal, message } from "antd";
+import { UserDeleteOutlined } from "@ant-design/icons";
 import "./AssetTable.css";
-import CardComponent from "../CardComponent/CardComponent";
-import { CloseOutlined } from "@ant-design/icons";
-import axiosInstance from "../../config/AxiosConfig";
-import { isError, useQuery } from "@tanstack/react-query";
-import { DataType, LogData } from "../AssetTable/types";
-import { ColumnFilterItem } from "../AssetTable/types";
+import { useQuery } from "@tanstack/react-query";
+import { DataType } from "../AssetTable/types";
 import { AssetResult } from "../AssetTable/types";
-import { FilterDropdownProps } from "../AssetTable/types";
-import { useInfiniteQuery } from "react-query";
-
-import { DownOutlined } from "@ant-design/icons";
-import ExportButton from "../../Export/Export";
-import { getAssetLog } from "./api/getAssetLog";
-import { AxiosError } from "axios";
 import AssetTable from "./AssetTable";
 import {
   getAssetDetails,
   getAssetTypeOptions,
   getLocationOptions,
   getMemoryOptions,
-} from "./api/getAssetDetails";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBookOpenReader } from "@fortawesome/free-solid-svg-icons";
-
-interface ExpandedDataType {
-  key: React.Key;
-  date: string;
-  name: string;
-  upgradeNum: string;
-}
-interface AssetTableHandlerProps{
-  unassign:(record:DataType)=>void
-  queryParamProp:any
+} from "../../AssetTable/api/getAssetDetails";
+interface AssetTableHandlerProps {
+  unassign: (record: DataType) => void;
+  queryParamProp: any;
 }
 
-
-const AssetTableHandler:React.FC<AssetTableHandlerProps> = ({queryParamProp ,unassign}) => {
+const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
+  queryParamProp,
+  unassign,
+}) => {
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null); // State to store the selected asset ID
-
-  const {
-    data: logsData,
-    error,
-    isLoading,
-    isSuccess,
-    isFetching,
-    isRefetchError,
-    refetch,
-  } = useQuery<LogData[], Error>({
-    queryKey: ["assetLogsData", selectedAssetId], // Include selectedAssetId in the query key
-    queryFn: () => getAssetLog(selectedAssetId),
-  });
-
-  const expandedRowRender = useCallback(
-    (assetId: string) => {
-      let logsDataExpanded = [];
-      const columnsLog: TableColumnsType<ExpandedDataType> = [
-        { title: "timestamp", dataIndex: "timestamp", key: "timestamp" },
-        {
-          title: "asset_category",
-          dataIndex: "asset_category",
-          key: "asset_category",
-        },
-        {
-          title: "asset_detail_status",
-          key: "asset_detail_status",
-          dataIndex: "asset_detail_status",
-        },
-        {
-          title: "assign_status",
-          dataIndex: "assign_status",
-          key: "assign_status",
-        },
-        { title: "created_at", dataIndex: "created_at", key: "created_at" },
-        {
-          title: "product_name",
-          dataIndex: "product_name",
-          key: "product_name",
-        },
-        { title: "updated_at", dataIndex: "updated_at", key: "updated_at" },
-        {
-          title: "date_of_purchase",
-          dataIndex: "date_of_purchase",
-          key: "date_of_purchase",
-        },
-        {
-          title: "model_number",
-          dataIndex: "model_number",
-          key: "model_number",
-        },
-        { title: "Asset Type", dataIndex: "asset_type", key: "asset_type" },
-
-        { title: "Location", dataIndex: "location", key: "location" },
-        {
-          title: "Invoice Location",
-          dataIndex: "invoice_location",
-          key: "invoice_location",
-        },
-        {
-          title: "Warranty Period",
-          dataIndex: "warranty_period",
-          key: "warranty_period",
-        },
-        {
-          title: "Version",
-          dataIndex: "version",
-          key: "version",
-        },
-        {
-          title: "Configuration",
-          dataIndex: "configuration",
-          key: "configuration",
-        },
-        {
-          title: "Storage",
-          dataIndex: "storage",
-          key: "storage",
-        },
-        {
-          title: "Os",
-          dataIndex: "os",
-          key: "os",
-        },
-        {
-          title: "Owner",
-          dataIndex: "owner",
-          key: "owner",
-        },
-        {
-          title: "Notes",
-          dataIndex: "notes",
-          key: "notes",
-        },
-      ];
-
-      console.log("logsdata", logsData);
-      if (isSuccess && !isLoading && logsData?.length) {
-        for (let i = 0; logsData && i < (logsData as LogData[]).length; i++) {
-          let { asset_log }: LogData = (logsData as LogData[])[i];
-          const timestamp =
-            logsData !== undefined &&
-            logsData?.timestamp &&
-            new Date(logsData!.timestamp);
-          // Convert timestamp to Date object
-          const formattedTimestamp = timestamp?.toLocaleString(); // Format the timestamp as a string in the local time zone
-
-          const createdAt = new Date(asset_log?.created_at); // Convert created_at timestamp to Date object
-          const formattedCreatedAt = createdAt.toLocaleString(); // Format the created_at timestamp
-
-          const updatedAt = new Date(asset_log?.updated_at); // Convert updated_at timestamp to Date object
-          const formattedUpdatedAt = updatedAt.toLocaleString();
-
-          logsDataExpanded = [
-            ...logsDataExpanded,
-            {
-              ...asset_log,
-              key: asset_log.asset_id,
-              timestamp: formattedTimestamp,
-              asset_category: asset_log.asset_category,
-              asset_detail_status: asset_log.asset_detail_status,
-              assign_status: asset_log.assign_status,
-              created_at: formattedCreatedAt,
-              product_name: asset_log.product_name,
-              updated_at: formattedUpdatedAt,
-              date_of_purchase: asset_log.date_of_purchase,
-              date: asset_log.date_of_purchase,
-              asset_type: asset_log.asset_type.asset_type_name,
-              location: asset_log.location.location_name,
-              invoice_location:
-                asset_log.invoice_location.invoice_location_name,
-                warranty_period:asset_log.warranty_period,
-                version:asset_log.version,
-                configuration:asset_log.configuration,
-                storage:asset_log.storage,
-                os:asset_log.os,
-                owner:asset_log.owner,
-                notes:asset_log.notes,
-              name: asset_log.product_name,
-              upgradeNum: asset_log.assign_status,
-            },
-          ];
-        }
-        console.log("logsDataexpanded", logsDataExpanded);
-        return (
-          <Table
-            columns={columnsLog}
-            dataSource={logsDataExpanded}
-            pagination={false}
-            style={{
-              maxHeight: 300,
-              overflowY: "auto",
-              maxWidth: "100%",
-              scrollbarWidth: "none",
-              msOverflowStyle: "none",
-            }}
-          />
-        );
-      } else return <>no data</>;
-    },
-    [selectedAssetId, isSuccess, logsData]
-  );
-
-  const nestedcolumns: TableColumnsType<DataType> = [];
-
-  const nesteddata: DataType[] = [];
-  for (let i = 0; i < 1; ++i) {
-    nesteddata.push({
-      key: i.toString(),
-      name: "Screen",
-      platform: "iOS",
-      version: "10.3.4.5654",
-      upgradeNum: 500,
-      creator: "Jack",
-      createdAt: "2014-12-24 23:12:00",
-    });
-  }
-
+  const [sortedColumn, setSortedColumn] = useState<string>("");
+  const [sortOrder, setSortOrder] = useState<string>("asc");
+  const [sortOrders, setSortOrders] = useState<{ [key: string]: string }>({});
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [queryParam, setQueryParam] = useState("");
+  const [confirmModalVisible, setConfirmModalVisible] = useState(false); // State for confirmation modal visibility
+  const [selectedRecord, setSelectedRecord] = useState<DataType | null>(null); // State to store the selected record for deallocation
   const { data: assetData, refetch: assetDataRefetch } = useQuery({
     queryKey: ["assetList", queryParam],
     queryFn: () => getAssetDetails(`${queryParamProp + queryParam}`),
@@ -303,8 +103,6 @@ const AssetTableHandler:React.FC<AssetTableHandlerProps> = ({queryParamProp ,una
     })) ?? [];
 
   const assetDataList = assetData;
-  // console.log("Testing on 65:", assetDataList ? assetDataList[0].results : []);
-
   const handleRowClick = useCallback((record: React.SetStateAction<null>) => {
     setSelectedRow(record);
     setDrawerVisible(true);
@@ -323,140 +121,86 @@ const AssetTableHandler:React.FC<AssetTableHandlerProps> = ({queryParamProp ,una
     );
   };
 
+  const handleSort = (column: string) => {
+    const isCurrentColumn = column === sortedColumn;
+    let newSortOrders = { ...sortOrders };
+
+    if (!isCurrentColumn) {
+      newSortOrders = { [column]: "asc" };
+    } else {
+      newSortOrders[column] = sortOrders[column] === "asc" ? "desc" : "asc";
+    }
+
+    setSortedColumn(column);
+    setSortOrder(newSortOrders[column]);
+    setSortOrders(newSortOrders);
+
+    const queryParams = Object.keys(newSortOrders)
+      .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
+      .join("");
+    let additionalQueryParams = "&offset=0";
+    if (searchTerm !== "" && searchTerm !== null) {
+      additionalQueryParams += `&global_search=${searchTerm}`;
+    }
+    refetchAssetData(queryParams + additionalQueryParams);
+  };
+
+  const renderDeallocateButton = (_, record) => (
+    <Button
+      className="ml-6"
+      ghost
+      type="primary"
+      shape="circle"
+      icon={<UserDeleteOutlined />}
+      onClick={() => {
+        setConfirmModalVisible(true); // Show confirmation modal
+        setSelectedRecord(record); // Store the selected record for deallocation
+      }}
+    />
+  );
+  const handleConfirmDeallocate = async () => {
+    setConfirmModalVisible(false);
+    if (selectedRecord) {
+      await unassign(selectedRecord);
+      assetDataRefetch();
+    }
+
+    setSelectedRecord(null); // Clear the selected record
+  };
   <div>
     <h1>Asset Overview</h1>
   </div>;
 
-const renderClickableColumn = (columnName, dataIndex) => (_, record) => (
-  <div
-    data-column-name={columnName}
-    onClick={() => handleColumnClick(record, columnName)}
-    style={{ cursor: "pointer" }}
-  >
-    {record[dataIndex]}
-  </div>
-);
+  const renderClickableColumn = (columnName, dataIndex) => (_, record) =>
+    (
+      <div
+        data-column-name={columnName}
+        onClick={() => handleColumnClick(record, columnName)}
+        style={{ cursor: "pointer" }}
+      >
+        {record[dataIndex]}
+      </div>
+    );
   const columns = [
     {
       title: "Product Name",
       dataIndex: "product_name",
       fixed: "left",
-       width: 120,
+      width: 120,
       responsive: ["md"],
-      filterIcon: <SearchOutlined />,
-      filterDropdown: ({
-        setSelectedKeys,
-        selectedKeys,
-        confirm,
-        clearFilters,
-      }: {
-        setSelectedKeys: (keys: React.ReactText[]) => void;
-        selectedKeys: React.ReactText[];
-        confirm: () => void;
-        clearFilters: () => void;
-      }) => (
-        <div style={{ padding: 8 }}>
-          <Input
-            placeholder="Search Product Name"
-            value={selectedKeys[0]}
-            onChange={(e) =>
-              setSelectedKeys(e.target.value ? [e.target.value] : [])
-            }
-            onPressEnter={() => confirm()}
-            style={{ marginBottom: 8, display: "block" }}
-          />
-          <Space>
-            <button
-              type="button"
-              onClick={confirm}
-              style={{ width: 90, fontSize: "16px" }}
-            >
-              Search
-            </button>
-            <button
-              type="button"
-              onClick={clearFilters}
-              style={{ width: 90, fontSize: "16px" }}
-            >
-              Reset
-            </button>
-          </Space>
-        </div>
-      ),
-      onFilter: (
-        value: string | any[],
-        record: { product_name: string | any[] }
-      ) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.product_name);
-        }
-        return record.product_name.indexOf(value.toString()) === 0;
-      },
-      sorter: (a: { product_name: string }, b: { product_name: any }) =>
-        a.product_name.localeCompare(b.product_name),
-      sortDirections: ["ascend", "descend"],
+      sorter: true,
+      sortOrder: sortedColumn === "product_name" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("product_name"),
+      }),
       render: renderClickableColumn("Product Name", "product_name"),
-
     },
     {
       title: "Serial Number",
       dataIndex: "serial_number",
       responsive: ["md"],
       width: 120,
-      filterIcon: <SearchOutlined />,
-      filterDropdown: ({
-        setSelectedKeys,
-        selectedKeys,
-        confirm,
-        clearFilters,
-      }: {
-        setSelectedKeys: (keys: React.ReactText[]) => void;
-        selectedKeys: React.ReactText[];
-        confirm: () => void;
-        clearFilters: () => void;
-      }) => (
-        <div style={{ padding: 8 }}>
-          <Input
-            placeholder="Search Serial Number"
-            value={selectedKeys[0]}
-            onChange={(e) =>
-              setSelectedKeys(e.target.value ? [e.target.value] : [])
-            }
-            onPressEnter={() => confirm()}
-            style={{ marginBottom: 8, display: "block" }}
-          />
-          <Space>
-            <button
-              type="button"
-              onClick={confirm}
-              style={{ width: 90, fontSize: "16px" }}
-            >
-              Search
-            </button>
-            <button
-              type="button"
-              onClick={clearFilters}
-              style={{ width: 90, fontSize: "16px" }}
-            >
-              Reset
-            </button>
-          </Space>
-        </div>
-      ),
-      onFilter: (
-        value: string | any[],
-        record: { serial_number: string | any[] }
-      ) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.serial_number);
-        }
-        return record.serial_number.indexOf(value.toString()) === 0;
-      },
-      sorter: (a: { serial_number: string }, b: { serial_number: any }) =>
-        a.serial_number.localeCompare(b.serial_number),
-      sortDirections: ["ascend", "descend"],
       render: renderClickableColumn("Serial Number", "serial_number"),
-
     },
     {
       title: "Location",
@@ -473,6 +217,11 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => (
         }
         return record.location.indexOf(value.toString()) === 0;
       },
+      sorter: true,
+      sortOrder: sortedColumn === "location" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("location"),
+      }),
       render: renderClickableColumn("Location", "location"),
     },
     {
@@ -490,71 +239,25 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => (
         }
         return record.location.indexOf(value.toString()) === 0;
       },
-    
+      sorter: true,
+      sortOrder: sortedColumn === "invoice_location" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("invoice_location"),
+      }),
       render: renderClickableColumn("Invoice Location", "invoice_location"),
-
-
     },
+
     {
       title: "Custodian",
       dataIndex: "custodian",
       responsive: ["md"],
       width: 120,
-      filterIcon: <SearchOutlined />,
-      filterDropdown: ({
-        setSelectedKeys,
-        selectedKeys,
-        confirm,
-        clearFilters,
-      }: {
-        setSelectedKeys: (keys: React.ReactText[]) => void;
-        selectedKeys: React.ReactText[];
-        confirm: () => void;
-        clearFilters: () => void;
-      }) => (
-        <div style={{ padding: 8 }}>
-          <Input
-            placeholder="Search Custodian"
-            value={selectedKeys[0]}
-            onChange={(e) =>
-              setSelectedKeys(e.target.value ? [e.target.value] : [])
-            }
-            onPressEnter={() => confirm()}
-            style={{ marginBottom: 8, display: "block" }}
-          />
-          <Space>
-            <button
-              type="button"
-              onClick={confirm}
-              style={{ width: 90, fontSize: "16px" }}
-            >
-              Search
-            </button>
-            <button
-              type="button"
-              onClick={clearFilters}
-              style={{ width: 90, fontSize: "16px" }}
-            >
-              Reset
-            </button>
-          </Space>
-        </div>
-      ),
-      onFilter: (
-        value: string | any[],
-        record: { custodian: string | any[] }
-      ) => {
-        // Check if record.custodian is defined before accessing it
-        if (record.custodian) {
-          if (Array.isArray(value)) {
-            return value.includes(record.custodian);
-          }
-          return record.custodian.indexOf(value.toString()) === 0;
-        }
-        return false; // Return false if custodian is undefined
-      },
+      sorter: true,
+      sortOrder: sortedColumn === "custodian" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("custodian"),
+      }),
       render: renderClickableColumn("Custodian", "custodian"),
-
     },
     {
       title: "Asset Type",
@@ -571,8 +274,12 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => (
         }
         return record.asset_type.indexOf(value.toString()) === 0;
       },
+      sorter: true,
+      sortOrder: sortedColumn === "asset_type" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("asset_type"),
+      }),
       render: renderClickableColumn("Asset Type", "asset_type"),
-
     },
     {
       title: "Asset Category",
@@ -582,212 +289,255 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => (
       render: renderClickableColumn("Asset Category", "asset_category"),
     },
     {
-      title: 'Version',
-      dataIndex: 'Version',
-      responsive: ['md'],
+      title: "Version",
+      dataIndex: "version",
+      responsive: ["md"],
       width: 120,
+      sorter: true,
+      sortOrder: sortedColumn === "version" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("version"),
+      }),
       render: renderClickableColumn("Version", "version"),
-
     },
     {
-      title: 'Asset Status',
-      dataIndex: 'Status',
-      responsive: ['md'],
+      title: "Asset Status",
+      dataIndex: "Status",
+      responsive: ["md"],
       width: 140,
       render: renderClickableColumn("Asset Status", "status"),
-
     },
     {
-      title: 'Business Unit',
-      dataIndex: 'BusinessUnit',
-      responsive: ['md'],
+      title: "Date of Purchase",
+      dataIndex: "date_of_purchase",
+      responsive: ["md"],
+      width: 120,
+      sorter: true,
+      sortOrder: sortedColumn === "date_of_purchase" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("date_of_purchase"),
+      }),
+      render: renderClickableColumn("Date of Purchase", "date_of_purchase"),
+    },
+    {
+      title: "Business Unit",
+      dataIndex: "BusinessUnit",
+      responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Business Unit", "business_unit"),
-
     },
     {
-      title: 'Os',
-      dataIndex: 'os',
-      responsive: ['md'],
+      title: "Os",
+      dataIndex: "os",
+      responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Os", "os"),
-
     },
     {
-      title: 'Os Version',
-      dataIndex: 'os_version',
-      responsive: ['md'],
-       width: 120,
+      title: "Os Version",
+      dataIndex: "os_version",
+      responsive: ["md"],
+      width: 120,
       render: renderClickableColumn("Os Version", "os_version"),
-
     },
     {
-      title: 'Processor',
-      dataIndex: 'processor',
-      responsive: ['md'],
+      title: "Processor",
+      dataIndex: "processor",
+      responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Processor", "processor"),
-
     },
     {
-      title: 'Generation',
-      dataIndex: 'processor_gen',
-      responsive: ['md'],
+      title: "Generation",
+      dataIndex: "processor_gen",
+      responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Asset Status", "processor_gen"),
-
     },
+
     {
-      title: 'Date Of Purchase',
-      dataIndex: 'DateOfPurchase',
-      responsive: ['md'],
+      title: "Warranty Period",
+      dataIndex: "warranty_period",
+      responsive: ["md"],
       width: 120,
-      render: renderClickableColumn("Asset Status", "date_of_purchase"),
-
+      sorter: true,
+      sortOrder: sortedColumn === "warranty_period" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("warranty_period"),
+      }),
+      render: renderClickableColumn("Warranty Period", "warranty_period"),
     },
     {
-      title: 'Warranty Period',
-      dataIndex: 'WarrantyPeriod',
-      responsive: ['md'],
+      title: "Expiry Date",
+      dataIndex: "expiry_date",
+      responsive: ["md"],
       width: 120,
-      render: renderClickableColumn("Asset Status", "warranty_period"),
+      render: (_, record) => {
+        const dateOfPurchase = record.date_of_purchase
+          ? new Date(record.date_of_purchase)
+          : null;
+        const warrantyPeriod = parseInt(record.warranty_period) || 0; // Defaulting to 0 if warranty_period is not provided or invalid
+        if (dateOfPurchase instanceof Date && !isNaN(dateOfPurchase)) {
+          const expiryDate = new Date(
+            dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000
+          ); // Calculating expiry date in milliseconds
+          const formattedExpiryDate = expiryDate.toISOString().split("T")[0];
+          const currentDate = new Date();
+          const isExpired = expiryDate < currentDate;
 
+          // Apply renderClickableColumn logic here
+          return (
+            <div
+              data-column-name="Expiry Date"
+              onClick={() => handleColumnClick(record, "Expiry Date")}
+              style={{
+                cursor: "pointer",
+                color: isExpired ? "red" : "green",
+                fontWeight: isExpired ? "bold" : "bold",
+              }}
+            >
+              {formattedExpiryDate}
+            </div>
+          );
+        } else {
+          return "Invalid Date";
+        }
+      },
     },
+
+    ,
     {
-      title: 'Model Number',
-      dataIndex: 'ModelNumber', // Corrected dataIndex
-      responsive: ['md'],
+      title: "License Type",
+      dataIndex: "license_type",
+      responsive: ["md"],
+      width: 120,
+
+      render: renderClickableColumn("license_type", "license_type"),
+    },
+
+    {
+      title: "Model Number",
+      dataIndex: "ModelNumber", // Corrected dataIndex
+      responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Asset Status", "model_number"),
-
     },
     {
-      title: 'Memory',
-      dataIndex: 'Memory',
-      responsive: ['md'],
+      title: "Memory",
+      dataIndex: "memory",
+      responsive: ["md"],
       width: 120,
-      render: renderClickableColumn("Asset Status", "memory"),
-
+      sorter: true,
+      sortOrder: sortedColumn === "memory" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("memory"),
+      }),
+      render: renderClickableColumn("Memory", "memory"),
     },
     {
-      title: 'Storage',
-      dataIndex: 'storage',
-      responsive: ['md'],
+      title: "Storage",
+      dataIndex: "storage",
+      responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Storage", "storage"),
-
     },
     {
-      title: 'Owner',
-      dataIndex: 'owner',
-      responsive: ['md'],
+      title: "Owner",
+      dataIndex: "owner",
+      responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Owner", "owner"),
-
     },
     {
-      title: 'Approved By',
-      dataIndex: 'approved_by',
-      responsive: ['md'],
+      title: "Approved By",
+      dataIndex: "approved_by",
+      responsive: ["md"],
       width: 120,
+      sorter: true,
+      sortOrder: sortedColumn === "approved_by" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("approved_by"),
+      }),
       render: renderClickableColumn("Approved By", "approved_by"),
-
     },
     {
-      title: 'Requester',
-      dataIndex: 'requester',
-      responsive: ['md'],
+      title: "Requester",
+      dataIndex: "requester",
+      responsive: ["md"],
       width: 120,
+      sorter: true,
+      sortOrder: sortedColumn === "requester" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("requester"),
+      }),
       render: renderClickableColumn("Requester", "requester"),
-
     },
     {
-      title: 'Asset Detail Status',
-      dataIndex: 'asset_detail_status',
-      responsive: ['md'],
+      title: "Asset Detail Status",
+      dataIndex: "asset_detail_status",
+      responsive: ["md"],
       width: 140,
-      render: renderClickableColumn("Asset Detail Status", "asset_detail_status"),
-
+      render: renderClickableColumn(
+        "Asset Detail Status",
+        "asset_detail_status"
+      ),
     },
     {
-      title: 'Asset Assign Status',
-      dataIndex: 'assign_status',
-      responsive: ['md'],
+      title: "Asset Assign Status",
+      dataIndex: "assign_status",
+      responsive: ["md"],
       width: 140,
       render: renderClickableColumn("Asset Assign Status", "assign_status"),
-
     },
     {
-      title: 'Created At',
-      dataIndex: 'created_at',
-      responsive: ['md'],
+      title: "Created At",
+      dataIndex: "created_at",
+      responsive: ["md"],
       width: 120,
-      render: renderClickableColumn("Accessories", "created_at"),
-
+      sorter: true,
+      sortOrder: sortedColumn === "created_at" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("created_at"),
+      }),
+      render: renderClickableColumn("Created At", "created_at"),
     },
     {
-      title: 'Updated At',
-      dataIndex: 'updated_at',
-      responsive: ['md'],
+      title: "Updated At",
+      dataIndex: "updated_at",
+      responsive: ["md"],
       width: 120,
-      render: renderClickableColumn("Accessories", "updated_at"),
-
+      sorter: true,
+      sortOrder: sortedColumn === "updated_at" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("updated_at"),
+      }),
+      render: renderClickableColumn("Updated At", "updated_at"),
     },
- 
+
     {
-      title: 'Accessories',
-      dataIndex: 'Accessories',
-      responsive: ['md'],
+      title: "Accessories",
+      dataIndex: "Accessories",
+      responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Accessories", "accessories"),
     },
-    
     {
-      title: 'Asset Log',
-      dataIndex: 'Accessories',
-      responsive: ['md'],
-      fixed:"right",
-       width: 120,
-       
-       render: () => (
-        <span>
-          <FontAwesomeIcon icon={faBookOpenReader} className="plus-icon" /> {/* Plus button icon */}
-        </span>
+      title: "Approver Notes",
+      dataIndex: "approval_status_message",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn(
+        "approval_status_message",
+        "approval_status_message"
       ),
-    
-     
- 
     },
-  
     {
       title: "Deallocate Asset",
       dataIndex: "DeallocateAsset",
       fixed: "right",
-       width: 120,
-      render: (_data, record) => (
-        <Button
-          ghost
-          style={{
-            borderRadius: "10px",
-            background: "#D3D3D3",
-            color: "black",
-          }}
-          onClick={() => {
-            console.log(" unassign button clicked ")
-            if (record.custodian != null || record.custodian != undefined) {
-              unassign(record)
-              
-            } else {
-              message.warning("Not allocated yet");
-            }
-          }}
-          
-        >
-          -
-        </Button>
-      ),
-    }
-  
+      width: 120,
+      render: renderDeallocateButton,
+    },
   ];
 
   const handleColumnClick = (record: string[], columnName: string) => {
@@ -829,11 +579,13 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => (
     configuration: result.configuration,
     custodian: result.custodian?.employee_name,
     product_name: result.product_name,
+    license_type: result.license_type,
     owner: result.owner,
     requester: result.requester?.username,
     AssignAsset: "assign",
     created_at: result.created_at,
     updated_at: result.updated_at,
+    approval_status_message: result.approval_status_message,
   }));
 
   const drawerTitle = "Asset Details";
@@ -847,34 +599,48 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => (
   }, [selectedAssetId]);
 
   return (
-    <AssetTable
-      totalItemCount={assetData?.count}
-      drawerTitle={drawerTitle}
-      assetPageDataFetch={refetchAssetData}
-      logsData={logsData}
-      isLoading={isLoading}
-      isSuccess={isSuccess}
-      selectedAssetId={selectedAssetId && selectedAssetId}
-      setSelectedAssetId={setSelectedAssetId}
-      handleRowClick={handleRowClick}
-      onCloseDrawer={onCloseDrawer}
-      selectedRow={selectedRow}
-      drawerVisible={drawerVisible}
-      assetData={data}
-      columns={columns}
-      expandedRowRender={expandedRowRender}
-      memoryData={memoryData}
-      assetTypeData={assetTypeData}
-      locations={locations}
-      statusOptions={statusOptions}
-      assetDataRefetch={refetchAssetData}
-      asset_uuid={selectedAssetId}
-      businessUnitOptions={businessUnitOptions}
-      handleUpdateData={function (updatedData: { key: any }): void {
-        throw new Error("Function not implemented.");
-      }}
-      drawerTitle={""}
-    />
+    <>
+      {/* Confirmation Modal */}
+      <Modal
+        title="Confirm Deallocation"
+        open={confirmModalVisible}
+        onOk={handleConfirmDeallocate}
+        onCancel={() => setConfirmModalVisible(false)}
+        okButtonProps={{ style: { backgroundColor: "red" } }}
+        style={{ marginTop: "100px" }}
+      >
+        <p>Are you sure you want to deallocate the asset?</p>
+      </Modal>
+
+      {/* Existing JSX code for AssetTable component */}
+      <AssetTable
+        totalItemCount={assetData?.count}
+        drawerTitle={drawerTitle}
+        assetPageDataFetch={refetchAssetData}
+        selectedAssetId={selectedAssetId && selectedAssetId}
+        setSelectedAssetId={setSelectedAssetId}
+        handleRowClick={handleRowClick}
+        onCloseDrawer={onCloseDrawer}
+        selectedRow={selectedRow}
+        drawerVisible={drawerVisible}
+        assetData={data}
+        columns={columns}
+        memoryData={memoryData}
+        assetTypeData={assetTypeData}
+        locations={locations}
+        sortOrder={sortOrder}
+        sortedColumn={sortedColumn}
+        statusOptions={statusOptions}
+        assetDataRefetch={refetchAssetData}
+        asset_uuid={selectedAssetId}
+        businessUnitOptions={businessUnitOptions}
+        handleUpdateData={function (updatedData: { key: any }): void {
+          throw new Error("Function not implemented.");
+        }}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+      />
+    </>
   );
 };
 

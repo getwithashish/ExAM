@@ -126,10 +126,11 @@ export interface DataType {
     asset_log: AssetLog;
   }
   export interface AssetTableProps {
+    sortOrder:string;
     logsData: LogData[] | undefined;
     isLoading: boolean;
     isSuccess: boolean;
-    selectedAssetId: string | null;
+    selectedAssetId: number;
     setSelectedAssetId: React.Dispatch<React.SetStateAction<string | null>>;
     handleRowClick: (record: any) => void;
     onCloseDrawer: () => void;
@@ -148,6 +149,20 @@ export interface DataType {
   }) => void,
     drawerTitle:string
     asset_uuid: string;
+    assetPageDataFetch: (params: string) => void;    
+    searchTerm: string;
+    json_query: string;
+    assetState: string | null;
+    detailState :string | null;
+    assignState: string | null;
+    totalItemCount:any;
+    assetDataRefetch:any;
+    reset:()=>void;
+    sortedColumn:any;
+    isAssetDataLoading:any;
+    setSearchTerm:any;
+    setJson_query:any;
+    selectedTypeId:number;
   }
   
   

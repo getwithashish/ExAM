@@ -1,35 +1,27 @@
-import React, { useState } from "react";
-import { SearchOutlined } from "@ant-design/icons";
+import React from "react";
 import styles from "./GlobalSearch.module.css";
-
-interface GlobalSearchProps {
-  onSearch: (searchTerm: string) => void;
-  assetDataRefetch: (queryParam: string) => void;
-}
+import { GlobalSearchProps } from "./types/types";
 
 const GlobalSearch: React.FC<GlobalSearchProps> = ({
-  onSearch,
   assetDataRefetch,
+  searchTerm,
+  setSearchTerm
 }) => {
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  // const [searchTerm, setSearchTerm] = useState(""); // Initialize searchTerm state
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.value === "") {
-      setSearchTerm(event.target.value);
-      assetDataRefetch(``);
+    const newValue = event.target.value;
+    setSearchTerm(newValue);
+
+    if (newValue === "") {
+      assetDataRefetch("");
     } else {
-      setSearchTerm(event.target.value);
-      assetDataRefetch(`&global_search=${event.target.value}`);
+      assetDataRefetch(`&global_search=${newValue}`);
     }
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); // Prevent default form submission behavior
-    // onSearch(searchTerm);
-  };
-
-  const handleSearchButtonClick = () => {
-    onSearch(searchTerm); // Call the onSearch callback function with the search term when the search button is clicked
+    event.preventDefault();
   };
 
   return (
@@ -41,9 +33,6 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({
         onChange={handleChange}
         className={styles["global-search-input"]}
       />
-      {/* <button type="button" className={styles['global-search-button']} onClick={handleSearchButtonClick}>
-        <SearchOutlined />
-      </button> */}
     </form>
   );
 };

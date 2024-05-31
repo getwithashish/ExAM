@@ -1,53 +1,20 @@
-import React, {
-  Key,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import {
-  Badge,
-  Button,
-  Dropdown,
-  Input,
-  Pagination,
-  Space,
-  Table,
-  TableColumnsType,
-} from "antd";
-
-import { SearchOutlined } from "@ant-design/icons";
+import React, { useMemo, useState } from "react";
+import { Pagination, Table } from "antd";
 import "./AssetTable.css";
 import CardComponent from "./CardComponent/CardComponent";
 import { CloseOutlined } from "@ant-design/icons";
-import axiosInstance from "../../config/AxiosConfig";
-import { isError, useQuery } from "@tanstack/react-query";
-import { AssetTableProps, DataType, LogData } from "../AssetTable/types";
-import { ColumnFilterItem } from "../AssetTable/types";
-import { AssetResult } from "../AssetTable/types";
-import { FilterDropdownProps } from "../AssetTable/types";
-import { useInfiniteQuery } from "react-query";
-
-import { DownOutlined } from "@ant-design/icons";
-import ExportButton from "../../Export/Export";
-import { getAssetLog } from "./api/getAssetLog";
-import { AxiosError } from "axios";
-import TableNavbar from "../../TableNavBar/TableNavbar";
+import { AssetTableProps } from "../AssetTable/types";
 import SideDrawerComponent from "../../SideDrawerComponent/SideDrawerComponent";
 import UploadComponent from "../../Upload/UploadComponent";
 import DrawerViewRequest from "../../../pages/RequestPage/DrawerViewRequest";
 import GlobalSearch from "../../GlobalSearch/GlobalSearch";
 
-interface ExpandedDataType {
-  key: React.Key;
-  date: string;
-  name: string;
-  upgradeNum: string;
-}
-const items = [
-  { key: "1", label: "Action 1" },
-  { key: "2", label: "Action 2" },
-];
+// interface ExpandedDataType {
+//   key: React.Key;
+//   date: string;
+//   name: string;
+//   upgradeNum: string;
+// }
 
 const AssetTable = ({
   showAssignDrawer,
@@ -75,33 +42,44 @@ const AssetTable = ({
   assetTypeData,
   expandedRowRender,
   assetDataRefetch,
+  sortOrder,
+  sortedColumn,
+  searchTerm,
+  setSearchTerm,
 }: AssetTableProps) => {
-  const rowRender = (record, expanded) => {
+
+  const handleSearch = (searchTerm: string) => {
+    setSearchTerm(searchTerm);
+    const queryParams = `&global_search=${searchTerm}&sort_by=${sortedColumn}&sort_order=${sortOrder}&offset=20`;
+    assetDataRefetch(queryParams);
+  };
+
+  const rowRender = (record: { key: string }, expanded: any) => {
     if (isSuccess) {
       if (expanded && selectedAssetId && expandedRowRender)
         return expandedRowRender(record.key);
       else return;
     } else return <>not loaded</>;
   };
+
   const memoizedRowRender = useMemo(() => rowRender, [isSuccess]);
 
   const [showUpload, setShowUpload] = useState(false);
   const closeImportDrawer = () => {
     setShowUpload(false);
   };
-  function handleSearch(_searchTerm: string): void {
-    console.log("Global Search Term: ", _searchTerm);
-    assetDataRefetch(`&global_search=${_searchTerm}`);
-  }
+
   return (
     <>
       <div className="mainHeading" style={{ background: "white" }}>
         <div className=" font-display">Allocate Assets</div>
       </div>
       <div style={{ marginLeft: "40px", marginBottom: "30px" }}>
-        <GlobalSearch
+      <GlobalSearch    
+          assetDataRefetch={assetDataRefetch}      
+          searchTerm={searchTerm}
           onSearch={handleSearch}
-          assetDataRefetch={assetDataRefetch}
+          setSearchTerm={setSearchTerm}
         />
       </div>
       <div
@@ -138,16 +116,20 @@ const AssetTable = ({
           }}
           footer={() => (
             <Pagination
-              pageSize={20}
-              showTotal={(total, range) =>
-                `${range[0]}-${range[1]} of ${total} assets`
-              }
-              total={totalItemCount}
-              onChange={(page, pageSize) => {
-                assetPageDataFetch(`&offset=${(page - 1) * pageSize}`);
-              }}
-              hideOnSinglePage={true}
-            />
+            pageSize={20}
+            showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} assets`}
+            total={totalItemCount}
+            onChange={(page, pageSize) => {
+              const offset = (page - 1) * pageSize;
+              let additionalQueryParams = `&offset=${offset}`;
+              if (searchTerm !== "" && searchTerm !== null) {
+                  additionalQueryParams += `&global_search=${searchTerm}`;
+                }
+              const queryParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}` + additionalQueryParams;
+              assetPageDataFetch(queryParams);
+            }}
+            hideOnSinglePage={true}
+          />
           )}
         />
       </div>

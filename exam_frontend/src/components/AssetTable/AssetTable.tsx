@@ -1,61 +1,22 @@
-import React, {
-  Key,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import {
-  Badge,
-  Button,
-  Dropdown,
-  Input,
-  Pagination,
-  Space,
-  Table,
-  TableColumnsType,
-} from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import React from "react";
+import { Pagination, Table } from "antd";
 import "./AssetTable.css";
 import CardComponent from "../CardComponent/CardComponent";
 import { CloseOutlined } from "@ant-design/icons";
-import axiosInstance from "../../config/AxiosConfig";
-import { isError, useQuery } from "@tanstack/react-query";
-import { AssetTableProps, DataType, LogData } from "../AssetTable/types";
-import { ColumnFilterItem } from "../AssetTable/types";
-import { AssetResult } from "../AssetTable/types";
-import { FilterDropdownProps } from "../AssetTable/types";
-import { useInfiniteQuery } from "react-query";
-
-import { DownOutlined } from "@ant-design/icons";
-import ExportButton from "../Export/Export";
-import { getAssetLog } from "./api/getAssetLog";
-import { AxiosError } from "axios";
-import TableNavbar from "../TableNavBar/TableNavbar";
-import SideDrawerComponent from "../SideDrawerComponent/SideDrawerComponent";
-import UploadComponent from "../Upload/UploadComponent";
+import { AssetTableProps } from "../AssetTable/types";
 import DrawerViewRequest from "../../pages/RequestPage/DrawerViewRequest";
 import GlobalSearch from "../GlobalSearch/GlobalSearch";
 
-interface ExpandedDataType {
-  key: React.Key;
-  date: string;
-  name: string;
-  upgradeNum: string;
-}
-
 const AssetTable = ({
+  userRole,
   asset_uuid,
-  logsData,
-  // isLoading,
   isAssetDataLoading,
-  isSuccess,
   selectedAssetId,
-  setSelectedAssetId,
   handleRowClick,
   onCloseDrawer,
   selectedRow,
   drawerVisible,
+  setDrawerVisible,
   assetData,
   totalItemCount,
   assetPageDataFetch,
@@ -67,44 +28,48 @@ const AssetTable = ({
   locations,
   memoryData,
   assetTypeData,
-  expandedRowRender,
   isMyApprovalPage,
   heading,
   assetDataRefetch,
+  sortOrder,
+  sortedColumn,
+  searchTerm,
+  setSearchTerm,
 }: AssetTableProps) => {
-  const rowRender = (record: { key: string }, expanded: any) => {
-    if (isSuccess) {
-      if (expanded && selectedAssetId && expandedRowRender)
-        return expandedRowRender(record.key);
-      else return;
-    } else return <>not loaded</>;
-  };
-  const memoizedRowRender = useMemo(() => rowRender, [isSuccess]);
-
-  const [showUpload, setShowUpload] = useState(false);
-  const closeImportDrawer = () => {
-    setShowUpload(false);
+  const handleSearch = (searchTerm: string) => {
+    setSearchTerm(searchTerm);
+    const queryParams = `&global_search=${searchTerm}&sort_by=${sortedColumn}&sort_order=${sortOrder}&offset=20`;
+    assetDataRefetch(queryParams);
   };
 
-  function handleSearch(_searchTerm: string): void {
-    console.log("Global Search Term: ", _searchTerm);
-    assetDataRefetch(`&global_search=${_searchTerm}`);
+  let pageHeading = heading;
+  if (userRole === "SYSTEM_ADMIN") {
+    pageHeading = "Modify Asset";
+  } else if (userRole === "LEAD") {
+    pageHeading = "Delete Assets";
+  } else if (userRole === "MANAGER") {
+    pageHeading = "Deleted Assets";
   }
+
   return (
     <>
-      <div className="mainHeading" font-display>
-        <h1>{heading}</h1>
+      <div className="mainHeading font-display">
+        <h1>{pageHeading}</h1>
       </div>
-      <div style={{ marginLeft: "40px",marginBottom:"30px" }}>
+      <div style={{ marginLeft: "40px", marginBottom: "30px" }}>
         <GlobalSearch
-          onSearch={handleSearch}
           assetDataRefetch={assetDataRefetch}
+          searchTerm={searchTerm}
+          // onSearch={handleSearch}
+          setSearchTerm={setSearchTerm}
         />
       </div>
 
-      <div style={{ position: "relative", display: "inline-block", width: "80vw" }}>
-        
+      <div
+        style={{ position: "relative", display: "inline-block", width: "80vw" }}
+      >
         <Table
+          // userRole={userRole}
           columns={columns}
           loading={isAssetDataLoading}
           dataSource={assetData}
@@ -116,11 +81,9 @@ const AssetTable = ({
           style={{
             fontSize: "50px",
             borderColor: "white",
-            // width: "29%",
             marginLeft: "3.5%",
             boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
           }}
-
           footer={() => (
             <Pagination
               pageSize={20}
@@ -129,7 +92,15 @@ const AssetTable = ({
               }
               total={totalItemCount}
               onChange={(page, pageSize) => {
-                assetPageDataFetch(`&offset=${(page - 1) * pageSize}`);
+                const offset = (page - 1) * pageSize;
+                let additionalQueryParams = `&offset=${offset}`;
+                if (searchTerm !== "" && searchTerm !== null) {
+                  additionalQueryParams += `&global_search=${searchTerm}`;
+                }
+                const queryParams =
+                  `&sort_by=${sortedColumn}&sort_order=${sortOrder}` +
+                  additionalQueryParams;
+                assetPageDataFetch(queryParams);
               }}
               hideOnSinglePage={true}
             />
@@ -141,9 +112,9 @@ const AssetTable = ({
         onClose={onCloseDrawer}
         selectedRow={selectedRow}
         drawerTitle={drawerTitle}
-        // button={button}
         onUpdateData={handleUpdateData}
         closeIcon={<CloseOutlined rev={undefined} />}
+        title={""}
       >
         {selectedRow && (
           <div>
@@ -162,6 +133,8 @@ const AssetTable = ({
             memoryData={memoryData}
             assetTypeData={assetTypeData}
             asset_uuid={asset_uuid}
+            setDrawerVisible={setDrawerVisible}
+            assetDataRefetch={assetDataRefetch}
             onUpdate={function (): void {
               throw new Error("Function not implemented.");
             }}

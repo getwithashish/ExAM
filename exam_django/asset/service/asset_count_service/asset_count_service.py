@@ -12,7 +12,7 @@ class AssetCountService:
 
         asset_type = query
 
-        queryset = Asset.objects.all()
+        queryset = Asset.objects.all().filter(is_deleted=False)
         if asset_type:
             queryset = queryset.filter(asset_type=asset_type)
 

@@ -150,7 +150,20 @@ export interface AssetTableProps {
 }) => void,
   drawerTitle:string
   asset_uuid: string;
+  heading:string
   assetDataRefetch: (queryParam: string) => void;
-
+  setTableData:any
+  handleDelete:any
+  modifiedData:any
+  reset:()=> void;
+  sortOrder:string;
+  sortedColumn:any;
+  setSearchTerm:any;
+  searchTerm:any;
+  assetPageDataFetch:any
+  isAssetDataLoading:any
+  totalItemCount:any
+  userRole:any
+  isMyApprovalPage:any
 }
 

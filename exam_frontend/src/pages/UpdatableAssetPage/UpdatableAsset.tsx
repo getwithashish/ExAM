@@ -1,10 +1,21 @@
 import React from "react";
 import AssetTableHandler from "../../components/AssetTable/AssetTableHandler";
+import { useAuth } from "../authentication/AuthContext";
 
 const UpdatableAsset = () => {
+  const { userRole } = useAuth();
+
   let queryParamProp =
-    "&asset_detail_status=CREATED|UPDATED|CREATE_REJECTED|UPDATE_REJECTED";
-  let heading = "Modify Assets";
+    userRole === "MANAGER"
+      ? "&deleted=True"
+      : "&asset_detail_status=CREATED|UPDATED|CREATE_REJECTED|UPDATE_REJECTED";
+  let heading =
+    userRole === "MANAGER"
+      ? "Deleted Assets"
+      : userRole === "LEAD"
+      ? "Delete Assets"
+      : "Modify Assets";
+
   return (
     <div className="bg-white font-display">
       <nav className="flex mb-4 mx-4 my-0 py-4" aria-label="Breadcrumb">
@@ -47,7 +58,11 @@ const UpdatableAsset = () => {
                 href="#"
                 className="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white font-display"
               >
-                Modify Assets
+                {userRole === "MANAGER"
+                  ? "Deleted Assets"
+                  : userRole === "LEAD"
+                  ? "Delete Assets"
+                  : "Modify Assets"}
               </a>
             </div>
           </li>
@@ -58,6 +73,7 @@ const UpdatableAsset = () => {
         queryParamProp={queryParamProp}
         heading={heading}
         isMyApprovalPage={true}
+        userRole={userRole}
       />
     </div>
   );

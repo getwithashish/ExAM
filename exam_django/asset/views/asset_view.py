@@ -6,9 +6,6 @@ from asset.models import Asset, Memory, BusinessUnit, AssetType
 from rest_framework.permissions import IsAuthenticated, AllowAny
 import json
 from asset.service.asset_crud_service.asset_mutation_service import AssetMutationService
-from asset.service.asset_crud_service.asset_lead_role_mutation_service import (
-    AssetLeadRoleMutationService,
-)
 from asset.service.asset_crud_service.asset_sysadmin_role_mutation_service import (
     AssetSysadminRoleMutationService,
 )
@@ -31,6 +28,7 @@ from messages import (
     ASSET_CREATED_UNSUCCESSFUL,
     ASSET_LIST_RETRIEVAL_UNSUCCESSFUL,
     ASSET_NOT_FOUND,
+    ASSET_RESTORATION_SUCCESSFUL,
     USER_UNAUTHORIZED,
     ASSET_DELETION_SUCCESSFUL,
 )
@@ -88,8 +86,6 @@ class AssetView(APIView):
 
             if user_scope == "SYSTEM_ADMIN":
                 asset_user_role_mutation_service = AssetSysadminRoleMutationService()
-            elif user_scope == "LEAD":
-                asset_user_role_mutation_service = AssetLeadRoleMutationService()
             else:
                 return APIResponse(
                     data={},
@@ -122,8 +118,6 @@ class AssetView(APIView):
 
             if user_scope == "SYSTEM_ADMIN":
                 asset_user_role_mutation_service = AssetSysadminRoleMutationService()
-            elif user_scope == "LEAD":
-                asset_user_role_mutation_service = AssetLeadRoleMutationService()
             else:
                 raise PermissionDeniedException(
                     {}, USER_UNAUTHORIZED, status.HTTP_401_UNAUTHORIZED
@@ -183,6 +177,29 @@ class AssetView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+    def put(self, request):
+        asset_uuid = request.data.get("asset_uuid")
+        print("Asset UUID: ", asset_uuid)
+        try:
+            asset = get_object_or_404(Asset, asset_uuid=asset_uuid)
+            asset.is_deleted = False
+            print("Reached before SAVE")
+            asset.save()
+            print("Reached after SAVE")
+            return APIResponse(
+                data={"asset_uuid": asset_uuid},
+                message=ASSET_RESTORATION_SUCCESSFUL,
+                status=status.HTTP_200_OK,
+            )
+
+        except Exception as e:
+            print("Error: ", e)
+            return APIResponse(
+                data={},
+                message="Error occurred while restoring asset.",
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
 
 class UserAgentAssetView(APIView):
     permission_classes = [AllowAny]
@@ -190,13 +207,18 @@ class UserAgentAssetView(APIView):
     def post(self, request):
         request_body = json.loads(request.body)
         print(request_body)
-        # memory = Memory.objects.filter(memory_space=request_body.get("TotalMemoryGB")).first()
         asset_type = AssetType.objects.filter(asset_type_name="Laptop").first()
         memory = int(request_body.get("totalMemoryGB"))
         memory, create = Memory.objects.get_or_create(memory_space=memory)
         business_unit, create = BusinessUnit.objects.get_or_create(
             business_unit_name="DU0"
         )
+        processor = request_body.get("processor")
+        if processor == "":
+            processor = None
+        processor_gen = request_body.get("processorGen")
+        if processor_gen == "":
+            processor_gen = None
 
         Asset.objects.create(
             asset_category="HARDWARE",
@@ -206,9 +228,11 @@ class UserAgentAssetView(APIView):
             serial_number=request_body.get("serialNumber"),
             os=request_body.get("os"),
             os_version=request_body.get("osVersion"),
-            processor=request_body.get("cpuModel"),
+            processor=processor,
+            processor_gen=processor_gen,
             memory=memory,
             storage=int(request_body.get("totalStorageGB")),
+            configuration=f"{request_body.get('processorModelName')}/{memory}/{int(request_body.get('totalStorageGB'))}",
             owner="EXPERION",
             business_unit=business_unit,
             asset_detail_status="CREATED",

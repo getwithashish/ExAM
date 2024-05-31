@@ -6,6 +6,9 @@ from rest_framework.pagination import LimitOffsetPagination
 from asset.service.asset_crud_service.asset_query_abstract import AssetQueryAbstract
 from asset.models.asset import Asset
 from asset.serializers.asset_serializer import AssetReadSerializer
+from asset.service.asset_crud_service.asset_normal_query_service import (
+    AssetNormalQueryService,
+)
 from messages import ASSET_LIST_SUCCESSFULLY_RETRIEVED
 
 
@@ -27,9 +30,16 @@ class AssetAdvancedQueryServiceWithJsonLogic(AssetQueryAbstract):
         # Convert JsonLogic expression to Django Q objects
         q_objects = self.convert_json_logic_to_django_q(logic_data)
 
-        queryset = Asset.objects.all()
-        queryset = queryset.filter(is_deleted=False)
+        queryset = Asset.objects.all().filter(is_deleted=False)
         queryset = queryset.filter(q_objects)
+
+        global_search = request.query_params.get("global_search")
+
+        if global_search:
+            asset_normal_query_service = AssetNormalQueryService()
+            queryset = asset_normal_query_service.get_queryset_from_global_search(
+                global_search, queryset
+            )
 
         page = self.pagination.paginate_queryset(queryset, request)
         if page is not None:
@@ -47,19 +57,16 @@ class AssetAdvancedQueryServiceWithJsonLogic(AssetQueryAbstract):
     def convert_json_logic_to_django_q(self, logic_data):
         # Recursively convert JsonLogic expression to Django Q objects
         if "and" in logic_data:
-            return Q(
-                *[
-                    self.convert_json_logic_to_django_q(item)
-                    for item in logic_data["and"]
-                ]
-            )
+            combined_q = Q()
+            for item in logic_data["and"]:
+                combined_q &= self.convert_json_logic_to_django_q(item)
+            return combined_q
+
         elif "or" in logic_data:
-            return Q(
-                *[
-                    self.convert_json_logic_to_django_q(item)
-                    for item in logic_data["or"]
-                ]
-            )
+            combined_q = Q()
+            for item in logic_data["or"]:
+                combined_q |= self.convert_json_logic_to_django_q(item)
+            return combined_q
 
         # "equals" operation
         elif "==" in logic_data:

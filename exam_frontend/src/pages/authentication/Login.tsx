@@ -74,7 +74,7 @@ export default function Login() {
       ) {
         setUsernameError("Invalid username or password");
       } else {
-        console.log("Error:", error);
+        console.error("Error:", error);
       }
     }
   };
@@ -145,7 +145,7 @@ export default function Login() {
                   className="w-full bg-blue-500 text-white hover:bg-blue-700 font-display"
                   onClick={() =>
                     (window.location.href =
-                      "http://localhost:8000/auth/sign_in")
+                      import.meta.env["VITE_LOGIN_URL"])
                   }
                 >
                   <img

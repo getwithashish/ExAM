@@ -1,4 +1,3 @@
-import React from "react";
 import AssetTableHandler from "../../components/AssetTable/AssetTableHandler";
 
 const ApprovedRequestPage = () => {
@@ -23,7 +22,6 @@ const ApprovedRequestPage = () => {
 
   const getUserId = () => {
     const jwtToken = localStorage.getItem("jwt");
-    console.log(jwtToken);
     if (jwtToken) {
       const payload = decodeJWT(jwtToken);
       return payload.user_id;

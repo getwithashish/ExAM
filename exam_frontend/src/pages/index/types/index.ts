@@ -4,7 +4,7 @@ export type RecordProps = {
     asset_category: string;
     asset_type: string;
     version: number;
-    Generation: string; // Assuming 'Generation' is a property of the object
+    Generation: string;
     accessories: string;
     approval_status: string;
     business_unit: string;

@@ -35,6 +35,9 @@ const CardComponent: React.FC<CardType> = ({
   memoryData,
   assetTypeData,
   isMyApprovalPage,
+  formattedExpiryDate,
+  setDrawerVisible,
+  assetDataRefetch,
   onClose,
   onDelete,
 }) => {
@@ -153,7 +156,6 @@ const CardComponent: React.FC<CardType> = ({
       setIsLoading(false); // Set loading to false when update fails
       return; // Exit the function without updating
     }
-    console.log("Asset UUID:", data.key);
 
     try {
       const updatePayload = {
@@ -166,40 +168,40 @@ const CardComponent: React.FC<CardType> = ({
           "Content-Type": "application/json",
         },
       });
-
-      console.log("Updated data:", response.data);
       message.success("Asset Details successfully updated");
     } catch (error) {
       console.error("Error updating data:", error);
       message.error("Error updating asset details. Please try again.");
     }
     setIsLoading(false); // Set loading to false when update completes
+    assetDataRefetch();
+    setDrawerVisible(false);
   };
 
   const handleUpdateChange = (field: string, value: any) => {
-     if (field === "business_unit") {
-    // Map the business unit name to its primary key
-    const businessUnitPK = uniqueBusinessOptions.find(
-      (option) => option.name === value
-    )?.id;
-    setUpdatedData((prevData) => ({
-      ...prevData,
-      [field]: businessUnitPK,
-    }));
-  } else {
-    if (field === "status" && value === "IN STORE") {
-      // Change the status to "IN STOCK" when the value is "IN STORE"
+    if (field === "business_unit") {
+      // Map the business unit name to its primary key
+      const businessUnitPK = uniqueBusinessOptions.find(
+        (option) => option.name === value
+      )?.id;
       setUpdatedData((prevData) => ({
         ...prevData,
-        [field]: "IN STOCK",
+        [field]: businessUnitPK,
       }));
     } else {
-      setUpdatedData((prevData) => ({
-        ...prevData,
-        [field]: value,
-      }));
+      if (field === "status" && value === "IN STORE") {
+        // Change the status to "IN STOCK" when the value is "IN STORE"
+        setUpdatedData((prevData) => ({
+          ...prevData,
+          [field]: "IN STOCK",
+        }));
+      } else {
+        setUpdatedData((prevData) => ({
+          ...prevData,
+          [field]: value,
+        }));
+      }
     }
-  }
   };
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -515,6 +517,22 @@ const CardComponent: React.FC<CardType> = ({
       ),
     },
     {
+      label: "Expiry Date",
+      name: "Expiry Date",
+      value: (
+        <Form.Item name="Expiry Date">
+          <b>Expiry Date: </b>
+          <br></br>
+          <br></br>{" "}
+          <Input
+            defaultValue={formattedExpiryDate}
+            style={inputStyle}
+            disabled
+          />{" "}
+        </Form.Item>
+      ),
+    },
+    {
       label: "Asset detail status",
       name: "asset_detail_status",
       value: (
@@ -580,6 +598,7 @@ const CardComponent: React.FC<CardType> = ({
             onChange={(e) =>
               handleUpdateChange("serial_number", e.target.value)
             }
+            readOnly
             style={inputStyle}
           />{" "}
         </Form.Item>
@@ -783,6 +802,7 @@ const CardComponent: React.FC<CardType> = ({
             onChange={(e) =>
               handleUpdateChange("configuration", e.target.value)
             }
+            readOnly
             style={inputStyle}
           />{" "}
         </Form.Item>
@@ -856,6 +876,32 @@ const CardComponent: React.FC<CardType> = ({
         </Form.Item>
       ),
     },
+    {
+      label: "approval_status_message",
+      name: "approval_status_message",
+      value: (
+        <Form.Item name="approval_status_message">
+          <b>Approver Message: </b>
+          <br></br>
+          <br></br>{" "}
+          <Input
+            defaultValue={data["approval_status_message"]}
+            onChange={(e) =>
+              handleUpdateChange("approval_status_message", e.target.value)
+            }
+            style={{
+              width: "387px",
+              height: "100px",
+              background: "#f0f0f0",
+              borderRadius: "5px",
+              border: "0.5px solid #d3d3d3",
+              textAlign: "center",
+            }}
+            readOnly
+          />{" "}
+        </Form.Item>
+      ),
+    },
   ];
 
   // Filter form items based on search query
@@ -911,6 +957,7 @@ const CardComponent: React.FC<CardType> = ({
   const handleDelete = async () => {
     try {
       setIsLoading(true);
+      setIsModalVisible(false);
       const deletePayload = {
         asset_uuid: data.key,
       };
@@ -928,7 +975,8 @@ const CardComponent: React.FC<CardType> = ({
         );
 
         message.success("Asset successfully deleted");
-        setIsModalVisible(false);
+        assetDataRefetch();
+        setDrawerVisible(false);
       } else {
         console.error("Failed to delete asset");
         message.error("Failed to delete asset. Please try again.");
@@ -942,8 +990,35 @@ const CardComponent: React.FC<CardType> = ({
     }
   };
 
+  const handleRestore = async () => {
+    try {
+      setIsLoading(true);
+      setIsModalVisible(false);
+      const restorePayload = {
+        asset_uuid: data.key,
+      };
+      const response = await axiosInstance.put("/asset/", restorePayload);
+
+      if (response.status === 200) {
+        setTableData((prevData) =>
+          prevData.filter((item) => item.key !== data.key)
+        );
+
+        message.success("Asset successfully restored");
+        assetDataRefetch();
+        setDrawerVisible(false);
+      } else {
+        message.error("Failed to restore asset. Please try again.");
+      }
+    } catch (error) {
+      message.error("Error restore asset. Please try again.");
+    } finally {
+      setIsLoading(false);
+      setIsModalVisible(false);
+    }
+  };
+
   const handleCancel = () => {
-    console.log("Asset deletion cancelled.");
     setIsModalVisible(false);
   };
 
@@ -967,7 +1042,6 @@ const CardComponent: React.FC<CardType> = ({
   };
   const getUserScope = () => {
     const jwtToken = localStorage.getItem("jwt");
-    console.log(jwtToken);
     if (jwtToken) {
       const payload = decodeJWT(jwtToken);
       return payload.user_scope;
@@ -993,7 +1067,7 @@ const CardComponent: React.FC<CardType> = ({
             }}
           />
 
-          {isMyApprovalPage && (
+          {/* {isMyApprovalPage && (
             <>
               {isLoading ? (
                 <Spin size="large" />
@@ -1029,24 +1103,88 @@ const CardComponent: React.FC<CardType> = ({
                 </>
               )}
             </>
+          )} */}
+
+          {isMyApprovalPage && (
+            <>
+              {isLoading ? (
+                <Spin size="large" />
+              ) : (
+                <>
+                  {getUserScope() === "SYSTEM_ADMIN" && (
+                    <Button
+                      style={{
+                        marginBottom: "0px",
+                        marginTop: "0px",
+                        color: "white",
+                        border: "none",
+                        background: "blue",
+                        marginLeft: "600px",
+                      }}
+                      onClick={handleUpdate}
+                      disabled={isLoading} // Disable button while updating
+                    >
+                      Update
+                    </Button>
+                  )}
+                  {getUserScope() === "LEAD" && (
+                    <Button
+                      type="primary"
+                      danger
+                      onClick={handleDeleteClick}
+                      style={{
+                        marginLeft: "570px",
+                        marginTop: "0px",
+                      }}
+                    >
+                      Delete Asset
+                    </Button>
+                  )}
+                  {getUserScope() === "MANAGER" && (
+                    <Button
+                      type="primary"
+                      danger
+                      onClick={handleDeleteClick}
+                      style={{
+                        marginLeft: "570px",
+                        marginTop: "0px",
+                      }}
+                    >
+                      Restore Asset
+                    </Button>
+                  )}
+                </>
+              )}
+            </>
           )}
         </div>
         <Modal
           title="Delete Asset"
-          visible={isModalVisible}
+          open={isModalVisible}
           onCancel={handleCancel}
           footer={[
             <Button key="cancel" onClick={handleCancel}>
               Cancel
             </Button>,
-            <Button key="delete" type="primary" danger onClick={handleDelete}>
-              Delete
-            </Button>,
+            getUserScope() === "LEAD" ? (
+              <Button key="delete" type="primary" danger onClick={handleDelete}>
+                Delete
+              </Button>
+            ) : (
+              <Button
+                key="restore"
+                type="primary"
+                danger
+                onClick={handleRestore}
+              >
+                Restore
+              </Button>
+            ),
           ]}
           width={400}
           centered
         >
-          <p>Are you sure you want to delete the asset?</p>
+          <p>Are you sure you want to restore the asset?</p>
         </Modal>
       </div>
 
