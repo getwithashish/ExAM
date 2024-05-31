@@ -61,7 +61,6 @@ const AssetTableHandler = ({
       editedQueryParam = offsetString + queryParamArg;
     }
 
-    // setQueryParam(queryParam);
     setQueryParam(editedQueryParam);
     assetDataRefetch({ force: true });
   };
@@ -102,8 +101,6 @@ const AssetTableHandler = ({
       value: assetType.asset_type_name,
     })) ?? [];
 
-  const assetDataList = assetData;
-
   const handleRowClick = useCallback((record: React.SetStateAction<null>) => {
     setSelectedRow(record);
     setDrawerVisible(true);
@@ -125,7 +122,7 @@ const AssetTableHandler = ({
   <div>
     <h1>Asset Overview</h1>
   </div>;
-  const renderClickableColumn = (columnName, dataIndex) => (_, record) =>
+  const renderClickableColumn = (columnName:any, dataIndex:any) => (_:any, record:any) =>
     (
       <div
         data-column-name={columnName}
@@ -591,10 +588,6 @@ const AssetTableHandler = ({
     updated_at: result.updated_at,
     approval_status_message: result.approval_status_message,
   }));
-
-  const drawerTitle = "Asset Details";
-
-  const button = <Button type="primary"></Button>;
 
   return (
     <AssetTable
