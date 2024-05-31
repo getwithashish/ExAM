@@ -1,29 +1,33 @@
 import React, { Key, SetStateAction, useCallback, useState } from "react";
 import { Button, Input, Space } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import { SearchOutlined, UserAddOutlined } from "@ant-design/icons";
 import "./AssetTable.css";
 import { useQuery } from "@tanstack/react-query";
 import { DataType } from "../AssetTable/types";
 import { AssetResult } from "../AssetTable/types";
 import AssetTable from "./AssetTable";
-import { getAssetDetails,getAssetTypeOptions, getLocationOptions, getMemoryOptions } from "../../AssetTable/api/getAssetDetails";
+import {
+  getAssetDetails,
+  getAssetTypeOptions,
+  getLocationOptions,
+  getMemoryOptions,
+} from "../../AssetTable/api/getAssetDetails";
 
-const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
+const AssetTableHandler = ({
+  queryParam,
+  setQueryParam,
+  assetData,
+  isAssetDataLoading,
+  assetDataRefetch,
+  showAssignDrawer,
+  queryParamProp,
+}) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [sortedColumn, setSortedColumn] = useState<string>('');
-  const [sortOrder, setSortOrder] = useState<string>('asc');
+  const [sortedColumn, setSortedColumn] = useState<string>("");
+  const [sortOrder, setSortOrder] = useState<string>("asc");
   const [sortOrders, setSortOrders] = useState<{ [key: string]: string }>({});
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [queryParam, setQueryParam] = useState("");
-  const {
-    data: assetData,
-    isLoading: isAssetDataLoading,
-    refetch: assetDataRefetch,
-  } = useQuery({
-    queryKey: ["assetList", queryParam],
-    queryFn: () => getAssetDetails(`${queryParamProp + queryParam}`),
-  });
 
   const refetchAssetData = (queryParamArg = "") => {
     let editedQueryParam = "";
@@ -106,32 +110,31 @@ const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
       )
     );
   };
-  
+
   const handleSort = (column: string) => {
     const isCurrentColumn = column === sortedColumn;
     let newSortOrders = { ...sortOrders };
-  
+
     if (!isCurrentColumn) {
       newSortOrders = { [column]: "asc" };
     } else {
       newSortOrders[column] = sortOrders[column] === "asc" ? "desc" : "asc";
     }
-  
+
     setSortedColumn(column);
     setSortOrder(newSortOrders[column]);
     setSortOrders(newSortOrders);
-  
+
     const queryParams = Object.keys(newSortOrders)
-    .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
-    .join("");
-    let additionalQueryParams = '&offset=0';
-    if (searchTerm !== '' && searchTerm !== null) {
+      .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
+      .join("");
+    let additionalQueryParams = "&offset=0";
+    if (searchTerm !== "" && searchTerm !== null) {
       additionalQueryParams += `&global_search=${searchTerm}`;
     }
     refetchAssetData(queryParams + additionalQueryParams);
   };
 
-  
   <div>
     <h1>Asset Overview</h1>
   </div>;
@@ -390,20 +393,28 @@ const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
       responsive: ["md"],
       width: 120,
       render: (_, record) => {
-        const dateOfPurchase = record.date_of_purchase ? new Date(record.date_of_purchase) : null;
+        const dateOfPurchase = record.date_of_purchase
+          ? new Date(record.date_of_purchase)
+          : null;
         const warrantyPeriod = parseInt(record.warranty_period) || 0; // Defaulting to 0 if warranty_period is not provided or invalid
         if (dateOfPurchase instanceof Date && !isNaN(dateOfPurchase)) {
-          const expiryDate = new Date(dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000); // Calculating expiry date in milliseconds
-          const formattedExpiryDate = expiryDate.toISOString().split('T')[0];
+          const expiryDate = new Date(
+            dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000
+          ); // Calculating expiry date in milliseconds
+          const formattedExpiryDate = expiryDate.toISOString().split("T")[0];
           const currentDate = new Date();
           const isExpired = expiryDate < currentDate;
-    
+
           // Apply renderClickableColumn logic here
           return (
             <div
               data-column-name="Expiry Date"
               onClick={() => handleColumnClick(record, "Expiry Date")}
-              style={{ cursor: "pointer", color: isExpired ? "red" : "green", fontWeight: isExpired ? "bold" : "bold" }}
+              style={{
+                cursor: "pointer",
+                color: isExpired ? "red" : "green",
+                fontWeight: isExpired ? "bold" : "bold",
+              }}
             >
               {formattedExpiryDate}
             </div>
@@ -413,16 +424,16 @@ const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
         }
       },
     },
-    
-,    
-{
-  title: "License Type",
-  dataIndex: "license_type",
-  responsive: ["md"],
-  width: 120,
- 
-  render: renderClickableColumn("license_type", "license_type"),
-},
+
+    ,
+    {
+      title: "License Type",
+      dataIndex: "license_type",
+      responsive: ["md"],
+      width: 120,
+
+      render: renderClickableColumn("license_type", "license_type"),
+    },
 
     {
       title: "Model Number",
@@ -539,22 +550,15 @@ const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
       width: 120,
       render: (_data, record) => (
         <Button
+          className="ml-6"
           ghost
-          style={{
-            borderRadius: "10px",
-            background: "#D3D3D3",
-            color: "black",
-          }}
+          type="primary"
+          shape="circle"
+          icon={<UserAddOutlined />}
           onClick={() => {
-            if (record.custodian == null || record.custodian == undefined) {
-              showAssignDrawer(record);
-            } else {
-              alert("Already assigned");
-            }
+            showAssignDrawer(record);
           }}
-        >
-          +
-        </Button>
+        />
       ),
     },
   ];
@@ -598,7 +602,7 @@ const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
     configuration: result.configuration,
     custodian: result.custodian?.employee_name,
     product_name: result.product_name,
-    license_type:result.license_type,
+    license_type: result.license_type,
     owner: result.owner,
     requester: result.requester?.username,
     AssignAsset: "assign",

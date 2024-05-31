@@ -17,13 +17,12 @@ const TableNavbar: React.FC<TableNavbarProps> = ({
   setShowUpload,
   assetDataRefetch,
   reset,
-  searchTerm, 
+  searchTerm,
   setSearchTerm,
   setJson_query,
-  json_query
+  json_query,
 }) => {
   const [visible, setVisible] = useState(false);
- 
 
   const decodeJWT = (token: string) => {
     try {
@@ -61,9 +60,12 @@ const TableNavbar: React.FC<TableNavbarProps> = ({
 
   const handleExport = (exportFormat: string) => {
     axiosInstance
-      .get(`/asset/export?export_format=${exportFormat}&json_logic=${json_query}`, {
-        responseType: 'blob'  // Set responseType to 'blob' to handle binary data
-      })
+      .get(
+        `/asset/export?export_format=${exportFormat}&json_logic=${json_query}`,
+        {
+          responseType: "blob", // Set responseType to 'blob' to handle binary data
+        }
+      )
       .then((response) => {
         const contentType = `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`; // Specify XLSX MIME type
         const blob = new Blob([response.data], { type: contentType });
@@ -108,7 +110,7 @@ const TableNavbar: React.FC<TableNavbarProps> = ({
     link.click();
     document.body.removeChild(link);
   };
-  
+
   const showQueryBuilder = () => {
     setVisible(true);
   };
@@ -155,6 +157,8 @@ const TableNavbar: React.FC<TableNavbarProps> = ({
         <QueryBuilderComponent
           assetDataRefetch={assetDataRefetch}
           setJson_query={setJson_query}
+          reset={reset}
+          setVisible={setVisible}
         />
       </DrawerViewRequest>
 
