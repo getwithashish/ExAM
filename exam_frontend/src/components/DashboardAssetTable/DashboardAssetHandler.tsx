@@ -1,22 +1,17 @@
-import React, {
-  Key,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import React, { Key, useCallback, useEffect, useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import "./DasboardAssetTable.css";
 import { useQuery } from "@tanstack/react-query";
 import { AssetType, DataType } from "../AssetTable/types";
 import { AssetResult } from "../AssetTable/types";
-import {
-  getAssetDetails,
-  getAssetTypeOptions,
-  getLocationOptions,
-  getMemoryOptions,
-} from "./api/getDashboardAssetDetails";
 import DashboardAssetTable from "./DashboardAssetTable";
 import TimelineViewDrawer from "../TimelineLog/TimeLineDrawer";
+import {
+  getAssetDetails,
+  getLocationOptions,
+  getAssetTypeOptions,
+  getMemoryOptions,
+} from "../AssetTable/api/getAssetDetails";
 
 interface DashboardAssetHandlerProps {
   selectedTypeId: number;
@@ -42,8 +37,8 @@ const DashboardAssetHandler = ({
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [queryParam, setQueryParam] = useState("");
-  const [sortedColumn, setSortedColumn] = useState<string>('');
-  const [sortOrder, setSortOrder] = useState<string>('asc');
+  const [sortedColumn, setSortedColumn] = useState<string>("");
+  const [sortOrder, setSortOrder] = useState<string>("asc");
   const [sortOrders, setSortOrders] = useState<{ [key: string]: string }>({});
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [json_query, setJson_query] = useState<string>("");
@@ -107,7 +102,7 @@ const DashboardAssetHandler = ({
 
   const locations = locationResults ? locationResults : [];
 
-  const locationFilters = locations.map((location:any) => ({
+  const locationFilters = locations.map((location: any) => ({
     text: location.location_name,
     value: location.location_name,
   }));
@@ -146,15 +141,15 @@ const DashboardAssetHandler = ({
     );
   };
   const renderClickableColumn = (columnName, dataIndex) => (_, record) =>
-  (
-    <div
-      data-column-name={columnName}
-      onClick={() => handleColumnClick(record, columnName)}
-      style={{ cursor: "pointer" }}
-    >
-      {record[dataIndex]}
-    </div>
-  );
+    (
+      <div
+        data-column-name={columnName}
+        onClick={() => handleColumnClick(record, columnName)}
+        style={{ cursor: "pointer" }}
+      >
+        {record[dataIndex]}
+      </div>
+    );
 
   const handleSort = (column: string) => {
     const isCurrentColumn = column === sortedColumn;
@@ -173,29 +168,29 @@ const DashboardAssetHandler = ({
     const queryParams = Object.keys(newSortOrders)
       .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
       .join("");
-      
-      let additionalQueryParams = '&offset=0';
-      if (searchTerm !== '' && searchTerm !== null) {
-        additionalQueryParams += `&global_search=${searchTerm}`;
-      }
-      if (json_query !== '' && json_query !== null) {
-        additionalQueryParams += `&json_logic=${json_query}`;
-      }
-      if (assetState !== '' && assetState !== null) {
-        additionalQueryParams += `&status=${assetState}`;
-      }
-      if (detailState !== '' && detailState !== null) {
-        additionalQueryParams += `&asset_detail_status=${detailState}`;
-      }
-      if (assignState !== '' && assignState !== null) {
-        additionalQueryParams += `&assign_status=${assignState}`;
-      }
-      if (selectedTypeId !== 0) {
-        additionalQueryParams += `&asset_type=${selectedTypeId}`;
-      }
-    
-      refetchAssetData(queryParams + additionalQueryParams);
-    };
+
+    let additionalQueryParams = "&offset=0";
+    if (searchTerm !== "" && searchTerm !== null) {
+      additionalQueryParams += `&global_search=${searchTerm}`;
+    }
+    if (json_query !== "" && json_query !== null) {
+      additionalQueryParams += `&json_logic=${json_query}`;
+    }
+    if (assetState !== "" && assetState !== null) {
+      additionalQueryParams += `&status=${assetState}`;
+    }
+    if (detailState !== "" && detailState !== null) {
+      additionalQueryParams += `&asset_detail_status=${detailState}`;
+    }
+    if (assignState !== "" && assignState !== null) {
+      additionalQueryParams += `&assign_status=${assignState}`;
+    }
+    if (selectedTypeId !== 0) {
+      additionalQueryParams += `&asset_type=${selectedTypeId}`;
+    }
+
+    refetchAssetData(queryParams + additionalQueryParams);
+  };
 
   const columns = [
     {
@@ -405,12 +400,16 @@ const DashboardAssetHandler = ({
       dataIndex: "expiry_date",
       responsive: ["md"],
       width: 120,
-      render: (_:any, record:any) => {
-        const dateOfPurchase = record.date_of_purchase ? new Date(record.date_of_purchase) : null;
+      render: (_: any, record: any) => {
+        const dateOfPurchase = record.date_of_purchase
+          ? new Date(record.date_of_purchase)
+          : null;
         const warrantyPeriod = parseInt(record.warranty_period) || 0; // Defaulting to 0 if warranty_period is not provided or invalid
         if (dateOfPurchase instanceof Date && !isNaN(dateOfPurchase)) {
-          const expiryDate = new Date(dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000); // Calculating expiry date in milliseconds
-          const formattedExpiryDate = expiryDate.toISOString().split('T')[0];
+          const expiryDate = new Date(
+            dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000
+          ); // Calculating expiry date in milliseconds
+          const formattedExpiryDate = expiryDate.toISOString().split("T")[0];
           const currentDate = new Date();
           const isExpired = expiryDate < currentDate;
           // Apply renderClickableColumn logic here
@@ -418,7 +417,11 @@ const DashboardAssetHandler = ({
             <div
               data-column-name="Expiry Date"
               onClick={() => handleColumnClick(record, "Expiry Date")}
-              style={{ cursor: "pointer", color: isExpired ? "red" : "green", fontWeight: isExpired ? "bold" : "bold" }}
+              style={{
+                cursor: "pointer",
+                color: isExpired ? "red" : "green",
+                fontWeight: isExpired ? "bold" : "bold",
+              }}
             >
               {formattedExpiryDate}
             </div>
@@ -428,17 +431,16 @@ const DashboardAssetHandler = ({
         }
       },
     },
-    
-    
-,    
-{
-  title: "License Type",
-  dataIndex: "license_type",
-  responsive: ["md"],
-  width: 120,
- 
-  render: renderClickableColumn("license_type", "license_type"),
-},
+
+    ,
+    {
+      title: "License Type",
+      dataIndex: "license_type",
+      responsive: ["md"],
+      width: 120,
+
+      render: renderClickableColumn("license_type", "license_type"),
+    },
 
     {
       title: "Model Number",
@@ -544,7 +546,7 @@ const DashboardAssetHandler = ({
         onClick: () => handleSort("updated_at"),
       }),
       render: renderClickableColumn("Updated At", "updated_at"),
-    },    
+    },
     {
       title: "Accessories",
       dataIndex: "Accessories",
@@ -557,7 +559,10 @@ const DashboardAssetHandler = ({
       dataIndex: "approval_status_message",
       responsive: ["md"],
       width: 120,
-      render: renderClickableColumn("approval_status_message", "approval_status_message"),
+      render: renderClickableColumn(
+        "approval_status_message",
+        "approval_status_message"
+      ),
     },
     {
       title: "View Asset Log",
@@ -565,7 +570,9 @@ const DashboardAssetHandler = ({
       responsive: ["md"],
       fixed: "right",
       width: 140,
-      render: (_: any, record: { key: string; }) => <TimelineViewDrawer assetUuid={record.key} />,
+      render: (_: any, record: { key: string }) => (
+        <TimelineViewDrawer assetUuid={record.key} />
+      ),
     },
   ];
 
@@ -581,44 +588,78 @@ const DashboardAssetHandler = ({
     }
   };
 
-
-  const data = assetData?.results?.map((result: { asset_uuid: any; asset_id: any; asset_category: any; asset_type: { asset_type_name: any; }; version: any; status: string; location: { location_name: any; }; invoice_location: { location_name: any; }; business_unit: { business_unit_name: any; }; os: any; os_version: any; mobile_os: any; processor: any; processor_gen: any; accessories: any; date_of_purchase: any; warranty_period: any; asset_detail_status: any; assign_status: any; approved_by: { username: any; }; model_number: any; serial_number: any; memory: { memory_space: any; }; storage: any; configuration: any; custodian: { employee_name: any; }; product_name: any; owner: any; license_type: any; requester: { username: any; }; created_at: any; updated_at: any; approval_status_message:any }) => ({
-    key: result.asset_uuid,
-    asset_id: result.asset_id,
-    asset_category: result.asset_category,
-    asset_type: result.asset_type.asset_type_name,
-    version: result.version,
-    status: result.status === "IN STORE" ? "IN STOCK" : result.status,
-    location: result.location?.location_name,
-    invoice_location: result.invoice_location?.location_name,
-    business_unit: result.business_unit.business_unit_name,
-    os: result.os,
-    os_version: result.os_version,
-    mobile_os: result.mobile_os,
-    processor: result.processor,
-    processor_gen: result.processor_gen,
-    accessories: result.accessories,
-    date_of_purchase: result.date_of_purchase,
-    warranty_period: result.warranty_period,
-    asset_detail_status: result.asset_detail_status,
-    assign_status: result.assign_status,
-    approved_by: result.approved_by?.username,
-    model_number: result.model_number,
-    serial_number: result.serial_number,
-    memory: result.memory?.memory_space,
-    storage: result.storage,
-    configuration: result.configuration,
-    custodian: result.custodian?.employee_name,
-    product_name: result.product_name,
-    owner: result.owner,
-    license_type:result.license_type,
-    requester: result.requester?.username,
-    AssignAsset: "assign",
-    created_at: result.created_at,
-    updated_at: result.updated_at,
-    approval_status_message: result.approval_status_message
-
-  }));
+  const data = assetData?.results?.map(
+    (result: {
+      asset_uuid: any;
+      asset_id: any;
+      asset_category: any;
+      asset_type: { asset_type_name: any };
+      version: any;
+      status: string;
+      location: { location_name: any };
+      invoice_location: { location_name: any };
+      business_unit: { business_unit_name: any };
+      os: any;
+      os_version: any;
+      mobile_os: any;
+      processor: any;
+      processor_gen: any;
+      accessories: any;
+      date_of_purchase: any;
+      warranty_period: any;
+      asset_detail_status: any;
+      assign_status: any;
+      approved_by: { username: any };
+      model_number: any;
+      serial_number: any;
+      memory: { memory_space: any };
+      storage: any;
+      configuration: any;
+      custodian: { employee_name: any };
+      product_name: any;
+      owner: any;
+      license_type: any;
+      requester: { username: any };
+      created_at: any;
+      updated_at: any;
+      approval_status_message: any;
+    }) => ({
+      key: result.asset_uuid,
+      asset_id: result.asset_id,
+      asset_category: result.asset_category,
+      asset_type: result.asset_type.asset_type_name,
+      version: result.version,
+      status: result.status === "IN STORE" ? "IN STOCK" : result.status,
+      location: result.location?.location_name,
+      invoice_location: result.invoice_location?.location_name,
+      business_unit: result.business_unit.business_unit_name,
+      os: result.os,
+      os_version: result.os_version,
+      mobile_os: result.mobile_os,
+      processor: result.processor,
+      processor_gen: result.processor_gen,
+      accessories: result.accessories,
+      date_of_purchase: result.date_of_purchase,
+      warranty_period: result.warranty_period,
+      asset_detail_status: result.asset_detail_status,
+      assign_status: result.assign_status,
+      approved_by: result.approved_by?.username,
+      model_number: result.model_number,
+      serial_number: result.serial_number,
+      memory: result.memory?.memory_space,
+      storage: result.storage,
+      configuration: result.configuration,
+      custodian: result.custodian?.employee_name,
+      product_name: result.product_name,
+      owner: result.owner,
+      license_type: result.license_type,
+      requester: result.requester?.username,
+      AssignAsset: "assign",
+      created_at: result.created_at,
+      updated_at: result.updated_at,
+      approval_status_message: result.approval_status_message,
+    })
+  );
 
   const drawerTitle = "Asset Details";
 

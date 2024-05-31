@@ -28,7 +28,14 @@ class AssetNormalQueryService(AssetQueryAbstract):
 
     def get_asset_details(self, serializer, request):
         self.pagination = LimitOffsetPagination()
-        queryset = Asset.objects.all().filter(is_deleted=False)
+
+        deleted = request.query_params.get("deleted")
+
+        is_deleted = False
+        if deleted:
+            is_deleted = True
+
+        queryset = Asset.objects.all().filter(is_deleted=is_deleted)
 
         global_search = request.query_params.get("global_search")
 
@@ -74,6 +81,7 @@ class AssetNormalQueryService(AssetQueryAbstract):
             "sort_by",
             "sort_order",
             "expired",
+            "deleted",
         ]
         required_query_params = self.remove_fields_from_dict(
             query_params, query_params_to_exclude
@@ -184,7 +192,6 @@ class AssetNormalQueryService(AssetQueryAbstract):
             "approval_status_message",
             "created_at",
             "updated_at",
-            
         ]:
             query |= Q(**{f"{field}__icontains": global_search})
 
@@ -205,5 +212,3 @@ class AssetNormalQueryService(AssetQueryAbstract):
             for key, value in input_dict.items()
             if key not in fields_to_remove
         }
-
-

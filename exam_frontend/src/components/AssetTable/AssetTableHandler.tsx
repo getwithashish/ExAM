@@ -103,7 +103,6 @@ const AssetTableHandler = ({
     })) ?? [];
 
   const assetDataList = assetData;
-  // console.log("Testing on 65:", assetDataList ? assetDataList[0].results : []);
 
   const handleRowClick = useCallback((record: React.SetStateAction<null>) => {
     setSelectedRow(record);
@@ -600,7 +599,6 @@ const AssetTableHandler = ({
   return (
     <AssetTable
      userRole={userRole}
-
       heading={heading}
       isAssetDataLoading={isAssetDataLoading}
       // drawerTitle={drawerTitle}
@@ -611,6 +609,7 @@ const AssetTableHandler = ({
       onCloseDrawer={onCloseDrawer}
       selectedRow={selectedRow}
       drawerVisible={drawerVisible}
+      setDrawerVisible={setDrawerVisible}
       assetData={data}
       sortOrder={sortOrder}
       sortedColumn={sortedColumn}
