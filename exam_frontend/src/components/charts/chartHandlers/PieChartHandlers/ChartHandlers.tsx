@@ -63,17 +63,10 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
   useEffect(() => {
     fetchAssetData()
       .then((assetCountData) => {
-        const filteredAssetCountData = Object.entries(assetCountData?.status_counts ?? {})
-          .filter(([label, _]) => label !== "DISPOSED");
 
-        const assetTypeData = filteredAssetCountData.map(([label, value]) => ({
-          label: statusMapping[label] ?? label,
-          value: value as number,
-          color: statusColors[label],
-        }));
-
-        const inUseCount = assetCountData?.status_counts?.["IN USE"] ?? 0;
-        const inStoreCount = assetCountData?.status_counts?.["IN STORE"] ?? 0;
+        const statusCounts = assetCountData?.status_counts ?? {};
+        const inUseCount = statusCounts["IN USE"] ?? 0;
+        const inStoreCount = statusCounts["IN STORE"] ?? 0;
         const inServiceCount = inUseCount + inStoreCount;
 
         const inServiceData = {
@@ -82,17 +75,31 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
           color: statusColors["IN SERVICE"],
         };
 
-        setAssetChartData([...assetTypeData, inServiceData]);
-        setAssetFilteredChartData([...assetTypeData, inServiceData]);
+        const statusOrder = ["IN SERVICE", "IN USE", "IN STOCK", "EXPIRED"];
+        console.log(assetCountData)
+        const filteredAssetCountData = Object.entries(statusCounts)
+          .filter(([label]) => label !== "DISPOSED")
+          .map(([label, value]) => ({
+            label: statusMapping[label] ?? label,
+            value: value as number,
+            color: statusColors[label],
+          }));
+        const assetTypeData = [...filteredAssetCountData, inServiceData];
+
+        assetTypeData.sort((a, b) => {
+          return statusOrder.indexOf(b.label) - statusOrder.indexOf(a.label);
+        });
+
+        setAssetChartData(assetTypeData);
+        setAssetFilteredChartData(assetTypeData);
       })
       .catch((error) => {
         console.error("Error fetching asset count data:", error);
         setAssetFilteredChartData([]);
       });
+
     return () => { };
   }, []);
-
-
 
   const handleAssetItemClick = (_event: React.MouseEvent, params: any) => {
     let chartLabel = assetFilteredChartData[params["dataIndex"]]?.label;
@@ -194,7 +201,12 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
           delete mergedStatusData["CREATE_PENDING"];
         }
 
-        const mergedStatusArray: ChartData[] = Object.values(mergedStatusData);
+        const statusOrder = ["CREATED", "UPDATED", "PENDING", "REJECTED"]
+
+        const mergedStatusArray: ChartData[] = statusOrder
+          .map(label => mergedStatusData[label])
+          .filter((entry): entry is ChartData => entry !== undefined);
+
         setDetailChartData(mergedStatusArray);
         setDetailFilteredChartData(mergedStatusArray);
       })
@@ -204,24 +216,28 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
       });
   }, []);
 
-  useEffect(() => {
-    fetchAssetData()
-      .then((assetAssignData) => {
-        const assetAssignStatusData = Object.entries(
-          assetAssignData?.assign_status ?? {}
-        ).map(([label, value]) => ({
-          label: statusMapping[label] ?? label,
-          value: value as number,
-          color: statusColors[label],
-        }));
-        setAssignChartData(assetAssignStatusData);
-        setAssignFilteredChartData(assetAssignStatusData);
-      })
-      .catch((error) => {
-        console.error("Error fetching assign details data:", error);
-        setAssignFilteredChartData([]);
-      });
-  }, []);
+ useEffect(() => {
+  fetchAssetData()
+    .then((assetAssignData) => {
+      const assetAssignStatusData = Object.entries(assetAssignData?.assign_status ?? {}).map(([label, value]) => ({
+        label: statusMapping[label] ?? label,
+        value: value as number,
+        color: statusColors[label] ?? "", // Ensure color is always present
+      }));
+
+      const statusOrder = ["ASSIGNED", "UNASSIGNED", "PENDING", "REJECTED"];
+      const sortedAssignStatusData = statusOrder.map((label) =>
+        assetAssignStatusData.find((data) => data.label === label)
+      ).filter((entry): entry is ChartData => entry !== undefined);
+
+      setAssignChartData(sortedAssignStatusData);
+      setAssignFilteredChartData(sortedAssignStatusData);
+    })
+    .catch((error) => {
+      console.error("Error fetching assign details data:", error);
+      setAssignFilteredChartData([]);
+    });
+}, []);
 
   useEffect(() => {
   }, [selectedTypeId]);
