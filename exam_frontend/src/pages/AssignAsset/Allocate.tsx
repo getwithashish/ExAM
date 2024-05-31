@@ -3,10 +3,22 @@ import { DataType } from "../../components/AssetTable/types";
 import AssetTableHandler from "../../components/AssignAsset/AssetTable/AssetTableHandler";
 import DrawerViewRequest from "../RequestPage/DrawerViewRequest";
 import { AssignmentHandler } from "../../components/AssignAsset/Assign/AssignmentHandler";
+import { useQuery } from "@tanstack/react-query";
+import { getAssetDetails } from "../../components/AssetTable/api/getAssetDetails";
 
 const Assignableasset = () => {
   const [record, setRecord] = useState<DataType | null>(null);
   const [open, setOpen] = useState<boolean>(false);
+
+  const [queryParam, setQueryParam] = useState("");
+  const {
+    data: assetData,
+    isLoading: isAssetDataLoading,
+    refetch: assetDataRefetch,
+  } = useQuery({
+    queryKey: ["assetList", queryParam],
+    queryFn: () => getAssetDetails(`${queryParamProp + queryParam}`),
+  });
 
   const showAssignDrawer = (record: DataType | null) => {
     setRecord(record);
@@ -16,9 +28,8 @@ const Assignableasset = () => {
   const closeAssignDrawer = () => {
     setOpen(false);
   };
- 
-  let queryParamProp =
-    "&assign_status=UNASSIGNED|REJECTED&status=IN STORE"
+
+  let queryParamProp = "&assign_status=UNASSIGNED|REJECTED&status=IN STORE";
   return (
     <div style={{ background: "white" }}>
       <nav className="flex mb-4 mx-4 my-0 py-4" aria-label="Breadcrumb">
@@ -68,13 +79,22 @@ const Assignableasset = () => {
         </ol>
       </nav>
 
-      <AssetTableHandler showAssignDrawer={showAssignDrawer} queryParamProp={queryParamProp } />
+      <AssetTableHandler
+        queryParam={queryParam}
+        setQueryParam={setQueryParam}
+        assetData={assetData}
+        isAssetDataLoading={isAssetDataLoading}
+        assetDataRefetch={assetDataRefetch}
+        showAssignDrawer={showAssignDrawer}
+        queryParamProp={queryParamProp}
+      />
 
       <DrawerViewRequest title="assign" onClose={closeAssignDrawer} open={open}>
         {record && (
           <AssignmentHandler
             record={record}
             closeAssignDrawer={closeAssignDrawer}
+            assetDataRefetch={assetDataRefetch}
           />
         )}
       </DrawerViewRequest>
