@@ -957,6 +957,7 @@ const CardComponent: React.FC<CardType> = ({
   const handleDelete = async () => {
     try {
       setIsLoading(true);
+      setIsModalVisible(false);
       const deletePayload = {
         asset_uuid: data.key,
       };
@@ -974,7 +975,6 @@ const CardComponent: React.FC<CardType> = ({
         );
 
         message.success("Asset successfully deleted");
-        setIsModalVisible(false);
         assetDataRefetch();
         setDrawerVisible(false);
       } else {
@@ -993,6 +993,7 @@ const CardComponent: React.FC<CardType> = ({
   const handleRestore = async () => {
     try {
       setIsLoading(true);
+      setIsModalVisible(false);
       const restorePayload = {
         asset_uuid: data.key,
       };
@@ -1004,7 +1005,6 @@ const CardComponent: React.FC<CardType> = ({
         );
 
         message.success("Asset successfully restored");
-        setIsModalVisible(false);
         assetDataRefetch();
         setDrawerVisible(false);
       } else {
