@@ -32,6 +32,8 @@ class AssetApproveService:
         asset.approved_by = request.user
         print("Approved by:", request.user)
         asset.approval_status_message = comments
+        asset_category = asset.asset_category
+        print("Asset type is",asset_category)
 
         asset, message, email_subject = (
             self.asset_user_role_approve_service.approve_request(asset, request)
@@ -43,28 +45,28 @@ class AssetApproveService:
         # Determine email format and subject
 
         if asset_detail_status == "UPDATE_PENDING" and (assign_status=="ASSIGNED" or assign_status== "UNASSIGNED" or assign_status == "REJECTED"):
-            email_body = EmailApprovalFormats.format_approval_modification_email_body(
-                asset, comments
+            email_body,email_subject = EmailApprovalFormats.format_approval_modification_email_body(
+                asset, comments,asset_category
             )
-            email_subject = "ASSET UPDATION APPROVED"
+            
 
         if asset_detail_status == "CREATE_PENDING":
-            email_body = EmailApprovalFormats.format_approval_creation_email_body(
-                asset, comments
+            email_body,email_subject = EmailApprovalFormats.format_approval_creation_email_body(
+                asset, comments,asset_category
             )
-            email_subject = "ASSET CREATION APPROVED"
+            
 
         if assign_status == "ASSIGN_PENDING" and (asset_detail_status=="CREATED" or asset_detail_status=="UPDATE_PENDING" or asset_detail_status == "UPDATED" or asset_detail_status == "UPDATE_REJECTED"):
-            email_body = EmailApprovalFormats.format_approval_allocation_email_body(
-                asset, comments
+            email_body,email_subject = EmailApprovalFormats.format_approval_allocation_email_body(
+                asset, comments,asset_category
             )
-            email_subject = "ASSET ALLOCATION APPROVED"
+           
 
         if  custodian_name is None and (asset_detail_status=="CREATED"  or asset_detail_status=="UPDATE_PENDING" or asset_detail_status == "UPDATED" or asset_detail_status == "UPDATE_REJECTED"):
-            email_body = EmailApprovalFormats.format_approval_deallocation_email_body(
-                asset, comments
+            email_body,email_subject = EmailApprovalFormats.format_approval_deallocation_email_body(
+                asset, comments,asset_category
             )
-            email_subject = "ASSET DEALLOCATION APPROVED"
+            
 
         
         # Send Email
@@ -92,7 +94,8 @@ class AssetApproveService:
         print("The assign status is", assign_status)
         custodian_name = asset.custodian
         print("Custodian:", custodian_name)
-
+        asset_category = asset.asset_category
+        print("Asset type is",asset_category)
         asset, message, email_subject = (
             self.asset_user_role_approve_service.reject_request(asset, request)
         )
@@ -104,27 +107,27 @@ class AssetApproveService:
 
         if asset_detail_status == "UPDATE_PENDING" and (assign_status=="ASSIGNED" or assign_status== "UNASSIGNED" or assign_status == "REJECTED"):
             email_body = EmailRejectionFormats.format_rejection_modification_email_body(
-                asset, comments
+                asset, comments,asset_category
             )
-            email_subject = "ASSET UPDATION REJECTED"
+           
 
         if asset_detail_status == "CREATE_PENDING":
-            email_body = EmailRejectionFormats.format_rejection_creation_email_body(
-                asset, comments
+            email_body,email_subject = EmailRejectionFormats.format_rejection_creation_email_body(
+                asset, comments,asset_category
             )
-            email_subject = "ASSET CREATION REJECTED"
+            
 
         if assign_status == "ASSIGN_PENDING" and (asset_detail_status=="CREATED" or asset_detail_status=="UPDATE_PENDING" or asset_detail_status=="UPDATED" or asset_detail_status == "UPDATE_REJECTED"):
-            email_body = EmailRejectionFormats.format_rejection_allocation_email_body(
-                asset, comments
+            email_body,email_subject = EmailRejectionFormats.format_rejection_allocation_email_body(
+                asset, comments,asset_category
             )
-            email_subject = "ASSET ALLOCATION REJECTED"
+            
 
         if  custodian_name is None and (asset_detail_status=="CREATED"  or asset_detail_status=="UPDATE_PENDING" or asset_detail_status == "UPDATED" or asset_detail_status == "UPDATE_REJECTED"):
-            email_body = EmailRejectionFormats.format_rejection_deallocation_email_body(
-                asset, comments
+            email_body,email_subject = EmailRejectionFormats.format_rejection_deallocation_email_body(
+                asset, comments,asset_category
             )
-            email_subject = "ASSET DEALLOCATION REJECTED"
+           
 
         
         # Send Email
