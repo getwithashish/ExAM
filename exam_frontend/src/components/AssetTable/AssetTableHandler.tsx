@@ -12,6 +12,7 @@ import {
   getLocationOptions,
   getMemoryOptions,
 } from "./api/getAssetDetails";
+import moment from "moment";
 
 
 const AssetTableHandler = ({
@@ -122,8 +123,20 @@ const AssetTableHandler = ({
   <div>
     <h1>Asset Overview</h1>
   </div>;
-  const renderClickableColumn = (columnName:any, dataIndex:any) => (_:any, record:any) =>
-    (
+  const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
+    if (dataIndex === 'created_at' || dataIndex === 'updated_at') {
+      const formattedDate = moment(record[dataIndex]).format('DD-MM-YYYY'); 
+      return (
+        <div
+          data-column-name={columnName}
+          onClick={() => handleColumnClick(record, columnName)}
+          style={{ cursor: "pointer" }}
+        >
+          {formattedDate}
+        </div>
+      );
+    }
+    return (
       <div
         data-column-name={columnName}
         onClick={() => handleColumnClick(record, columnName)}
@@ -132,6 +145,7 @@ const AssetTableHandler = ({
         {record[dataIndex]}
       </div>
     );
+  };
 
     const handleSort = (column: string) => {
       const isCurrentColumn = column === sortedColumn;

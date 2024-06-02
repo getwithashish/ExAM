@@ -155,6 +155,7 @@ const DashboardAssetHandler = ({
         </div>
       );
     }
+  
     return (
       <div
         data-column-name={columnName}

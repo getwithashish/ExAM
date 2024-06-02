@@ -12,6 +12,7 @@ import {
   getLocationOptions,
   getMemoryOptions,
 } from "../../AssetTable/api/getAssetDetails";
+import moment from "moment";
 
 const AssetTableHandler = ({
   queryParam,
@@ -139,16 +140,29 @@ const AssetTableHandler = ({
     <h1>Asset Overview</h1>
   </div>;
 
-  const renderClickableColumn = (columnName, dataIndex) => (_, record) =>
-    (
+const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
+  if (dataIndex === 'created_at' || dataIndex === 'updated_at') {
+    const formattedDate = moment(record[dataIndex]).format('DD-MM-YYYY'); 
+    return (
       <div
         data-column-name={columnName}
         onClick={() => handleColumnClick(record, columnName)}
         style={{ cursor: "pointer" }}
       >
-        {record[dataIndex]}
+        {formattedDate}
       </div>
     );
+  }
+  return (
+    <div
+      data-column-name={columnName}
+      onClick={() => handleColumnClick(record, columnName)}
+      style={{ cursor: "pointer" }}
+    >
+      {record[dataIndex]}
+    </div>
+  );
+};
   const columns = [
     {
       title: "Product Name",
@@ -480,7 +494,6 @@ const AssetTableHandler = ({
       }),
       render: renderClickableColumn("Approved By", "approved_by"),
     },
-
     {
       title: "Requester",
       dataIndex: "requester",
@@ -542,7 +555,16 @@ const AssetTableHandler = ({
       width: 120,
       render: renderClickableColumn("Accessories", "accessories"),
     },
-
+    {
+      title: "Approver Notes",
+      dataIndex: "approval_status_message",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn(
+        "approval_status_message",
+        "approval_status_message"
+      ),
+    },
     {
       title: "Assign Asset",
       dataIndex: "AssignAsset",
@@ -608,6 +630,7 @@ const AssetTableHandler = ({
     AssignAsset: "assign",
     created_at: result.created_at,
     updated_at: result.updated_at,
+    approval_status_message: result.approval_status_message
   }));
 
   const drawerTitle = "Asset Details";
