@@ -308,7 +308,7 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
       try {
         // Fetch the asset type for software
         const response = await axiosInstance.get(
-          import.meta.env["VITE_CREATE_ASSET_URL"],
+          import.meta.env["VITE_GET_ASSET_TYPE"],
           {
             params: { query: "Software" },
           }
