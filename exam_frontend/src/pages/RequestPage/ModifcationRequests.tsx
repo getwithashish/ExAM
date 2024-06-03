@@ -371,14 +371,14 @@ const ViewRequestModal: FC<{
 
     const formFields = [
       {
-        id: "assetId",
+        id: "asset_id",
         label: "ASSET ID",
         name: "assetId",
         value: asset.asset_id,
         disabled: true,
       },
-      {
-        id: "assetType",
+      { 
+        id: "asset_type",
         label: "ASSET TYPE",
         name: "assetType",
         value: asset.asset_type.asset_type_name,
@@ -392,28 +392,28 @@ const ViewRequestModal: FC<{
         disabled: true,
       },
       {
-        id: "assetCategory",
+        id: "asset_category",
         label: "CATEGORY",
         name: "assetCategory",
         value: asset.asset_category,
         disabled: true,
       },
       {
-        id: "productName",
+        id: "product_name",
         label: "PRODUCT NAME",
         name: "productName",
         value: asset.product_name,
         disabled: true,
       },
       {
-        id: "modelNumber",
+        id: "model_number",
         label: "MODEL NUMBER",
         name: "modelNumber",
         value: asset?.model_number,
         disabled: true,
       },
       {
-        id: "serialNumber",
+        id: "serial_number",
         label: "SERIAL NUMBER",
         name: "serialNumber",
         value: asset?.serial_number,
@@ -427,7 +427,7 @@ const ViewRequestModal: FC<{
         disabled: true,
       },
       {
-        id: "dop",
+        id: "date_of_purchase",
         label: "D.O.P",
         name: "dop",
         value: asset?.date_of_purchase,
@@ -504,21 +504,21 @@ const ViewRequestModal: FC<{
         disabled: true,
       },
       {
-        id: "invoiceLocation",
+        id: "invoice_location",
         label: "INV.LOCATION",
         name: "invoiceLocation",
-        value: asset.location.location_name,
+        value: asset.invoice_location.location_name,
         disabled: true,
       },
       {
-        id: "Location",
+        id: "location",
         label: "LOCATION",
         name: "location",
         value: asset.location.location_name,
         disabled: true,
       },
       {
-        id: "businessUnit",
+        id: "business_unit",
         label: "BUSINESS UNIT",
         name: "businessUnit",
         value: asset.business_unit.business_unit_name,
@@ -537,7 +537,7 @@ const ViewRequestModal: FC<{
                   console.log("latestLog", latestLog);
                   let changed = false;
                   if (latestLog && latestLog.hasOwnProperty(field.id)) {
-                    changed = field.value !== latestLog[field.id];
+                    changed = field.value != latestLog[field.id];
                   } else {
                     changed = field.value !== undefined && field.value !== null && field.value !== '';
                   }
