@@ -109,6 +109,12 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
     setDrawerVisible(true);
   }, []);
 
+  const reset = () => {
+    setQueryParam("");
+    setSearchTerm("");
+    refetchAssetData();
+  };
+
   const onCloseDrawer = useCallback(() => {
     setDrawerVisible(false);
   }, []);
@@ -641,6 +647,7 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
         columns={columns}
         memoryData={memoryData}
         assetTypeData={assetTypeData}
+        reset={reset}
         locations={locations}
         sortOrder={sortOrder}
         sortedColumn={sortedColumn}

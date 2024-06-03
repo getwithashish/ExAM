@@ -92,6 +92,12 @@ const AssetTableHandler = ({
     queryFn: () => getMemoryOptions(),
   });
 
+  const reset = () => {
+    setQueryParam("");
+    setSearchTerm("");
+    refetchAssetData();
+  };
+
   const { data: assetTypeData } = useQuery({
     queryKey: ["assetDrawerassetType"],
     queryFn: () => getAssetTypeOptions(),
@@ -618,6 +624,7 @@ const AssetTableHandler = ({
       drawerVisible={drawerVisible}
       setDrawerVisible={setDrawerVisible}
       assetData={data}
+      reset={reset}
       sortOrder={sortOrder}
       sortedColumn={sortedColumn}
       columns={columns}

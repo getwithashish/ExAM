@@ -30,6 +30,7 @@ const AssetTable = ({
   selectedRow,
   drawerVisible,
   assetData,
+  reset,
   totalItemCount,
   assetPageDataFetch,
   columns,
@@ -78,7 +79,8 @@ const AssetTable = ({
       <GlobalSearch    
           assetDataRefetch={assetDataRefetch}      
           searchTerm={searchTerm}
-          onSearch={handleSearch}
+          // onSearch={handleSearch}
+          reset={reset}
           setSearchTerm={setSearchTerm}
         />
       </div>

@@ -5,9 +5,9 @@ import { GlobalSearchProps } from "./types/types";
 const GlobalSearch: React.FC<GlobalSearchProps> = ({
   assetDataRefetch,
   searchTerm,
+  reset,
   setSearchTerm
 }) => {
-  // const [searchTerm, setSearchTerm] = useState(""); // Initialize searchTerm state
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
@@ -25,6 +25,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({
   };
 
   return (
+    <div className="flex">
     <form className={styles["global-search-form"]} onSubmit={handleSubmit}>
       <input
         type="text"
@@ -34,6 +35,13 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({
         className={styles["global-search-input"]}
       />
     </form>
+    <button className="rounded-lg text-white w-20" onClick={reset}>
+        Reset
+      </button>
+
+    </div>
+    
+    
   );
 };
 

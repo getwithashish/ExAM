@@ -26,6 +26,7 @@ const AssetTable = ({
   columns,
   handleUpdateData,
   drawerTitle,
+  reset,
   statusOptions,
   businessUnitOptions,
   locations,
@@ -59,7 +60,8 @@ const AssetTable = ({
       <GlobalSearch    
           assetDataRefetch={assetDataRefetch}      
           searchTerm={searchTerm}
-          onSearch={handleSearch}
+          // onSearch={handleSearch}
+          reset={reset}
           setSearchTerm={setSearchTerm}
         />
       </div>

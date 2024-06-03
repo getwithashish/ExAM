@@ -94,6 +94,12 @@ const AssetTableHandler = ({
       value: assetType.asset_type_name,
     })) ?? [];
 
+    const reset = () => {
+      setQueryParam("");
+      setSearchTerm("");
+      refetchAssetData();
+    };
+
   const handleRowClick = useCallback((record: React.SetStateAction<null>) => {
     setSelectedRow(record);
     setDrawerVisible(true);
@@ -649,6 +655,7 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
       assetData={data}
       columns={columns}
       sortOrder={sortOrder}
+      reset={reset}
       sortedColumn={sortedColumn}
       memoryData={memoryData}
       assetTypeData={assetTypeData}
@@ -656,13 +663,14 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
       statusOptions={statusOptions}
       assetDataRefetch={refetchAssetData}
       businessUnitOptions={businessUnitOptions}
-      handleUpdateData={function (updatedData: { key: any }): void {
+      handleUpdateData={function (updatedData: { key: any; }): void {
         throw new Error("Function not implemented.");
-      }}
+      } }
       drawerTitle={""}
       searchTerm={searchTerm}
-      setSearchTerm={setSearchTerm}
-    />
+      setSearchTerm={setSearchTerm} logsData={undefined} isLoading={false} isSuccess={false} selectedAssetId={null} setSelectedAssetId={function (value: React.SetStateAction<string | null>): void {
+        throw new Error("Function not implemented.");
+      } } asset_uuid={""} heading={""} setTableData={undefined} handleDelete={undefined} modifiedData={undefined} userRole={undefined} isMyApprovalPage={undefined}    />
   );
 };
 
