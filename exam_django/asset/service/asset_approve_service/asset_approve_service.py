@@ -24,16 +24,16 @@ class AssetApproveService:
         comments = request.data.get("comments")
         asset = Asset.objects.get(asset_uuid=asset_uuid)
         asset_detail_status = asset.asset_detail_status
-        print("Asset detail status is", asset_detail_status)
+       
         assign_status = asset.assign_status
-        print("The assign status is", assign_status)
+        
         custodian_name = asset.custodian
-        print("Custodian:", custodian_name)
+        
         asset.approved_by = request.user
-        print("Approved by:", request.user)
+       
         asset.approval_status_message = comments
         asset_category = asset.asset_category
-        print("Asset type is",asset_category)
+       
 
         asset, message, email_subject = (
             self.asset_user_role_approve_service.approve_request(asset, request)
@@ -89,13 +89,13 @@ class AssetApproveService:
         asset.approved_by = request.user
         asset.approval_status_message = comments
         asset_detail_status = asset.asset_detail_status
-        print("Asset detail status is", asset_detail_status)
+        
         assign_status = asset.assign_status
-        print("The assign status is", assign_status)
+        
         custodian_name = asset.custodian
-        print("Custodian:", custodian_name)
+        
         asset_category = asset.asset_category
-        print("Asset type is",asset_category)
+       
         asset, message, email_subject = (
             self.asset_user_role_approve_service.reject_request(asset, request)
         )

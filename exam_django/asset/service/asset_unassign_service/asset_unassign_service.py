@@ -21,8 +21,6 @@ class UnassignAssetService:
             # Determine which service to use based on requester role
             if requester_role == "SYSTEM_ADMIN":
                 asset_user_role_unassign_service = AssetSysadminRoleUnassignService()
-            elif requester_role == "LEAD":
-                asset_user_role_unassign_service = AssetLeadRoleUnassignService()
             else:
                 raise PermissionDeniedException(
                     {}, USER_UNAUTHORIZED, status.HTTP_401_UNAUTHORIZED

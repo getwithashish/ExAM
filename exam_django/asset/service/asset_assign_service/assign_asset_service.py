@@ -1,6 +1,5 @@
 # asset_assign_service.py
 from rest_framework import status
-from asset.service.asset_assign_service.asset_lead_role_assignasset_service import AssetLeadRoleAssignService
 from asset.models import Employee, Asset
 from messages import (
     UNAUTHORIZED_NO_PERMISSION,
@@ -41,10 +40,6 @@ class AssignAssetService:
 
         if requester_role == "SYSTEM_ADMIN":
             message = AssetSysadminRoleAssignService.assign_asset(
-                asset, employee, requester
-            )
-        elif requester_role == "LEAD":
-            message = AssetLeadRoleAssignService.assign_asset(
                 asset, employee, requester
             )
         else:

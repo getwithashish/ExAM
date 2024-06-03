@@ -22,10 +22,7 @@ class UnassignAssetView(APIView):
             if serializer.is_valid():
                 requester = request.user
                 role = requester.user_scope
-
                 asset_uuid = request.data.get("asset_uuid")
-                
-                print("asset_uuid", request.data)
                 # Retrieve the Asset object using the asset_uuid
                 asset = Asset.objects.get(asset_uuid=asset_uuid)
                 custodian_id = asset.custodian
