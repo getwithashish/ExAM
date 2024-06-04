@@ -28,7 +28,7 @@ import { MdFacebook } from "react-icons/md";
 import { useEffect, useState } from "react";
 import React from "react";
 import SubMenu from "antd/es/menu/SubMenu";
-import { Button } from "@mui/material";
+import { Button} from "@mui/material";
 
 const SidebarComponentNew = ({ children }) => {
   const { userRole, setUserRole, login, logout } = useAuth();
@@ -217,9 +217,9 @@ const SidebarComponentNew = ({ children }) => {
                     onClick={() => showDefaultDrawer()}
                     icon={<AppstoreAddOutlined />}
                   >
-                    <ToolTip title="To create a new Asset">
+                    <ToolTip title="To Create an Asset">
                       Create Assets
-                    </ToolTip>
+                      </ToolTip>
                   </Menu.Item>
                   <Menu.Item icon={<EditOutlined />}>
                     <ToolTip title="To modify an Asset">
@@ -332,7 +332,7 @@ const SidebarComponentNew = ({ children }) => {
             </Menu.Item>
             <Menu.Item icon={<CarryOutOutlined />}>
               <ToolTip title="Download user agent">
-                <div onClick={handleDownload}>Download</div>
+                <Link to="#" onClick={handleDownload}>Download</Link>
               </ToolTip>
             </Menu.Item>
             <Menu.Item icon={<RobotOutlined />}>
