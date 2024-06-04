@@ -335,17 +335,17 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
             import.meta.env["VITE_ADD_ASSET_URL"],
             formData
           );
-          console.log("Form Data Posted:", submitResponse.data);
+          console.log("Asset data Posted:", submitResponse.data);
 
           // Display success message and reload page
-          message.success("Form data submitted successfully");
+          message.success("Asset creation done successfully");
           return; // Exit the function after successful submission
         } else {
           message.error("Please fill in all mandatory fields.");
         }
       } catch (error) {
         console.error(
-          "Error fetching asset type or submitting form data:",
+          "Error fetching asset type or asset creation :",
           error
         );
         message.error(
@@ -388,9 +388,9 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
           import.meta.env["VITE_ADD_ASSET_URL"],
           formData
         );
-        console.log("Form Data Posted:", response.data);
+        console.log("Asset Data Posted:", response.data);
 
-        message.success("Form data submitted successfully");
+        message.success("Asset creation done successfully");
         return; // Exit the function after successful submission
       } catch (error) {
         console.error("Error in asset creation :", error);
