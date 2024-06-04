@@ -140,16 +140,26 @@ const DashboardAssetHandler = ({
       )
     );
   };
-  const renderClickableColumn = (columnName, dataIndex) => (_, record) =>
-    (
-      <div
-        data-column-name={columnName}
-        onClick={() => handleColumnClick(record, columnName)}
-        style={{ cursor: "pointer" }}
-      >
-        {record[dataIndex]}
-      </div>
-    );
+  
+
+  const renderClickableColumn = (
+    columnName: string,
+    dataIndex: string,
+    styleCondition?: (record: any) => React.CSSProperties
+  ) => {
+    return (_: any, record: any) => {
+      const conditionalStyle = styleCondition ? styleCondition(record) : {};
+      return (
+        <div
+          data-column-name={columnName}
+          onClick={() => handleColumnClick(record, columnName)}
+          style={{ cursor: "pointer", ...conditionalStyle }}
+        >
+          {record[dataIndex]}
+        </div>
+      );
+    };
+  };
 
   const handleSort = (column: string) => {
     const isCurrentColumn = column === sortedColumn;
@@ -191,7 +201,16 @@ const DashboardAssetHandler = ({
 
     refetchAssetData(queryParams + additionalQueryParams);
   };
+  const detailStatusStyleCondition = (record: any): React.CSSProperties => {
+    return record.asset_detail_status === "CREATE_REJECTED" ||
+      record.asset_detail_status === "UPDATE_REJECTED"
+      ? { color: "red" }
+      : {};
+  };
 
+  const assignStatusStyleCondition = (record: any): React.CSSProperties => {
+    return record.assign_status === "REJECTED" ? { color: "red" } : {};
+  };
   const columns = [
     {
       title: "Product Name",
@@ -328,8 +347,7 @@ const DashboardAssetHandler = ({
       }),
       render: renderClickableColumn("Version", "version"),
     },
-    
-    
+
     {
       title: "Os",
       dataIndex: "os",
@@ -462,9 +480,7 @@ const DashboardAssetHandler = ({
         }
       },
     },
-   
 
-    
     {
       title: "Owner",
       dataIndex: "owner",
@@ -506,6 +522,7 @@ const DashboardAssetHandler = ({
 
       render: renderClickableColumn("Asset Status", "status"),
     },
+
     {
       title: "Asset Detail Status",
       dataIndex: "asset_detail_status",
@@ -513,7 +530,8 @@ const DashboardAssetHandler = ({
       width: 140,
       render: renderClickableColumn(
         "Asset Detail Status",
-        "asset_detail_status"
+        "asset_detail_status",
+        detailStatusStyleCondition
       ),
     },
     {
@@ -521,7 +539,11 @@ const DashboardAssetHandler = ({
       dataIndex: "assign_status",
       responsive: ["md"],
       width: 140,
-      render: renderClickableColumn("Asset Assign Status", "assign_status"),
+      render: renderClickableColumn(
+        "Asset Assign Status",
+        "assign_status",
+        assignStatusStyleCondition
+      ),
     },
     {
       title: "Created At",

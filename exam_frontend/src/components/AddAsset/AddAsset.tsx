@@ -828,6 +828,22 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
               >
                 Submit
               </Button>
+              
+              <Button
+                className={styles["button"]}
+                ghost
+                style={{
+                  background:"red",
+                  marginTop: "30px",
+                  marginLeft:"40px",
+                  width: "120px",
+                  height: "40px",
+                }}
+               
+              >
+               Reset
+              </Button>
+              
             </Form.Item>
           </Form>
         </div>
