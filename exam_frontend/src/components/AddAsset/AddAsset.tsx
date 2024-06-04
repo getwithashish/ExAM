@@ -842,7 +842,7 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
                 className={styles["button"]}
                 ghost
                 style={{
-                  background: "red",
+                  background: "#FF474C",
                   marginTop: "30px",
                   marginLeft:"30px",
                   width: "120px",
