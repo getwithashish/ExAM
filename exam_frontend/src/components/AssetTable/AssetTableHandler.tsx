@@ -12,6 +12,7 @@ import {
   getLocationOptions,
   getMemoryOptions,
 } from "./api/getAssetDetails";
+import moment from "moment";
 
 
 const AssetTableHandler = ({
@@ -61,7 +62,6 @@ const AssetTableHandler = ({
       editedQueryParam = offsetString + queryParamArg;
     }
 
-    // setQueryParam(queryParam);
     setQueryParam(editedQueryParam);
     assetDataRefetch({ force: true });
   };
@@ -92,6 +92,12 @@ const AssetTableHandler = ({
     queryFn: () => getMemoryOptions(),
   });
 
+  const reset = () => {
+    setQueryParam("");
+    setSearchTerm("");
+    refetchAssetData();
+  };
+
   const { data: assetTypeData } = useQuery({
     queryKey: ["assetDrawerassetType"],
     queryFn: () => getAssetTypeOptions(),
@@ -101,8 +107,6 @@ const AssetTableHandler = ({
       text: assetType.asset_type_name,
       value: assetType.asset_type_name,
     })) ?? [];
-
-  const assetDataList = assetData;
 
   const handleRowClick = useCallback((record: React.SetStateAction<null>) => {
     setSelectedRow(record);
@@ -125,8 +129,20 @@ const AssetTableHandler = ({
   <div>
     <h1>Asset Overview</h1>
   </div>;
-  const renderClickableColumn = (columnName, dataIndex) => (_, record) =>
-    (
+  const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
+    if (dataIndex === 'created_at' || dataIndex === 'updated_at') {
+      const formattedDate = moment(record[dataIndex]).format('DD-MM-YYYY'); 
+      return (
+        <div
+          data-column-name={columnName}
+          onClick={() => handleColumnClick(record, columnName)}
+          style={{ cursor: "pointer" }}
+        >
+          {formattedDate}
+        </div>
+      );
+    }
+    return (
       <div
         data-column-name={columnName}
         onClick={() => handleColumnClick(record, columnName)}
@@ -135,6 +151,7 @@ const AssetTableHandler = ({
         {record[dataIndex]}
       </div>
     );
+  };
 
     const handleSort = (column: string) => {
       const isCurrentColumn = column === sortedColumn;
@@ -592,10 +609,6 @@ const AssetTableHandler = ({
     approval_status_message: result.approval_status_message,
   }));
 
-  const drawerTitle = "Asset Details";
-
-  const button = <Button type="primary"></Button>;
-
   return (
     <AssetTable
      userRole={userRole}
@@ -611,6 +624,7 @@ const AssetTableHandler = ({
       drawerVisible={drawerVisible}
       setDrawerVisible={setDrawerVisible}
       assetData={data}
+      reset={reset}
       sortOrder={sortOrder}
       sortedColumn={sortedColumn}
       columns={columns}
