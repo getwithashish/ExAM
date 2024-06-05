@@ -109,10 +109,18 @@ const AssetTable = ({
               let additionalQueryParams = `&offset=${offset}`;
               if (searchTerm !== "" && searchTerm !== null) {
                   additionalQueryParams += `&global_search=${searchTerm}`;
-                }
-              const queryParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}` + additionalQueryParams;
+              }
+              let sortParams = "";
+              const queryParams = `${sortParams}${additionalQueryParams}`;
+              if (sortedColumn && sortOrder) {
+                  // Check if sortParams already contains sorting parameters
+                  if (queryParams.indexOf('sort_by') === -1) {
+                      sortParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
+                  }
+              }
+              
               assetPageDataFetch(queryParams);
-            }}
+          }}
             hideOnSinglePage={true}
           />
             )}
