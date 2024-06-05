@@ -939,6 +939,7 @@ const CardComponent: React.FC<CardType> = ({
   >
     ...
   </ConfigProvider>;
+
   function formatDate(dateString: string | number | Date) {
     if (!dateString) return "";
     const date = new Date(dateString);
@@ -947,6 +948,7 @@ const CardComponent: React.FC<CardType> = ({
     }
     return date.toLocaleDateString();
   }
+  
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const handleDeleteClick = () => {

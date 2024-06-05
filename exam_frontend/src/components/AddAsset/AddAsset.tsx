@@ -167,38 +167,46 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
   };
 
   const [maxLengthWarningShown, setMaxLengthWarningShown] = useState(false);
-  const [touched, setTouched] = useState(false); // Track if the input field has been touched
+  const [touched, setTouched] = useState(false); 
 
   const validateStorage = (value: string) => {
     if (!value.trim()) {
-      setTouched(false); // Reset touched state if input is empty
-      return; // Exit validation
-    }
+      setTouched(false); 
+      return;
+    }  
     setTouched(true);
-    const formatPattern = /^\d{1,3}GB$/;
-    const maxLength = 5;
-    if (value.length > maxLength) {
+    const formatPattern = /^\d{1,5}\s?(GB|TB)$/i;
+    const maxLength = 10; 
+    const minValueGB = 0;
+    const maxValueTB = 20; 
+    const normalizedValue = value.trim().toUpperCase().replace(/\s/g, '');
+  
+    if (normalizedValue.length > maxLength) {
       if (!maxLengthWarningShown) {
-        message.warning(
-          `Storage length should not exceed ${maxLength} characters.`
-        );
+        message.warning(`Storage length should not exceed ${maxLength} characters.`);
         setMaxLengthWarningShown(true);
       }
     } else {
       setMaxLengthWarningShown(false);
     }
-    if (!formatPattern.test(value)) {
+  
+    if (!formatPattern.test(normalizedValue)) {
       if (!warningShown && touched) {
-        // Only show warning if the field has been touched
-        message.warning(
-          'Storage should be in the format "###GB", where ### is any one to three digits.'
-        );
+        message.warning('Storage should be in the format "###GB" or "###TB", where ### is any one to five digits.');
         setWarningShown(true);
       }
     } else {
       setWarningShown(false);
+      const [, numericValue, unit] = normalizedValue.match(/^(\d+)\s?(GB|TB)$/i) || [];
+      const storageInGB = unit.toUpperCase() === 'GB' ? parseInt(numericValue, 10) : parseInt(numericValue, 10) * 1024;
+      if (storageInGB < minValueGB) {
+        message.warning(`Minimum storage requirement is ${minValueGB} GB.`);
+      } else if (unit.toUpperCase() === 'TB' && storageInGB > maxValueTB * 1024) {
+        message.warning(`Maximum storage allowed is ${maxValueTB} TB.`);
+      }
     }
   };
+  
 
   const [accessoryValue, setAccessoryValue] = useState("");
   const [accessoryWarningShown, setAccessoryWarningShown] = useState(false);
