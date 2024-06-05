@@ -18,6 +18,7 @@ import {
   getLocationOptions,
   getMemoryOptions,
 } from "../../AssetTable/api/getAssetDetails";
+import moment from "moment";
 interface AssetTableHandlerProps {
   unassign: (record: DataType) => void;
   queryParamProp: any;
@@ -108,6 +109,12 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
     setDrawerVisible(true);
   }, []);
 
+  const reset = () => {
+    setQueryParam("");
+    setSearchTerm("");
+    refetchAssetData();
+  };
+
   const onCloseDrawer = useCallback(() => {
     setDrawerVisible(false);
   }, []);
@@ -171,16 +178,29 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
     <h1>Asset Overview</h1>
   </div>;
 
-  const renderClickableColumn = (columnName, dataIndex) => (_, record) =>
-    (
+const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
+  if (dataIndex === 'created_at' || dataIndex === 'updated_at') {
+    const formattedDate = moment(record[dataIndex]).format('DD-MM-YYYY'); 
+    return (
       <div
         data-column-name={columnName}
         onClick={() => handleColumnClick(record, columnName)}
         style={{ cursor: "pointer" }}
       >
-        {record[dataIndex]}
+        {formattedDate}
       </div>
     );
+  }
+  return (
+    <div
+      data-column-name={columnName}
+      onClick={() => handleColumnClick(record, columnName)}
+      style={{ cursor: "pointer" }}
+    >
+      {record[dataIndex]}
+    </div>
+  );
+};
   const columns = [
     {
       title: "Product Name",
@@ -627,6 +647,7 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
         columns={columns}
         memoryData={memoryData}
         assetTypeData={assetTypeData}
+        reset={reset}
         locations={locations}
         sortOrder={sortOrder}
         sortedColumn={sortedColumn}

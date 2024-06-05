@@ -21,6 +21,7 @@ const AssetTable = ({
   totalItemCount,
   assetPageDataFetch,
   columns,
+  reset,
   handleUpdateData,
   drawerTitle,
   statusOptions,
@@ -60,6 +61,7 @@ const AssetTable = ({
         <GlobalSearch
           assetDataRefetch={assetDataRefetch}
           searchTerm={searchTerm}
+          reset={reset}
           // onSearch={handleSearch}
           setSearchTerm={setSearchTerm}
         />
@@ -95,13 +97,19 @@ const AssetTable = ({
                 const offset = (page - 1) * pageSize;
                 let additionalQueryParams = `&offset=${offset}`;
                 if (searchTerm !== "" && searchTerm !== null) {
-                  additionalQueryParams += `&global_search=${searchTerm}`;
+                    additionalQueryParams += `&global_search=${searchTerm}`;
                 }
-                const queryParams =
-                  `&sort_by=${sortedColumn}&sort_order=${sortOrder}` +
-                  additionalQueryParams;
+                let sortParams = "";
+                const queryParams = `${sortParams}${additionalQueryParams}`;
+                if (sortedColumn && sortOrder) {
+                    if (queryParams.indexOf('sort_by') === -1) {
+                        sortParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
+                    }
+                }
+                
                 assetPageDataFetch(queryParams);
-              }}
+            }}
+            
               hideOnSinglePage={true}
             />
           )}

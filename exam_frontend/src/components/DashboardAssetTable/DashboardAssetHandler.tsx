@@ -12,6 +12,7 @@ import {
   getAssetTypeOptions,
   getMemoryOptions,
 } from "../AssetTable/api/getAssetDetails";
+import moment from 'moment';
 
 interface DashboardAssetHandlerProps {
   selectedTypeId: number;
@@ -140,8 +141,22 @@ const DashboardAssetHandler = ({
       )
     );
   };
-  const renderClickableColumn = (columnName, dataIndex) => (_, record) =>
-    (
+
+  const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
+    if (dataIndex === 'created_at' || dataIndex === 'updated_at') {
+      const formattedDate = moment(record[dataIndex]).format('DD-MM-YYYY'); 
+      return (
+        <div
+          data-column-name={columnName}
+          onClick={() => handleColumnClick(record, columnName)}
+          style={{ cursor: "pointer" }}
+        >
+          {formattedDate}
+        </div>
+      );
+    }
+  
+    return (
       <div
         data-column-name={columnName}
         onClick={() => handleColumnClick(record, columnName)}
@@ -150,6 +165,7 @@ const DashboardAssetHandler = ({
         {record[dataIndex]}
       </div>
     );
+  };
 
   const handleSort = (column: string) => {
     const isCurrentColumn = column === sortedColumn;
