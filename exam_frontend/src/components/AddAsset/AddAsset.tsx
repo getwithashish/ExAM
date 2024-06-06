@@ -13,6 +13,8 @@ type SizeType = Parameters<typeof Form>[0]["size"];
 const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
   const [formData, setFormData] = useState<any>({});
   const [_requiredFields, setRequiredFields] = useState<string[]>([]);
+  const [resetForm, setResetForm] = useState(false); // state to trigger form reset
+
 
   const hardwareSpecificFields = [
     "asset_type",
@@ -165,6 +167,14 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
       setProcessorGenWarningShown(false);
     }
   };
+  const handleResetForm = () => {
+    setFormData({}); // Clear the form data
+    setResetForm(true); // Trigger reset
+    setTimeout(() => {
+      setResetForm(false); // Reset the trigger after a short delay
+    }, 100);
+  };
+
 
   const [maxLengthWarningShown, setMaxLengthWarningShown] = useState(false);
   const [touched, setTouched] = useState(false); 
@@ -836,6 +846,21 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
               >
                 Submit
               </Button>
+              <Button
+                className={styles["button"]}
+                ghost
+                style={{
+                  background: "#FF474C",
+                  marginTop: "30px",
+                  marginLeft:"30px",
+                  width: "120px",
+                  height: "40px",
+                }}
+                onClick={() => handleResetForm()} // Example: Log form data on submit
+              >
+                Reset
+              </Button>
+
             </Form.Item>
           </Form>
         </div>
