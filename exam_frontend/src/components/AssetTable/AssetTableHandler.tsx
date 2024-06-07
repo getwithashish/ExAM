@@ -1,5 +1,4 @@
 import React, { Key, SetStateAction, useCallback, useState } from "react";
-import { Button } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import "./AssetTable.css";
 import { useQuery } from "@tanstack/react-query";
@@ -24,7 +23,7 @@ const AssetTableHandler = ({
   assets,
 
 }) => {
-  const [selectedRow, setSelectedRow] = useState(null);
+  const [selectedRow, setSelectedRow] = useState(null); 
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [sortedColumn, setSortedColumn] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<string>('asc');
