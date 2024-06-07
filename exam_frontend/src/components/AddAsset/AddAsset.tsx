@@ -342,7 +342,7 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
         ) {
           // Set the asset type to the first matching asset type (adjust as needed)
           formData.asset_type = response.data.data[0].id;
-          console.log("FormData after setting asset_type:", formData);
+          console.log("Asset Data after setting asset_type:", formData);
         } else {
           throw new Error("No asset type found for Software");
         }
@@ -353,17 +353,17 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
             import.meta.env["VITE_ADD_ASSET_URL"],
             formData
           );
-          console.log("Form Data Posted:", submitResponse.data);
+          console.log("Asset data Posted:", submitResponse.data);
 
           // Display success message and reload page
-          message.success("Form data submitted successfully");
+          message.success("Asset creation done successfully");
           return; // Exit the function after successful submission
         } else {
           message.error("Please fill in all mandatory fields.");
         }
       } catch (error) {
         console.error(
-          "Error fetching asset type or submitting form data:",
+          "Error fetching asset type or asset creation :",
           error
         );
         message.error(
@@ -406,13 +406,13 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
           import.meta.env["VITE_ADD_ASSET_URL"],
           formData
         );
-        console.log("Form Data Posted:", response.data);
+        console.log("Asset Data Posted:", response.data);
 
-        message.success("Form data submitted successfully");
+        message.success("Asset creation done successfully");
         return; // Exit the function after successful submission
       } catch (error) {
-        console.error("Error submitting form data:", error);
-        message.error("Failed to submit form data. Please try again later.");
+        console.error("Error in asset creation :", error);
+        message.error("Failed to create an asset. Please try again later.");
         return; // Exit the function after encountering an error
       } finally {
         setLoading(false);
@@ -819,18 +819,16 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
                   />
                 </Form.Item>
 
-                <Form.Item label="Notes:" className={styles["formItem"]}>
-                  <Input
-                    placeholder="Enter reason for creation"
-                    className={styles["input"]}
-                    onChange={(e) =>
-                      handleInputChange("message", e.target.value)
-                    }
-                  />
-                </Form.Item>
-                {/* Add more hardware specific fields as needed */}
-              </>
-            )}
+              <Form.Item label="Notes:" className={styles["formItem"]}>
+                <Input
+                  placeholder="Enter reason for creation"
+                  className={styles["input"]}
+                  onChange={(e) => handleInputChange("notes", e.target.value)}
+                />
+              </Form.Item>
+              {/* Add more hardware specific fields as needed */}
+            </>
+          )}
 
             <Form.Item>
               <Button
