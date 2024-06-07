@@ -12,7 +12,7 @@ const CreateRequestPage: FC = function () {
   const [selectedAsset, setSelectedAsset] = useState<any | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [currentPage, setCurrentPage] = useState<number>(1); // Step 2: Initialize currentPage state
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [approverNotes, setApproverNotes] = useState<string>("");
@@ -198,8 +198,7 @@ const CreateRequestPage: FC = function () {
             setModalOpen={setModalOpen}
             setApproverNotes={function (
               _approval_status_message: string
-            ): void {
-              throw new Error("Function not implemented.");
+            ): void { ""
             }}
           />
         )}
@@ -534,8 +533,8 @@ const ViewRequestModal: FC<{
                 <div className="lg:col-span-5">
                   <Label htmlFor="approverNotes">APPROVER NOTES</Label>
                   <Textarea
-                    id="approverNotes"
-                    name="approverNotes"
+                    id="approval_status_message"
+                    name="approval_status_message"
                     rows={1}
                     value={approverNotes}
                     onChange={handleApproverNotesChange}
