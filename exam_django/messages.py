@@ -91,6 +91,13 @@ ASSET_UPDATE_PENDING_SUCCESSFUL = "Asset Updation successfully added to pending 
 
 AI_RESPONSE_OBTAINED_SUCCESSFULLY = "AI Response is successfully obtained."
 
+# Asset Rejection Messages
+ASSET_CREATION_REJECTED = "Asset creation has been rejected"
+ASSET_UPDATION_REJECTED = "Asset updation has been rejected"
+ASSIGN_ASSET_REJECT_SUCCESSFUL = "Successfully rejected asset allocation request."
+UNASSIGN_ASSET_REJECT_SUCCESSFUL = "Successfully rejected asset deallocation request."
+
+
 # Approval Exception Messages
 APPROVAL_TYPE_NOT_FOUND = (
     "Specified approval type is not valid. Try with correct value."
@@ -103,7 +110,6 @@ CANNOT_UNASSIGN_ASSET_NOT_IN_PENDING = "Cannot unassign asset whic"
 
 # Approval Success Messages
 
-ASSIGN_ASSET_REJECT_SUCCESSFUL = "Successfully rejected asset assignment request."
 
 # Asset Type Exception Messages
 INVALID_ASSET_TYPE = "The given asset type is invalid."
