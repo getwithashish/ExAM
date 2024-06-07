@@ -56,7 +56,7 @@ class UnassignAssetView(APIView):
         except SerializerException as e:
             return APIResponse(
                 data=str(e),
-                message=serializer.errors,
+                message=e.message,
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

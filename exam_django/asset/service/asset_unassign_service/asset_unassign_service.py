@@ -27,8 +27,6 @@ class UnassignAssetService:
             asset = Asset.objects.get(asset_uuid=asset_uuid)
             asset_to_be_unassigned_serializer = AssetReadSerializer(asset)
 
-            print("Asset to be unassigned: ", asset_to_be_unassigned_serializer.data)
-
             # Determine which service to use based on requester role
             if requester_role == "SYSTEM_ADMIN":
                 asset_user_role_unassign_service = AssetSysadminRoleUnassignService()
