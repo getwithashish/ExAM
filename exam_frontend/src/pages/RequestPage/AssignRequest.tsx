@@ -10,19 +10,22 @@ import InfoIcon from "@mui/icons-material/Info";
 
 const AssignPage: FC = function () {
   const [assignRequests, setAssignRequests] = useState<any[]>([]);
-  const [selectedAssignRequest, setSelectedAssignRequest] = useState<
-    any | null
-  >(null);
+  const [selectedAssignRequest, setSelectedAssignRequest] = useState< any | null >(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
+  const [approverNotes, setApproverNotes] = useState<string>("");
   const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     fetchAssignRequests();
   }, [currentPage, pageSize, searchQuery]);
+
+  const handleApproverNotesChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setApproverNotes(e.target.value);
+  };
 
   const fetchAssignRequests = () => {
     setLoading(true);
@@ -53,7 +56,7 @@ const AssignPage: FC = function () {
       const approvalData = {
         approval_type: "ASSIGN_STATUS",
         asset_uuid: selectedAssignRequest.asset_uuid,
-        comments: selectedAssignRequest.approverNotes,
+        comments: approverNotes,
       };
 
       axiosInstance
@@ -80,7 +83,7 @@ const AssignPage: FC = function () {
         data: {
           approval_type: "ASSIGN_STATUS",
           asset_uuid: selectedAssignRequest.asset_uuid,
-          comments: selectedAssignRequest.approverNotes,
+          comments: approverNotes,
         },
       };
 
@@ -221,6 +224,12 @@ const AssignPage: FC = function () {
             modalOpen={modalOpen}
             setModalOpen={setModalOpen}
             onClose={() => setSelectedAssignRequest(null)}
+            handleApproverNotesChange={handleApproverNotesChange}
+            approverNotes={""}
+            setApproverNotes={function (
+              _approval_status_message: string
+            ): void { ""
+            }}
           />
         )}
       </div>
@@ -331,9 +340,12 @@ const ViewRequestModal: FC<{
   assignRequest: any;
   handleApprove: () => void;
   handleReject: () => void;
+  onClose: () => void;
   modalOpen: boolean;
   setModalOpen: (flag: boolean) => void;
-  onClose: () => void;
+  approverNotes: string;
+  setApproverNotes: (approval_status_message: string) => void;
+  handleApproverNotesChange: any; 
 }> = function ({
   loading,
   modalOpen,
@@ -342,13 +354,16 @@ const ViewRequestModal: FC<{
   handleApprove,
   handleReject,
   onClose,
+  approverNotes,
+  handleApproverNotesChange,
 }) {
     const [notes, setNotes] = useState(assignRequest.notes);
-    const [approverNotes, setApproverNotes] = useState(
-      assignRequest.approval_status_message
-    );
     const [actionType, setActionType] = useState("");
 
+    const toggleModal = (type: string) => {
+      setActionType(type);
+      setModalOpen(!modalOpen);
+    };
     const toggleModal = (type: string) => {
       setActionType(type);
       setModalOpen(!modalOpen);
@@ -356,10 +371,6 @@ const ViewRequestModal: FC<{
 
     const handleNotesChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
       setNotes(e.target.value);
-    };
-
-    const handleApproverNotesChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-      setApproverNotes(e.target.value);
     };
 
     const assignRequestFields = [
@@ -614,8 +625,8 @@ const ViewRequestModal: FC<{
                   <div className="lg:col-span-5">
                     <Label htmlFor="approverNotes">APPROVER NOTES</Label>
                     <Textarea
-                      id="approverNotes"
-                      name="approverNotes"
+                      id="approval_status_message"
+                      name="approval_status_message"
                       rows={1}
                       value={approverNotes}
                       onChange={handleApproverNotesChange}
