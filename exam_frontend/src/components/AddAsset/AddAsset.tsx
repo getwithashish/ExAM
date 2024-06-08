@@ -13,6 +13,8 @@ type SizeType = Parameters<typeof Form>[0]["size"];
 const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
   const [formData, setFormData] = useState<any>({});
   const [_requiredFields, setRequiredFields] = useState<string[]>([]);
+  const [resetForm, setResetForm] = useState(false); // state to trigger form reset
+
 
   const hardwareSpecificFields = [
     "asset_type",
@@ -165,40 +167,56 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
       setProcessorGenWarningShown(false);
     }
   };
+  const handleResetForm = () => {
+    setFormData({}); // Clear the form data
+    setResetForm(true); // Trigger reset
+    setTimeout(() => {
+      setResetForm(false); // Reset the trigger after a short delay
+    }, 100);
+  };
+
 
   const [maxLengthWarningShown, setMaxLengthWarningShown] = useState(false);
-  const [touched, setTouched] = useState(false); // Track if the input field has been touched
+  const [touched, setTouched] = useState(false); 
 
   const validateStorage = (value: string) => {
     if (!value.trim()) {
-      setTouched(false); // Reset touched state if input is empty
-      return; // Exit validation
-    }
+      setTouched(false); 
+      return;
+    }  
     setTouched(true);
-    const formatPattern = /^\d{1,3}GB$/;
-    const maxLength = 5;
-    if (value.length > maxLength) {
+    const formatPattern = /^\d{1,5}\s?(GB|TB)$/i;
+    const maxLength = 10; 
+    const minValueGB = 0;
+    const maxValueTB = 20; 
+    const normalizedValue = value.trim().toUpperCase().replace(/\s/g, '');
+  
+    if (normalizedValue.length > maxLength) {
       if (!maxLengthWarningShown) {
-        message.warning(
-          `Storage length should not exceed ${maxLength} characters.`
-        );
+        message.warning(`Storage length should not exceed ${maxLength} characters.`);
         setMaxLengthWarningShown(true);
       }
     } else {
       setMaxLengthWarningShown(false);
     }
-    if (!formatPattern.test(value)) {
+  
+    if (!formatPattern.test(normalizedValue)) {
       if (!warningShown && touched) {
-        // Only show warning if the field has been touched
-        message.warning(
-          'Storage should be in the format "###GB", where ### is any one to three digits.'
-        );
+        message.warning('Storage should be in the format "###GB" or "###TB", where ### is any one to five digits.');
         setWarningShown(true);
       }
     } else {
       setWarningShown(false);
+      const [, numericValue, unit] = normalizedValue.match(/^(\d+)\s?(GB|TB)$/i) || [];
+      const storageInGB = unit.toUpperCase() === 'GB' ? parseInt(numericValue, 10) : parseInt(numericValue, 10) * 1024;
+      if (storageInGB < minValueGB) {
+        message.warning(`Minimum storage requirement is ${minValueGB} GB.`);
+      } else if (unit.toUpperCase() === 'TB' && storageInGB > maxValueTB * 1024) {
+        message.warning(`Maximum storage allowed is ${maxValueTB} TB.`);
+      }
     }
   };
+  
 
   const [accessoryValue, setAccessoryValue] = useState("");
   const [accessoryWarningShown, setAccessoryWarningShown] = useState(false);
@@ -308,7 +326,7 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
       try {
         // Fetch the asset type for software
         const response = await axiosInstance.get(
-          import.meta.env["VITE_CREATE_ASSET_URL"],
+          import.meta.env["VITE_GET_ASSET_TYPE"],
           {
             params: { query: "Software" },
           }
@@ -324,7 +342,7 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
         ) {
           // Set the asset type to the first matching asset type (adjust as needed)
           formData.asset_type = response.data.data[0].id;
-          console.log("FormData after setting asset_type:", formData);
+          console.log("Asset Data after setting asset_type:", formData);
         } else {
           throw new Error("No asset type found for Software");
         }
@@ -335,17 +353,17 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
             import.meta.env["VITE_ADD_ASSET_URL"],
             formData
           );
-          console.log("Form Data Posted:", submitResponse.data);
+          console.log("Asset data Posted:", submitResponse.data);
 
           // Display success message and reload page
-          message.success("Form data submitted successfully");
+          message.success("Asset creation done successfully");
           return; // Exit the function after successful submission
         } else {
           message.error("Please fill in all mandatory fields.");
         }
       } catch (error) {
         console.error(
-          "Error fetching asset type or submitting form data:",
+          "Error fetching asset type or asset creation :",
           error
         );
         message.error(
@@ -388,13 +406,13 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
           import.meta.env["VITE_ADD_ASSET_URL"],
           formData
         );
-        console.log("Form Data Posted:", response.data);
+        console.log("Asset Data Posted:", response.data);
 
-        message.success("Form data submitted successfully");
+        message.success("Asset creation done successfully");
         return; // Exit the function after successful submission
       } catch (error) {
-        console.error("Error submitting form data:", error);
-        message.error("Failed to submit form data. Please try again later.");
+        console.error("Error in asset creation :", error);
+        message.error("Failed to create an asset. Please try again later.");
         return; // Exit the function after encountering an error
       } finally {
         setLoading(false);
@@ -801,18 +819,16 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
                   />
                 </Form.Item>
 
-                <Form.Item label="Notes:" className={styles["formItem"]}>
-                  <Input
-                    placeholder="Enter reason for creation"
-                    className={styles["input"]}
-                    onChange={(e) =>
-                      handleInputChange("message", e.target.value)
-                    }
-                  />
-                </Form.Item>
-                {/* Add more hardware specific fields as needed */}
-              </>
-            )}
+              <Form.Item label="Notes:" className={styles["formItem"]}>
+                <Input
+                  placeholder="Enter reason for creation"
+                  className={styles["input"]}
+                  onChange={(e) => handleInputChange("notes", e.target.value)}
+                />
+              </Form.Item>
+              {/* Add more hardware specific fields as needed */}
+            </>
+          )}
 
             <Form.Item>
               <Button
@@ -828,6 +844,21 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
               >
                 Submit
               </Button>
+              <Button
+                className={styles["button"]}
+                ghost
+                style={{
+                  background: "#FF474C",
+                  marginTop: "30px",
+                  marginLeft:"30px",
+                  width: "120px",
+                  height: "40px",
+                }}
+                onClick={() => handleResetForm()} // Example: Log form data on submit
+              >
+                Reset
+              </Button>
+
             </Form.Item>
           </Form>
         </div>

@@ -1,5 +1,4 @@
 import React, { Key, SetStateAction, useCallback, useState } from "react";
-import { Button } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import "./AssetTable.css";
 import { useQuery } from "@tanstack/react-query";
@@ -12,6 +11,7 @@ import {
   getLocationOptions,
   getMemoryOptions,
 } from "./api/getAssetDetails";
+import moment from "moment";
 
 
 const AssetTableHandler = ({
@@ -23,7 +23,7 @@ const AssetTableHandler = ({
   assets,
 
 }) => {
-  const [selectedRow, setSelectedRow] = useState(null);
+  const [selectedRow, setSelectedRow] = useState(null); 
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [sortedColumn, setSortedColumn] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<string>('asc');
@@ -61,7 +61,6 @@ const AssetTableHandler = ({
       editedQueryParam = offsetString + queryParamArg;
     }
 
-    // setQueryParam(queryParam);
     setQueryParam(editedQueryParam);
     assetDataRefetch({ force: true });
   };
@@ -92,6 +91,12 @@ const AssetTableHandler = ({
     queryFn: () => getMemoryOptions(),
   });
 
+  const reset = () => {
+    setQueryParam("");
+    setSearchTerm("");
+    refetchAssetData();
+  };
+
   const { data: assetTypeData } = useQuery({
     queryKey: ["assetDrawerassetType"],
     queryFn: () => getAssetTypeOptions(),
@@ -101,8 +106,6 @@ const AssetTableHandler = ({
       text: assetType.asset_type_name,
       value: assetType.asset_type_name,
     })) ?? [];
-
-  const assetDataList = assetData;
 
   const handleRowClick = useCallback((record: React.SetStateAction<null>) => {
     setSelectedRow(record);
@@ -125,8 +128,20 @@ const AssetTableHandler = ({
   <div>
     <h1>Asset Overview</h1>
   </div>;
-  const renderClickableColumn = (columnName, dataIndex) => (_, record) =>
-    (
+  const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
+    if (dataIndex === 'created_at' || dataIndex === 'updated_at') {
+      const formattedDate = moment(record[dataIndex]).format('DD-MM-YYYY'); 
+      return (
+        <div
+          data-column-name={columnName}
+          onClick={() => handleColumnClick(record, columnName)}
+          style={{ cursor: "pointer" }}
+        >
+          {formattedDate}
+        </div>
+      );
+    }
+    return (
       <div
         data-column-name={columnName}
         onClick={() => handleColumnClick(record, columnName)}
@@ -135,6 +150,7 @@ const AssetTableHandler = ({
         {record[dataIndex]}
       </div>
     );
+  };
 
     const handleSort = (column: string) => {
       const isCurrentColumn = column === sortedColumn;
@@ -188,7 +204,7 @@ const AssetTableHandler = ({
     },
 
     {
-      title: "Location",
+      title: "Asset Location",
       dataIndex: "location",
       responsive: ["md"],
       width: 120,
@@ -262,14 +278,20 @@ const AssetTableHandler = ({
       width: 140,
       render: renderClickableColumn("Asset Category", "asset_category"),
     },
-
     {
-      title: "Asset Status",
-      dataIndex: "status",
+      title: "Custodian",
+      dataIndex: "custodian",
       responsive: ["md"],
-      width: 140,
-      render: renderClickableColumn("Asset Status", "status"),
+      width: 120,
+      sorter: true,
+      sortOrder: sortedColumn === "custodian" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("custodian"),
+      }),
+      render: renderClickableColumn("Custodian", "custodian"),
     },
+
+   
     {
       title: "Business Unit",
       dataIndex: "business_unit",
@@ -316,6 +338,40 @@ const AssetTableHandler = ({
       responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Asset Status", "processor_gen"),
+    },
+    {
+      title: "Model Number",
+      dataIndex: "model_number", // Corrected dataIndex
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Asset Status", "model_number"),
+    },
+    {
+      title: "Memory",
+      dataIndex: "memory",
+      responsive: ["md"],
+      width: 120,
+      sorter: true,
+      sortOrder: sortedColumn === "memory" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("memory"),
+      }),
+      render: renderClickableColumn("Memory", "memory"),
+    },
+    {
+      title: "Storage",
+      dataIndex: "storage",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Storage", "storage"),
+    },
+    {
+      title: "License Type",
+      dataIndex: "license_type",
+      responsive: ["md"],
+      width: 120,
+     
+      render: renderClickableColumn("license_type", "license_type"),
     },
     {
       title: "Date of Purchase",
@@ -369,42 +425,8 @@ const AssetTableHandler = ({
           return "Invalid Date";
         }
       },
-    },
-    {
-      title: "License Type",
-      dataIndex: "license_type",
-      responsive: ["md"],
-      width: 120,
-     
-      render: renderClickableColumn("license_type", "license_type"),
-    },
-    
-    {
-      title: "Model Number",
-      dataIndex: "model_number", // Corrected dataIndex
-      responsive: ["md"],
-      width: 120,
-      render: renderClickableColumn("Asset Status", "model_number"),
-    },
-    {
-      title: "Memory",
-      dataIndex: "memory",
-      responsive: ["md"],
-      width: 120,
-      sorter: true,
-      sortOrder: sortedColumn === "memory" ? sortOrder : undefined,
-      onHeaderCell: () => ({
-        onClick: () => handleSort("memory"),
-      }),
-      render: renderClickableColumn("Memory", "memory"),
-    },
-    {
-      title: "Storage",
-      dataIndex: "storage",
-      responsive: ["md"],
-      width: 120,
-      render: renderClickableColumn("Storage", "storage"),
-    },
+    },  
+  
     {
       title: "Owner",
       dataIndex: "owner",
@@ -435,6 +457,13 @@ const AssetTableHandler = ({
         onClick: () => handleSort("requester"),
       }),
       render: renderClickableColumn("Requester", "requester"),
+    },
+    {
+      title: "Asset Status",
+      dataIndex: "status",
+      responsive: ["md"],
+      width: 140,
+      render: renderClickableColumn("Asset Status", "status"),
     },
     {
       title: "Asset Detail Status",
@@ -499,18 +528,7 @@ const AssetTableHandler = ({
       width: 120,
       render:renderClickableColumn("approval_status_message", "approval_status_message")
     },
-    {
-      title: "Custodian",
-      dataIndex: "custodian",
-      responsive: ["md"],
-      width: 120,
-      sorter: true,
-      sortOrder: sortedColumn === "custodian" ? sortOrder : undefined,
-      onHeaderCell: () => ({
-        onClick: () => handleSort("custodian"),
-      }),
-      render: renderClickableColumn("Custodian", "custodian"),
-    },
+    
 
     ...(isRejectedPage
       ? [
@@ -592,10 +610,6 @@ const AssetTableHandler = ({
     approval_status_message: result.approval_status_message,
   }));
 
-  const drawerTitle = "Asset Details";
-
-  const button = <Button type="primary"></Button>;
-
   return (
     <AssetTable
      userRole={userRole}
@@ -611,6 +625,7 @@ const AssetTableHandler = ({
       drawerVisible={drawerVisible}
       setDrawerVisible={setDrawerVisible}
       assetData={data}
+      reset={reset}
       sortOrder={sortOrder}
       sortedColumn={sortedColumn}
       columns={columns}
