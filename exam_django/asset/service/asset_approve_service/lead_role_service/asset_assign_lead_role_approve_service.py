@@ -11,6 +11,7 @@ from messages import (
     CANNOT_APPROVE_ACKNOWLEDGED_ASSET,
     CANNOT_ASSIGN_UNAPPROVED_ASSET,
     CANNOT_REJECT_ACKNOWLEDGED_ASSET,
+    UNASSIGN_ASSET_REJECT_SUCCESSFUL,
 )
 
 
@@ -23,14 +24,13 @@ class AssetAssignLeadRoleApproveService(AssetUserRoleApproveAbstract):
                     asset.assign_status = "ASSIGNED"
                     asset.status = "IN USE"
                     message = ASSET_SUCCESSFULLY_ASSIGNED
-                    email_subject = "ASSET ASSIGNMENT SUCCESSFUL"
+                    email_subject = "APPROVED: ASSET ALLOCATION SUCCESSFUL"
 
                 else:
-                    print("UNASSIGNED HERE")
                     asset.assign_status = "UNASSIGNED"
                     asset.status = "IN STORE"
                     message = ASSET_SUCCESSFULLY_UNASSIGNED
-                    email_subject = "ASSET UNASSIGNMENT SUCCESSFUL"
+                    email_subject = "APPROVED: ASSET DEALLOCATION SUCCESSFUL"
 
             else:
                 raise NotAcceptableOperationException(
@@ -47,8 +47,12 @@ class AssetAssignLeadRoleApproveService(AssetUserRoleApproveAbstract):
     def reject_request(self, asset, request):
         if asset.assign_status == "ASSIGN_PENDING":
             asset.assign_status = "REJECTED"
-            message = ASSIGN_ASSET_REJECT_SUCCESSFUL
-            email_subject = "REJECTED THE REQUEST FOR ASSIGNING/UNASSIGNING AN ASSET"
+            if asset.custodian:
+                message = ASSIGN_ASSET_REJECT_SUCCESSFUL
+                email_subject = "REJECTED: ASSET ALLOCATION REJECTED"
+            else:
+                message = UNASSIGN_ASSET_REJECT_SUCCESSFUL
+                email_subject = "REJECTED: ASSET DEALLOCATION REJECTED"
 
         else:
             raise NotAcceptableOperationException(
