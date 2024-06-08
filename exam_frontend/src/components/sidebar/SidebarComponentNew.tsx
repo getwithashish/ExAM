@@ -217,9 +217,7 @@ const SidebarComponentNew = ({ children }) => {
                     onClick={() => showDefaultDrawer()}
                     icon={<AppstoreAddOutlined />}
                   >
-                    <ToolTip title="To create a new Asset">
-                      Create Assets
-                    </ToolTip>
+                    <ToolTip title="To Create an Asset">Create Assets</ToolTip>
                   </Menu.Item>
                   <Menu.Item icon={<EditOutlined />}>
                     <ToolTip title="To modify an Asset">
@@ -332,7 +330,9 @@ const SidebarComponentNew = ({ children }) => {
             </Menu.Item>
             <Menu.Item icon={<CarryOutOutlined />}>
               <ToolTip title="Download user agent">
-                <div onClick={handleDownload}>Download</div>
+                <Link to="#" onClick={handleDownload}>
+                  Download
+                </Link>
               </ToolTip>
             </Menu.Item>
             <Menu.Item icon={<RobotOutlined />}>
