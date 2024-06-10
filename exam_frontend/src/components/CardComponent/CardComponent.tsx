@@ -19,6 +19,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import axiosInstance from "../../config/AxiosConfig";
 import { CommentOutlined } from "@ant-design/icons";
 import { Spin } from "antd";
+import AssetFieldAutoComplete from "../AutocompleteBox/AssetFieldAutoComplete";
 
 interface UpdateData {
   asset_uuid: string;
@@ -46,6 +47,8 @@ const CardComponent: React.FC<CardType> = ({
   const uniqueLocationoptions = Array.from(new Set(locations));
   const uniqueMemoryOptions = Array.from(new Set(memoryData));
   const uniqueAssetTypeOptions = Array.from(new Set(assetTypeData));
+  const [assetLocation, setAssetLocation] = React.useState("");
+  const [assetInLocation, setAssetInLocation] = React.useState("");
 
   const inputStyle: React.CSSProperties = {
     border: "0.5px solid #d3d3d3",
@@ -316,6 +319,39 @@ const CardComponent: React.FC<CardType> = ({
         </Form.Item>
       ),
     },
+    // {
+    //   label: "Location",
+    //   name: "location",
+    //   value: (
+    //     <Form.Item
+    //       name="location"
+    //       style={{ boxShadow: "none", border: "none" }}
+    //     >
+    //       <b> Asset Location:</b>
+    //       <br></br>
+    //       <br></br>
+    //       <Select
+    //         variant="filled"
+    //         defaultValue={data.location}
+    //         style={{
+    //           boxShadow: "none",
+    //           border: "0.5px solid #d3d3d3",
+    //           width: "170px",
+    //           height: "40px",
+    //           borderRadius: "5px",
+    //           background: "#f0f0f0",
+    //         }}
+    //         onChange={(value) => handleUpdateChange("location", value)}
+    //       >
+    //         {uniqueLocationoptions.map((location, index) => (
+    //           <Select.Option key={index} value={location.id}>
+    //             {location.location_name}
+    //           </Select.Option>
+    //         ))}
+    //       </Select>
+    //     </Form.Item>
+    //   ),
+    // },
     {
       label: "Location",
       name: "location",
@@ -327,28 +363,16 @@ const CardComponent: React.FC<CardType> = ({
           <b> Asset Location:</b>
           <br></br>
           <br></br>
-          <Select
-            variant="filled"
+          <AssetFieldAutoComplete
+            assetField="location"
+            value={assetLocation}
+            setValue={setAssetLocation}
             defaultValue={data.location}
-            style={{
-              boxShadow: "none",
-              border: "0.5px solid #d3d3d3",
-              width: "170px",
-              height: "40px",
-              borderRadius: "5px",
-              background: "#f0f0f0",
-            }}
-            onChange={(value) => handleUpdateChange("location", value)}
-          >
-            {uniqueLocationoptions.map((location, index) => (
-              <Select.Option key={index} value={location.id}>
-                {location.location_name}
-              </Select.Option>
-            ))}
-          </Select>
+          />
         </Form.Item>
       ),
     },
+    
     {
       label: "Location",
       name: "location",
@@ -360,25 +384,11 @@ const CardComponent: React.FC<CardType> = ({
           <b>Invoice Location:</b>
           <br></br>
           <br></br>
-          <Select
-            variant="filled"
-            defaultValue={data.invoice_location}
-            style={{
-              boxShadow: "none",
-              border: "0.5px solid #d3d3d3",
-              width: "180px",
-              height: "40px",
-              borderRadius: "5px",
-              background: "#f0f0f0",
-            }}
-            onChange={(value) => handleUpdateChange("invoice_location", value)} // Pass only the value
-          >
-            {uniqueLocationoptions.map((location, index) => (
-              <Select.Option key={index} value={location.id}>
-                {location.location_name}
-              </Select.Option>
-            ))}
-          </Select>
+          <AssetFieldAutoComplete
+            assetField="location"
+            value={assetInLocation}
+            setValue={setAssetInLocation}
+          />
         </Form.Item>
       ),
     },
