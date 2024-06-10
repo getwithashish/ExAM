@@ -1,4 +1,4 @@
-import { Layout, Menu, Dropdown } from "antd";
+import { Layout, Menu, Dropdown, Spin } from "antd";
 import {
   AppstoreAddOutlined,
   CarryOutOutlined,
@@ -15,7 +15,7 @@ import {
   RobotOutlined,
 } from "@ant-design/icons";
 import { FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
-import styles from "./sidebar.module.css"
+import styles from "./sidebar.module.css";
 import SideDrawerComponent from "../SideDrawerComponent/SideDrawerComponent";
 import AddAsset from "../AddAsset/AddAsset";
 import { Link, useNavigate } from "react-router-dom";
@@ -32,6 +32,8 @@ import { Button } from "@mui/material";
 
 const SidebarComponentNew = ({ children }) => {
   const { userRole, setUserRole, login, logout } = useAuth();
+
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleDownload = async () => {
     const fileUrl = "/static/asset_management_windows.exe";
@@ -121,12 +123,11 @@ const SidebarComponentNew = ({ children }) => {
 
   const menuItems = [
     {
-      key: 'logout',
+      key: "logout",
       label: (
-        <Button color="error"
-          onClick={handleLogout}
-        >
-          Logout &nbsp;<LogoutOutlined />
+        <Button color="error" onClick={handleLogout}>
+          Logout &nbsp;
+          <LogoutOutlined />
         </Button>
       ),
     },
@@ -147,7 +148,7 @@ const SidebarComponentNew = ({ children }) => {
           width: "100%",
         }}
       >
-        <div className="flex w-screen lg:px-5 lg:pl-3" >
+        <div className="flex w-screen lg:px-5 lg:pl-3">
           <div className="text-left my-5 px-4 font-display text-lg p-0 m-0 items-center justify-between flex-1">
             <b>Asset Management System</b>
           </div>
@@ -155,8 +156,8 @@ const SidebarComponentNew = ({ children }) => {
             <div className="flex gap-4">
               <div className="flex-1 text-right">
                 {jwtPayload && jwtPayload.username && (
-                  <div >
-                    <div className={styles["username"]}> 
+                  <div>
+                    <div className={styles["username"]}>
                       Hi, {jwtPayload.username}
                     </div>
                     {jwtPayload.user_scope && (
@@ -216,9 +217,7 @@ const SidebarComponentNew = ({ children }) => {
                     onClick={() => showDefaultDrawer()}
                     icon={<AppstoreAddOutlined />}
                   >
-                    <ToolTip title="To create a new Asset">
-                      Create Assets
-                    </ToolTip>
+                    <ToolTip title="To Create an Asset">Create Assets</ToolTip>
                   </Menu.Item>
                   <Menu.Item icon={<EditOutlined />}>
                     <ToolTip title="To modify an Asset">
@@ -331,7 +330,9 @@ const SidebarComponentNew = ({ children }) => {
             </Menu.Item>
             <Menu.Item icon={<CarryOutOutlined />}>
               <ToolTip title="Download user agent">
-                <div onClick={handleDownload}>Download</div>
+                <Link to="#" onClick={handleDownload}>
+                  Download
+                </Link>
               </ToolTip>
             </Menu.Item>
             <Menu.Item icon={<RobotOutlined />}>
@@ -342,72 +343,78 @@ const SidebarComponentNew = ({ children }) => {
           </Menu>
         </Sider>
         <Content className="bg-white">
-          {children}
-          <SideDrawerComponent
-            displayDrawer={displaydrawer}
-            closeDrawer={closeDrawer}
-          >
-            <AddAsset />
-          </SideDrawerComponent>
+          <Spin spinning={loading}>
+            {children}
+            <SideDrawerComponent
+              displayDrawer={displaydrawer}
+              closeDrawer={closeDrawer}
+            >
+              <AddAsset
+                loading={loading}
+                setLoading={setLoading}
+                setDisplayDrawer={setDisplayDrawer}
+              />
+            </SideDrawerComponent>
 
-          <Footer className="bg-white">
-            <FlowbiteFooter container>
-              <div className="flex w-full flex-col gap-y-6 lg:flex-row lg:justify-between lg:gap-y-0">
-                <FlowbiteFooter.LinkGroup>
-                  <FlowbiteFooter.Link
-                    href="https://experionglobal.com/terms-of-use/"
-                    className="mr-3 mb-3 lg:mb-0"
-                  >
-                    Terms and conditions
-                  </FlowbiteFooter.Link>
-                  <FlowbiteFooter.Link
-                    href="https://experionglobal.com/privacy-policy/"
-                    className="mr-3 mb-3 lg:mb-0"
-                  >
-                    Privacy Policy
-                  </FlowbiteFooter.Link>
+            <Footer className="bg-white">
+              <FlowbiteFooter container>
+                <div className="flex w-full flex-col gap-y-6 lg:flex-row lg:justify-between lg:gap-y-0">
+                  <FlowbiteFooter.LinkGroup>
+                    <FlowbiteFooter.Link
+                      href="https://experionglobal.com/terms-of-use/"
+                      className="mr-3 mb-3 lg:mb-0"
+                    >
+                      Terms and conditions
+                    </FlowbiteFooter.Link>
+                    <FlowbiteFooter.Link
+                      href="https://experionglobal.com/privacy-policy/"
+                      className="mr-3 mb-3 lg:mb-0"
+                    >
+                      Privacy Policy
+                    </FlowbiteFooter.Link>
 
-                  <FlowbiteFooter.Link href="https://experionglobal.com/">
-                    Contact
-                  </FlowbiteFooter.Link>
-                </FlowbiteFooter.LinkGroup>
-                <FlowbiteFooter.LinkGroup>
-                  <div className="flex gap-x-1">
-                    <FlowbiteFooter.Link
-                      href="https://www.facebook.com/experiontechnologies/"
-                      className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
-                    >
-                      <MdFacebook className="text-lg" />
+                    <FlowbiteFooter.Link href="https://experionglobal.com/">
+                      Contact
                     </FlowbiteFooter.Link>
-                    <FlowbiteFooter.Link
-                      href="https://www.instagram.com/experion_technologies/?hl=en"
-                      className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
-                    >
-                      <FaInstagram className="text-lg" />
-                    </FlowbiteFooter.Link>
-                    <FlowbiteFooter.Link
-                      href="https://twitter.com/experionglobal"
-                      className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
-                    >
-                      <FaTwitter className="text-lg" />
-                    </FlowbiteFooter.Link>
-                    <FlowbiteFooter.Link
-                      href="https://www.linkedin.com/company/experion-technologies/posts/"
-                      className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
-                    >
-                      <FaLinkedin className="text-lg" />
-                    </FlowbiteFooter.Link>
-                    <FlowbiteFooter.Link
-                      href="https://www.linkedin.com/uas/login?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Fcompany%2Fexperion-technologies%2Fposts"
-                      className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
-                    >
-                      {/* <FaDribbble className="text-lg" /> */}
-                    </FlowbiteFooter.Link>
-                  </div>
-                </FlowbiteFooter.LinkGroup>
-              </div>
-            </FlowbiteFooter>
-          </Footer>
+                  </FlowbiteFooter.LinkGroup>
+                  <FlowbiteFooter.LinkGroup>
+                    <div className="flex gap-x-1">
+                      <FlowbiteFooter.Link
+                        href="https://www.facebook.com/experiontechnologies/"
+                        className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
+                      >
+                        <MdFacebook className="text-lg" />
+                      </FlowbiteFooter.Link>
+                      <FlowbiteFooter.Link
+                        href="https://www.instagram.com/experion_technologies/?hl=en"
+                        className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
+                      >
+                        <FaInstagram className="text-lg" />
+                      </FlowbiteFooter.Link>
+                      <FlowbiteFooter.Link
+                        href="https://twitter.com/experionglobal"
+                        className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
+                      >
+                        <FaTwitter className="text-lg" />
+                      </FlowbiteFooter.Link>
+                      <FlowbiteFooter.Link
+                        href="https://www.linkedin.com/company/experion-technologies/posts/"
+                        className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
+                      >
+                        <FaLinkedin className="text-lg" />
+                      </FlowbiteFooter.Link>
+                      <FlowbiteFooter.Link
+                        href="https://www.linkedin.com/uas/login?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Fcompany%2Fexperion-technologies%2Fposts"
+                        className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
+                      >
+                        {/* <FaDribbble className="text-lg" /> */}
+                      </FlowbiteFooter.Link>
+                    </div>
+                  </FlowbiteFooter.LinkGroup>
+                </div>
+              </FlowbiteFooter>
+            </Footer>
+          </Spin>
         </Content>
       </Layout>
     </Layout>

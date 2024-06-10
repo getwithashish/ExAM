@@ -31,7 +31,6 @@ const DropDown: React.FC<DropDownProps> = ({ onSelect, items = [], buttonLabel =
     key: item.key,
     label: (
       <span onClick={() => onSelect(item.key)}>
-        {item.icon}
         {item.label}
       </span>
     ),

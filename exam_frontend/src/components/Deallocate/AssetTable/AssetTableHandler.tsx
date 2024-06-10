@@ -18,6 +18,7 @@ import {
   getLocationOptions,
   getMemoryOptions,
 } from "../../AssetTable/api/getAssetDetails";
+import moment from "moment";
 interface AssetTableHandlerProps {
   unassign: (record: DataType) => void;
   queryParamProp: any;
@@ -108,6 +109,12 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
     setDrawerVisible(true);
   }, []);
 
+  const reset = () => {
+    setQueryParam("");
+    setSearchTerm("");
+    refetchAssetData();
+  };
+
   const onCloseDrawer = useCallback(() => {
     setDrawerVisible(false);
   }, []);
@@ -171,16 +178,29 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
     <h1>Asset Overview</h1>
   </div>;
 
-  const renderClickableColumn = (columnName, dataIndex) => (_, record) =>
-    (
+const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
+  if (dataIndex === 'created_at' || dataIndex === 'updated_at') {
+    const formattedDate = moment(record[dataIndex]).format('DD-MM-YYYY'); 
+    return (
       <div
         data-column-name={columnName}
         onClick={() => handleColumnClick(record, columnName)}
         style={{ cursor: "pointer" }}
       >
-        {record[dataIndex]}
+        {formattedDate}
       </div>
     );
+  }
+  return (
+    <div
+      data-column-name={columnName}
+      onClick={() => handleColumnClick(record, columnName)}
+      style={{ cursor: "pointer" }}
+    >
+      {record[dataIndex]}
+    </div>
+  );
+};
   const columns = [
     {
       title: "Product Name",
@@ -203,7 +223,7 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
       render: renderClickableColumn("Serial Number", "serial_number"),
     },
     {
-      title: "Location",
+      title: "Asset Location",
       dataIndex: "location",
       responsive: ["md"],
       width: 120,
@@ -246,19 +266,6 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
       }),
       render: renderClickableColumn("Invoice Location", "invoice_location"),
     },
-
-    {
-      title: "Custodian",
-      dataIndex: "custodian",
-      responsive: ["md"],
-      width: 120,
-      sorter: true,
-      sortOrder: sortedColumn === "custodian" ? sortOrder : undefined,
-      onHeaderCell: () => ({
-        onClick: () => handleSort("custodian"),
-      }),
-      render: renderClickableColumn("Custodian", "custodian"),
-    },
     {
       title: "Asset Type",
       dataIndex: "asset_type",
@@ -289,6 +296,26 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
       render: renderClickableColumn("Asset Category", "asset_category"),
     },
     {
+      title: "Custodian",
+      dataIndex: "custodian",
+      responsive: ["md"],
+      width: 120,
+      sorter: true,
+      sortOrder: sortedColumn === "custodian" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("custodian"),
+      }),
+      render: renderClickableColumn("Custodian", "custodian"),
+    },
+    {
+      title: "Business Unit",
+      dataIndex: "BusinessUnit",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Business Unit", "business_unit"),
+    },
+  
+    {
       title: "Version",
       dataIndex: "version",
       responsive: ["md"],
@@ -300,32 +327,9 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
       }),
       render: renderClickableColumn("Version", "version"),
     },
-    {
-      title: "Asset Status",
-      dataIndex: "Status",
-      responsive: ["md"],
-      width: 140,
-      render: renderClickableColumn("Asset Status", "status"),
-    },
-    {
-      title: "Date of Purchase",
-      dataIndex: "date_of_purchase",
-      responsive: ["md"],
-      width: 120,
-      sorter: true,
-      sortOrder: sortedColumn === "date_of_purchase" ? sortOrder : undefined,
-      onHeaderCell: () => ({
-        onClick: () => handleSort("date_of_purchase"),
-      }),
-      render: renderClickableColumn("Date of Purchase", "date_of_purchase"),
-    },
-    {
-      title: "Business Unit",
-      dataIndex: "BusinessUnit",
-      responsive: ["md"],
-      width: 120,
-      render: renderClickableColumn("Business Unit", "business_unit"),
-    },
+   
+   
+    
     {
       title: "Os",
       dataIndex: "os",
@@ -353,6 +357,52 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
       responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Asset Status", "processor_gen"),
+    },
+    {
+      title: "Model Number",
+      dataIndex: "ModelNumber", // Corrected dataIndex
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Asset Status", "model_number"),
+    },
+    {
+      title: "Memory",
+      dataIndex: "memory",
+      responsive: ["md"],
+      width: 120,
+      sorter: true,
+      sortOrder: sortedColumn === "memory" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("memory"),
+      }),
+      render: renderClickableColumn("Memory", "memory"),
+    },
+    {
+      title: "Storage",
+      dataIndex: "storage",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Storage", "storage"),
+    },
+    {
+      title: "License Type",
+      dataIndex: "license_type",
+      responsive: ["md"],
+      width: 120,
+
+      render: renderClickableColumn("license_type", "license_type"),
+    },
+    {
+      title: "Date of Purchase",
+      dataIndex: "date_of_purchase",
+      responsive: ["md"],
+      width: 120,
+      sorter: true,
+      sortOrder: sortedColumn === "date_of_purchase" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("date_of_purchase"),
+      }),
+      render: renderClickableColumn("Date of Purchase", "date_of_purchase"),
     },
 
     {
@@ -406,41 +456,10 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
     },
 
     ,
-    {
-      title: "License Type",
-      dataIndex: "license_type",
-      responsive: ["md"],
-      width: 120,
+   
+   
 
-      render: renderClickableColumn("license_type", "license_type"),
-    },
-
-    {
-      title: "Model Number",
-      dataIndex: "ModelNumber", // Corrected dataIndex
-      responsive: ["md"],
-      width: 120,
-      render: renderClickableColumn("Asset Status", "model_number"),
-    },
-    {
-      title: "Memory",
-      dataIndex: "memory",
-      responsive: ["md"],
-      width: 120,
-      sorter: true,
-      sortOrder: sortedColumn === "memory" ? sortOrder : undefined,
-      onHeaderCell: () => ({
-        onClick: () => handleSort("memory"),
-      }),
-      render: renderClickableColumn("Memory", "memory"),
-    },
-    {
-      title: "Storage",
-      dataIndex: "storage",
-      responsive: ["md"],
-      width: 120,
-      render: renderClickableColumn("Storage", "storage"),
-    },
+   
     {
       title: "Owner",
       dataIndex: "owner",
@@ -471,6 +490,13 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
         onClick: () => handleSort("requester"),
       }),
       render: renderClickableColumn("Requester", "requester"),
+    },
+    {
+      title: "Asset Status",
+      dataIndex: "Status",
+      responsive: ["md"],
+      width: 140,
+      render: renderClickableColumn("Asset Status", "status"),
     },
     {
       title: "Asset Detail Status",
@@ -627,6 +653,7 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
         columns={columns}
         memoryData={memoryData}
         assetTypeData={assetTypeData}
+        reset={reset}
         locations={locations}
         sortOrder={sortOrder}
         sortedColumn={sortedColumn}

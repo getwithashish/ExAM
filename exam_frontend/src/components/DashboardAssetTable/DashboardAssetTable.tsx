@@ -112,6 +112,7 @@ const DashboardAssetTable = ({
               onChange={(page, pageSize) => {
                 const offset = (page - 1) * pageSize;
                 let additionalQueryParams = `&offset=${offset}`;
+              
                 if (searchTerm !== "" && searchTerm !== null) {
                   additionalQueryParams += `&global_search=${searchTerm}`;
                 }
@@ -130,11 +131,14 @@ const DashboardAssetTable = ({
                 if (selectedTypeId !== 0) {
                   additionalQueryParams += `&asset_type=${selectedTypeId}`;
                 }
-                const queryParams =
-                  `&sort_by=${sortedColumn}&sort_order=${sortOrder}` +
-                  additionalQueryParams;
+                let sortParams = "";
+                if (sortedColumn && sortOrder) {
+                  sortParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
+                }
+                const queryParams = `${sortParams}${additionalQueryParams}`;
                 assetPageDataFetch(queryParams);
               }}
+              
               hideOnSinglePage={true}
             />
           )}

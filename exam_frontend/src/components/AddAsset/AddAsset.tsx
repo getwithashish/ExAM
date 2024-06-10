@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { message, Tooltip } from "antd";
+import { message, Spin, Tooltip } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import axiosInstance from "../../config/AxiosConfig";
 import { Button, DatePicker, Input, Form, Select } from "antd";
@@ -10,9 +10,11 @@ import AssetFieldAutoComplete from "../AutocompleteBox/AssetFieldAutoComplete";
 const { Option } = Select;
 type SizeType = Parameters<typeof Form>[0]["size"];
 
-const AddAsset: React.FC = () => {
+const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
   const [formData, setFormData] = useState<any>({});
   const [_requiredFields, setRequiredFields] = useState<string[]>([]);
+  const [resetForm, setResetForm] = useState(false); // state to trigger form reset
+
 
   const hardwareSpecificFields = [
     "asset_type",
@@ -165,40 +167,56 @@ const AddAsset: React.FC = () => {
       setProcessorGenWarningShown(false);
     }
   };
+  const handleResetForm = () => {
+    setFormData({}); // Clear the form data
+    setResetForm(true); // Trigger reset
+    setTimeout(() => {
+      setResetForm(false); // Reset the trigger after a short delay
+    }, 100);
+  };
+
 
   const [maxLengthWarningShown, setMaxLengthWarningShown] = useState(false);
-  const [touched, setTouched] = useState(false); // Track if the input field has been touched
+  const [touched, setTouched] = useState(false); 
 
   const validateStorage = (value: string) => {
     if (!value.trim()) {
-      setTouched(false); // Reset touched state if input is empty
-      return; // Exit validation
-    }
+      setTouched(false); 
+      return;
+    }  
     setTouched(true);
-    const formatPattern = /^\d{1,3}GB$/;
-    const maxLength = 5;
-    if (value.length > maxLength) {
+    const formatPattern = /^\d{1,5}\s?(GB|TB)$/i;
+    const maxLength = 10; 
+    const minValueGB = 0;
+    const maxValueTB = 20; 
+    const normalizedValue = value.trim().toUpperCase().replace(/\s/g, '');
+  
+    if (normalizedValue.length > maxLength) {
       if (!maxLengthWarningShown) {
-        message.warning(
-          `Storage length should not exceed ${maxLength} characters.`
-        );
+        message.warning(`Storage length should not exceed ${maxLength} characters.`);
         setMaxLengthWarningShown(true);
       }
     } else {
       setMaxLengthWarningShown(false);
     }
-    if (!formatPattern.test(value)) {
+  
+    if (!formatPattern.test(normalizedValue)) {
       if (!warningShown && touched) {
-        // Only show warning if the field has been touched
-        message.warning(
-          'Storage should be in the format "###GB", where ### is any one to three digits.'
-        );
+        message.warning('Storage should be in the format "###GB" or "###TB", where ### is any one to five digits.');
         setWarningShown(true);
       }
     } else {
       setWarningShown(false);
+      const [, numericValue, unit] = normalizedValue.match(/^(\d+)\s?(GB|TB)$/i) || [];
+      const storageInGB = unit.toUpperCase() === 'GB' ? parseInt(numericValue, 10) : parseInt(numericValue, 10) * 1024;
+      if (storageInGB < minValueGB) {
+        message.warning(`Minimum storage requirement is ${minValueGB} GB.`);
+      } else if (unit.toUpperCase() === 'TB' && storageInGB > maxValueTB * 1024) {
+        message.warning(`Maximum storage allowed is ${maxValueTB} TB.`);
+      }
     }
   };
+  
 
   const [accessoryValue, setAccessoryValue] = useState("");
   const [accessoryWarningShown, setAccessoryWarningShown] = useState(false);
@@ -308,7 +326,7 @@ const AddAsset: React.FC = () => {
       try {
         // Fetch the asset type for software
         const response = await axiosInstance.get(
-          import.meta.env["VITE_CREATE_ASSET_URL"],
+          import.meta.env["VITE_GET_ASSET_TYPE"],
           {
             params: { query: "Software" },
           }
@@ -324,40 +342,37 @@ const AddAsset: React.FC = () => {
         ) {
           // Set the asset type to the first matching asset type (adjust as needed)
           formData.asset_type = response.data.data[0].id;
-          console.log("FormData after setting asset_type:", formData);
+          console.log("Asset Data after setting asset_type:", formData);
         } else {
           throw new Error("No asset type found for Software");
         }
 
         if (isAllSoftwareFieldsFilled) {
-          console.log(
-            "Attempting to submit software asset form data:",
-            formData
-          );
+          setLoading(true);
           const submitResponse = await axiosInstance.post(
             import.meta.env["VITE_ADD_ASSET_URL"],
             formData
           );
-          console.log("Form Data Posted:", submitResponse.data);
+          console.log("Asset data Posted:", submitResponse.data);
 
           // Display success message and reload page
-          message.success("Form data submitted successfully");
-          setTimeout(() => {
-            window.location.reload();
-          }, 1500);
+          message.success("Asset creation done successfully");
           return; // Exit the function after successful submission
         } else {
           message.error("Please fill in all mandatory fields.");
         }
       } catch (error) {
         console.error(
-          "Error fetching asset type or submitting form data:",
+          "Error fetching asset type or asset creation :",
           error
         );
         message.error(
           "Failed to fetch asset type or submit form data. Please try again later."
         );
         return; // Exit the function after encountering an error
+      } finally {
+        setLoading(false);
+        setDisplayDrawer(false);
       }
     }
 
@@ -385,22 +400,23 @@ const AddAsset: React.FC = () => {
         return;
       }
       try {
-        console.log("Attempting to submit hardware asset form data:", formData);
+        setLoading(true);
+        // If hardware-specific validation passes, submit the form
         const response = await axiosInstance.post(
           import.meta.env["VITE_ADD_ASSET_URL"],
           formData
         );
-        console.log("Form Data Posted:", response.data);
+        console.log("Asset Data Posted:", response.data);
 
-        message.success("Form data submitted successfully");
-        setTimeout(() => {
-          window.location.reload();
-        }, 1500);
+        message.success("Asset creation done successfully");
         return; // Exit the function after successful submission
       } catch (error) {
-        console.error("Error submitting form data:", error);
-        message.error("Failed to submit form data. Please try again later.");
+        console.error("Error in asset creation :", error);
+        message.error("Failed to create an asset. Please try again later.");
         return; // Exit the function after encountering an error
+      } finally {
+        setLoading(false);
+        setDisplayDrawer(false);
       }
     }
 
@@ -408,141 +424,401 @@ const AddAsset: React.FC = () => {
   };
 
   return (
-    <div className="font-display">
-      <div className={styles["container"]}>
-        <h1 className={styles["heading"]}>Create a new asset</h1>
-        <Form
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 12 }}
-          layout="horizontal"
-          initialValues={{ size: componentSize }}
-          onValuesChange={onFormLayoutChange}
-          size={componentSize as SizeType}
-          labelAlign="left"
-          style={{ padding: "20px", overflowX: "hidden" }}
-          className={styles["formContainer"]}
-        >
-          <Form.Item
-            label={
-              <span>
-                Category<span className={styles["star"]}>*</span>
-              </span>
-            }
-            className={styles["formItem"]}
+    <Spin spinning={loading}>
+      <div className="font-display">
+        <div className={styles["container"]}>
+          <h1 className={styles["heading"]}>Create a new asset</h1>
+          <Form
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 12 }}
+            layout="horizontal"
+            initialValues={{ size: componentSize }}
+            onValuesChange={onFormLayoutChange}
+            size={componentSize as SizeType}
+            labelAlign="left"
+            style={{ padding: "20px", overflowX: "hidden" }}
+            className={styles["formContainer"]}
           >
-            <Select
-              className={styles["input"]}
-              placeholder="Select asset category"
-              onChange={(value) =>
-                setFormData({ ...formData, asset_category: value })
+            <Form.Item
+              label={
+                <span>
+                  Category<span className={styles["star"]}>*</span>
+                </span>
               }
+              className={styles["formItem"]}
             >
-              <Option value="HARDWARE">Hardware</Option>
-              <Option value="SOFTWARE">Software</Option>
-            </Select>
-          </Form.Item>
+              <Select
+                className={styles["input"]}
+                placeholder="Select asset category"
+                onChange={(value) =>
+                  setFormData({ ...formData, asset_category: value })
+                }
+              >
+                <Option value="HARDWARE">Hardware</Option>
+                <Option value="SOFTWARE">Software</Option>
+              </Select>
+            </Form.Item>
 
-          {formData.asset_category === "SOFTWARE" && (
-            <>
-              <Form.Item
-                label={<span>Asset ID</span>}
-                className={styles["formItem"]}
-              >
-                <Input
-                  placeholder="Enter Asset ID"
-                  className={styles["input"]}
-                  onChange={(e) =>
-                    handleInputChange("asset_id", e.target.value)
-                  }
-                  suffix={
-                    <Tooltip title="Asset Id should be alphanumeric Eg:ASS101">
-                      <InfoCircleOutlined
-                        style={{ color: "rgba(0,0,0,.45)" }}
-                      />
-                    </Tooltip>
-                  }
-                />
-              </Form.Item>
-
-              <Form.Item
-                label={
-                  <span>
-                    Asset Name<span className={styles["star"]}>*</span>
-                  </span>
-                }
-                className={styles["formItem"]}
-              >
-                <AssetFieldAutoComplete
-                  assetField="product_name"
-                  value={value}
-                  setValue={setValue}
-                />
-              </Form.Item>
-              <Form.Item
-                label={
-                  <span>
-                    Purchase Date<span className={styles["star"]}>*</span>
-                  </span>
-                }
-                className={styles["formItem"]}
-              >
-                <DatePicker
-                  className={styles["input"]}
-                  placeholder="Enter purchase date"
-                  format="YYYY-MM-DD" // Set the format to YYYY-MM-DD
-                  onChange={(_date, dateString) =>
-                    handleInputChange("date_of_purchase", dateString)
-                  } // Use dateString to get the formatted date
-                />
-              </Form.Item>
-              <Form.Item
-                label={
-                  <span>
-                    License Type<span className={styles["star"]}>*</span>
-                  </span>
-                }
-                className={styles["formItem"]}
-              >
-                <Select
-                  className={styles["input"]}
-                  placeholder="Select license type"
-                  onChange={(value) => handleInputChange("license_type", value)}
+            {formData.asset_category === "SOFTWARE" && (
+              <>
+                <Form.Item
+                  label={<span>Asset ID</span>}
+                  className={styles["formItem"]}
                 >
-                  <Option value="Monthly">Monthly</Option>
-                  <Option value="Permanent">Permanent</Option>
-                </Select>
-              </Form.Item>
+                  <Input
+                    placeholder="Enter Asset ID"
+                    className={styles["input"]}
+                    onChange={(e) =>
+                      handleInputChange("asset_id", e.target.value)
+                    }
+                    suffix={
+                      <Tooltip title="Asset Id should be alphanumeric Eg:ASS101">
+                        <InfoCircleOutlined
+                          style={{ color: "rgba(0,0,0,.45)" }}
+                        />
+                      </Tooltip>
+                    }
+                  />
+                </Form.Item>
 
-              <Form.Item label="Owner" className={styles["formItem"]}>
-                <Select
-                  className={styles["input"]}
-                  placeholder="Select owner"
-                  onChange={(value) => handleInputChange("owner", value)}
+                <Form.Item
+                  label={
+                    <span>
+                      Asset Name<span className={styles["star"]}>*</span>
+                    </span>
+                  }
+                  className={styles["formItem"]}
                 >
-                  <Option value="EXPERION">EXPERION</Option>
-                </Select>
-              </Form.Item>
-              <Form.Item
-                label={
-                  <span>
-                    Asset Location<span className={styles["star"]}>*</span>
-                  </span>
-                }
-                className={styles["formItem"]}
-              >
-                <AssetFieldAutoComplete
-                  assetField="location"
-                  value={assetLocation}
-                  setValue={setAssetLocation}
-                />
-              </Form.Item>
-              <Form.Item label="Business Unit" className={styles["formItem"]}>
-                <AssetFieldAutoComplete
-                  assetField="business_unit"
-                  value={assetBu}
-                  setValue={setAssetBu}
-                />
-              </Form.Item>
+                  <AssetFieldAutoComplete
+                    assetField="product_name"
+                    value={value}
+                    setValue={setValue}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label={
+                    <span>
+                      Purchase Date<span className={styles["star"]}>*</span>
+                    </span>
+                  }
+                  className={styles["formItem"]}
+                >
+                  <DatePicker
+                    className={styles["input"]}
+                    placeholder="Enter purchase date"
+                    format="YYYY-MM-DD" // Set the format to YYYY-MM-DD
+                    onChange={(_date, dateString) =>
+                      handleInputChange("date_of_purchase", dateString)
+                    } // Use dateString to get the formatted date
+                  />
+                </Form.Item>
+                <Form.Item
+                  label={
+                    <span>
+                      License Type<span className={styles["star"]}>*</span>
+                    </span>
+                  }
+                  className={styles["formItem"]}
+                >
+                  <Select
+                    className={styles["input"]}
+                    placeholder="Select license type"
+                    onChange={(value) =>
+                      handleInputChange("license_type", value)
+                    }
+                  >
+                    <Option value="Monthly">Monthly</Option>
+                    <Option value="Permanent">Permanent</Option>
+                  </Select>
+                </Form.Item>
+
+                <Form.Item label="Owner" className={styles["formItem"]}>
+                  <Select
+                    className={styles["input"]}
+                    placeholder="Select owner"
+                    onChange={(value) => handleInputChange("owner", value)}
+                  >
+                    <Option value="EXPERION">EXPERION</Option>
+                  </Select>
+                </Form.Item>
+                <Form.Item
+                  label={
+                    <span>
+                      Asset Location<span className={styles["star"]}>*</span>
+                    </span>
+                  }
+                  className={styles["formItem"]}
+                >
+                  <AssetFieldAutoComplete
+                    assetField="location"
+                    value={assetLocation}
+                    setValue={setAssetLocation}
+                  />
+                </Form.Item>
+                <Form.Item label="Business Unit" className={styles["formItem"]}>
+                  <AssetFieldAutoComplete
+                    assetField="business_unit"
+                    value={assetBu}
+                    setValue={setAssetBu}
+                  />
+                </Form.Item>
+                <Form.Item label="Notes:" className={styles["formItem"]}>
+                  <Input
+                    placeholder="Enter reason for creation"
+                    className={styles["input"]}
+                    onChange={(e) => handleInputChange("notes", e.target.value)}
+                  />
+                </Form.Item>
+
+                {/* Add more software specific fields as needed */}
+              </>
+            )}
+
+            {formData.asset_category === "HARDWARE" && (
+              <>
+                {/* Render hardware specific fields */}
+                {/* Example: */}
+                <Form.Item
+                  label={<span>Asset ID</span>}
+                  className={styles["formItem"]}
+                >
+                  <Input
+                    placeholder="Enter Asset ID"
+                    className={styles["input"]}
+                    onChange={(e) =>
+                      handleInputChange("asset_id", e.target.value)
+                    }
+                    suffix={
+                      <Tooltip title="Asset Id should be alphanumeric Eg:ASS101">
+                        <InfoCircleOutlined
+                          style={{ color: "rgba(0,0,0,.45)" }}
+                        />
+                      </Tooltip>
+                    }
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  label={
+                    <span>
+                      Asset Type<span className={styles["star"]}>*</span>
+                    </span>
+                  }
+                  className={styles["formItem"]}
+                >
+                  <AssetFieldAutoComplete
+                    assetField="asset_type"
+                    value={assettypeValue}
+                    setValue={setassettypeValue}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label={
+                    <span>
+                      Asset Name<span className={styles["star"]}>*</span>
+                    </span>
+                  }
+                  className={styles["formItem"]}
+                >
+                  <AssetFieldAutoComplete
+                    assetField="product_name"
+                    value={value}
+                    setValue={setValue}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label={
+                    <span>
+                      Purchase Date<span className={styles["star"]}>*</span>
+                    </span>
+                  }
+                  className={styles["formItem"]}
+                >
+                  <DatePicker
+                    className={styles["input"]}
+                    placeholder="Enter purchase date"
+                    format="YYYY-MM-DD" // Set the format to YYYY-MM-DD
+                    onChange={(_date, dateString) =>
+                      handleInputChange("date_of_purchase", dateString)
+                    } // Use dateString to get the formatted date
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  label={<span>Model Number</span>}
+                  className={styles["formItem"]}
+                >
+                  <AssetFieldAutoComplete
+                    assetField="model_number"
+                    value={modelNumber}
+                    setValue={setModelNumber}
+                  />
+                </Form.Item>
+
+                {/* </Form.Item> */}
+                <Form.Item
+                  label={
+                    <span>
+                      Serial Number<span className={styles["star"]}>*</span>
+                    </span>
+                  }
+                  className={styles["formItem"]}
+                >
+                  <Input
+                    placeholder="Enter serial number"
+                    className={styles["input"]}
+                    onChange={(e) =>
+                      handleInputChange("serial_number", e.target.value)
+                    }
+                    suffix={
+                      <Tooltip
+                        placement="top"
+                        title="Serial number should be alphanumeric and should not exceed 30 characters Eg:ABC123DEF456"
+                      >
+                        <InfoCircleOutlined
+                          style={{ color: "rgba(0,0,0,.45)" }}
+                        />
+                      </Tooltip>
+                    }
+                  />
+                </Form.Item>
+                <Form.Item
+                  label={<span>Warranty Period</span>}
+                  className={styles["formItem"]}
+                >
+                  <Input
+                    className={styles["input"]}
+                    placeholder="Enter warranty period"
+                    onChange={(e) => validateWarrantyPeriod(e)}
+                    suffix={
+                      <Tooltip
+                        placement="top"
+                        title="Warranty period should be digit Eg:2,3"
+                      >
+                        <InfoCircleOutlined
+                          style={{ color: "rgba(0,0,0,.45)" }}
+                        />
+                      </Tooltip>
+                    }
+                  />
+                </Form.Item>
+                <Form.Item
+                  label={
+                    <span>
+                      Asset Location<span className={styles["star"]}>*</span>
+                    </span>
+                  }
+                  className={styles["formItem"]}
+                >
+                  <AssetFieldAutoComplete
+                    assetField="location"
+                    value={assetLocation}
+                    setValue={setAssetLocation}
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  label={
+                    <span>
+                      Invoice Location<span className={styles["star"]}>*</span>
+                    </span>
+                  }
+                  className={styles["formItem"]}
+                >
+                  <AssetFieldAutoComplete
+                    assetField="invoice_location"
+                    value={assetInLocation}
+                    setValue={setAssetInLocation}
+                  />
+                </Form.Item>
+
+                <Form.Item label="Business Unit" className={styles["formItem"]}>
+                  <AssetFieldAutoComplete
+                    assetField="business_unit"
+                    value={assetBu}
+                    setValue={setAssetBu}
+                  />
+                </Form.Item>
+                <Form.Item label="OS:" className={styles["formItem"]}>
+                  <AssetFieldAutoComplete
+                    assetField="os"
+                    value={os}
+                    setValue={setOs}
+                  />
+                </Form.Item>
+
+                <Form.Item label="OS  version" className={styles["formItem"]}>
+                  <AssetFieldAutoComplete
+                    assetField="os_version"
+                    value={osVersion}
+                    setValue={setOsVersion}
+                  />
+                </Form.Item>
+
+                <Form.Item label="Mobile OS" className={styles["formItem"]}>
+                  <AssetFieldAutoComplete
+                    assetField="mobile_os"
+                    value={mobileOs}
+                    setValue={setMobileOs}
+                  />
+                </Form.Item>
+
+                <Form.Item label="Processor" className={styles["formItem"]}>
+                  <AssetFieldAutoComplete
+                    assetField="processor"
+                    value={processor}
+                    setValue={setProcessor}
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  label="Processor Gen:"
+                  className={styles["formItem"]}
+                >
+                  <AssetFieldAutoComplete
+                    assetField="processor_gen"
+                    value={processorGen}
+                    setValue={setProcessorGen}
+                  />
+                </Form.Item>
+
+                <Form.Item label="Memory:" className={styles["formItem"]}>
+                  <AssetFieldAutoComplete
+                    assetField="memory"
+                    value={memory}
+                    setValue={setMemory}
+                  />
+                </Form.Item>
+
+                <Form.Item label="Storage:" className={styles["formItem"]}>
+                  <AssetFieldAutoComplete
+                    assetField="storage"
+                    value={storage}
+                    setValue={setStorage}
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  label="Configuration:"
+                  className={styles["formItem"]}
+                >
+                  <Input
+                    placeholder="Enter configuration"
+                    className={styles["input"]}
+                    onChange={(e) =>
+                      handleInputChange("configuration", e.target.value)
+                    }
+                  />
+                </Form.Item>
+
+                <Form.Item label="Accessories:" className={styles["formItem"]}>
+                  <Input
+                    placeholder="Enter Accessory"
+                    className={styles["input"]}
+                    onChange={(e) => handleAccessoryChange(e)}
+                  />
+                </Form.Item>
+
               <Form.Item label="Notes:" className={styles["formItem"]}>
                 <Input
                   placeholder="Enter reason for creation"
@@ -550,279 +826,44 @@ const AddAsset: React.FC = () => {
                   onChange={(e) => handleInputChange("notes", e.target.value)}
                 />
               </Form.Item>
-
-              {/* Add more software specific fields as needed */}
-            </>
-          )}
-
-          {formData.asset_category === "HARDWARE" && (
-            <>
-              {/* Render hardware specific fields */}
-              {/* Example: */}
-              <Form.Item
-                label={<span>Asset ID</span>}
-                className={styles["formItem"]}
-              >
-                <Input
-                  placeholder="Enter Asset ID"
-                  className={styles["input"]}
-                  onChange={(e) =>
-                    handleInputChange("asset_id", e.target.value)
-                  }
-                  suffix={
-                    <Tooltip title="Asset Id should be alphanumeric Eg:ASS101">
-                      <InfoCircleOutlined
-                        style={{ color: "rgba(0,0,0,.45)" }}
-                      />
-                    </Tooltip>
-                  }
-                />
-              </Form.Item>
-
-              <Form.Item
-                label={
-                  <span>
-                    Asset Type<span className={styles["star"]}>*</span>
-                  </span>
-                }
-                className={styles["formItem"]}
-              >
-                <AssetFieldAutoComplete
-                  assetField="asset_type"
-                  value={assettypeValue}
-                  setValue={setassettypeValue}
-                />
-              </Form.Item>
-              <Form.Item
-                label={
-                  <span>
-                    Asset Name<span className={styles["star"]}>*</span>
-                  </span>
-                }
-                className={styles["formItem"]}
-              >
-                <AssetFieldAutoComplete
-                  assetField="product_name"
-                  value={value}
-                  setValue={setValue}
-                />
-              </Form.Item>
-              <Form.Item
-                label={
-                  <span>
-                    Purchase Date<span className={styles["star"]}>*</span>
-                  </span>
-                }
-                className={styles["formItem"]}
-              >
-                <DatePicker
-                  className={styles["input"]}
-                  placeholder="Enter purchase date"
-                  format="YYYY-MM-DD" // Set the format to YYYY-MM-DD
-                  onChange={(_date, dateString) =>
-                    handleInputChange("date_of_purchase", dateString)
-                  } // Use dateString to get the formatted date
-                />
-              </Form.Item>
-
-              <Form.Item
-                label={<span>Model Number</span>}
-                className={styles["formItem"]}
-              >
-                <AssetFieldAutoComplete
-                  assetField="model_number"
-                  value={modelNumber}
-                  setValue={setModelNumber}
-                />
-              </Form.Item>
-
-              {/* </Form.Item> */}
-              <Form.Item
-                label={
-                  <span>
-                    Serial Number<span className={styles["star"]}>*</span>
-                  </span>
-                }
-                className={styles["formItem"]}
-              >
-                <Input
-                  placeholder="Enter serial number"
-                  className={styles["input"]}
-                  onChange={(e) =>
-                    handleInputChange("serial_number", e.target.value)
-                  }
-                  suffix={
-                    <Tooltip
-                      placement="top"
-                      title="Serial number should be alphanumeric and should not exceed 30 characters Eg:ABC123DEF456"
-                    >
-                      <InfoCircleOutlined
-                        style={{ color: "rgba(0,0,0,.45)" }}
-                      />
-                    </Tooltip>
-                  }
-                />
-              </Form.Item>
-              <Form.Item
-                label={<span>Warranty Period</span>}
-                className={styles["formItem"]}
-              >
-                <Input
-                  className={styles["input"]}
-                  placeholder="Enter warranty period"
-                  onChange={(e) => validateWarrantyPeriod(e)}
-                  suffix={
-                    <Tooltip
-                      placement="top"
-                      title="Warranty period should be digit Eg:2,3"
-                    >
-                      <InfoCircleOutlined
-                        style={{ color: "rgba(0,0,0,.45)" }}
-                      />
-                    </Tooltip>
-                  }
-                />
-              </Form.Item>
-              <Form.Item
-                label={
-                  <span>
-                    Asset Location<span className={styles["star"]}>*</span>
-                  </span>
-                }
-                className={styles["formItem"]}
-              >
-                <AssetFieldAutoComplete
-                  assetField="location"
-                  value={assetLocation}
-                  setValue={setAssetLocation}
-                />
-              </Form.Item>
-
-              <Form.Item
-                label={
-                  <span>
-                    Invoice Location<span className={styles["star"]}>*</span>
-                  </span>
-                }
-                className={styles["formItem"]}
-              >
-                <AssetFieldAutoComplete
-                  assetField="invoice_location"
-                  value={assetInLocation}
-                  setValue={setAssetInLocation}
-                />
-              </Form.Item>
-
-              <Form.Item label="Business Unit" className={styles["formItem"]}>
-                <AssetFieldAutoComplete
-                  assetField="business_unit"
-                  value={assetBu}
-                  setValue={setAssetBu}
-                />
-              </Form.Item>
-              <Form.Item label="OS:" className={styles["formItem"]}>
-                <AssetFieldAutoComplete
-                  assetField="os"
-                  value={os}
-                  setValue={setOs}
-                />
-              </Form.Item>
-
-              <Form.Item label="OS  version" className={styles["formItem"]}>
-                <AssetFieldAutoComplete
-                  assetField="os_version"
-                  value={osVersion}
-                  setValue={setOsVersion}
-                />
-              </Form.Item>
-
-              <Form.Item label="Mobile OS" className={styles["formItem"]}>
-                <AssetFieldAutoComplete
-                  assetField="mobile_os"
-                  value={mobileOs}
-                  setValue={setMobileOs}
-                />
-              </Form.Item>
-
-              <Form.Item label="Processor" className={styles["formItem"]}>
-                <AssetFieldAutoComplete
-                  assetField="processor"
-                  value={processor}
-                  setValue={setProcessor}
-                />
-              </Form.Item>
-
-              <Form.Item label="Processor Gen:" className={styles["formItem"]}>
-                <AssetFieldAutoComplete
-                  assetField="processor_gen"
-                  value={processorGen}
-                  setValue={setProcessorGen}
-                />
-              </Form.Item>
-
-              <Form.Item label="Memory:" className={styles["formItem"]}>
-                <AssetFieldAutoComplete
-                  assetField="memory"
-                  value={memory}
-                  setValue={setMemory}
-                />
-              </Form.Item>
-
-              <Form.Item label="Storage:" className={styles["formItem"]}>
-                <AssetFieldAutoComplete
-                  assetField="storage"
-                  value={storage}
-                  setValue={setStorage}
-                />
-              </Form.Item>
-
-              <Form.Item label="Configuration:" className={styles["formItem"]}>
-                <Input
-                  placeholder="Enter configuration"
-                  className={styles["input"]}
-                  onChange={(e) =>
-                    handleInputChange("configuration", e.target.value)
-                  }
-                />
-              </Form.Item>
-
-              <Form.Item label="Accessories:" className={styles["formItem"]}>
-                <Input
-                  placeholder="Enter Accessory"
-                  className={styles["input"]}
-                  onChange={(e) => handleAccessoryChange(e)}
-                />
-              </Form.Item>
-
-              <Form.Item label="Notes:" className={styles["formItem"]}>
-                <Input
-                  placeholder="Enter reason for creation"
-                  className={styles["input"]}
-                  onChange={(e) => handleInputChange("message", e.target.value)}
-                />
-              </Form.Item>
               {/* Add more hardware specific fields as needed */}
             </>
           )}
 
-          <Form.Item>
-            <Button
-              className={styles["button"]}
-              ghost
-              style={{
-                background: "rgb(22, 119, 255)",
-                marginTop: "30px",
-                width: "120px",
-                height: "40px",
-              }}
-              onClick={() => handleSubmit()} // Example: Log form data on submit
-            >
-              Submit
-            </Button>
-          </Form.Item>
-        </Form>
+            <Form.Item>
+              <Button
+                className={styles["button"]}
+                ghost
+                style={{
+                  background: "rgb(22, 119, 255)",
+                  marginTop: "30px",
+                  width: "120px",
+                  height: "40px",
+                }}
+                onClick={() => handleSubmit()} // Example: Log form data on submit
+              >
+                Submit
+              </Button>
+              <Button
+                className={styles["button"]}
+                ghost
+                style={{
+                  background: "#FF474C",
+                  marginTop: "30px",
+                  marginLeft:"30px",
+                  width: "120px",
+                  height: "40px",
+                }}
+                onClick={() => handleResetForm()} // Example: Log form data on submit
+              >
+                Reset
+              </Button>
+
+            </Form.Item>
+          </Form>
+        </div>
       </div>
-    </div>
+    </Spin>
   );
 };
 
