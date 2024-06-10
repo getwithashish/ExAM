@@ -207,7 +207,16 @@ const DashboardAssetHandler = ({
 
     refetchAssetData(queryParams + additionalQueryParams);
   };
+  const detailStatusStyleCondition = (record: any): React.CSSProperties => {
+    return record.asset_detail_status === "CREATE_REJECTED" ||
+      record.asset_detail_status === "UPDATE_REJECTED"
+      ? { color: "red" }
+      : {};
+  };
 
+  const assignStatusStyleCondition = (record: any): React.CSSProperties => {
+    return record.assign_status === "REJECTED" ? { color: "red" } : {};
+  };
   const columns = [
     {
       title: "Product Name",
@@ -233,7 +242,7 @@ const DashboardAssetHandler = ({
     },
 
     {
-      title: "Location",
+      title: "Asset Location",
       dataIndex: "location",
       responsive: ["md"],
       width: 120,
@@ -277,20 +286,6 @@ const DashboardAssetHandler = ({
       }),
       render: renderClickableColumn("Invoice Location", "invoice_location"),
     },
-
-    {
-      title: "Custodian",
-      dataIndex: "custodian",
-      responsive: ["md"],
-      width: 120,
-      sorter: true,
-      sortOrder: sortedColumn === "custodian" ? sortOrder : undefined,
-      onHeaderCell: () => ({
-        onClick: () => handleSort("custodian"),
-      }),
-      render: renderClickableColumn("Custodian", "custodian"),
-    },
-
     {
       title: "Asset Type",
       dataIndex: "asset_type",
@@ -325,6 +320,26 @@ const DashboardAssetHandler = ({
       }),
       render: renderClickableColumn("Asset Category", "asset_category"),
     },
+    {
+      title: "Custodian",
+      dataIndex: "custodian",
+      responsive: ["md"],
+      width: 120,
+      sorter: true,
+      sortOrder: sortedColumn === "custodian" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("custodian"),
+      }),
+      render: renderClickableColumn("Custodian", "custodian"),
+    },
+    {
+      title: "Business Unit",
+      dataIndex: "BusinessUnit",
+      responsive: ["md"],
+      width: 120,
+
+      render: renderClickableColumn("Business Unit", "business_unit"),
+    },
 
     {
       title: "Version",
@@ -338,22 +353,7 @@ const DashboardAssetHandler = ({
       }),
       render: renderClickableColumn("Version", "version"),
     },
-    {
-      title: "Asset Status",
-      dataIndex: "Status",
-      responsive: ["md"],
-      width: 140,
 
-      render: renderClickableColumn("Asset Status", "status"),
-    },
-    {
-      title: "Business Unit",
-      dataIndex: "BusinessUnit",
-      responsive: ["md"],
-      width: 120,
-
-      render: renderClickableColumn("Business Unit", "business_unit"),
-    },
     {
       title: "Os",
       dataIndex: "os",
@@ -383,6 +383,45 @@ const DashboardAssetHandler = ({
       responsive: ["md"],
       width: 120,
       render: renderClickableColumn("processor_gen", "processor_gen"),
+    },
+    {
+      title: "Model Number",
+      dataIndex: "model_number",
+      responsive: ["md"],
+      width: 120,
+      sorter: true,
+      sortOrder: sortedColumn === "model_number" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("model_number"),
+      }),
+      render: renderClickableColumn("Model Number", "model_number"),
+    },
+    {
+      title: "Memory",
+      dataIndex: "memory",
+      responsive: ["md"],
+      width: 120,
+      sorter: true,
+      sortOrder: sortedColumn === "memory" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("memory"),
+      }),
+      render: renderClickableColumn("Memory", "memory"),
+    },
+    {
+      title: "Storage",
+      dataIndex: "storage",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Storage", "storage"),
+    },
+    {
+      title: "License Type",
+      dataIndex: "license_type",
+      responsive: ["md"],
+      width: 120,
+
+      render: renderClickableColumn("license_type", "license_type"),
     },
 
     {
@@ -448,47 +487,6 @@ const DashboardAssetHandler = ({
       },
     },
 
-    ,
-    {
-      title: "License Type",
-      dataIndex: "license_type",
-      responsive: ["md"],
-      width: 120,
-
-      render: renderClickableColumn("license_type", "license_type"),
-    },
-
-    {
-      title: "Model Number",
-      dataIndex: "model_number",
-      responsive: ["md"],
-      width: 120,
-      sorter: true,
-      sortOrder: sortedColumn === "model_number" ? sortOrder : undefined,
-      onHeaderCell: () => ({
-        onClick: () => handleSort("model_number"),
-      }),
-      render: renderClickableColumn("Model Number", "model_number"),
-    },
-    {
-      title: "Memory",
-      dataIndex: "memory",
-      responsive: ["md"],
-      width: 120,
-      sorter: true,
-      sortOrder: sortedColumn === "memory" ? sortOrder : undefined,
-      onHeaderCell: () => ({
-        onClick: () => handleSort("memory"),
-      }),
-      render: renderClickableColumn("Memory", "memory"),
-    },
-    {
-      title: "Storage",
-      dataIndex: "storage",
-      responsive: ["md"],
-      width: 120,
-      render: renderClickableColumn("Storage", "storage"),
-    },
     {
       title: "Owner",
       dataIndex: "owner",
@@ -523,13 +521,23 @@ const DashboardAssetHandler = ({
       render: renderClickableColumn("Requester", "requester"),
     },
     {
+      title: "Asset Status",
+      dataIndex: "Status",
+      responsive: ["md"],
+      width: 140,
+
+      render: renderClickableColumn("Asset Status", "status"),
+    },
+
+    {
       title: "Asset Detail Status",
       dataIndex: "asset_detail_status",
       responsive: ["md"],
       width: 140,
       render: renderClickableColumn(
         "Asset Detail Status",
-        "asset_detail_status"
+        "asset_detail_status",
+        detailStatusStyleCondition
       ),
     },
     {
@@ -537,7 +545,11 @@ const DashboardAssetHandler = ({
       dataIndex: "assign_status",
       responsive: ["md"],
       width: 140,
-      render: renderClickableColumn("Asset Assign Status", "assign_status"),
+      render: renderClickableColumn(
+        "Asset Assign Status",
+        "assign_status",
+        assignStatusStyleCondition
+      ),
     },
     {
       title: "Created At",

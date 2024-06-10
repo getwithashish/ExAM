@@ -193,7 +193,7 @@ const CreateRequestPage: FC = function () {
             handleReject={handleReject}
             onClose={() => setSelectedAsset(null)}
             handleApproverNotesChange={handleApproverNotesChange}
-            approverNotes={""}
+            approverNotes={approverNotes}
             modalOpen={modalOpen}
             setModalOpen={setModalOpen}
             setApproverNotes={function (

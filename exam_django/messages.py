@@ -83,12 +83,20 @@ ASSET_SUCCESSFULLY_CREATED = "Asset successfully created."
 ASSET_SUCCESSFULLY_UPDATED = "Asset details successfully updated."
 ASSET_SUCCESSFULLY_ASSIGNED = "Asset assigned successfully."
 ASSET_SUCCESSFULLY_UNASSIGNED = "Asset unassigned successfully."
+ASSET_ASSIGNING_PENDING = "Asset assignment successfully added to pending state. Approval required to complete Asset assignment."
 ASSET_UNASSIGNING_PENDING = "Asset unassignment successfully added to pending state. Approval required to complete Asset Unassignment."
 ASSET_COUNT_SUCCESSFULLY_RETRIEVED = "Asset count is successfully retreived."
 ASSET_CREATE_PENDING_SUCCESSFUL = "Asset Creation successfully added to pending state. Approval required to complete Asset Creation."
 ASSET_UPDATE_PENDING_SUCCESSFUL = "Asset Updation successfully added to pending state. Approval required to complete Asset Updation."
 
 AI_RESPONSE_OBTAINED_SUCCESSFULLY = "AI Response is successfully obtained."
+
+# Asset Rejection Messages
+ASSET_CREATION_REJECTED = "Asset creation has been rejected"
+ASSET_UPDATION_REJECTED = "Asset updation has been rejected"
+ASSIGN_ASSET_REJECT_SUCCESSFUL = "Successfully rejected asset allocation request."
+UNASSIGN_ASSET_REJECT_SUCCESSFUL = "Successfully rejected asset deallocation request."
+
 
 # Approval Exception Messages
 APPROVAL_TYPE_NOT_FOUND = (
@@ -102,7 +110,6 @@ CANNOT_UNASSIGN_ASSET_NOT_IN_PENDING = "Cannot unassign asset whic"
 
 # Approval Success Messages
 
-ASSIGN_ASSET_REJECT_SUCCESSFUL = "Successfully rejected asset assignment request."
 
 # Asset Type Exception Messages
 INVALID_ASSET_TYPE = "The given asset type is invalid."
@@ -139,6 +146,9 @@ UNAUTHORIZED_NO_PERMISSION = (
     "Unauthorized. You do not have permission to assign assets."
 )
 STATUS_EXPIRED_OR_DISPOSED = "Cannot assign the asset. Status is expired or disposed."
+CANNOT_REQUEST_ASSIGN_FOR_ASSETS_IN_ASSIGN_PENDING = "Cannot request for assignment for assets which are already in pending state"
+CANNOT_REQUEST_UNASSIGN_FOR_ASSETS_IN_ASSIGN_PENDING = "Cannot request for unassignment for assets which are already in pending state"
+
 # Business Unit Success Messages
 BUSINESS_UNIT_SUCCESSFULLY_CREATED = "Business unit sucessfully created."
 MEMORY_SUCCESSFULLY_CREATED = "Memory sucessfully created."

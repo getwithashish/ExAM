@@ -3,10 +3,16 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from asset.serializers import AssignAssetSerializer
 from asset.models import Asset
-from exceptions import PermissionDeniedException, SerializerException
+from exceptions import (
+    NotAcceptableOperationException,
+    PermissionDeniedException,
+    SerializerException,
+)
 from messages import ASSET_NOT_FOUND, INVALID_ASSET_DATA
 from response import APIResponse
-from asset.service.asset_unassign_service.asset_unassign_service import UnassignAssetService
+from asset.service.asset_unassign_service.asset_unassign_service import (
+    UnassignAssetService,
+)
 
 
 class UnassignAssetView(APIView):
@@ -22,13 +28,13 @@ class UnassignAssetView(APIView):
             if serializer.is_valid():
                 requester = request.user
                 role = requester.user_scope
-
                 asset_uuid = request.data.get("asset_uuid")
-                print("asset_uuid", request.data)
-
+                # Retrieve the Asset object using the asset_uuid
+                asset = Asset.objects.get(asset_uuid=asset_uuid)
+                custodian = asset.custodian
                 # Assign the asset using the appropriate service based on requester's role
                 data, message, http_status = UnassignAssetService.unassign_asset(
-                    role, asset_uuid, requester
+                    role, asset_uuid, requester, custodian=custodian
                 )
 
                 return APIResponse(
@@ -50,11 +56,18 @@ class UnassignAssetView(APIView):
         except SerializerException as e:
             return APIResponse(
                 data=str(e),
-                message=serializer.errors,
+                message=e.message,
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
         except PermissionDeniedException as e:
+            return APIResponse(
+                data=str(e),
+                message=e.message,
+                status=e.status,
+            )
+
+        except NotAcceptableOperationException as e:
             return APIResponse(
                 data=str(e),
                 message=e.message,
