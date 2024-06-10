@@ -364,10 +364,6 @@ const ViewRequestModal: FC<{
       setActionType(type);
       setModalOpen(!modalOpen);
     };
-    const toggleModal = (type: string) => {
-      setActionType(type);
-      setModalOpen(!modalOpen);
-    };
 
     const handleNotesChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
       setNotes(e.target.value);

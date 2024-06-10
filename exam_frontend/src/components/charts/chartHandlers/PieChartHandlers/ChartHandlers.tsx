@@ -15,6 +15,7 @@ import axiosInstance from "../../../../config/AxiosConfig";
 import { NoData } from "../../../NoData/NoData";
 import { statusColors } from "./StatusColors";
 import { statusMapping } from "./statusMapping";
+import { Refresh } from "@mui/icons-material";
 
 const ChartHandlers: React.FC<PieChartGraphProps> = ({
   selectedTypeId,
@@ -41,6 +42,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
   const [assetState, _setAssetState] = useState<ChartData | null>(null);
   const [detailState, _setDetailState] = useState<ChartData | null>(null);
   const [assignState, _setAssignState] = useState<ChartData | null>(null);
+  const [selectedOption, setSelectedOption] = useState("0")
   const {
     data: _assetData,
     isLoading: assetLoading,
@@ -244,6 +246,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const assetTypeValue = parseInt(e.target.value);
+    setSelectedOption(e.target.value)
     if (assetTypeValue === 0) {
       setSelectedTypeId(0);
     }
@@ -342,10 +345,29 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
 
   if (assetError) return <div>Error fetching data</div>;
 
+  const reset = () => {
+    setSelectedTypeId(0);
+    setAssetState("");
+    setDetailState("");
+    setAssignState("");
+    setSelectedOption("0");
+  
+    const revertData = {
+      target: { value: '0' }
+    } as React.ChangeEvent<HTMLSelectElement>;  
+    handleSelectChange(revertData);
+  };
+
   return (
     <Stack>
       <div className="flex justify-end">
+        <div className="mx-4">
+          <button onClick={reset} className="blue-600 text-white text-display rounded-lg p-2">
+            <Refresh/>
+        </button>
+        </div>     
         <select
+          value={selectedOption} // Bind the dropdown value to the state
           className="block bg-transparent font-display text-xs text-black-500 appearance-none dark:text-gray-400 dark:border-gray-200 focus:outline-none rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           onChange={handleSelectChange}
         >
