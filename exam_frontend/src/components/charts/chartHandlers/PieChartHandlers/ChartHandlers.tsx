@@ -1,84 +1,81 @@
-import React, { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
-import Stack from "@mui/material/Stack";
-import { fetchAssetData, fetchAssetTypeData } from "../../api/ChartApi";
-import {
-  AssetData,
-  AssetDetailData,
-  ChartData,
-  PieChartGraphProps,
-} from "../../types/ChartTypes";
-import axiosInstance from "../../../../config/AxiosConfig";
-import { NoData } from "../../../NoData/NoData";
-import { statusColors } from "./StatusColors";
-import { statusMapping } from "./statusMapping";
-import { Refresh } from "@mui/icons-material";
-
-const ChartHandlers: React.FC<PieChartGraphProps> = ({
-  selectedTypeId,
-  setSelectedTypeId,
-  setAssetState,
-  setDetailState,
-  setAssignState,
-  onClick,
-}) => {
-  const [assetTypeData, setAssetTypeData] = useState<AssetDetailData[]>([]);
-  const [_selectedType, setSelectedType] = useState<string>("");
-  const [assetChartData, setAssetChartData] = useState<ChartData[]>([]);
-  const [assetFilteredChartData, setAssetFilteredChartData] = useState<
-    ChartData[]
-  >([]);
-  const [assignChartData, setAssignChartData] = useState<ChartData[]>([]);
-  const [assignFilteredChartData, setAssignFilteredChartData] = useState<
-    ChartData[]
-  >([]);
-  const [detailChartData, setDetailChartData] = useState<ChartData[]>([]);
-  const [detailFilteredChartData, setDetailFilteredChartData] = useState<
-    ChartData[]
-  >([]);
-  const [assetState, _setAssetState] = useState<ChartData | null>(null);
-  const [detailState, _setDetailState] = useState<ChartData | null>(null);
-  const [assignState, _setAssignState] = useState<ChartData | null>(null);
-  const [selectedOption, setSelectedOption] = useState("0")
-  const {
-    data: _assetData,
-    isLoading: assetLoading,
-    isError: assetError,
-  } = useQuery<AssetData>({
-    queryKey: ["assetData"],
-    queryFn: fetchAssetData,
-  });
-
-  useEffect(() => {
-    fetchAssetTypeData()
-      .then((data) => {
+  import React, { useState } from "react";
+  import { useQuery } from "@tanstack/react-query";
+  import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+  import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+  import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
+  import Stack from "@mui/material/Stack";
+  import { fetchAssetData, fetchAssetTypeData } from "../../api/ChartApi";
+  import {
+    AssetData,
+    AssetDetailData,
+    ChartData,
+    PieChartGraphProps,
+  } from "../../types/ChartTypes";
+  import axiosInstance from "../../../../config/AxiosConfig";
+  import { NoData } from "../../../NoData/NoData";
+  import { statusColors } from "./StatusColors";
+  import { statusMapping } from "./statusMapping";
+  import { Refresh } from "@mui/icons-material";
+  
+  const ChartHandlers: React.FC<PieChartGraphProps> = ({
+    selectedTypeId,
+    setSelectedTypeId,
+    setAssetState,
+    setDetailState,
+    setAssignState,
+    onClick,
+  }) => {
+    const [assetTypeData, setAssetTypeData] = useState<AssetDetailData[]>([]);
+    const [_selectedType, setSelectedType] = useState<string>("");
+    const [assetChartData, setAssetChartData] = useState<ChartData[]>([]);
+    const [assetFilteredChartData, setAssetFilteredChartData] = useState<ChartData[]>([]);
+    const [assignChartData, setAssignChartData] = useState<ChartData[]>([]);
+    const [assignFilteredChartData, setAssignFilteredChartData] = useState<ChartData[]>([]);
+    const [detailChartData, setDetailChartData] = useState<ChartData[]>([]);
+    const [detailFilteredChartData, setDetailFilteredChartData] = useState<ChartData[]>([]);
+    const [selectedOption, setSelectedOption] = useState("0");
+  
+    const {
+      data: _assetData,
+      isLoading: assetLoading,
+      isError: assetError,
+      refetch: refetchAssetData,
+    } = useQuery<AssetData>({
+      queryKey: ["assetData"],
+      queryFn: fetchAssetData,
+    });
+  
+    const {
+      refetch: refetchAssetTypeData
+    } = useQuery({
+      queryKey: ["assetTypeData"],
+      queryFn: fetchAssetTypeData,
+      onSuccess: (data) => {
         setAssetTypeData(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching asset data:", error);
-      });
-  }, []);
-
-  useEffect(() => {
-    fetchAssetData()
-      .then((assetCountData) => {
-
+      },
+      onError: (error) => {
+        console.error("Error fetching asset type data:", error);
+      },
+    });
+  
+    const {
+      refetch: refetchAssetChartData
+    } = useQuery({
+      queryKey: ["assetChartData"],
+      queryFn: fetchAssetData,
+      onSuccess: (assetCountData) => {
         const statusCounts = assetCountData?.status_counts ?? {};
         const inUseCount = statusCounts["IN USE"] ?? 0;
         const inStoreCount = statusCounts["IN STORE"] ?? 0;
         const inServiceCount = inUseCount + inStoreCount;
-
+  
         const inServiceData = {
           label: "IN SERVICE",
           value: inServiceCount,
           color: statusColors["IN SERVICE"],
         };
-
+  
         const statusOrder = ["IN SERVICE", "IN USE", "IN STOCK", "EXPIRED"];
-        console.log(assetCountData)
         const filteredAssetCountData = Object.entries(statusCounts)
           .filter(([label]) => label !== "DISPOSED")
           .map(([label, value]) => ({
@@ -87,67 +84,26 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
             color: statusColors[label],
           }));
         const assetTypeData = [...filteredAssetCountData, inServiceData];
-
+  
         assetTypeData.sort((a, b) => {
           return statusOrder.indexOf(b.label) - statusOrder.indexOf(a.label);
         });
-
+  
         setAssetChartData(assetTypeData);
         setAssetFilteredChartData(assetTypeData);
-      })
-      .catch((error) => {
+      },
+      onError: (error) => {
         console.error("Error fetching asset count data:", error);
         setAssetFilteredChartData([]);
-      });
-
-    return () => { };
-  }, []);
-
-  const handleAssetItemClick = (_event: React.MouseEvent, params: any) => {
-    let chartLabel = assetFilteredChartData[params["dataIndex"]]?.label;
-    if (chartLabel === "IN STOCK") {
-      chartLabel = "IN STORE";
-    }
-    if (chartLabel === "IN SERVICE") {
-      chartLabel = "IN STORE|IN USE";
-    }
-    setAssetState(chartLabel ?? null);
-    onClick();
-  };
-
-  useEffect(() => {
-  }, [assetState]);
-
-  const handleDetailItemClick = (_event: React.MouseEvent, params: any) => {
-    let chartLabel = detailFilteredChartData[params["dataIndex"]]?.label;
-    if (chartLabel === "PENDING") {
-      chartLabel = "UPDATE_PENDING|CREATE_PENDING";
-    }
-    if (chartLabel === "REJECTED") {
-      chartLabel = "CREATE_REJECTED|UPDATE_REJECTED";
-    }
-    setDetailState(chartLabel ?? null);
-    onClick();
-  };
-
-  useEffect(() => {
-  }, [detailState]);
-
-  const handleAssignItemClick = (_event: React.MouseEvent, params: any) => {
-    let chartLabel = assignFilteredChartData[params["dataIndex"]]?.label;
-    if (chartLabel === "PENDING") {
-      chartLabel = "ASSIGN_PENDING";
-    }
-    setAssignState(chartLabel ?? null);
-    onClick();
-  };
-
-  useEffect(() => {
-  }, [assignState]);
-
-  useEffect(() => {
-    fetchAssetData()
-      .then((res) => {
+      },
+    });
+  
+    const {
+      refetch: refetchDetailChartData
+    } = useQuery({
+      queryKey: ["detailChartData"],
+      queryFn: fetchAssetData,
+      onSuccess: (res) => {
         const assetDetailData = res.asset_detail_status;
         const mergedStatusData = Object.entries(assetDetailData ?? {}).reduce(
           (acc, [label, value]) => {
@@ -184,7 +140,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
           },
           {} as { [key: string]: ChartData }
         );
-
+  
         if (mergedStatusData["REJECTED"]) {
           mergedStatusData["REJECTED"].value +=
             mergedStatusData["UPDATE_REJECTED"]?.value ?? 0;
@@ -193,7 +149,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
           delete mergedStatusData["UPDATE_REJECTED"];
           delete mergedStatusData["CREATE_REJECTED"];
         }
-
+  
         if (mergedStatusData["PENDING"]) {
           mergedStatusData["PENDING"].value +=
             mergedStatusData["UPDATE_PENDING"]?.value ?? 0;
@@ -202,56 +158,88 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
           delete mergedStatusData["UPDATE_PENDING"];
           delete mergedStatusData["CREATE_PENDING"];
         }
-
-        const statusOrder = ["CREATED", "UPDATED", "PENDING", "REJECTED"]
-
+  
+        const statusOrder = ["CREATED", "UPDATED", "PENDING", "REJECTED"];
         const mergedStatusArray: ChartData[] = statusOrder
           .map(label => mergedStatusData[label])
           .filter((entry): entry is ChartData => entry !== undefined);
-
+  
         setDetailChartData(mergedStatusArray);
         setDetailFilteredChartData(mergedStatusArray);
-      })
-      .catch((error) => {
+      },
+      onError: (error) => {
         console.error("Error fetching asset details data:", error);
         setDetailFilteredChartData([]);
-      });
-  }, []);
-
- useEffect(() => {
-  fetchAssetData()
-    .then((assetAssignData) => {
-      const assetAssignStatusData = Object.entries(assetAssignData?.assign_status ?? {}).map(([label, value]) => ({
-        label: statusMapping[label] ?? label,
-        value: value as number,
-        color: statusColors[label] ?? "", // Ensure color is always present
-      }));
-
-      const statusOrder = ["ASSIGNED", "UNASSIGNED", "PENDING", "REJECTED"];
-      const sortedAssignStatusData = statusOrder.map((label) =>
-        assetAssignStatusData.find((data) => data.label === label)
-      ).filter((entry): entry is ChartData => entry !== undefined);
-
-      setAssignChartData(sortedAssignStatusData);
-      setAssignFilteredChartData(sortedAssignStatusData);
-    })
-    .catch((error) => {
-      console.error("Error fetching assign details data:", error);
-      setAssignFilteredChartData([]);
+      },
     });
-}, []);
+  
+    const {
+      refetch: refetchAssignChartData
+    } = useQuery({
+      queryKey: ["assignChartData"],
+      queryFn: fetchAssetData,
+      onSuccess: (assetAssignData) => {
+        const assetAssignStatusData = Object.entries(assetAssignData?.assign_status ?? {}).map(([label, value]) => ({
+          label: statusMapping[label] ?? label,
+          value: value as number,
+          color: statusColors[label] ?? "", // Ensure color is always present
+        }));
+  
+        const statusOrder = ["ASSIGNED", "UNASSIGNED", "PENDING", "REJECTED"];
+        const sortedAssignStatusData = statusOrder.map((label) =>
+          assetAssignStatusData.find((data) => data.label === label)
+        ).filter((entry): entry is ChartData => entry !== undefined);
+  
+        setAssignChartData(sortedAssignStatusData);
+        setAssignFilteredChartData(sortedAssignStatusData);
+      },
+      onError: (error) => {
+        console.error("Error fetching assign details data:", error);
+        setAssignFilteredChartData([]);
+      },
+    });
 
-  useEffect(() => {
-  }, [selectedTypeId]);
+    const handleAssetItemClick = (_event: React.MouseEvent, params: any) => {
+      let chartLabel = assetFilteredChartData[params["dataIndex"]]?.label;
+      if (chartLabel === "IN STOCK") {
+        chartLabel = "IN STORE";
+      }
+      if (chartLabel === "IN SERVICE") {
+        chartLabel = "IN STORE|IN USE";
+      }
+      setAssetState(chartLabel ?? null);
+      onClick();
+    };
+
+    const handleDetailItemClick = (_event: React.MouseEvent, params: any) => {
+      let chartLabel = detailFilteredChartData[params["dataIndex"]]?.label;
+      if (chartLabel === "PENDING") {
+        chartLabel = "UPDATE_PENDING|CREATE_PENDING";
+      }
+      if (chartLabel === "REJECTED") {
+        chartLabel = "CREATE_REJECTED|UPDATE_REJECTED";
+      }
+      setDetailState(chartLabel ?? null);
+      onClick();
+    };
+
+
+  const handleAssignItemClick = (_event: React.MouseEvent, params: any) => {
+    let chartLabel = assignFilteredChartData[params["dataIndex"]]?.label;
+    if (chartLabel === "PENDING") {
+      chartLabel = "ASSIGN_PENDING";
+    }
+    setAssignState(chartLabel ?? null);
+    onClick();
+  };
+
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const assetTypeValue = parseInt(e.target.value);
-    setSelectedOption(e.target.value)
-    if (assetTypeValue === 0) {
-      setSelectedTypeId(0);
-    }
+    setSelectedOption(e.target.value);
+    
     const selectedAssetType = assetTypeData.find(
-      (assetType) => assetType.id === assetTypeValue
+      (item) => item.id === assetTypeValue
     );
     if (selectedAssetType) {
       setSelectedTypeId(selectedAssetType.id);
@@ -262,7 +250,6 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
       setDetailFilteredChartData(detailChartData);
       setAssignFilteredChartData(assignChartData);
     } else {
-
       axiosInstance
         .get(`/asset/asset_count?asset_type=${assetTypeValue}`)
         .then((assetRes) => {
@@ -345,17 +332,24 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
 
   if (assetError) return <div>Error fetching data</div>;
 
+
   const reset = () => {
     setSelectedTypeId(0);
     setAssetState("");
     setDetailState("");
     setAssignState("");
     setSelectedOption("0");
-  
+
     const revertData = {
       target: { value: '0' }
-    } as React.ChangeEvent<HTMLSelectElement>;  
+    } as React.ChangeEvent<HTMLSelectElement>;
     handleSelectChange(revertData);
+
+    refetchAssetData();
+    refetchAssetTypeData();
+    refetchAssetChartData();
+    refetchDetailChartData();
+    refetchAssignChartData();
   };
 
   return (
