@@ -27,7 +27,7 @@ export const fetchAssetTypeData = async(): Promise<any> => {
   return initializeAxiosInstance().then(async (instance) => {
     const res = await instance.get('/asset/asset_type');
     if(res.status !== 200){
-      throw new Error("Asset Count fetch unsuccessful")
+      throw new Error("Asset type fetch unsuccessful")
     }
     return res.data.data;
   });
