@@ -18,7 +18,6 @@
   import { Refresh } from "@mui/icons-material";
   
   const ChartHandlers: React.FC<PieChartGraphProps> = ({
-    selectedTypeId,
     setSelectedTypeId,
     setAssetState,
     setDetailState,
