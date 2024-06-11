@@ -88,7 +88,7 @@ class Asset(models.Model):
     business_unit = models.ForeignKey(
         "BusinessUnit",
         on_delete=models.CASCADE,
-        null=True,blank=False
+        null=True, blank=False
     )
     os = models.CharField(max_length=50, null=True, blank=False, choices=os_choices)
     os_version = models.CharField(max_length=50, null=True, blank=False)
