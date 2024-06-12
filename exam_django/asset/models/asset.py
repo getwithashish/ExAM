@@ -11,8 +11,10 @@ status_choices = (
     ("IN USE", "IN USE"),
     ("IN STORE", "IN STORE"),
     ("IN REPAIR", "IN REPAIR"),
-    ("EXPIRED", "EXPIRED"),
+    ("OUTDATED", "OUTDATED"),
     ("DISPOSED", "DISPOSED"),
+    ("DAMAGED", "DAMAGED"),
+    ("UNREPAIRABLE", "UNREPAIRABLE")
 )
 
 os_choices = (

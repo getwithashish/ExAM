@@ -19,12 +19,6 @@ class AssetImportService:
         else:
             raise ValueError("Invalid file type. Must be 'csv' or 'xlsx'.")
 
-        asset_detail_status = "CREATED"
-        approved_by = None
-        if user.user_scope == "MANAGER":
-            asset_detail_status = "CREATED"
-            approved_by = user
-
         existing_asset_ids = set(Asset.objects.values_list("asset_id", flat=True))
         # existing_serial_numbers = set(
         #     Asset.objects.values_list("serial_number", flat=True)
@@ -80,6 +74,33 @@ class AssetImportService:
             memory, memory_created = Memory.objects.get_or_create(
                 memory_space=row["Memory"]
             )
+            warranty = row["Warranty"]
+            if warranty == "Expired":
+                warranty = -1
+
+            status = row["status"]
+            if status == "No Service":
+                status = "UNREPAIRABLE"
+            elif status == "In Service" and row["Custodian"]:
+                status = "IN USE"
+            elif status == "In Service" and not row[custodian]:
+                status = "IN STORE"
+            elif status == "Damaged":
+                status = "DAMAGED"
+            elif status == "Expired":
+                status = "OUTDATED"
+
+            if row["Approval Status"] == "Approved":
+                asset_detail_status = "CREATED"
+            elif row["Approval Status"] == "Pending":
+                asset_detail_status = "UPDATE PENDING"
+            elif row["Approval Status"] == "Rejected":
+                asset_detail_status == "UPDATE REJECTED"
+
+            if row["Custodian"]:
+                assign_status = "ASSIGNED"
+            else:
+                assign_status = "UNASSIGNED"
 
             asset = Asset(
                 asset_id=asset_id,
@@ -90,8 +111,8 @@ class AssetImportService:
                 serial_number=row["Serial Number"],
                 owner=row["Owner"],
                 date_of_purchase=purchase_date,
-                status=row["Status"],
-                warranty_period=row["Warranty"],
+                status=status,
+                warranty_period=warranty,
                 os=row["OS"],
                 os_version=row["OS Version"],
                 mobile_os=row["Mobile OS"],
@@ -102,11 +123,11 @@ class AssetImportService:
                 accessories=row["Accessories"],
                 notes=row["Notes"],
                 asset_detail_status=asset_detail_status,
+                assign_status=assign_status,
                 approval_status_message=row["approval_status_message"],
                 created_at=row["created_at"],
                 updated_at=row["updated_at"],
                 is_deleted=row["is_deleted"],
-                approved_by=approved_by,
                 requester_id=user.id,
                 asset_type_id=asset_type.id if asset_type else None,
                 business_unit_id=business_unit.id if business_unit else None,
