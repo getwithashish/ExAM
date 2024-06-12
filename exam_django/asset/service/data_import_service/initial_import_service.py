@@ -7,11 +7,6 @@ from django.forms import ValidationError
 from asset.models import Asset, AssetType, BusinessUnit, Employee, Location, Memory
 
 
-# getorcreate
-# mapping for warranty period should be converted into months
-# Date of purchase should be mapped
-
-
 class AssetImportService:
     @staticmethod
     def parse_and_add_assets(file_content, user, file_type):
@@ -31,9 +26,9 @@ class AssetImportService:
             approved_by = user
 
         existing_asset_ids = set(Asset.objects.values_list("asset_id", flat=True))
-        existing_serial_numbers = set(
-            Asset.objects.values_list("serial_number", flat=True)
-        )
+        # existing_serial_numbers = set(
+        #     Asset.objects.values_list("serial_number", flat=True)
+        # )
 
         added_assets_count = 0
         skipped_assets_count = 0
@@ -51,10 +46,10 @@ class AssetImportService:
                 continue
 
             mandatory_fields = [
-                "asset_category",
-                "asset_type",
-                "product_name",
-                "owner",
+                "Category",
+                "Asset Category",
+                "Product Name",
+                "Owner",
             ]
             if any(str(row.get(field, "")).strip() == "" for field in mandatory_fields):
                 missing_fields_assets.append(row)
@@ -62,7 +57,7 @@ class AssetImportService:
 
             try:
                 purchase_date = datetime.strptime(
-                    row["date_of_purchase"], "%Y-%m-%d"
+                    row["Date Of Purchase"], "%Y-%m-%d"
                 ).date()
             except ValueError:
                 raise ValidationError(
@@ -70,20 +65,20 @@ class AssetImportService:
                 )
 
             asset_type, asset_type_created = AssetType.objects.get_or_create(
-                asset_type_name=row["asset_type"]
+                asset_type_name=row["Asset Category"]
             )
             business_unit, business_unit_created = BusinessUnit.objects.get_or_create(
-                business_unit_name=row["business_unit"]
+                business_unit_name=row["BU"]
             )
-            custodian = Employee.objects.get_or_create(employee_name=row["custodian"])
+            custodian = Employee.objects.get_or_create(employee_name=row["Custodian"])
             location, location_created = Location.objects.get_or_create(
-                location_name=row["location"]
+                location_name=row["Location"]
             )
             invoice_location, invoice_location_created = Location.objects.get_or_create(
-                location_name=row["invoice_location"]
+                location_name=row["Invoice Location"]
             )
             memory, memory_created = Memory.objects.get_or_create(
-                memory_space=row["memory"]
+                memory_space=row["Memory"]
             )
 
             asset = Asset(
