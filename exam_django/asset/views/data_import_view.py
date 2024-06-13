@@ -106,7 +106,8 @@ class DataImportView(APIView):
                     status=status.HTTP_200_OK,
                 )
 
-        except UnicodeDecodeError:
+        except UnicodeDecodeError as e:
+            print("Exception Occured: ", e)
             return APIResponse(
                 data=[],
                 message=INVALID_FILE_TYPE,

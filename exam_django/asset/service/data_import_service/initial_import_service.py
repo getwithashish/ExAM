@@ -20,9 +20,6 @@ class AssetImportService:
             raise ValueError("Invalid file type. Must be 'csv' or 'xlsx'.")
 
         existing_asset_ids = set(Asset.objects.values_list("asset_id", flat=True))
-        # existing_serial_numbers = set(
-        #     Asset.objects.values_list("serial_number", flat=True)
-        # )
 
         added_assets_count = 0
         skipped_assets_count = 0
@@ -49,85 +46,138 @@ class AssetImportService:
                 missing_fields_assets.append(row)
                 continue
 
+            date_of_purchase = row.get("Date Of Purchase", "")
+            if pd.isna(date_of_purchase) or date_of_purchase == "":
+                row["Error"] = "Missing or invalid date of purchase"
+                missing_fields_assets.append(row)
+                continue
+
             try:
-                purchase_date = datetime.strptime(
-                    row["Date Of Purchase"], "%Y-%m-%d"
-                ).date()
+                if isinstance(date_of_purchase, pd.Timestamp):
+                    date_of_purchase = date_of_purchase.strftime(
+                        "%Y-%m-%d"
+                    )  # Convert timestamp to string
+                    purchase_date = datetime.strptime(
+                        date_of_purchase, "%Y-%m-%d"
+                    ).date()
             except ValueError:
-                raise ValidationError(
-                    "Date of purchase has an invalid format. It must be in YYYY-MM-DD format."
-                )
+                row["Error"] = "Invalid date format"
+                missing_fields_assets.append(row)
+                continue
 
-            asset_type, asset_type_created = AssetType.objects.get_or_create(
-                asset_type_name=row["Asset Category"]
+            asset_type, _ = AssetType.objects.get_or_create(
+                asset_type_name=row.get("Asset Category", "").strip()
             )
-            business_unit, business_unit_created = BusinessUnit.objects.get_or_create(
-                business_unit_name=row["BU"]
+            business_unit, _ = BusinessUnit.objects.get_or_create(
+                business_unit_name=str(
+                    row.get("BU", "")
+                ).strip()  # Ensure business_unit_name is handled as string
             )
-            custodian = Employee.objects.get_or_create(employee_name=row["Custodian"])
-            location, location_created = Location.objects.get_or_create(
-                location_name=row["Location"]
+            custodian, _ = Employee.objects.get_or_create(
+                employee_name=row.get("Custodian", "").strip()
             )
-            invoice_location, invoice_location_created = Location.objects.get_or_create(
-                location_name=row["Invoice Location"]
+            location, _ = Location.objects.get_or_create(
+                location_name=str(row.get("Location", "")).strip()
             )
-            memory, memory_created = Memory.objects.get_or_create(
-                memory_space=row["Memory"]
+            invoice_location, _ = Location.objects.get_or_create(
+                location_name=str(row.get("Invoice Location", "")).strip()
             )
-            warranty = row["Warranty"]
-            if warranty == "Expired":
-                warranty = -1
 
-            status = row["status"]
+            memory_space = row.get("Memory", "")
+            if isinstance(memory_space, float) and pd.isna(memory_space):
+                memory = None
+            else:
+                memory_space = str(
+                    memory_space
+                ).strip()  # Convert to string and strip whitespace
+                if memory_space == "nan" or memory_space == "":
+                    memory = None
+                else:
+                    try:
+                        memory, _ = Memory.objects.get_or_create(
+                            memory_space=memory_space
+                        )
+                    except ValueError:
+                        row["Error"] = "Invalid memory value"
+                        missing_fields_assets.append(row)
+                        continue
+
+            warranty = row.get("Warranty", "")
+            if isinstance(warranty, (int, float)):
+                if pd.isna(warranty):
+                    warranty = None
+                else:
+                    warranty = int(warranty)
+            else:
+                warranty = str(warranty).strip()
+                if warranty == "Expired":
+                    warranty = -1
+                elif warranty == "":
+                    warranty = None
+                else:
+                    try:
+                        warranty = int(warranty)
+                    except ValueError:
+                        row["Error"] = "Invalid warranty value"
+                        missing_fields_assets.append(row)
+                        continue
+
+            status = row.get("status", "").strip()
             if status == "No Service":
                 status = "UNREPAIRABLE"
-            elif status == "In Service" and row["Custodian"]:
+            elif status == "In Service" and row.get("Custodian"):
                 status = "IN USE"
-            elif status == "In Service" and not row[custodian]:
+            elif status == "In Service" and not row.get("Custodian"):
                 status = "IN STORE"
             elif status == "Damaged":
                 status = "DAMAGED"
             elif status == "Expired":
                 status = "OUTDATED"
-
-            if row["Approval Status"] == "Approved":
-                asset_detail_status = "CREATED"
-            elif row["Approval Status"] == "Pending":
-                asset_detail_status = "UPDATE PENDING"
-            elif row["Approval Status"] == "Rejected":
-                asset_detail_status == "UPDATE REJECTED"
-
-            if row["Custodian"]:
-                assign_status = "ASSIGNED"
             else:
-                assign_status = "UNASSIGNED"
+                status = "UNKNOWN"
+
+            approval_status = row.get("Approval Status", "").strip()
+            if approval_status == "Approved":
+                asset_detail_status = "CREATED"
+            elif approval_status == "Pending":
+                asset_detail_status = "UPDATE PENDING"
+            elif approval_status == "Rejected":
+                asset_detail_status = "UPDATE REJECTED"
+            else:
+                asset_detail_status = "UNKNOWN"
+
+            assign_status = "ASSIGNED" if row.get("Custodian") else "UNASSIGNED"
 
             asset = Asset(
                 asset_id=asset_id,
-                version=row["Version"],
-                asset_category=row["Category"],
-                product_name=row["Product Name"],
-                model_number=row["Model Number"],
-                serial_number=row["Serial Number"],
-                owner=row["Owner"],
+                # version=str(row.get("Version", "")).strip(),  # Handle version as string
+                asset_category=str(row.get("Category", "")).strip(),
+                product_name=str(row.get("Product Name", "")).strip(),
+                model_number=str(
+                    row.get("Model Number", "")
+                ).strip(),  # Ensure model_number is handled as string
+                serial_number=str(row.get("Serial Number", "")).strip(),
+                owner=str(row.get("Owner", "")).strip(),
                 date_of_purchase=purchase_date,
                 status=status,
                 warranty_period=warranty,
-                os=row["OS"],
-                os_version=row["OS Version"],
-                mobile_os=row["Mobile OS"],
-                processor=row["Processor"],
-                processor_gen=row["Generation"],
-                storage=row["Storage"],
-                configuration=row["Configuration"],
-                accessories=row["Accessories"],
-                notes=row["Notes"],
+                os=str(row.get("OS", "")).strip(),
+                os_version=str(row.get("OS Version", "")).strip(),
+                mobile_os=str(row.get("Mobile OS", "")).strip(),
+                processor=str(row.get("Processor", "")).strip(),
+                processor_gen=str(row.get("Generation", "")).strip(),
+                storage=str(row.get("Storage", "")).strip(),
+                configuration=str(row.get("Configuration", "")).strip(),
+                accessories=str(row.get("Accessories", "")).strip(),
+                notes=str(row.get("Notes", "")).strip(),
                 asset_detail_status=asset_detail_status,
                 assign_status=assign_status,
-                approval_status_message=row["approval_status_message"],
-                created_at=row["created_at"],
-                updated_at=row["updated_at"],
-                is_deleted=row["is_deleted"],
+                approval_status_message=str(
+                    row.get("approval_status_message", "")
+                ).strip(),
+                created_at=str(row.get("created_at", "")).strip(),
+                updated_at=str(row.get("updated_at", "")).strip(),
+                is_deleted=False,
                 requester_id=user.id,
                 asset_type_id=asset_type.id if asset_type else None,
                 business_unit_id=business_unit.id if business_unit else None,
@@ -184,7 +234,6 @@ class AssetImportService:
             for asset in missing_fields_assets:
                 csv_writer.writerow(asset.values())
 
-        # return output.getvalue()
         return output
 
     @staticmethod
@@ -194,10 +243,8 @@ class AssetImportService:
             output = io.BytesIO()
             df.to_excel(output, index=False)
             output.seek(0)
-            # return output.getvalue()
             return output
         else:
-            # return None
             return io.BytesIO()
 
     @staticmethod
@@ -213,9 +260,10 @@ class AssetImportService:
     @staticmethod
     def generate_zip_file_xlsx(xlsx_file_one, xlsx_file_two):
         zip_content = io.BytesIO()
-        with zipfile.ZipFile(zip_content, "w") as zf:
+        with zipfile.ZipFile(zip_content, "w", zipfile.ZIP_DEFLATED, allowZip64=True) as zf:
             zf.writestr("skipped_fields.xlsx", xlsx_file_one.getvalue())
             zf.writestr("missing_fields.xlsx", xlsx_file_two.getvalue())
 
         zip_content.seek(0)
         return zip_content
+
