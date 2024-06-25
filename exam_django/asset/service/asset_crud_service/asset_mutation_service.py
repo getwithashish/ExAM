@@ -6,8 +6,9 @@ from notification.utils.email_body_contents.lead_email_body_contents import (
     construct_create_asset_email_body_content,
     construct_modify_asset_email_body_content,
 )
-from notification.service.email_service import EmailService
+from notification.service.email_service import send_email
 from rest_framework import status
+from utils.celery_status_checker import CeleryStatusChecker
 
 
 class AssetMutationService:
@@ -15,7 +16,6 @@ class AssetMutationService:
         self.asset_user_role_mutation_service = asset_user_role_mutation_service
 
     def create_asset(self, serializer, request):
-        email_service = EmailService()
         new_serializer, message, email_subject = (
             self.asset_user_role_mutation_service.create_asset(serializer, request)
         )
@@ -26,14 +26,12 @@ class AssetMutationService:
         asset_data = AssetReadSerializer(new_serializer)
         email_body = construct_create_asset_email_body_content(**asset_data.data)
 
-        email_service.send_email(
-            email_subject, email_body, self._get_email_recipients()
-        )
+        if CeleryStatusChecker.check_celery_status():
+            send_email.delay(email_subject, email_body, self._get_email_recipients())
 
         return asset_data.data, message, status.HTTP_201_CREATED
 
     def update_asset(self, serializer, request):
-        email_service = EmailService()
         asset_uuid = request.data.get("asset_uuid")
 
         asset, old_asset_data = self._get_asset_and_old_data(asset_uuid)
@@ -59,11 +57,13 @@ class AssetMutationService:
             email_body = construct_modify_asset_email_body_content(
                 changed_fields, **updated_asset_serializer.data
             )
-            email_service.send_email(
-                email_subject,
-                email_body,
-                self._get_email_recipients(),
-            )
+
+            if CeleryStatusChecker.check_celery_status():
+                send_email.delay(
+                    email_subject,
+                    email_body,
+                    self._get_email_recipients(),
+                )
 
             return new_asset_data, message, status.HTTP_200_OK
 

@@ -49,6 +49,15 @@ CORS_ALLOWED_ORIGINS = config(
 #     list(default_headers) + ["Content-Type"] + get_all_cors_headers()
 # )
 
+CELERY_BROKER_URL = config("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = config("CELERY_RESULT_BACKEND")
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = "UTC"
+CELERY_HEALTH_CHECKS = True
+
+CELERY_BROKER_CONNECTION_MAX_RETRIES = 5
 
 # Application definition
 INSTALLED_APPS = [
