@@ -2,6 +2,7 @@
 from rest_framework import status
 from asset.models import Employee, Asset
 from asset.serializers.asset_serializer import AssetReadSerializer
+from utils.celery_status_checker import CeleryStatusChecker
 from messages import (
     UNAUTHORIZED_NO_PERMISSION,
     EMPLOYEE_NOT_FOUND_ERROR,
@@ -19,7 +20,7 @@ from exceptions import (
 from notification.utils.email_body_contents.lead_email_body_contents import (
     construct_allocate_asset_email_body_content,
 )
-from notification.service.email_service import EmailService
+from notification.service.email_service import send_email
 
 
 class AssignAssetService:
@@ -58,18 +59,17 @@ class AssignAssetService:
             **assigned_asset_serializer.data
         )
 
-        # Send email
-        email_service = EmailService()
-        email_service.send_email(
-            email_subject,
-            email_body,
-            [
-                "asimapalexperion23@gmail.com",
-                "astg7542@gmail.com",
-                "acj88178@gmail.com",
-                "aidrin.varghese@experionglobal.com",
-                "pavithraexperion@gmail.com",
-            ],
-        )
+        if CeleryStatusChecker.check_celery_status():
+            send_email.delay(
+                email_subject,
+                email_body,
+                [
+                    "asimapalexperion23@gmail.com",
+                    "astg7542@gmail.com",
+                    "acj88178@gmail.com",
+                    "aidrin.varghese@experionglobal.com",
+                    "pavithraexperion@gmail.com",
+                ],
+            )
 
         return assigned_asset_serializer.data, message, status.HTTP_202_ACCEPTED
