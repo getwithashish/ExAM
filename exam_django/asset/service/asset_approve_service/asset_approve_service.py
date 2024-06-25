@@ -2,6 +2,7 @@ from rest_framework import status
 
 from asset.models import Asset
 from asset.serializers.asset_serializer import AssetReadSerializer
+from utils.celery_status_checker import CeleryStatusChecker
 from notification.utils.email_body_contents.system_admin_email_body_contents import (
     construct_allocation_approval_email_body,
     construct_allocation_rejection_email_body,
@@ -22,7 +23,7 @@ from messages import (
     ASSIGN_ASSET_REJECT_SUCCESSFUL,
     UNASSIGN_ASSET_REJECT_SUCCESSFUL,
 )
-from notification.service.email_service import EmailService
+from notification.service.email_service import send_email
 
 
 class AssetApproveService:
@@ -31,8 +32,6 @@ class AssetApproveService:
         self.asset_user_role_approve_service = asset_user_role_approve_service
 
     def approve_request(self, request):
-        email_service = EmailService()
-
         asset_uuid = request.data.get("asset_uuid")
         comments = request.data.get("comments")
         asset = Asset.objects.get(asset_uuid=asset_uuid)
@@ -56,23 +55,23 @@ class AssetApproveService:
             email_body = construct_deallocation_approval_email_body(**serializer.data)
 
         # Send Email
-        email_service.send_email(
-            email_subject,
-            email_body,
-            [
-                "asimapalexperion23@gmail.com",
-                "astg7542@gmail.com",
-                "acj88178@gmail.com",
-                "aidrin.varghese@experionglobal.com",
-                "pavithraexperion@gmail.com",
-            ],
-        )
+        if CeleryStatusChecker.check_celery_status():
+            send_email.delay(
+                email_subject,
+                email_body,
+                [
+                    "asimapalexperion23@gmail.com",
+                    "astg7542@gmail.com",
+                    "acj88178@gmail.com",
+                    "aidrin.varghese@experionglobal.com",
+                    "pavithraexperion@gmail.com",
+                ],
+            )
         print(serializer.data)
 
         return serializer.data, message, status.HTTP_202_ACCEPTED
 
     def reject_request(self, request):
-        email_service = EmailService()
         asset_uuid = request.data.get("asset_uuid")
         comments = request.data.get("comments")
         asset = Asset.objects.get(asset_uuid=asset_uuid)
@@ -96,17 +95,18 @@ class AssetApproveService:
             email_body = construct_deallocation_rejection_email_body(**serializer.data)
 
         # Send Email
-        email_service.send_email(
-            email_subject,
-            email_body,
-            [
-                "asimapalexperion23@gmail.com",
-                "astg7542@gmail.com",
-                "acj88178@gmail.com",
-                "aidrin.varghese@experionglobal.com",
-                "pavithraexperion@gmail.com",
-            ],
-        )
+        if CeleryStatusChecker.check_celery_status():
+            send_email.delay(
+                email_subject,
+                email_body,
+                [
+                    "asimapalexperion23@gmail.com",
+                    "astg7542@gmail.com",
+                    "acj88178@gmail.com",
+                    "aidrin.varghese@experionglobal.com",
+                    "pavithraexperion@gmail.com",
+                ],
+            )
         print(serializer.data)
 
         return serializer.data, message, status.HTTP_202_ACCEPTED

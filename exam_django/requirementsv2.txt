@@ -11,6 +11,7 @@ attrs==23.2.0
 bcrypt==4.1.2
 blinker==1.7.0
 cachetools==5.3.3
+celery[redis]
 certifi==2024.2.2
 cffi==1.16.0
 charset-normalizer==3.3.2
