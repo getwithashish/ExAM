@@ -4,6 +4,7 @@ from datetime import timedelta
 from ms_identity_web.configuration import AADConfig
 from ms_identity_web import IdentityWebPython
 
+from celery.schedules import crontab
 import sentry_sdk
 
 from utils.decouple_config_util import DecoupleConfigUtil
@@ -60,17 +61,21 @@ CELERY_RESULT_BACKEND = config("CELERY_RESULT_BACKEND")
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
-CELERY_TIMEZONE = "UTC"
+CELERY_TIMEZONE = "Asia/Kolkata"
 CELERY_HEALTH_CHECKS = True
 
 CELERY_BEAT_SCHEDULE = {
-    "check-app-health-every-30-seconds": {
+    "check-app-health-every-60-seconds": {
         "task": "utils.health_check_tasks.check_application_health",
         "schedule": 60,  # every 1 minute
     },
-    "check-external-health-every-10-seconds": {
+    "check-external-health-every-5-minutes": {
         "task": "utils.health_check_tasks.check_external_service_health",
         "schedule": 300,  # every 5 minutes
+    },
+    "full-backup-every-sunday-12-am": {
+        "task": "utils.backup_tasks.perform_full_backup",
+        "schedule": crontab(hour=0, minute=0, day_of_week='sunday'),  # every sunday at 12 am
     },
 }
 
