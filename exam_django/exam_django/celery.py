@@ -7,7 +7,7 @@ from celery import Celery
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "exam_django.settings")
 
 # Create the Celery application.
-app = Celery("exam_django_worker")
+app = Celery("exam_django_worker", include=["utils.health_check_tasks"])
 
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.
