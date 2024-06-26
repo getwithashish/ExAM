@@ -43,6 +43,8 @@ schema_view = get_schema_view(
 
 msal_urls = MsalViews(settings.MS_IDENTITY_WEB).url_patterns()
 
+def trigger_error(request):
+    division_by_zero = 1 / 0
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -58,4 +60,5 @@ urlpatterns = [
     path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
     path("health/", include('health_check.urls')),
     path(f"{settings.AAD_CONFIG.django.auth_endpoints.prefix}/", include(msal_urls)),
+    path('sentry-debug/', trigger_error),
 ]

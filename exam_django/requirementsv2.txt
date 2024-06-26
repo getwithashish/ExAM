@@ -125,6 +125,7 @@ requests-file==2.0.0
 rich==13.7.1
 rpds-py==0.18.0
 rsa==4.9
+sentry-sdk[django]
 six==1.16.0
 smmap==5.0.1
 SQLAlchemy==2.0.29

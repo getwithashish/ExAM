@@ -4,6 +4,8 @@ from datetime import timedelta
 from ms_identity_web.configuration import AADConfig
 from ms_identity_web import IdentityWebPython
 
+import sentry_sdk
+
 from utils.decouple_config_util import DecoupleConfigUtil
 
 
@@ -61,13 +63,36 @@ CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = "UTC"
 CELERY_HEALTH_CHECKS = True
 
+CELERY_BEAT_SCHEDULE = {
+    'check-app-health-every-30-seconds': {
+        'task': 'utils.health_check_tasks.check_application_health',
+        'schedule': 30,  # every 5 minutes
+    },
+    'check-external-health-every-10-seconds': {
+        'task': 'utils.health_check_tasks.check_external_service_health',
+        'schedule': 10,  # every 5 minutes
+    },
+}
+
 # Django Health Check Configuration
 HEALTH_CHECK = {
     "SUBSETS": {
         "app": ["DatabaseBackend", "DefaultFileStorageHealthCheck"],
-        "external": ["CeleryPingHealthCheck", "RedisHealthCheck"]
+        "external": ["CeleryPingHealthCheck", "RedisHealthCheck"],
     }
 }
+
+# Sentry Configuration
+sentry_sdk.init(
+    dsn=config("SENTRY_DSN"),
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    traces_sample_rate=1.0,
+    # Set profiles_sample_rate to 1.0 to profile 100%
+    # of sampled transactions.
+    # We recommend adjusting this value in production.
+    profiles_sample_rate=1.0,
+)
 
 # Application definition
 INSTALLED_APPS = [
@@ -93,7 +118,7 @@ INSTALLED_APPS = [
     "health_check.cache",
     "health_check.storage",
     "health_check.contrib.redis",
-    "health_check.contrib.celery_ping",
+    "health_check.contrib.celery",
 ]
 
 MIDDLEWARE = [
