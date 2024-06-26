@@ -26,6 +26,7 @@ debugpy==1.8.1
 decorator==5.1.1
 Deprecated==1.2.13
 django-cors-headers==4.3.1
+django-health-check==3.18.3
 django-rest-passwordreset==1.4.0
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.3.1
@@ -124,6 +125,7 @@ requests-file==2.0.0
 rich==13.7.1
 rpds-py==0.18.0
 rsa==4.9
+sentry-sdk[django]
 six==1.16.0
 smmap==5.0.1
 SQLAlchemy==2.0.29
