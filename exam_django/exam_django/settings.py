@@ -64,13 +64,13 @@ CELERY_TIMEZONE = "UTC"
 CELERY_HEALTH_CHECKS = True
 
 CELERY_BEAT_SCHEDULE = {
-    'check-app-health-every-30-seconds': {
-        'task': 'utils.health_check_tasks.check_application_health',
-        'schedule': 30,  # every 5 minutes
+    "check-app-health-every-30-seconds": {
+        "task": "utils.health_check_tasks.check_application_health",
+        "schedule": 60,  # every 1 minute
     },
-    'check-external-health-every-10-seconds': {
-        'task': 'utils.health_check_tasks.check_external_service_health',
-        'schedule': 10,  # every 5 minutes
+    "check-external-health-every-10-seconds": {
+        "task": "utils.health_check_tasks.check_external_service_health",
+        "schedule": 300,  # every 5 minutes
     },
 }
 
