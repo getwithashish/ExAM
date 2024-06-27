@@ -22,12 +22,14 @@ from exceptions import (
     NotAcceptableOperationException,
     NotFoundException,
     PermissionDeniedException,
+    SerializerException,
 )
 from response import APIResponse
 from messages import (
-    ASSET_CREATED_UNSUCCESSFUL,
     ASSET_LIST_RETRIEVAL_UNSUCCESSFUL,
     ASSET_NOT_FOUND,
+    ASSET_RESTORATION_SUCCESSFUL,
+    INVALID_ASSET_DATA,
     USER_UNAUTHORIZED,
     ASSET_DELETION_SUCCESSFUL,
 )
@@ -78,38 +80,51 @@ class AssetView(APIView):
             )
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        try:
+            serializer = self.serializer_class(data=request.data)
 
-        if serializer.is_valid():
-            user_scope = request.user.user_scope
+            if serializer.is_valid():
+                user_scope = request.user.user_scope
 
-            if user_scope == "SYSTEM_ADMIN":
-                asset_user_role_mutation_service = AssetSysadminRoleMutationService()
-            else:
-                return APIResponse(
-                    data={},
-                    message=USER_UNAUTHORIZED,
-                    status=status.HTTP_401_UNAUTHORIZED,
+                if user_scope == "SYSTEM_ADMIN":
+                    asset_user_role_mutation_service = (
+                        AssetSysadminRoleMutationService()
+                    )
+                else:
+                    raise PermissionDeniedException(
+                        {}, USER_UNAUTHORIZED, status.HTTP_401_UNAUTHORIZED
+                    )
+
+                asset_mutation_service = AssetMutationService(
+                    asset_user_role_mutation_service
+                )
+                data, message, http_status = asset_mutation_service.create_asset(
+                    serializer, request
                 )
 
-            asset_mutation_service = AssetMutationService(
-                asset_user_role_mutation_service
-            )
-            data, message, http_status = asset_mutation_service.create_asset(
-                serializer, request
+                return APIResponse(
+                    data=data,
+                    message=message,
+                    status=http_status,
+                )
+
+            raise SerializerException(
+                serializer.errors, INVALID_ASSET_DATA, status.HTTP_400_BAD_REQUEST
             )
 
+        except PermissionDeniedException as e:
             return APIResponse(
-                data=data,
-                message=message,
-                status=http_status,
+                data=str(e),
+                message=e.message,
+                status=e.status,
             )
 
-        return APIResponse(
-            data=serializer.errors,
-            message=ASSET_CREATED_UNSUCCESSFUL,
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+        except SerializerException as e:
+            return APIResponse(
+                data=str(e),
+                message=serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
     def patch(self, request):
         try:
@@ -156,6 +171,13 @@ class AssetView(APIView):
                 status=e.status,
             )
 
+        except SerializerException as e:
+            return APIResponse(
+                data=str(e),
+                message=e.message,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
     def delete(self, request):
         asset_uuid = request.data.get("asset_uuid")
         try:
@@ -173,6 +195,29 @@ class AssetView(APIView):
             return APIResponse(
                 data={},
                 message="Error occurred while deleting asset.",
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+    def put(self, request):
+        asset_uuid = request.data.get("asset_uuid")
+        print("Asset UUID: ", asset_uuid)
+        try:
+            asset = get_object_or_404(Asset, asset_uuid=asset_uuid)
+            asset.is_deleted = False
+            print("Reached before SAVE")
+            asset.save()
+            print("Reached after SAVE")
+            return APIResponse(
+                data={"asset_uuid": asset_uuid},
+                message=ASSET_RESTORATION_SUCCESSFUL,
+                status=status.HTTP_200_OK,
+            )
+
+        except Exception as e:
+            print("Error: ", e)
+            return APIResponse(
+                data={},
+                message="Error occurred while restoring asset.",
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

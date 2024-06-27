@@ -6,6 +6,7 @@ import React, {
   useState,
 } from "react";
 import { Button, Modal, message } from "antd";
+import { UserDeleteOutlined } from "@ant-design/icons";
 import "./AssetTable.css";
 import { useQuery } from "@tanstack/react-query";
 import { DataType } from "../AssetTable/types";
@@ -16,7 +17,8 @@ import {
   getAssetTypeOptions,
   getLocationOptions,
   getMemoryOptions,
-} from "./api/getAssetDetails";
+} from "../../AssetTable/api/getAssetDetails";
+import moment from "moment";
 interface AssetTableHandlerProps {
   unassign: (record: DataType) => void;
   queryParamProp: any;
@@ -27,9 +29,9 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
   unassign,
 }) => {
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null); // State to store the selected asset ID
-  const [sortedColumn, setSortedColumn] = useState<string | null>(null);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [sortOrders, setSortOrders] = useState({});
+  const [sortedColumn, setSortedColumn] = useState<string>("");
+  const [sortOrder, setSortOrder] = useState<string>("asc");
+  const [sortOrders, setSortOrders] = useState<{ [key: string]: string }>({});
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -102,12 +104,16 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
     })) ?? [];
 
   const assetDataList = assetData;
-  // console.log("Testing on 65:", assetDataList ? assetDataList[0].results : []);
-
   const handleRowClick = useCallback((record: React.SetStateAction<null>) => {
     setSelectedRow(record);
     setDrawerVisible(true);
   }, []);
+
+  const reset = () => {
+    setQueryParam("");
+    setSearchTerm("");
+    refetchAssetData();
+  };
 
   const onCloseDrawer = useCallback(() => {
     setDrawerVisible(false);
@@ -121,55 +127,49 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
       )
     );
   };
-  
+
   const handleSort = (column: string) => {
-    const isCurrentColumn = column === sortedColumn;  
-    let newSortOrders = { ...sortOrders };  
+    const isCurrentColumn = column === sortedColumn;
+    let newSortOrders = { ...sortOrders };
+
     if (!isCurrentColumn) {
       newSortOrders = { [column]: "asc" };
     } else {
       newSortOrders[column] = sortOrders[column] === "asc" ? "desc" : "asc";
-    }  
+    }
+
     setSortedColumn(column);
-    setSortOrders(newSortOrders);  
+    setSortOrder(newSortOrders[column]);
+    setSortOrders(newSortOrders);
+
     const queryParams = Object.keys(newSortOrders)
       .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
-      .join("");  
-    const additionalQueryParams = `&global_search=${searchTerm}&offset=${0}`;  
+      .join("");
+    let additionalQueryParams = "&offset=0";
+    if (searchTerm !== "" && searchTerm !== null) {
+      additionalQueryParams += `&global_search=${searchTerm}`;
+    }
     refetchAssetData(queryParams + additionalQueryParams);
   };
 
   const renderDeallocateButton = (_, record) => (
     <Button
+      className="ml-6"
       ghost
-      style={{
-        borderRadius: "10px",
-        background: "#D3D3D3",
-        color: "black",
-      }}
+      type="primary"
+      shape="circle"
+      icon={<UserDeleteOutlined />}
       onClick={() => {
         setConfirmModalVisible(true); // Show confirmation modal
         setSelectedRecord(record); // Store the selected record for deallocation
       }}
-    >
-      -
-    </Button>
+    />
   );
-  const handleConfirmDeallocate = () => {
-    setConfirmModalVisible(false); // Close the confirmation modal
-
+  const handleConfirmDeallocate = async () => {
+    setConfirmModalVisible(false);
     if (selectedRecord) {
-      // Check if the selected record has a custodian
-      if (
-        selectedRecord.custodian != null ||
-        selectedRecord.custodian != undefined
-      ) {
-        // Deallocate the asset
-        unassign(selectedRecord);
-      } else {
-        // Show a warning message
-        message.warning("Not allocated yet");
-      }
+      await unassign(selectedRecord);
+      assetDataRefetch();
     }
 
     setSelectedRecord(null); // Clear the selected record
@@ -178,16 +178,29 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
     <h1>Asset Overview</h1>
   </div>;
 
-  const renderClickableColumn = (columnName, dataIndex) => (_, record) =>
-    (
+const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
+  if (dataIndex === 'created_at' || dataIndex === 'updated_at') {
+    const formattedDate = moment(record[dataIndex]).format('DD-MM-YYYY'); 
+    return (
       <div
         data-column-name={columnName}
         onClick={() => handleColumnClick(record, columnName)}
         style={{ cursor: "pointer" }}
       >
-        {record[dataIndex]}
+        {formattedDate}
       </div>
     );
+  }
+  return (
+    <div
+      data-column-name={columnName}
+      onClick={() => handleColumnClick(record, columnName)}
+      style={{ cursor: "pointer" }}
+    >
+      {record[dataIndex]}
+    </div>
+  );
+};
   const columns = [
     {
       title: "Product Name",
@@ -210,7 +223,7 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
       render: renderClickableColumn("Serial Number", "serial_number"),
     },
     {
-      title: "Location",
+      title: "Asset Location",
       dataIndex: "location",
       responsive: ["md"],
       width: 120,
@@ -253,19 +266,6 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
       }),
       render: renderClickableColumn("Invoice Location", "invoice_location"),
     },
-
-    {
-      title: "Custodian",
-      dataIndex: "custodian",
-      responsive: ["md"],
-      width: 120,
-      sorter: true,
-      sortOrder: sortedColumn === "custodian" ? sortOrder : undefined,
-      onHeaderCell: () => ({
-        onClick: () => handleSort("custodian"),
-      }),
-      render: renderClickableColumn("Custodian", "custodian"),
-    },
     {
       title: "Asset Type",
       dataIndex: "asset_type",
@@ -296,6 +296,26 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
       render: renderClickableColumn("Asset Category", "asset_category"),
     },
     {
+      title: "Custodian",
+      dataIndex: "custodian",
+      responsive: ["md"],
+      width: 120,
+      sorter: true,
+      sortOrder: sortedColumn === "custodian" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("custodian"),
+      }),
+      render: renderClickableColumn("Custodian", "custodian"),
+    },
+    {
+      title: "Business Unit",
+      dataIndex: "BusinessUnit",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Business Unit", "business_unit"),
+    },
+  
+    {
       title: "Version",
       dataIndex: "version",
       responsive: ["md"],
@@ -307,32 +327,9 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
       }),
       render: renderClickableColumn("Version", "version"),
     },
-    {
-      title: "Asset Status",
-      dataIndex: "Status",
-      responsive: ["md"],
-      width: 140,
-      render: renderClickableColumn("Asset Status", "status"),
-    },
-    {
-      title: "Date of Purchase",
-      dataIndex: "date_of_purchase",
-      responsive: ["md"],
-      width: 120,
-      sorter: true,
-      sortOrder: sortedColumn === "date_of_purchase" ? sortOrder : undefined,
-      onHeaderCell: () => ({
-        onClick: () => handleSort("date_of_purchase"),
-      }),
-      render: renderClickableColumn("Date of Purchase", "date_of_purchase"),
-    },
-    {
-      title: "Business Unit",
-      dataIndex: "BusinessUnit",
-      responsive: ["md"],
-      width: 120,
-      render: renderClickableColumn("Business Unit", "business_unit"),
-    },
+   
+   
+    
     {
       title: "Os",
       dataIndex: "os",
@@ -360,6 +357,52 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
       responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Asset Status", "processor_gen"),
+    },
+    {
+      title: "Model Number",
+      dataIndex: "ModelNumber", // Corrected dataIndex
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Asset Status", "model_number"),
+    },
+    {
+      title: "Memory",
+      dataIndex: "memory",
+      responsive: ["md"],
+      width: 120,
+      sorter: true,
+      sortOrder: sortedColumn === "memory" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("memory"),
+      }),
+      render: renderClickableColumn("Memory", "memory"),
+    },
+    {
+      title: "Storage",
+      dataIndex: "storage",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Storage", "storage"),
+    },
+    {
+      title: "License Type",
+      dataIndex: "license_type",
+      responsive: ["md"],
+      width: 120,
+
+      render: renderClickableColumn("license_type", "license_type"),
+    },
+    {
+      title: "Date of Purchase",
+      dataIndex: "date_of_purchase",
+      responsive: ["md"],
+      width: 120,
+      sorter: true,
+      sortOrder: sortedColumn === "date_of_purchase" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("date_of_purchase"),
+      }),
+      render: renderClickableColumn("Date of Purchase", "date_of_purchase"),
     },
 
     {
@@ -389,12 +432,19 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
             dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000
           ); // Calculating expiry date in milliseconds
           const formattedExpiryDate = expiryDate.toISOString().split("T")[0];
+          const currentDate = new Date();
+          const isExpired = expiryDate < currentDate;
+
           // Apply renderClickableColumn logic here
           return (
             <div
               data-column-name="Expiry Date"
               onClick={() => handleColumnClick(record, "Expiry Date")}
-              style={{ cursor: "pointer", color: "red" }}
+              style={{
+                cursor: "pointer",
+                color: isExpired ? "red" : "green",
+                fontWeight: isExpired ? "bold" : "bold",
+              }}
             >
               {formattedExpiryDate}
             </div>
@@ -404,32 +454,12 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
         }
       },
     },
-    {
-      title: "Model Number",
-      dataIndex: "ModelNumber", // Corrected dataIndex
-      responsive: ["md"],
-      width: 120,
-      render: renderClickableColumn("Asset Status", "model_number"),
-    },
-    {
-      title: "Memory",
-      dataIndex: "memory",
-      responsive: ["md"],
-      width: 120,
-      sorter: true,
-      sortOrder: sortedColumn === "memory" ? sortOrder : undefined,
-      onHeaderCell: () => ({
-        onClick: () => handleSort("memory"),
-      }),
-      render: renderClickableColumn("Memory", "memory"),
-    },
-    {
-      title: "Storage",
-      dataIndex: "storage",
-      responsive: ["md"],
-      width: 120,
-      render: renderClickableColumn("Storage", "storage"),
-    },
+
+    ,
+   
+   
+
+   
     {
       title: "Owner",
       dataIndex: "owner",
@@ -460,6 +490,13 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
         onClick: () => handleSort("requester"),
       }),
       render: renderClickableColumn("Requester", "requester"),
+    },
+    {
+      title: "Asset Status",
+      dataIndex: "Status",
+      responsive: ["md"],
+      width: 140,
+      render: renderClickableColumn("Asset Status", "status"),
     },
     {
       title: "Asset Detail Status",
@@ -510,7 +547,16 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
       width: 120,
       render: renderClickableColumn("Accessories", "accessories"),
     },
-
+    {
+      title: "Approver Notes",
+      dataIndex: "approval_status_message",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn(
+        "approval_status_message",
+        "approval_status_message"
+      ),
+    },
     {
       title: "Deallocate Asset",
       dataIndex: "DeallocateAsset",
@@ -559,11 +605,13 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
     configuration: result.configuration,
     custodian: result.custodian?.employee_name,
     product_name: result.product_name,
+    license_type: result.license_type,
     owner: result.owner,
     requester: result.requester?.username,
     AssignAsset: "assign",
     created_at: result.created_at,
     updated_at: result.updated_at,
+    approval_status_message: result.approval_status_message,
   }));
 
   const drawerTitle = "Asset Details";
@@ -581,7 +629,7 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
       {/* Confirmation Modal */}
       <Modal
         title="Confirm Deallocation"
-        visible={confirmModalVisible}
+        open={confirmModalVisible}
         onOk={handleConfirmDeallocate}
         onCancel={() => setConfirmModalVisible(false)}
         okButtonProps={{ style: { backgroundColor: "red" } }}
@@ -605,6 +653,7 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
         columns={columns}
         memoryData={memoryData}
         assetTypeData={assetTypeData}
+        reset={reset}
         locations={locations}
         sortOrder={sortOrder}
         sortedColumn={sortedColumn}

@@ -1,49 +1,39 @@
-import { Layout, Menu, Dropdown } from "antd";
+import { Layout, Menu, Dropdown, Spin } from "antd";
 import {
   AppstoreAddOutlined,
   CarryOutOutlined,
-  DashboardOutlined,
   LogoutOutlined,
   MailOutlined,
   PieChartOutlined,
-  SelectOutlined,
   UploadOutlined,
   UserOutlined,
   UserSwitchOutlined,
   VideoCameraOutlined,
-  ExclamationOutlined,
   CheckCircleOutlined,
   CheckSquareOutlined,
   CloseCircleOutlined,
-  RobotOutlined 
+  RobotOutlined,
 } from "@ant-design/icons";
-import React, { useEffect, useState } from "react";
-import ExampleNavbar from "../Navbar/navbar";
-
-import type { FC } from "react";
-import { Avatar, Button, DarkThemeToggle, Navbar } from "flowbite-react";
-import { FaBell, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
-import styles from "../Navbar/navbar.module.css";
-import AccountMenu from "../notificationMenuItem";
-import MenuListComposition from "../menuItem";
+import { FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
+import styles from "./sidebar.module.css";
 import SideDrawerComponent from "../SideDrawerComponent/SideDrawerComponent";
 import AddAsset from "../AddAsset/AddAsset";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../pages/authentication/AuthContext";
 import Avatars from "../Avatar/Avatar";
-import SubMenu from "antd/es/menu/SubMenu";
-import {
-  CheckOutlined,
-  EditOutlined,
-  WarningOutlined,
-} from "@mui/icons-material";
+import { EditOutlined } from "@mui/icons-material";
 import ToolTip from "../Tooltip/Tooltip";
-
 import { Footer as FlowbiteFooter } from "flowbite-react";
 import { MdFacebook } from "react-icons/md";
+import { useEffect, useState } from "react";
+import React from "react";
+import SubMenu from "antd/es/menu/SubMenu";
+import { Button } from "@mui/material";
 
 const SidebarComponentNew = ({ children }) => {
   const { userRole, setUserRole, login, logout } = useAuth();
+
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleDownload = async () => {
     const fileUrl = "/static/asset_management_windows.exe";
@@ -63,18 +53,16 @@ const SidebarComponentNew = ({ children }) => {
     }
   };
 
-  // const { addAssetState, setAddAssetState } = useMyContext();
   const [displaydrawer, setDisplayDrawer] = useState(false);
   const closeDrawer = () => {
     setDisplayDrawer(false);
-    console.log("displaydrwer value is ", displaydrawer);
   };
   const showDefaultDrawer = () => {
     setDisplayDrawer(true);
-    console.log("displaydrawer value is ", displaydrawer);
   };
 
   const { Header, Content, Footer, Sider } = Layout;
+
   const items = [
     UserOutlined,
     VideoCameraOutlined,
@@ -90,7 +78,6 @@ const SidebarComponentNew = ({ children }) => {
   const [showLogout, setShowLogout] = useState(false);
 
   useEffect(() => {
-    // Function to decode JWT token
     const decodeJWT = (token: string) => {
       try {
         const base64Url = token.split(".")[1];
@@ -112,13 +99,8 @@ const SidebarComponentNew = ({ children }) => {
 
     // Get JWT token from localStorage
     const jwtToken = localStorage.getItem("jwt");
-    console.log(jwtToken);
-
-    // Decode JWT token and set payload
     if (jwtToken) {
       const payload = decodeJWT(jwtToken);
-      console.log(payload);
-      console.log(payload.username);
       setJwtPayload(payload);
       // login()
       setUserRole(payload.user_scope);
@@ -138,20 +120,18 @@ const SidebarComponentNew = ({ children }) => {
     setUserRole("None");
     navigate("/login", { replace: true });
   };
-  const menu = (
-    <Menu>
-      {/* Use Button component instead of Menu.Item */}
-      <Menu.Item key="logout" onClick={handleLogout}>
-        <Button
-          type="link"
-          icon={<LogoutOutlined />}
-          style={{ color: "white", backgroundColor: "rgb(22, 119, 255)" }}
-        >
-          Logout
+
+  const menuItems = [
+    {
+      key: "logout",
+      label: (
+        <Button color="error" onClick={handleLogout}>
+          Logout &nbsp;
+          <LogoutOutlined />
         </Button>
-      </Menu.Item>
-    </Menu>
-  );
+      ),
+    },
+  ];
 
   return (
     <Layout>
@@ -159,47 +139,42 @@ const SidebarComponentNew = ({ children }) => {
         style={{
           backgroundColor: "white",
           zIndex: 110,
-          position: "sticky",
+          position: "fixed",
           left: 0,
           top: 0,
           bottom: 0,
           borderBottom: "1px solid #e8e8e8",
           padding: 0,
+          width: "100%",
         }}
       >
-        {/* <ExampleNavbar /> */}
-
-        <div className="w-full p-2.5 lg:px-5 lg:pl-3">
-          <div className="flex items-center justify-between ">
-            <div className="text-left  font-display text-lg p-0 mb-10">
-              <b>Asset Management System</b>
-            </div>
-
-            {/* </Navbar.Brand> */}
-
-            <div className="flex items-center gap-3">
-              <div
-                className={`flex items-center gap-3 ${styles["button-components"]}`}
-              >
+        <div className="flex w-screen lg:px-5 lg:pl-3">
+          <div className="text-left my-5 px-4 font-display text-lg p-0 m-0 items-center justify-between flex-1">
+            <b>Asset Management System</b>
+          </div>
+          <div className="flex-1 px-4">
+            <div className="flex gap-4">
+              <div className="flex-1 text-right">
                 {jwtPayload && jwtPayload.username && (
-                  <div className={styles["username-container"]}>
-                    <span className={styles["username"]}>
+                  <div>
+                    <div className={styles["username"]}>
                       Hi, {jwtPayload.username}
-                    </span>
-                    {jwtPayload && jwtPayload.user_scope && (
-                      <span className={styles["userscope"]}>
+                    </div>
+                    {jwtPayload.user_scope && (
+                      <div className={styles["userscope"]}>
                         {jwtPayload.user_scope}
-                      </span>
+                      </div>
                     )}
                   </div>
                 )}
-                <div className="flex items-center gap-3 ml-5  -mt-10">
-                  <Dropdown overlay={menu} placement="bottom" arrow>
-                    <div className="cursor-pointer">
-                      <Avatars />
-                    </div>
-                  </Dropdown>
-                </div>
+              </div>
+
+              <div className="flex-2">
+                <Dropdown menu={{ items: menuItems }} placement="bottom" arrow>
+                  <div className="cursor-pointer">
+                    <Avatars />
+                  </div>
+                </Dropdown>
               </div>
             </div>
           </div>
@@ -226,12 +201,6 @@ const SidebarComponentNew = ({ children }) => {
           width="250px"
           breakpoint="lg"
           collapsedWidth="0"
-          onBreakpoint={(broken) => {
-            console.log(broken);
-          }}
-          onCollapse={(collapsed, type) => {
-            console.log(collapsed, type);
-          }}
         >
           <div className="demo-logo-vertical" />
 
@@ -241,33 +210,52 @@ const SidebarComponentNew = ({ children }) => {
                 <Link to="/exam/dashboard">Dashboard</Link>
               </ToolTip>
             </Menu.Item>
-            {userRole == "SYSTEM_ADMIN" ? (
-              <React.Fragment>
-                <Menu.Item
-                  onClick={() => showDefaultDrawer()}
-                  icon={<AppstoreAddOutlined />}
-                >
-                  <ToolTip title="To create a new Asset">Create Assets</ToolTip>
-                </Menu.Item>
-                <Menu.Item icon={<EditOutlined />}>
-                  <ToolTip title="To modify an Asset">
-                    <Link to="/exam/updatable_assets">Modify Assets</Link>
-                  </ToolTip>
-                </Menu.Item>
-                <Menu.Item icon={<UserSwitchOutlined />}>
-                  <ToolTip title="To allocate an Asset to an employee">
-                    <Link to="/exam/assignable_asset">Allocate Assets</Link>
-                  </ToolTip>
-                </Menu.Item>
-                <Menu.Item icon={<UserSwitchOutlined />}>
-                  <ToolTip title="To deallocate an Asset from an employee">
-                    <Link to="/exam/deallocate">Deallocate Assets</Link>
-                  </ToolTip>
-                </Menu.Item>
-              </React.Fragment>
-            ) : (
-              ""
-            )}
+            <React.Fragment>
+              {userRole === "SYSTEM_ADMIN" ? (
+                <React.Fragment>
+                  <Menu.Item
+                    onClick={() => showDefaultDrawer()}
+                    icon={<AppstoreAddOutlined />}
+                  >
+                    <ToolTip title="To Create an Asset">Create Assets</ToolTip>
+                  </Menu.Item>
+                  <Menu.Item icon={<EditOutlined />}>
+                    <ToolTip title="To modify an Asset">
+                      <Link to="/exam/updatable_assets">Modify Assets</Link>
+                    </ToolTip>
+                  </Menu.Item>
+                  <Menu.Item icon={<UserSwitchOutlined />}>
+                    <ToolTip title="To allocate an Asset to an employee">
+                      <Link to="/exam/assignable_asset">Allocate Assets</Link>
+                    </ToolTip>
+                  </Menu.Item>
+                  <Menu.Item icon={<UserSwitchOutlined />}>
+                    <ToolTip title="To deallocate an Asset from an employee">
+                      <Link to="/exam/deallocate">Deallocate Assets</Link>
+                    </ToolTip>
+                  </Menu.Item>
+                </React.Fragment>
+              ) : userRole === "LEAD" ? (
+                <React.Fragment>
+                  <Menu.Item icon={<EditOutlined />}>
+                    <ToolTip title="To delete an Asset">
+                      <Link to="/exam/updatable_assets">Delete Assets</Link>
+                    </ToolTip>
+                  </Menu.Item>
+                </React.Fragment>
+              ) : userRole === "MANAGER" ? (
+                <React.Fragment>
+                  <Menu.Item icon={<EditOutlined />}>
+                    <ToolTip title="View Deleted Assets">
+                      <Link to="/exam/updatable_assets">Deleted Assets</Link>
+                    </ToolTip>
+                  </Menu.Item>
+                </React.Fragment>
+              ) : (
+                ""
+              )}
+            </React.Fragment>
+
             {userRole === "LEAD" ? (
               <SubMenu
                 key="sub1"
@@ -311,6 +299,12 @@ const SidebarComponentNew = ({ children }) => {
                     <Link to="/exam/approved_requests">Approved</Link>
                   </ToolTip>
                 </Menu.Item>
+                <Menu.Item icon={<CheckCircleOutlined />}>
+                  {/* For sysadmin */}
+                  <ToolTip title="Show the requests which are in pending status">
+                    <Link to="/exam/pending_requests">Pending Requests</Link>
+                  </ToolTip>
+                </Menu.Item>
                 <Menu.Item icon={<CloseCircleOutlined />}>
                   {/* For sysadmin */}
                   <ToolTip title="Show my Asset creation and updation Requests which have been rejected">
@@ -329,85 +323,98 @@ const SidebarComponentNew = ({ children }) => {
             ) : (
               ""
             )}
+            <Menu.Item icon={<UserSwitchOutlined />}>
+              <ToolTip title="To view the expired assets">
+                <Link to="/exam/expired_assets">Expired Assets</Link>
+              </ToolTip>
+            </Menu.Item>
             <Menu.Item icon={<CarryOutOutlined />}>
               <ToolTip title="Download user agent">
-                <div onClick={handleDownload}>Download</div>
+                <Link to="#" onClick={handleDownload}>
+                  Download
+                </Link>
               </ToolTip>
             </Menu.Item>
             <Menu.Item icon={<RobotOutlined />}>
               <ToolTip title="AI Assistant">
                 <Link to="/exam/chat">AssetSense Ai</Link>
               </ToolTip>
-            </Menu.Item>         
+            </Menu.Item>
           </Menu>
         </Sider>
         <Content className="bg-white">
-          {children}
-          <SideDrawerComponent
-            displayDrawer={displaydrawer}
-            closeDrawer={closeDrawer}
-          >
-            <AddAsset />
-          </SideDrawerComponent>
+          <Spin spinning={loading}>
+            {children}
+            <SideDrawerComponent
+              displayDrawer={displaydrawer}
+              closeDrawer={closeDrawer}
+            >
+              <AddAsset
+                loading={loading}
+                setLoading={setLoading}
+                setDisplayDrawer={setDisplayDrawer}
+              />
+            </SideDrawerComponent>
 
-          <Footer className="bg-white">
-            <FlowbiteFooter container>
-              <div className="flex w-full flex-col gap-y-6 lg:flex-row lg:justify-between lg:gap-y-0">
-                <FlowbiteFooter.LinkGroup>
-                  <FlowbiteFooter.Link
-                    href="https://experionglobal.com/terms-of-use/"
-                    className="mr-3 mb-3 lg:mb-0"
-                  >
-                    Terms and conditions
-                  </FlowbiteFooter.Link>
-                  <FlowbiteFooter.Link
-                    href="https://experionglobal.com/privacy-policy/"
-                    className="mr-3 mb-3 lg:mb-0"
-                  >
-                    Privacy Policy
-                  </FlowbiteFooter.Link>
+            <Footer className="bg-white">
+              <FlowbiteFooter container>
+                <div className="flex w-full flex-col gap-y-6 lg:flex-row lg:justify-between lg:gap-y-0">
+                  <FlowbiteFooter.LinkGroup>
+                    <FlowbiteFooter.Link
+                      href="https://experionglobal.com/terms-of-use/"
+                      className="mr-3 mb-3 lg:mb-0"
+                    >
+                      Terms and conditions
+                    </FlowbiteFooter.Link>
+                    <FlowbiteFooter.Link
+                      href="https://experionglobal.com/privacy-policy/"
+                      className="mr-3 mb-3 lg:mb-0"
+                    >
+                      Privacy Policy
+                    </FlowbiteFooter.Link>
 
-                  <FlowbiteFooter.Link href="https://experionglobal.com/">
-                    Contact
-                  </FlowbiteFooter.Link>
-                </FlowbiteFooter.LinkGroup>
-                <FlowbiteFooter.LinkGroup>
-                  <div className="flex gap-x-1">
-                    <FlowbiteFooter.Link
-                      href="https://www.facebook.com/experiontechnologies/"
-                      className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
-                    >
-                      <MdFacebook className="text-lg" />
+                    <FlowbiteFooter.Link href="https://experionglobal.com/">
+                      Contact
                     </FlowbiteFooter.Link>
-                    <FlowbiteFooter.Link
-                      href="https://www.instagram.com/experion_technologies/?hl=en"
-                      className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
-                    >
-                      <FaInstagram className="text-lg" />
-                    </FlowbiteFooter.Link>
-                    <FlowbiteFooter.Link
-                      href="https://twitter.com/experionglobal"
-                      className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
-                    >
-                      <FaTwitter className="text-lg" />
-                    </FlowbiteFooter.Link>
-                    <FlowbiteFooter.Link
-                      href="https://www.linkedin.com/company/experion-technologies/posts/"
-                      className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
-                    >
-                      <FaLinkedin className="text-lg" />
-                    </FlowbiteFooter.Link>
-                    <FlowbiteFooter.Link
-                      href="https://www.linkedin.com/uas/login?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Fcompany%2Fexperion-technologies%2Fposts"
-                      className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
-                    >
-                      {/* <FaDribbble className="text-lg" /> */}
-                    </FlowbiteFooter.Link>
-                  </div>
-                </FlowbiteFooter.LinkGroup>
-              </div>
-            </FlowbiteFooter>
-          </Footer>
+                  </FlowbiteFooter.LinkGroup>
+                  <FlowbiteFooter.LinkGroup>
+                    <div className="flex gap-x-1">
+                      <FlowbiteFooter.Link
+                        href="https://www.facebook.com/experiontechnologies/"
+                        className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
+                      >
+                        <MdFacebook className="text-lg" />
+                      </FlowbiteFooter.Link>
+                      <FlowbiteFooter.Link
+                        href="https://www.instagram.com/experion_technologies/?hl=en"
+                        className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
+                      >
+                        <FaInstagram className="text-lg" />
+                      </FlowbiteFooter.Link>
+                      <FlowbiteFooter.Link
+                        href="https://twitter.com/experionglobal"
+                        className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
+                      >
+                        <FaTwitter className="text-lg" />
+                      </FlowbiteFooter.Link>
+                      <FlowbiteFooter.Link
+                        href="https://www.linkedin.com/company/experion-technologies/posts/"
+                        className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
+                      >
+                        <FaLinkedin className="text-lg" />
+                      </FlowbiteFooter.Link>
+                      <FlowbiteFooter.Link
+                        href="https://www.linkedin.com/uas/login?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Fcompany%2Fexperion-technologies%2Fposts"
+                        className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
+                      >
+                        {/* <FaDribbble className="text-lg" /> */}
+                      </FlowbiteFooter.Link>
+                    </div>
+                  </FlowbiteFooter.LinkGroup>
+                </div>
+              </FlowbiteFooter>
+            </Footer>
+          </Spin>
         </Content>
       </Layout>
     </Layout>

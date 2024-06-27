@@ -5,10 +5,11 @@ from rest_framework.pagination import LimitOffsetPagination
 from asset.serializers.asset_serializer import AssetReadSerializer
 from asset.service.asset_crud_service.asset_query_abstract import AssetQueryAbstract
 from messages import ASSET_LIST_SUCCESSFULLY_RETRIEVED
+from dateutil.relativedelta import relativedelta
+from django.utils import timezone
 
 
 class AssetNormalQueryService(AssetQueryAbstract):
-    # Define a list of sortable fields
     SORTABLE_FIELDS = [
         "product_name",
         "location",
@@ -22,19 +23,26 @@ class AssetNormalQueryService(AssetQueryAbstract):
         "invoice_location",
         "memory",
         "created_at",
-        "updated_at",  # Assuming this is a field in the Asset model
+        "updated_at",
     ]
 
     def get_asset_details(self, serializer, request):
         self.pagination = LimitOffsetPagination()
-        queryset = Asset.objects.all()
-        queryset = queryset.filter(is_deleted=False)
+
+        deleted = request.query_params.get("deleted")
+
+        is_deleted = False
+        if deleted:
+            is_deleted = True
+
+        queryset = Asset.objects.all().filter(is_deleted=is_deleted)
 
         global_search = request.query_params.get("global_search")
 
         if global_search:
             queryset = self.get_queryset_from_global_search(global_search, queryset)
 
+        asset_status = request.query_params.get("status")
         assign_status = request.query_params.get("assign_status")
         asset_detail_status = request.query_params.get("asset_detail_status")
 
@@ -53,10 +61,13 @@ class AssetNormalQueryService(AssetQueryAbstract):
         sort_by = request.query_params.get("sort_by")
         sort_order = request.query_params.get("sort_order")  # 'asc' or 'desc'
 
+        expired = request.query_params.get("expired")
+
         query_params = request.query_params
         query_params_to_exclude = [
             "limit",
             "offset",
+            "status",
             "assign_status",
             "asset_detail_status",
             "requester_id",
@@ -69,6 +80,8 @@ class AssetNormalQueryService(AssetQueryAbstract):
             "global_search",
             "sort_by",
             "sort_order",
+            "expired",
+            "deleted",
         ]
         required_query_params = self.remove_fields_from_dict(
             query_params, query_params_to_exclude
@@ -78,6 +91,10 @@ class AssetNormalQueryService(AssetQueryAbstract):
             self.pagination.default_limit = limit
         if offset:
             self.pagination.default_offset = offset
+
+        if asset_status:
+            statuses = asset_status.split("|")
+            queryset = queryset.filter(status__in=statuses)
 
         if asset_detail_status:
             statuses = asset_detail_status.split("|")
@@ -91,7 +108,6 @@ class AssetNormalQueryService(AssetQueryAbstract):
         for field, value in required_query_params.items():
             filter_kwargs[f"{field}__icontains"] = value
 
-        # Sort queryset
         if sort_by:
             if sort_by in self.SORTABLE_FIELDS:
                 if sort_order == "asc":
@@ -99,10 +115,8 @@ class AssetNormalQueryService(AssetQueryAbstract):
                 elif sort_order == "desc":
                     queryset = queryset.order_by(f"-{sort_by}")
             else:
-                # Handle invalid sort_by field here, raise an exception or use a default sorting behavior
                 pass
 
-        # TODO How to filter using values of foreign tables
         if requester_id:
             filter_kwargs["requester_id"] = requester_id
         if approved_by_id:
@@ -121,7 +135,21 @@ class AssetNormalQueryService(AssetQueryAbstract):
 
         queryset = queryset.filter(**filter_kwargs)
 
-        # Apply pagination
+        if expired:
+            try:
+                current_date = timezone.now().date()
+
+                queryset = queryset.exclude(date_of_purchase__isnull=True).exclude(
+                    warranty_period__isnull=True
+                )
+                for ele in queryset:
+                    if (
+                        ele.date_of_purchase + relativedelta(months=ele.warranty_period)
+                    ) > current_date:
+                        queryset = queryset.exclude(asset_uuid=ele.asset_uuid)
+            except Exception as e:
+                print("Error Occured: ", e)
+
         page = self.pagination.paginate_queryset(queryset, request)
 
         if page is not None:
@@ -167,7 +195,6 @@ class AssetNormalQueryService(AssetQueryAbstract):
         ]:
             query |= Q(**{f"{field}__icontains": global_search})
 
-        # Queries for FKs
         query |= Q(custodian__employee_name__icontains=global_search)
         query |= Q(location__location_name__icontains=global_search)
         query |= Q(approved_by__username__icontains=global_search)

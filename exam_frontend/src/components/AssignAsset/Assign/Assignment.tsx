@@ -38,7 +38,7 @@ export const Assignment: React.FC<AssignmentProps> = ({
     <div>
       <div>
         <form>
-          <div className="grid font-display grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">
+          <div className="grid font-display grid-cols-2 gap-2 lg:grid-cols-4 my-3 text-sm">
             <div>
               <label htmlFor="productName">ASSET NAME:</label>
               <input
@@ -142,21 +142,35 @@ export const Assignment: React.FC<AssignmentProps> = ({
           </div>
         </form>
       </div>
+      <div className="grid font-display grid-cols-3 items-center justify-center gap-2 mt-20 lg:grid-cols-3 my-3 text-sm">
+        <div className="text-xl text-right">
+          <span>
+            Search for employee:
+          </span>
+        </div>
+        <div>
+          <input
+            type="text"
+            name={"employee"}
+            className="rounded-lg font-display w-full"
+            placeholder="Enter employee name"
+            onChange={handleInputChange}
+            value={value}
+          />
+        </div>
 
-      <input
-        type="text"
-        name={"employee"}
-        className={styles["search-input"]}
-        placeholder="employee name"
-        onChange={handleInputChange}
-        value={value}
-      />
+        <div>
+          <button className={styles["assign-button"]} onClick={handleAssign}>
+            Assign
+          </button>
+        </div>
+      </div>
       <div className={divVisible ? styles[""] : styles["result"]}>
         <div className={value && data ? styles[""] : styles["result"]}>
           {data?.data.length ? (
             data.data.map((employee: EmployeeDetails) => (
               <div
-                className={styles["resultBox"]}
+                className='text-lg mt-10 bg-gray-100 p-5 rounded-lg w-auto hover:cursor-pointer hover:bg-gray-300 text-center'
                 key={employee.id}
                 onClick={() =>
                   handleNameClick(
@@ -173,28 +187,23 @@ export const Assignment: React.FC<AssignmentProps> = ({
               </div>
             ))
           ) : (
-            <div>{"No employee available"}</div>
+            <div className="text-center text-lg text-red-500 p-5 mt-10"> {"No employee available"}</div>
           )}
         </div>
       </div>
-      <div>
-        <button className={styles["assign-button"]} onClick={handleAssign}>
-          Assign
-        </button>
-      </div>
-
       <div
         className={
           employeeName == value && value
-            ? styles["employeeBox"]
+            ? ' mt-20 text-center bg-blue-200 p-10 w-full text-lg rounded-xl inline-block'
             : styles["result"]
         }
       >
         {
           <div>
-            <div>employee id :{employeeId}</div>
-            <div>employee designation : {employeeDesignation}</div>
-            <div>employee department : {employeeDepartment}</div>
+            <div>Employee name:{employeeName}</div>
+            <div>Employee id :{employeeId}</div>
+            <div>Employee designation : {employeeDesignation}</div>
+            <div>Employee department : {employeeDepartment}</div>
           </div>
         }
       </div>

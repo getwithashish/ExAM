@@ -1,20 +1,22 @@
-import { createContext, useContext, useEffect, useState } from "react";
-
-const AuthContext = createContext();
-
-export const AuthProvider = ({ children }) => {
+import { ReactNode, createContext, useContext, useState } from "react";
+interface AuthContextType {
+  authenticated: boolean;
+  setAuthenticated: (auth: boolean) => void,
+  userRole: string,
+  setUserRole: (role: string) => void,
+  login: () => void,
+  logout: () => void,
+}
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [authenticated, setAuthenticated] = useState(
     localStorage.getItem("jwt") ? true : false
   );
   const [userRole, setUserRole] = useState("None");
-
   const login = () => {
-    // Perform authentication logic (e.g., authenticate user with backend)
     setAuthenticated(true);
   };
-
   const logout = () => {
-    // Perform logout logic
     setAuthenticated(false);
   };
 
@@ -34,4 +36,10 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = (): AuthContextType => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth is not used within AuthProvider')
+  }
+  return context
+}

@@ -1,39 +1,28 @@
-import React, {
-  Key,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
-
+import React, { Key, useCallback, useEffect, useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import "./DasboardAssetTable.css";
 import { useQuery } from "@tanstack/react-query";
-import { DataType } from "../AssetTable/types";
+import { AssetType, DataType } from "../AssetTable/types";
 import { AssetResult } from "../AssetTable/types";
+import DashboardAssetTable from "./DashboardAssetTable";
+import TimelineViewDrawer from "../TimelineLog/TimeLineDrawer";
 import {
   getAssetDetails,
-  getAssetTypeOptions,
   getLocationOptions,
+  getAssetTypeOptions,
   getMemoryOptions,
-} from "./api/getDashboardAssetDetails";
-import DashboardAssetTable from "./DashboardAssetTable";
-
-import TimelineViewDrawer from "../TimelineLog/TimeLineDrawer";
-import { json } from "react-router";
-
-interface ExpandedDataType {
-  key: React.Key;
-  date: string;
-  name: string;
-  upgradeNum: string;
-}
+} from "../AssetTable/api/getAssetDetails";
+import moment from 'moment';
 
 interface DashboardAssetHandlerProps {
   selectedTypeId: number;
   assetState: string | null;
   detailState: string | null;
   assignState: string | null;
+  setSelectedTypeId: (id: number) => void;
+  setAssetState: (state: string | null) => void;
+  setAssignState: (state: string | null) => void;
+  setDetailState: (state: string | null) => void;
 }
 
 const DashboardAssetHandler = ({
@@ -41,31 +30,36 @@ const DashboardAssetHandler = ({
   assetState,
   detailState,
   assignState,
+  setSelectedTypeId,
+  setAssetState,
+  setAssignState,
+  setDetailState,
 }: DashboardAssetHandlerProps) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [queryParam, setQueryParam] = useState("");
-  const [sortedColumn, setSortedColumn] = useState<string | null>(null);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [sortOrders, setSortOrders] = useState({});
+  const [sortedColumn, setSortedColumn] = useState<string>("");
+  const [sortOrder, setSortOrder] = useState<string>("asc");
+  const [sortOrders, setSortOrders] = useState<{ [key: string]: string }>({});
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [json_query, setJson_query] = useState<string>("");
 
   useEffect(() => {
+    let additionalParams = "";
     if (selectedTypeId !== 0) {
-      setQueryParam(`&asset_type=${selectedTypeId}`);
-    } else if (assetState) {
-      setQueryParam(`&status=${assetState}`);
-    } else if (detailState) {
-      setQueryParam(`&asset_detail_status=${detailState}`);
-    } else if (assignState) {
-      setQueryParam(`&assign_status=${assignState}`);
-    } else {
-      setQueryParam(``);
+      additionalParams += `&asset_type=${selectedTypeId}`;
     }
+    if (assetState) {
+      additionalParams += `&status=${assetState}`;
+    }
+    if (detailState) {
+      additionalParams += `&asset_detail_status=${detailState}`;
+    }
+    if (assignState) {
+      additionalParams += `&assign_status=${assignState}`;
+    }
+    setQueryParam(additionalParams);
   }, [selectedTypeId, assetState, detailState, assignState]);
-
-  useEffect(() => { });
 
   const {
     data: assetData,
@@ -78,16 +72,25 @@ const DashboardAssetHandler = ({
 
   const refetchAssetData = (queryParam = "") => {
     setQueryParam(queryParam);
-    assetDataRefetch({ force: true });
+    assetDataRefetch();
   };
+
   const reset = () => {
-    setQueryParam(" ");
+    setQueryParam("");
+    setJson_query("");
+    setSearchTerm("");
+    setSelectedTypeId(0);
+    setAssetState("");
+    setDetailState("");
+    setAssignState("");
     refetchAssetData();
   };
+
   const statusOptions =
     assetData?.results?.map((item: AssetResult) =>
       item.status === "IN STORE" ? "IN STOCK" : item.status
     ) || [];
+
   const businessUnitOptions =
     assetData?.results?.map(
       (item: AssetResult) => item.business_unit.business_unit_name
@@ -100,7 +103,7 @@ const DashboardAssetHandler = ({
 
   const locations = locationResults ? locationResults : [];
 
-  const locationFilters = locations.map((location) => ({
+  const locationFilters = locations.map((location: any) => ({
     text: location.location_name,
     value: location.location_name,
   }));
@@ -115,7 +118,7 @@ const DashboardAssetHandler = ({
     queryFn: () => getAssetTypeOptions(),
   });
   const assetTypeFilters =
-    assetTypeData?.map((assetType) => ({
+    assetTypeData?.map((assetType: AssetType) => ({
       text: assetType.asset_type_name,
       value: assetType.asset_type_name,
     })) ?? [];
@@ -130,6 +133,7 @@ const DashboardAssetHandler = ({
   }, []);
 
   const [tableData, setTableData] = useState<DataType[]>([]);
+
   const handleUpdateData = (updatedData: { key: any }) => {
     setTableData((prevData: any[]) =>
       prevData.map((item) =>
@@ -137,39 +141,82 @@ const DashboardAssetHandler = ({
       )
     );
   };
-  const renderClickableColumn = (columnName, dataIndex) => (_, record) =>
-  (
-    <div
-      data-column-name={columnName}
-      onClick={() => handleColumnClick(record, columnName)}
-      style={{ cursor: "pointer" }}
-    >
-      {record[dataIndex]}
-    </div>
-  );
 
+  const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
+    if (dataIndex === 'created_at' || dataIndex === 'updated_at') {
+      const formattedDate = moment(record[dataIndex]).format('DD-MM-YYYY'); 
+      return (
+        <div
+          data-column-name={columnName}
+          onClick={() => handleColumnClick(record, columnName)}
+          style={{ cursor: "pointer" }}
+        >
+          {formattedDate}
+        </div>
+      );
+    }
+  
+    return (
+      <div
+        data-column-name={columnName}
+        onClick={() => handleColumnClick(record, columnName)}
+        style={{ cursor: "pointer" }}
+      >
+        {record[dataIndex]}
+      </div>
+    );
+  };
 
   const handleSort = (column: string) => {
     const isCurrentColumn = column === sortedColumn;
     let newSortOrders = { ...sortOrders };
+
     if (!isCurrentColumn) {
       newSortOrders = { [column]: "asc" };
     } else {
       newSortOrders[column] = sortOrders[column] === "asc" ? "desc" : "asc";
     }
+
     setSortedColumn(column);
+    setSortOrder(newSortOrders[column]);
     setSortOrders(newSortOrders);
+
     const queryParams = Object.keys(newSortOrders)
       .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
       .join("");
-    const additionalQueryParams = `&global_search=${searchTerm}&offset=${0}&json_logic=${json_query}`;
+
+    let additionalQueryParams = "&offset=0";
+    if (searchTerm !== "" && searchTerm !== null) {
+      additionalQueryParams += `&global_search=${searchTerm}`;
+    }
+    if (json_query !== "" && json_query !== null) {
+      additionalQueryParams += `&json_logic=${json_query}`;
+    }
+    if (assetState !== "" && assetState !== null) {
+      additionalQueryParams += `&status=${assetState}`;
+    }
+    if (detailState !== "" && detailState !== null) {
+      additionalQueryParams += `&asset_detail_status=${detailState}`;
+    }
+    if (assignState !== "" && assignState !== null) {
+      additionalQueryParams += `&assign_status=${assignState}`;
+    }
+    if (selectedTypeId !== 0) {
+      additionalQueryParams += `&asset_type=${selectedTypeId}`;
+    }
+
     refetchAssetData(queryParams + additionalQueryParams);
   };
+  const detailStatusStyleCondition = (record: any): React.CSSProperties => {
+    return record.asset_detail_status === "CREATE_REJECTED" ||
+      record.asset_detail_status === "UPDATE_REJECTED"
+      ? { color: "red" }
+      : {};
+  };
 
-  <div>
-    <h1>Asset Overview</h1>
-  </div>;
-
+  const assignStatusStyleCondition = (record: any): React.CSSProperties => {
+    return record.assign_status === "REJECTED" ? { color: "red" } : {};
+  };
   const columns = [
     {
       title: "Product Name",
@@ -195,7 +242,7 @@ const DashboardAssetHandler = ({
     },
 
     {
-      title: "Location",
+      title: "Asset Location",
       dataIndex: "location",
       responsive: ["md"],
       width: 120,
@@ -239,20 +286,6 @@ const DashboardAssetHandler = ({
       }),
       render: renderClickableColumn("Invoice Location", "invoice_location"),
     },
-
-    {
-      title: "Custodian",
-      dataIndex: "custodian",
-      responsive: ["md"],
-      width: 120,
-      sorter: true,
-      sortOrder: sortedColumn === "custodian" ? sortOrder : undefined,
-      onHeaderCell: () => ({
-        onClick: () => handleSort("custodian"),
-      }),
-      render: renderClickableColumn("Custodian", "custodian"),
-    },
-
     {
       title: "Asset Type",
       dataIndex: "asset_type",
@@ -287,6 +320,26 @@ const DashboardAssetHandler = ({
       }),
       render: renderClickableColumn("Asset Category", "asset_category"),
     },
+    {
+      title: "Custodian",
+      dataIndex: "custodian",
+      responsive: ["md"],
+      width: 120,
+      sorter: true,
+      sortOrder: sortedColumn === "custodian" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("custodian"),
+      }),
+      render: renderClickableColumn("Custodian", "custodian"),
+    },
+    {
+      title: "Business Unit",
+      dataIndex: "BusinessUnit",
+      responsive: ["md"],
+      width: 120,
+
+      render: renderClickableColumn("Business Unit", "business_unit"),
+    },
 
     {
       title: "Version",
@@ -300,22 +353,7 @@ const DashboardAssetHandler = ({
       }),
       render: renderClickableColumn("Version", "version"),
     },
-    {
-      title: "Asset Status",
-      dataIndex: "Status",
-      responsive: ["md"],
-      width: 140,
 
-      render: renderClickableColumn("Asset Status", "status"),
-    },
-    {
-      title: "Business Unit",
-      dataIndex: "BusinessUnit",
-      responsive: ["md"],
-      width: 120,
-
-      render: renderClickableColumn("Business Unit", "business_unit"),
-    },
     {
       title: "Os",
       dataIndex: "os",
@@ -345,6 +383,45 @@ const DashboardAssetHandler = ({
       responsive: ["md"],
       width: 120,
       render: renderClickableColumn("processor_gen", "processor_gen"),
+    },
+    {
+      title: "Model Number",
+      dataIndex: "model_number",
+      responsive: ["md"],
+      width: 120,
+      sorter: true,
+      sortOrder: sortedColumn === "model_number" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("model_number"),
+      }),
+      render: renderClickableColumn("Model Number", "model_number"),
+    },
+    {
+      title: "Memory",
+      dataIndex: "memory",
+      responsive: ["md"],
+      width: 120,
+      sorter: true,
+      sortOrder: sortedColumn === "memory" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("memory"),
+      }),
+      render: renderClickableColumn("Memory", "memory"),
+    },
+    {
+      title: "Storage",
+      dataIndex: "storage",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Storage", "storage"),
+    },
+    {
+      title: "License Type",
+      dataIndex: "license_type",
+      responsive: ["md"],
+      width: 120,
+
+      render: renderClickableColumn("license_type", "license_type"),
     },
 
     {
@@ -378,7 +455,7 @@ const DashboardAssetHandler = ({
       dataIndex: "expiry_date",
       responsive: ["md"],
       width: 120,
-      render: (_, record) => {
+      render: (_: any, record: any) => {
         const dateOfPurchase = record.date_of_purchase
           ? new Date(record.date_of_purchase)
           : null;
@@ -388,12 +465,18 @@ const DashboardAssetHandler = ({
             dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000
           ); // Calculating expiry date in milliseconds
           const formattedExpiryDate = expiryDate.toISOString().split("T")[0];
+          const currentDate = new Date();
+          const isExpired = expiryDate < currentDate;
           // Apply renderClickableColumn logic here
           return (
             <div
               data-column-name="Expiry Date"
               onClick={() => handleColumnClick(record, "Expiry Date")}
-              style={{ cursor: "pointer", color: "red" }}
+              style={{
+                cursor: "pointer",
+                color: isExpired ? "red" : "green",
+                fontWeight: isExpired ? "bold" : "bold",
+              }}
             >
               {formattedExpiryDate}
             </div>
@@ -404,37 +487,6 @@ const DashboardAssetHandler = ({
       },
     },
 
-    {
-      title: "Model Number",
-      dataIndex: "model_number",
-      responsive: ["md"],
-      width: 120,
-      sorter: true,
-      sortOrder: sortedColumn === "model_number" ? sortOrder : undefined,
-      onHeaderCell: () => ({
-        onClick: () => handleSort("model_number"),
-      }),
-      render: renderClickableColumn("Model Number", "model_number"),
-    },
-    {
-      title: "Memory",
-      dataIndex: "memory",
-      responsive: ["md"],
-      width: 120,
-      sorter: true,
-      sortOrder: sortedColumn === "memory" ? sortOrder : undefined,
-      onHeaderCell: () => ({
-        onClick: () => handleSort("memory"),
-      }),
-      render: renderClickableColumn("Memory", "memory"),
-    },
-    {
-      title: "Storage",
-      dataIndex: "storage",
-      responsive: ["md"],
-      width: 120,
-      render: renderClickableColumn("Storage", "storage"),
-    },
     {
       title: "Owner",
       dataIndex: "owner",
@@ -469,22 +521,35 @@ const DashboardAssetHandler = ({
       render: renderClickableColumn("Requester", "requester"),
     },
     {
+      title: "Asset Status",
+      dataIndex: "Status",
+      responsive: ["md"],
+      width: 140,
+
+      render: renderClickableColumn("Asset Status", "status"),
+    },
+
+    {
       title: "Asset Detail Status",
       dataIndex: "asset_detail_status",
       responsive: ["md"],
       width: 140,
       render: renderClickableColumn(
         "Asset Detail Status",
-        "asset_detail_status"
+        "asset_detail_status",
+        detailStatusStyleCondition
       ),
     },
-
     {
       title: "Asset Assign Status",
       dataIndex: "assign_status",
       responsive: ["md"],
       width: 140,
-      render: renderClickableColumn("Asset Assign Status", "assign_status"),
+      render: renderClickableColumn(
+        "Asset Assign Status",
+        "assign_status",
+        assignStatusStyleCondition
+      ),
     },
     {
       title: "Created At",
@@ -510,7 +575,6 @@ const DashboardAssetHandler = ({
       }),
       render: renderClickableColumn("Updated At", "updated_at"),
     },
-
     {
       title: "Accessories",
       dataIndex: "Accessories",
@@ -519,12 +583,24 @@ const DashboardAssetHandler = ({
       render: renderClickableColumn("Accessories", "accessories"),
     },
     {
+      title: "Approver Notes",
+      dataIndex: "approval_status_message",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn(
+        "approval_status_message",
+        "approval_status_message"
+      ),
+    },
+    {
       title: "View Asset Log",
       dataIndex: "Accessories",
       responsive: ["md"],
       fixed: "right",
       width: 140,
-      render: (_, record) => <TimelineViewDrawer assetUuid={record.key} />,
+      render: (_: any, record: { key: string }) => (
+        <TimelineViewDrawer assetUuid={record.key} />
+      ),
     },
   ];
 
@@ -533,46 +609,85 @@ const DashboardAssetHandler = ({
       handleOtherColumnClick(record);
     }
   };
-
-  const handleOtherColumnClick = (record: SetStateAction<null>) => {
-    setSelectedRow(record);
-    setDrawerVisible(true);
+  const handleOtherColumnClick = (record: any) => {
+    if (record) {
+      setSelectedRow(record);
+      setDrawerVisible(true);
+    }
   };
 
-  const data = assetData?.results?.map((result) => ({
-    key: result.asset_uuid,
-    asset_id: result.asset_id,
-    asset_category: result.asset_category,
-    asset_type: result.asset_type.asset_type_name,
-    version: result.version,
-    status: result.status === "IN STORE" ? "IN STOCK" : result.status,
-    location: result.location?.location_name,
-    invoice_location: result.invoice_location?.location_name,
-    business_unit: result.business_unit.business_unit_name,
-    os: result.os,
-    os_version: result.os_version,
-    mobile_os: result.mobile_os,
-    processor: result.processor,
-    processor_gen: result.processor_gen,
-    accessories: result.accessories,
-    date_of_purchase: result.date_of_purchase,
-    warranty_period: result.warranty_period,
-    asset_detail_status: result.asset_detail_status,
-    assign_status: result.assign_status,
-    approved_by: result.approved_by?.username,
-    model_number: result.model_number,
-    serial_number: result.serial_number,
-    memory: result.memory?.memory_space,
-    storage: result.storage,
-    configuration: result.configuration,
-    custodian: result.custodian?.employee_name,
-    product_name: result.product_name,
-    owner: result.owner,
-    requester: result.requester?.username,
-    AssignAsset: "assign",
-    created_at: result.created_at,
-    updated_at: result.updated_at,
-  }));
+  const data = assetData?.results?.map(
+    (result: {
+      asset_uuid: any;
+      asset_id: any;
+      asset_category: any;
+      asset_type: { asset_type_name: any };
+      version: any;
+      status: string;
+      location: { location_name: any };
+      invoice_location: { location_name: any };
+      business_unit: { business_unit_name: any };
+      os: any;
+      os_version: any;
+      mobile_os: any;
+      processor: any;
+      processor_gen: any;
+      accessories: any;
+      date_of_purchase: any;
+      warranty_period: any;
+      asset_detail_status: any;
+      assign_status: any;
+      approved_by: { username: any };
+      model_number: any;
+      serial_number: any;
+      memory: { memory_space: any };
+      storage: any;
+      configuration: any;
+      custodian: { employee_name: any };
+      product_name: any;
+      owner: any;
+      license_type: any;
+      requester: { username: any };
+      created_at: any;
+      updated_at: any;
+      approval_status_message: any;
+    }) => ({
+      key: result.asset_uuid,
+      asset_id: result.asset_id,
+      asset_category: result.asset_category,
+      asset_type: result.asset_type.asset_type_name,
+      version: result.version,
+      status: result.status === "IN STORE" ? "IN STOCK" : result.status,
+      location: result.location?.location_name,
+      invoice_location: result.invoice_location?.location_name,
+      business_unit: result.business_unit.business_unit_name,
+      os: result.os,
+      os_version: result.os_version,
+      mobile_os: result.mobile_os,
+      processor: result.processor,
+      processor_gen: result.processor_gen,
+      accessories: result.accessories,
+      date_of_purchase: result.date_of_purchase,
+      warranty_period: result.warranty_period,
+      asset_detail_status: result.asset_detail_status,
+      assign_status: result.assign_status,
+      approved_by: result.approved_by?.username,
+      model_number: result.model_number,
+      serial_number: result.serial_number,
+      memory: result.memory?.memory_space,
+      storage: result.storage,
+      configuration: result.configuration,
+      custodian: result.custodian?.employee_name,
+      product_name: result.product_name,
+      owner: result.owner,
+      license_type: result.license_type,
+      requester: result.requester?.username,
+      AssignAsset: "assign",
+      created_at: result.created_at,
+      updated_at: result.updated_at,
+      approval_status_message: result.approval_status_message,
+    })
+  );
 
   const drawerTitle = "Asset Details";
 
@@ -606,10 +721,12 @@ const DashboardAssetHandler = ({
         setSearchTerm={setSearchTerm}
         setJson_query={setJson_query}
         json_query={json_query}
+        assetState={assetState}
+        assignState={assignState}
+        detailState={detailState}
+        selectedTypeId={selectedTypeId}
       />
-
     </div>
-
   );
 };
 

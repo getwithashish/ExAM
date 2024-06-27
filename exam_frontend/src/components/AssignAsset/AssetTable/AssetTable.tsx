@@ -30,6 +30,7 @@ const AssetTable = ({
   selectedRow,
   drawerVisible,
   assetData,
+  reset,
   totalItemCount,
   assetPageDataFetch,
   columns,
@@ -75,10 +76,12 @@ const AssetTable = ({
         <div className=" font-display">Allocate Assets</div>
       </div>
       <div style={{ marginLeft: "40px", marginBottom: "30px" }}>
-        <GlobalSearch
-          assetDataRefetch={assetDataRefetch}
+      <GlobalSearch    
+          assetDataRefetch={assetDataRefetch}      
           searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm} // Pass searchTerm prop
+          // onSearch={handleSearch}
+          reset={reset}
+          setSearchTerm={setSearchTerm}
         />
       </div>
       <div
@@ -114,19 +117,28 @@ const AssetTable = ({
             // marginRight: "120px",
           }}
           footer={() => (
-             <Pagination
-              pageSize={20}
-              showTotal={(total, range) =>
-                `${range[0]}-${range[1]} of ${total} assets`
+            <Pagination
+            pageSize={20}
+            showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} assets`}
+            total={totalItemCount}
+            onChange={(page, pageSize) => {
+              const offset = (page - 1) * pageSize;
+              let additionalQueryParams = `&offset=${offset}`;
+              if (searchTerm !== "" && searchTerm !== null) {
+                  additionalQueryParams += `&global_search=${searchTerm}`;
               }
-              total={totalItemCount}
-              onChange={(page, pageSize) => {
-                const offset = (page - 1) * pageSize;
-                const queryParams = `&offset=${offset}&global_search=${searchTerm}&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
-                assetPageDataFetch(queryParams);
-              }}
-              hideOnSinglePage={true}
-            />
+              let sortParams = "";
+              const queryParams = `${sortParams}${additionalQueryParams}`;
+              if (sortedColumn && sortOrder) {
+                  if (queryParams.indexOf('sort_by') === -1) {
+                      sortParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
+                  }
+              }
+              
+              assetPageDataFetch(queryParams);
+          }}
+            hideOnSinglePage={true}
+          />
           )}
         />
       </div>

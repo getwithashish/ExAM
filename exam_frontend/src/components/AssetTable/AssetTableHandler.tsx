@@ -1,5 +1,4 @@
 import React, { Key, SetStateAction, useCallback, useState } from "react";
-import { Button } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import "./AssetTable.css";
 import { useQuery } from "@tanstack/react-query";
@@ -12,15 +11,24 @@ import {
   getLocationOptions,
   getMemoryOptions,
 } from "./api/getAssetDetails";
+import moment from "moment";
 
-const AssetTableHandler = ({  isRejectedPage,  queryParamProp,  heading,  isMyApprovalPage,}) => {
-  const [selectedRow, setSelectedRow] = useState(null);
+
+const AssetTableHandler = ({
+  userRole,
+  isRejectedPage,
+  queryParamProp,
+  heading,
+  isMyApprovalPage,
+  assets,
+
+}) => {
+  const [selectedRow, setSelectedRow] = useState(null); 
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [sortedColumn, setSortedColumn] = useState<string | null>(null);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [sortOrders, setSortOrders] = useState({});
+  const [sortedColumn, setSortedColumn] = useState<string>('');
+  const [sortOrder, setSortOrder] = useState<string>('asc');
+  const [sortOrders, setSortOrders] = useState<{ [key: string]: string }>({});
   const [searchTerm, setSearchTerm] = useState<string>("");
-
   const [queryParam, setQueryParam] = useState("");
   const {
     data: assetData,
@@ -53,7 +61,6 @@ const AssetTableHandler = ({  isRejectedPage,  queryParamProp,  heading,  isMyAp
       editedQueryParam = offsetString + queryParamArg;
     }
 
-    // setQueryParam(queryParam);
     setQueryParam(editedQueryParam);
     assetDataRefetch({ force: true });
   };
@@ -84,6 +91,12 @@ const AssetTableHandler = ({  isRejectedPage,  queryParamProp,  heading,  isMyAp
     queryFn: () => getMemoryOptions(),
   });
 
+  const reset = () => {
+    setQueryParam("");
+    setSearchTerm("");
+    refetchAssetData();
+  };
+
   const { data: assetTypeData } = useQuery({
     queryKey: ["assetDrawerassetType"],
     queryFn: () => getAssetTypeOptions(),
@@ -93,9 +106,6 @@ const AssetTableHandler = ({  isRejectedPage,  queryParamProp,  heading,  isMyAp
       text: assetType.asset_type_name,
       value: assetType.asset_type_name,
     })) ?? [];
-
-  const assetDataList = assetData;
-  // console.log("Testing on 65:", assetDataList ? assetDataList[0].results : []);
 
   const handleRowClick = useCallback((record: React.SetStateAction<null>) => {
     setSelectedRow(record);
@@ -118,8 +128,20 @@ const AssetTableHandler = ({  isRejectedPage,  queryParamProp,  heading,  isMyAp
   <div>
     <h1>Asset Overview</h1>
   </div>;
-  const renderClickableColumn = (columnName, dataIndex) => (_, record) =>
-    (
+  const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
+    if (dataIndex === 'created_at' || dataIndex === 'updated_at') {
+      const formattedDate = moment(record[dataIndex]).format('DD-MM-YYYY'); 
+      return (
+        <div
+          data-column-name={columnName}
+          onClick={() => handleColumnClick(record, columnName)}
+          style={{ cursor: "pointer" }}
+        >
+          {formattedDate}
+        </div>
+      );
+    }
+    return (
       <div
         data-column-name={columnName}
         onClick={() => handleColumnClick(record, columnName)}
@@ -128,23 +150,32 @@ const AssetTableHandler = ({  isRejectedPage,  queryParamProp,  heading,  isMyAp
         {record[dataIndex]}
       </div>
     );
+  };
 
     const handleSort = (column: string) => {
-      const isCurrentColumn = column === sortedColumn;  
-      let newSortOrders = { ...sortOrders };  
+      const isCurrentColumn = column === sortedColumn;
+      let newSortOrders = { ...sortOrders };
+    
       if (!isCurrentColumn) {
         newSortOrders = { [column]: "asc" };
       } else {
         newSortOrders[column] = sortOrders[column] === "asc" ? "desc" : "asc";
-      }  
+      }
+    
       setSortedColumn(column);
-      setSortOrders(newSortOrders);  
+      setSortOrder(newSortOrders[column]);
+      setSortOrders(newSortOrders);
+    
       const queryParams = Object.keys(newSortOrders)
-        .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
-        .join("");  
-      const additionalQueryParams = `&global_search=${searchTerm}&offset=${0}`;  
+      .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
+      .join("");
+      let additionalQueryParams = '&offset=0';
+      if (searchTerm !== '' && searchTerm !== null) {
+        additionalQueryParams += `&global_search=${searchTerm}`;
+      }
       refetchAssetData(queryParams + additionalQueryParams);
     };
+    
 
 
   const columns = [
@@ -173,7 +204,7 @@ const AssetTableHandler = ({  isRejectedPage,  queryParamProp,  heading,  isMyAp
     },
 
     {
-      title: "Location",
+      title: "Asset Location",
       dataIndex: "location",
       responsive: ["md"],
       width: 120,
@@ -247,17 +278,23 @@ const AssetTableHandler = ({  isRejectedPage,  queryParamProp,  heading,  isMyAp
       width: 140,
       render: renderClickableColumn("Asset Category", "asset_category"),
     },
-
     {
-      title: "Asset Status",
-      dataIndex: "Status",
+      title: "Custodian",
+      dataIndex: "custodian",
       responsive: ["md"],
-      width: 140,
-      render: renderClickableColumn("Asset Status", "status"),
+      width: 120,
+      sorter: true,
+      sortOrder: sortedColumn === "custodian" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("custodian"),
+      }),
+      render: renderClickableColumn("Custodian", "custodian"),
     },
+
+   
     {
       title: "Business Unit",
-      dataIndex: "BusinessUnit",
+      dataIndex: "business_unit",
       responsive: ["md"],
       width: 120,
       render: renderClickableColumn("Business Unit", "business_unit"),
@@ -303,6 +340,40 @@ const AssetTableHandler = ({  isRejectedPage,  queryParamProp,  heading,  isMyAp
       render: renderClickableColumn("Asset Status", "processor_gen"),
     },
     {
+      title: "Model Number",
+      dataIndex: "model_number", // Corrected dataIndex
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Asset Status", "model_number"),
+    },
+    {
+      title: "Memory",
+      dataIndex: "memory",
+      responsive: ["md"],
+      width: 120,
+      sorter: true,
+      sortOrder: sortedColumn === "memory" ? sortOrder : undefined,
+      onHeaderCell: () => ({
+        onClick: () => handleSort("memory"),
+      }),
+      render: renderClickableColumn("Memory", "memory"),
+    },
+    {
+      title: "Storage",
+      dataIndex: "storage",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn("Storage", "storage"),
+    },
+    {
+      title: "License Type",
+      dataIndex: "license_type",
+      responsive: ["md"],
+      width: 120,
+     
+      render: renderClickableColumn("license_type", "license_type"),
+    },
+    {
       title: "Date of Purchase",
       dataIndex: "date_of_purchase",
       responsive: ["md"],
@@ -332,21 +403,20 @@ const AssetTableHandler = ({  isRejectedPage,  queryParamProp,  heading,  isMyAp
       responsive: ["md"],
       width: 120,
       render: (_, record) => {
-        const dateOfPurchase = record.date_of_purchase
-          ? new Date(record.date_of_purchase)
-          : null;
+        const dateOfPurchase = record.date_of_purchase ? new Date(record.date_of_purchase) : null;
         const warrantyPeriod = parseInt(record.warranty_period) || 0; // Defaulting to 0 if warranty_period is not provided or invalid
         if (dateOfPurchase instanceof Date && !isNaN(dateOfPurchase)) {
-          const expiryDate = new Date(
-            dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000
-          ); // Calculating expiry date in milliseconds
-          const formattedExpiryDate = expiryDate.toISOString().split("T")[0];
+          const expiryDate = new Date(dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000); // Calculating expiry date in milliseconds
+          const formattedExpiryDate = expiryDate.toISOString().split('T')[0];
+          const currentDate = new Date();
+          const isExpired = expiryDate < currentDate;
+    
           // Apply renderClickableColumn logic here
           return (
             <div
               data-column-name="Expiry Date"
               onClick={() => handleColumnClick(record, "Expiry Date")}
-              style={{ cursor: "pointer", color: "red" }}
+              style={{ cursor: "pointer", color: isExpired ? "red" : "green", fontWeight: isExpired ? "bold" : "bold" }}
             >
               {formattedExpiryDate}
             </div>
@@ -355,33 +425,8 @@ const AssetTableHandler = ({  isRejectedPage,  queryParamProp,  heading,  isMyAp
           return "Invalid Date";
         }
       },
-    },
-    {
-      title: "Model Number",
-      dataIndex: "ModelNumber", // Corrected dataIndex
-      responsive: ["md"],
-      width: 120,
-      render: renderClickableColumn("Asset Status", "model_number"),
-    },
-    {
-      title: "Memory",
-      dataIndex: "memory",
-      responsive: ["md"],
-      width: 120,
-      sorter: true,
-      sortOrder: sortedColumn === "memory" ? sortOrder : undefined,
-      onHeaderCell: () => ({
-        onClick: () => handleSort("memory"),
-      }),
-      render: renderClickableColumn("Memory", "memory"),
-    },
-    {
-      title: "Storage",
-      dataIndex: "storage",
-      responsive: ["md"],
-      width: 120,
-      render: renderClickableColumn("Storage", "storage"),
-    },
+    },  
+  
     {
       title: "Owner",
       dataIndex: "owner",
@@ -412,6 +457,13 @@ const AssetTableHandler = ({  isRejectedPage,  queryParamProp,  heading,  isMyAp
         onClick: () => handleSort("requester"),
       }),
       render: renderClickableColumn("Requester", "requester"),
+    },
+    {
+      title: "Asset Status",
+      dataIndex: "status",
+      responsive: ["md"],
+      width: 140,
+      render: renderClickableColumn("Asset Status", "status"),
     },
     {
       title: "Asset Detail Status",
@@ -470,17 +522,13 @@ const AssetTableHandler = ({  isRejectedPage,  queryParamProp,  heading,  isMyAp
       render: renderClickableColumn("notes", "notes"),
     },
     {
-      title: "Custodian",
-      dataIndex: "custodian",
-      responsive: ["md"],
+      title: 'Approver Notes',
+      dataIndex: 'approval_status_message',
+      responsive: ['md'],
       width: 120,
-      sorter: true,
-      sortOrder: sortedColumn === "custodian" ? sortOrder : undefined,
-      onHeaderCell: () => ({
-        onClick: () => handleSort("custodian"),
-      }),
-      render: renderClickableColumn("Custodian", "custodian"),
+      render:renderClickableColumn("approval_status_message", "approval_status_message")
     },
+    
 
     ...(isRejectedPage
       ? [
@@ -553,19 +601,18 @@ const AssetTableHandler = ({  isRejectedPage,  queryParamProp,  heading,  isMyAp
     configuration: result.configuration,
     custodian: result.custodian?.employee_name,
     product_name: result.product_name,
+    license_type:result.license_type,
     owner: result.owner,
     requester: result.requester?.username,
     AssignAsset: "assign",
     created_at: result.created_at,
     updated_at: result.updated_at,
+    approval_status_message: result.approval_status_message,
   }));
-
-  const drawerTitle = "Asset Details";
-
-  const button = <Button type="primary"></Button>;
 
   return (
     <AssetTable
+     userRole={userRole}
       heading={heading}
       isAssetDataLoading={isAssetDataLoading}
       // drawerTitle={drawerTitle}
@@ -576,7 +623,9 @@ const AssetTableHandler = ({  isRejectedPage,  queryParamProp,  heading,  isMyAp
       onCloseDrawer={onCloseDrawer}
       selectedRow={selectedRow}
       drawerVisible={drawerVisible}
+      setDrawerVisible={setDrawerVisible}
       assetData={data}
+      reset={reset}
       sortOrder={sortOrder}
       sortedColumn={sortedColumn}
       columns={columns}
@@ -586,6 +635,7 @@ const AssetTableHandler = ({  isRejectedPage,  queryParamProp,  heading,  isMyAp
       isMyApprovalPage={isMyApprovalPage}
       statusOptions={statusOptions}
       assetDataRefetch={refetchAssetData}
+      // dataSource={assets}
       businessUnitOptions={businessUnitOptions}
       handleUpdateData={function (updatedData: { key: any }): void {
         throw new Error("Function not implemented.");

@@ -10,4 +10,5 @@ export const statusMapping: { [key: string]: string } = {
   CREATE_REJECTED: "REJECTED",
   UPDATE_REJECTED: "REJECTED",
   "IN STORE": "IN STOCK",
+  EXPIRED:"NO SERVICE"
 };

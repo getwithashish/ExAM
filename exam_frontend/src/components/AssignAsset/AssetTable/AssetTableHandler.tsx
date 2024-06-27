@@ -1,6 +1,6 @@
 import React, { Key, SetStateAction, useCallback, useState } from "react";
 import { Button, Input, Space } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import { SearchOutlined, UserAddOutlined } from "@ant-design/icons";
 import "./AssetTable.css";
 import { useQuery } from "@tanstack/react-query";
 import { DataType } from "../AssetTable/types";
@@ -11,31 +11,24 @@ import {
   getAssetTypeOptions,
   getLocationOptions,
   getMemoryOptions,
-} from "./api/getAssetDetails";
-// interface ExpandedDataType {
-//   key: React.Key;
-//   date: string;
-//   name: string;
-//   upgradeNum: string;
-// }
+} from "../../AssetTable/api/getAssetDetails";
+import moment from "moment";
 
-const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
+const AssetTableHandler = ({
+  queryParam,
+  setQueryParam,
+  assetData,
+  isAssetDataLoading,
+  assetDataRefetch,
+  showAssignDrawer,
+  queryParamProp,
+}) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [sortedColumn, setSortedColumn] = useState<string | null>(null);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [sortOrders, setSortOrders] = useState({});
+  const [sortedColumn, setSortedColumn] = useState<string>("");
+  const [sortOrder, setSortOrder] = useState<string>("asc");
+  const [sortOrders, setSortOrders] = useState<{ [key: string]: string }>({});
   const [searchTerm, setSearchTerm] = useState<string>("");
-
-  const [queryParam, setQueryParam] = useState("");
-  const {
-    data: assetData,
-    isLoading: isAssetDataLoading,
-    refetch: assetDataRefetch,
-  } = useQuery({
-    queryKey: ["assetList", queryParam],
-    queryFn: () => getAssetDetails(`${queryParamProp + queryParam}`),
-  });
 
   const refetchAssetData = (queryParamArg = "") => {
     let editedQueryParam = "";
@@ -101,8 +94,11 @@ const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
       value: assetType.asset_type_name,
     })) ?? [];
 
-  const assetDataList = assetData;
-  // console.log("Testing on 65:", assetDataList ? assetDataList[0].results : []);
+    const reset = () => {
+      setQueryParam("");
+      setSearchTerm("");
+      refetchAssetData();
+    };
 
   const handleRowClick = useCallback((record: React.SetStateAction<null>) => {
     setSelectedRow(record);
@@ -123,37 +119,56 @@ const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
   };
 
   const handleSort = (column: string) => {
-    const isCurrentColumn = column === sortedColumn;  
-    let newSortOrders = { ...sortOrders };  
+    const isCurrentColumn = column === sortedColumn;
+    let newSortOrders = { ...sortOrders };
+
     if (!isCurrentColumn) {
       newSortOrders = { [column]: "asc" };
     } else {
       newSortOrders[column] = sortOrders[column] === "asc" ? "desc" : "asc";
-    }  
+    }
+
     setSortedColumn(column);
-    setSortOrders(newSortOrders);  
+    setSortOrder(newSortOrders[column]);
+    setSortOrders(newSortOrders);
+
     const queryParams = Object.keys(newSortOrders)
       .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
-      .join("");  
-    const additionalQueryParams = `&global_search=${searchTerm}&offset=${0}`;  
+      .join("");
+    let additionalQueryParams = "&offset=0";
+    if (searchTerm !== "" && searchTerm !== null) {
+      additionalQueryParams += `&global_search=${searchTerm}`;
+    }
     refetchAssetData(queryParams + additionalQueryParams);
   };
 
-  
   <div>
     <h1>Asset Overview</h1>
   </div>;
 
-  const renderClickableColumn = (columnName, dataIndex) => (_, record) =>
-    (
+const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
+  if (dataIndex === 'created_at' || dataIndex === 'updated_at') {
+    const formattedDate = moment(record[dataIndex]).format('DD-MM-YYYY'); 
+    return (
       <div
         data-column-name={columnName}
         onClick={() => handleColumnClick(record, columnName)}
         style={{ cursor: "pointer" }}
       >
-        {record[dataIndex]}
+        {formattedDate}
       </div>
     );
+  }
+  return (
+    <div
+      data-column-name={columnName}
+      onClick={() => handleColumnClick(record, columnName)}
+      style={{ cursor: "pointer" }}
+    >
+      {record[dataIndex]}
+    </div>
+  );
+};
   const columns = [
     {
       title: "Product Name",
@@ -407,12 +422,19 @@ const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
             dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000
           ); // Calculating expiry date in milliseconds
           const formattedExpiryDate = expiryDate.toISOString().split("T")[0];
+          const currentDate = new Date();
+          const isExpired = expiryDate < currentDate;
+
           // Apply renderClickableColumn logic here
           return (
             <div
               data-column-name="Expiry Date"
               onClick={() => handleColumnClick(record, "Expiry Date")}
-              style={{ cursor: "pointer", color: "red" }}
+              style={{
+                cursor: "pointer",
+                color: isExpired ? "red" : "green",
+                fontWeight: isExpired ? "bold" : "bold",
+              }}
             >
               {formattedExpiryDate}
             </div>
@@ -422,6 +444,17 @@ const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
         }
       },
     },
+
+    ,
+    {
+      title: "License Type",
+      dataIndex: "license_type",
+      responsive: ["md"],
+      width: 120,
+
+      render: renderClickableColumn("license_type", "license_type"),
+    },
+
     {
       title: "Model Number",
       dataIndex: "ModelNumber", // Corrected dataIndex
@@ -467,7 +500,6 @@ const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
       }),
       render: renderClickableColumn("Approved By", "approved_by"),
     },
-
     {
       title: "Requester",
       dataIndex: "requester",
@@ -529,7 +561,16 @@ const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
       width: 120,
       render: renderClickableColumn("Accessories", "accessories"),
     },
-
+    {
+      title: "Approver Notes",
+      dataIndex: "approval_status_message",
+      responsive: ["md"],
+      width: 120,
+      render: renderClickableColumn(
+        "approval_status_message",
+        "approval_status_message"
+      ),
+    },
     {
       title: "Assign Asset",
       dataIndex: "AssignAsset",
@@ -537,23 +578,15 @@ const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
       width: 120,
       render: (_data, record) => (
         <Button
+          className="ml-6"
           ghost
-          style={{
-            borderRadius: "10px",
-            background: "#D3D3D3",
-            color: "black",
-          }}
+          type="primary"
+          shape="circle"
+          icon={<UserAddOutlined />}
           onClick={() => {
-            console.log("button clicked ");
-            if (record.custodian == null || record.custodian == undefined) {
-              showAssignDrawer(record);
-            } else {
-              alert("Already assigned");
-            }
+            showAssignDrawer(record);
           }}
-        >
-          +
-        </Button>
+        />
       ),
     },
   ];
@@ -597,11 +630,13 @@ const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
     configuration: result.configuration,
     custodian: result.custodian?.employee_name,
     product_name: result.product_name,
+    license_type: result.license_type,
     owner: result.owner,
     requester: result.requester?.username,
     AssignAsset: "assign",
     created_at: result.created_at,
     updated_at: result.updated_at,
+    approval_status_message: result.approval_status_message
   }));
 
   const drawerTitle = "Asset Details";
@@ -620,6 +655,7 @@ const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
       assetData={data}
       columns={columns}
       sortOrder={sortOrder}
+      reset={reset}
       sortedColumn={sortedColumn}
       memoryData={memoryData}
       assetTypeData={assetTypeData}
@@ -627,13 +663,14 @@ const AssetTableHandler = ({ showAssignDrawer, queryParamProp }) => {
       statusOptions={statusOptions}
       assetDataRefetch={refetchAssetData}
       businessUnitOptions={businessUnitOptions}
-      handleUpdateData={function (updatedData: { key: any }): void {
+      handleUpdateData={function (updatedData: { key: any; }): void {
         throw new Error("Function not implemented.");
-      }}
+      } }
       drawerTitle={""}
       searchTerm={searchTerm}
-      setSearchTerm={setSearchTerm}
-    />
+      setSearchTerm={setSearchTerm} logsData={undefined} isLoading={false} isSuccess={false} selectedAssetId={null} setSelectedAssetId={function (value: React.SetStateAction<string | null>): void {
+        throw new Error("Function not implemented.");
+      } } asset_uuid={""} heading={""} setTableData={undefined} handleDelete={undefined} modifiedData={undefined} userRole={undefined} isMyApprovalPage={undefined}    />
   );
 };
 

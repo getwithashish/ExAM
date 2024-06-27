@@ -4,6 +4,9 @@ from datetime import timedelta
 from ms_identity_web.configuration import AADConfig
 from ms_identity_web import IdentityWebPython
 
+from celery.schedules import crontab
+import sentry_sdk
+
 from utils.decouple_config_util import DecoupleConfigUtil
 
 
@@ -49,6 +52,52 @@ CORS_ALLOWED_ORIGINS = config(
 #     list(default_headers) + ["Content-Type"] + get_all_cors_headers()
 # )
 
+# Redis Configuration
+REDIS_URL = config("CELERY_BROKER_URL")
+
+# Celery Configuration
+CELERY_BROKER_URL = REDIS_URL
+CELERY_RESULT_BACKEND = config("CELERY_RESULT_BACKEND")
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = "Asia/Kolkata"
+CELERY_HEALTH_CHECKS = True
+
+CELERY_BEAT_SCHEDULE = {
+    "check-app-health-every-60-seconds": {
+        "task": "utils.health_check_tasks.check_application_health",
+        "schedule": 60,  # every 1 minute
+    },
+    "check-external-health-every-5-minutes": {
+        "task": "utils.health_check_tasks.check_external_service_health",
+        "schedule": 300,  # every 5 minutes
+    },
+    "full-backup-every-sunday-12-am": {
+        "task": "utils.backup_tasks.perform_full_backup",
+        "schedule": crontab(hour=0, minute=0, day_of_week='sunday'),  # every sunday at 12 am
+    },
+}
+
+# Django Health Check Configuration
+HEALTH_CHECK = {
+    "SUBSETS": {
+        "app": ["DatabaseBackend", "DefaultFileStorageHealthCheck"],
+        "external": ["CeleryPingHealthCheck", "RedisHealthCheck"],
+    }
+}
+
+# Sentry Configuration
+sentry_sdk.init(
+    dsn=config("SENTRY_DSN"),
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    traces_sample_rate=1.0,
+    # Set profiles_sample_rate to 1.0 to profile 100%
+    # of sampled transactions.
+    # We recommend adjusting this value in production.
+    profiles_sample_rate=1.0,
+)
 
 # Application definition
 INSTALLED_APPS = [
@@ -58,6 +107,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # REST framework
     "rest_framework",
     "rest_framework_simplejwt",
     "django_rest_passwordreset",
@@ -65,7 +115,15 @@ INSTALLED_APPS = [
     "user_auth",
     "asset",
     "ai",
+    # Swagger
     "drf_yasg",
+    # Django Health Check
+    "health_check",
+    "health_check.db",
+    "health_check.cache",
+    "health_check.storage",
+    "health_check.contrib.redis",
+    "health_check.contrib.celery",
 ]
 
 MIDDLEWARE = [

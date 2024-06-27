@@ -9,6 +9,7 @@ const DashboardPage: FC = function () {
   const [_detailState, setDetailState] = useState<string | null>(null);
   const [_assignState, setAssignState] = useState<string | null>(null);
   const dashboardAssetRef = useRef<HTMLDivElement>(null);
+  
   const handleScroll = (percentage: number) => {
     const windowHeight = window.innerHeight;
     const scrollHeight = document.documentElement.scrollHeight;
@@ -20,7 +21,7 @@ const DashboardPage: FC = function () {
     });
   };
   return (
-    <div className="bg-white">
+    <div className="bg-white pt-20">
      <Statistics
         setSelectedTypeId={setSelectedTypeId}
         setAssetState={setAssetState}
@@ -34,6 +35,10 @@ const DashboardPage: FC = function () {
           assetState={_assetState}
           detailState={_detailState}
           assignState={_assignState}
+          setSelectedTypeId= {setSelectedTypeId}
+          setAssetState={setAssetState}
+          setDetailState={setDetailState}
+          setAssignState={setAssignState}
         />
       </div>
     </div>

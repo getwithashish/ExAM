@@ -7,7 +7,6 @@ import CircularWithValueLabel from './circularProgessBar';
 import { axisClasses } from "@mui/x-charts";
 import { ErrorResponse } from './types';
 
-
 type Error = AxiosError<ErrorResponse>;
 
 export default function BarChartHandler() {
@@ -27,9 +26,7 @@ export default function BarChartHandler() {
       } catch (error: any) {
         setError(error);
       } finally {
-        setTimeout(() => {
-          setLoading(false);
-        }, 0);
+        setLoading(false);
       }
     };
 
@@ -46,35 +43,29 @@ export default function BarChartHandler() {
 
   const xAxis: MakeOptional<AxisConfig, "id">[] = [
     { scaleType: "band", data: assetData.map(asset => asset.name) },
-
   ];
+
   const series = [{ data: assetData.map(asset => asset.count) }];
 
   const chartSetting = {
     sx: {
       [`.${axisClasses.bottom} .${axisClasses.tickLabel}`]: {
-        overflow: "visible ! important" 
-      }
+        overflow: "visible !important",
+      },
+      '& .MuiLegend-root': {
+        fontSize: '6px',
+      },
     },
-  }
-
-  const mergedSX = {
-    ...chartSetting.sx,
-    '& .MuiLegend-root': {
-      ...(chartSetting.sx && chartSetting.sx['& .MuiLegend-root']),
-      fontSize: '6px', 
-    },
-  };  
+  };
 
   return (
     <div className='text-center items-center'>
-      <span className='font-semibold text-lg sm:text-sm md:text-md lg:text-lg'>Individual Asset Count</span>
+      <span className='font-medium text-md sm:text-sm md:text-md lg:text-lg'>Individual Asset Count</span>
       <BarChart
-        sx={mergedSX}
+        sx={chartSetting.sx}
         xAxis={xAxis}
         series={series}
         height={250}
-        {...chartSetting}  
       />
     </div>
   );

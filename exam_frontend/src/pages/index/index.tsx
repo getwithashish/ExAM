@@ -6,10 +6,8 @@ import AddAsset from "../../components/AddAsset/AddAsset";
 import AssetTable from "../../components/AssetTable/AssetTable";
 import SideDrawerComponent from "../../components/SideDrawerComponent/SideDrawerComponent";
 import { SidebarHandler } from "../../components/sidebar/SidebarHandler";
-import AssignmentDrawer from "../../components/Assign/AssignmentDrawer";
-import { Assignment } from "../../components/Assign/Assignment";
-// import { Statistics } from "../../components/charts/Statistics";
-import { RecordProps } from "./types";
+import AssignmentDrawer from "../../components/AssignAsset/Assign/AssignmentDrawer";
+import { Assignment } from "../../components/AssignAsset/Assign/Assignment";
 import ExportButton from "../../components/Export/Export";
 import { DataType } from "../../components/AssetTable/types";
 
@@ -20,22 +18,18 @@ const DashboardPage: FC = function () {
 
   const showDefaultDrawer = () => {
     setDisplayDrawer(true);
-    console.log("displaydrawer value is ", displaydrawer);
   };
   const closeDrawer = () => {
     setDisplayDrawer(false);
-    console.log("displaydrwer value is ", displaydrawer);
   };
 
   const showAssignDrawer = (record: DataType) => {
-    console.log("uuid", record);
     setRecord(record);
     setIsAssign(true);
-    console.log("displaydrawer value is ", displaydrawer);
   };
   const closeAssignDrawer = () => {
     setIsAssign(false);
-    console.log("displaydrwer value is ", displaydrawer);
+
   };
 
   return (
