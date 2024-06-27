@@ -66,8 +66,9 @@ services:
     container_name: stage-asset-management-frontend
     image: stage-asset-management-frontend-image
     build: ./exam_frontend/
+    entrypoint: ["bash", "entrypoint-stage.sh"]
     ports:
-      - 5173:5173
+      - 4173:4173
     restart: always
     depends_on:
       - stage-asset-management-backend-service

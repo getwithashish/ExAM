@@ -16,4 +16,7 @@ COPY . .
 
 EXPOSE 5173
 
+RUN chmod +x entrypoint-stage.sh
+EXPOSE 4173
+
 CMD ["yarn", "dev"]
