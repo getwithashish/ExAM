@@ -9,6 +9,9 @@ WORKDIR /app
 RUN apk update && apk add --no-cache git ca-certificates && update-ca-certificates
 RUN apk update && \
     apk add --no-cache \
+        gcc \
+        musl-dev \
+        linux-headers \
         python3-dev \
         mariadb-dev \
         build-base \
@@ -27,5 +30,7 @@ COPY . /app/
 
 EXPOSE 8000
 
-RUN chmod +x entrypoint-prod.sh
-CMD ["sh", "entrypoint-prod.sh"]
+RUN chmod +x entrypoint-dev.sh
+RUN chmod +x entrypoint-stage.sh
+
+CMD ["sh", "entrypoint-dev.sh"]
