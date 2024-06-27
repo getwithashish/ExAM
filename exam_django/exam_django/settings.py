@@ -75,7 +75,9 @@ CELERY_BEAT_SCHEDULE = {
     },
     "full-backup-every-sunday-12-am": {
         "task": "utils.backup_tasks.perform_full_backup",
-        "schedule": crontab(hour=0, minute=0, day_of_week='sunday'),  # every sunday at 12 am
+        "schedule": crontab(
+            hour=0, minute=0, day_of_week="sunday"
+        ),  # every sunday at 12 am
     },
 }
 
@@ -83,7 +85,7 @@ CELERY_BEAT_SCHEDULE = {
 HEALTH_CHECK = {
     "SUBSETS": {
         "app": ["DatabaseBackend", "DefaultFileStorageHealthCheck"],
-        "external": ["CeleryPingHealthCheck", "RedisHealthCheck"],
+        "external": ["CeleryHealthCheckCelery", "RedisHealthCheck"],
     }
 }
 
