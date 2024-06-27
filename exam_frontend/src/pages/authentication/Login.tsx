@@ -86,7 +86,7 @@ export default function Login() {
           <div
             className="absolute inset-0 bg-cover bg-bottom rounded-lg"
             style={{
-              backgroundImage: `url('../../../public/images/Experion.jpg')`,
+              backgroundImage: `url('/images/Experion.jpg')`,
               filter: "blur(1px)",
             }}
           ></div>
@@ -149,7 +149,7 @@ export default function Login() {
                   }
                 >
                   <img
-                    src="../../../public/images/Microsoft logo.png"
+                    src="/images/microsoft logo.png"
                     alt="Microsoft logo"
                     className="w-30 h-6 ml-2 mx-3"
                   />
