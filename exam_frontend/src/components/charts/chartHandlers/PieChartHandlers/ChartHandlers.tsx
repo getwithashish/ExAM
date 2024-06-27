@@ -15,9 +15,14 @@ import axiosInstance from "../../../../config/AxiosConfig";
 import { NoData } from "../../../NoData/NoData";
 import { statusColors } from "./StatusColors";
 import { statusMapping } from "./statusMapping";
+import { RefreshTwoTone } from "@mui/icons-material";
+
 
 const ChartHandlers: React.FC<PieChartGraphProps> = ({
   selectedTypeId,
+  assetState,
+  detailState,
+  assignState,
   setSelectedTypeId,
   setAssetState,
   setDetailState,
@@ -38,9 +43,6 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
   const [detailFilteredChartData, setDetailFilteredChartData] = useState<
     ChartData[]
   >([]);
-  const [assetState, _setAssetState] = useState<ChartData | null>(null);
-  const [detailState, _setDetailState] = useState<ChartData | null>(null);
-  const [assignState, _setAssignState] = useState<ChartData | null>(null);
   const {
     data: _assetData,
     isLoading: assetLoading,
@@ -101,48 +103,42 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
     return () => { };
   }, []);
 
-  const handleAssetItemClick = (_event: React.MouseEvent, params: any) => {
-    let chartLabel = assetFilteredChartData[params["dataIndex"]]?.label;
+  const handleChartItemClick = (
+    filteredChartData: any[],
+    setChartState: React.Dispatch<React.SetStateAction<string | null>>,
+    dataIndex: number,
+    onClick: () => void
+  ) => {
+    const chartLabel = filteredChartData[dataIndex]?.label;
+  
     if (chartLabel === "IN STOCK") {
-      chartLabel = "IN STORE";
-    }
-    if (chartLabel === "IN SERVICE") {
-      chartLabel = "IN STORE|IN USE";
-    }
-    setAssetState(chartLabel ?? null);
+      setChartState("IN STORE");
+    } else if (chartLabel === "IN SERVICE") {
+      setChartState("IN STORE|IN USE");
+    } else if (chartLabel === "PENDING") {
+      setChartState("UPDATE_PENDING|CREATE_PENDING");
+    } else if (chartLabel === "REJECTED") {
+      setChartState("CREATE_REJECTED|UPDATE_REJECTED");
+    } else if (chartLabel === "PENDING") {
+      setChartState("ASSIGN_PENDING");
+    } else {
+      setChartState(chartLabel ?? null);
+    }  
     onClick();
   };
-
-  useEffect(() => {
-  }, [assetState]);
-
+  
+  const handleAssetItemClick = (_event: React.MouseEvent, params: any) => {
+    handleChartItemClick(assetFilteredChartData, setAssetState, params.dataIndex, onClick);
+  };
+  
   const handleDetailItemClick = (_event: React.MouseEvent, params: any) => {
-    let chartLabel = detailFilteredChartData[params["dataIndex"]]?.label;
-    if (chartLabel === "PENDING") {
-      chartLabel = "UPDATE_PENDING|CREATE_PENDING";
-    }
-    if (chartLabel === "REJECTED") {
-      chartLabel = "CREATE_REJECTED|UPDATE_REJECTED";
-    }
-    setDetailState(chartLabel ?? null);
-    onClick();
+    handleChartItemClick(detailFilteredChartData, setDetailState, params.dataIndex, onClick);
   };
-
-  useEffect(() => {
-  }, [detailState]);
-
+  
   const handleAssignItemClick = (_event: React.MouseEvent, params: any) => {
-    let chartLabel = assignFilteredChartData[params["dataIndex"]]?.label;
-    if (chartLabel === "PENDING") {
-      chartLabel = "ASSIGN_PENDING";
-    }
-    setAssignState(chartLabel ?? null);
-    onClick();
+    handleChartItemClick(assignFilteredChartData, setAssignState, params.dataIndex, onClick);
   };
-
-  useEffect(() => {
-  }, [assignState]);
-
+  
   useEffect(() => {
     fetchAssetData()
       .then((res) => {
@@ -342,17 +338,42 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
 
   if (assetError) return <div>Error fetching data</div>;
 
+  const chartsData = [
+    {
+      title: 'Asset Status',
+      data: assetFilteredChartData,
+      onClick: handleAssetItemClick,
+    },
+    {
+      title: 'Approval Status',
+      data: detailFilteredChartData,
+      onClick: handleDetailItemClick,
+    },
+    {
+      title: 'Allocation Status',
+      data: assignFilteredChartData,
+      onClick: handleAssignItemClick,
+    },
+  ];
+
   return (
     <Stack>
       <div className="flex justify-end">
+      <RefreshTwoTone
+          onClick={() => {
+            handleSelectChange({ target: { value: selectedTypeId.toString() } } as React.ChangeEvent<HTMLSelectElement>);
+            setAssetFilteredChartData(assetChartData);
+            setDetailFilteredChartData(detailChartData);
+            setAssignFilteredChartData(assignChartData);
+          }}
+          style={{ backgroundColor:"#63c5da",cursor: "pointer", margin: "10px", borderRadius:'10px', color:'white' }}
+        />
         <select
           className="block bg-transparent font-display text-xs text-black-500 appearance-none dark:text-gray-400 dark:border-gray-200 focus:outline-none rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           onChange={handleSelectChange}
+          value={selectedTypeId}      
         >
-          <option
-            value="0"
-            className="text-xs text-black font-display bg-white "
-          >
+           <option value="0" className="text-xs text-black font-display bg-white">
             Select an asset type
           </option>
           {assetTypeData.map((assetType) => (
@@ -377,73 +398,17 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
               <NoData />
             </div>
           ) : (
-            < Stack
-              direction="row"
-              sx={{ flexWrap: "wrap" }}
-              className="m-auto lg:p-10"
-            >
-              <div className=" pt-6 mt-4 text-center items-center justify-center">
+            <Stack direction="row" sx={{ flexWrap: "wrap" }} className="m-auto lg:p-10">
+            {chartsData.map((chart, index) => (
+              <div key={index} className="pt-6 mt-4 text-center items-center justify-center">
                 <span className="font-semibold font-display leading-none text-gray-900 dark:text-white text-lg">
-                  Asset Status
+                  {chart.title}
                 </span>
                 <PieChart
                   margin={{ top: 0, bottom: 0, left: 0, right: 0 }}
                   series={[
                     {
-                      data: assetFilteredChartData,
-                      innerRadius: 60,
-                      outerRadius: 150,
-                      paddingAngle: 1,
-                      cornerRadius: 10,
-                      startAngle: 0,
-                      endAngle: 360,
-                      cx: 200,
-                      cy: 200,
-                      highlightScope: { faded: "global", highlighted: "item" },
-                      arcLabel: (item) => `${item.value}`,
-                      arcLabelMinAngle: 10,
-                      faded: {
-                        innerRadius: 60,
-                        additionalRadius: -60,
-                        color: "grey",
-                      },
-                    },
-                  ]}
-                  sx={{
-                    [`& .${pieArcLabelClasses.root}`]: {
-                      fill: "white",
-                      fontWeight: "light",
-                      fontSize: 20,
-                    },
-                  }}
-                  onClick={handleAssetItemClick}
-                  width={400}
-                  height={400}
-                  slotProps={{
-                    legend: {
-                      direction: "row",
-                      position: { vertical: "bottom", horizontal: "middle" },
-                      hidden: false,
-                      labelStyle: {
-                        fontSize: 11,
-                      },
-                      itemMarkWidth: 8,
-                      itemMarkHeight: 12,
-                      markGap: 2,
-                      itemGap: 8,
-                    },
-                  }}
-                />
-              </div>
-              <div className=" pt-6 mt-4 text-center items-center justify-center">
-                <span className="font-semibold font-display leading-none text-gray-900 dark:text-white text-lg">
-                  Approval Status
-                </span>
-                <PieChart
-                  margin={{ top: 0, bottom: 0, left: 0, right: 0 }}
-                  series={[
-                    {
-                      data: detailFilteredChartData,
+                      data: chart.data,
                       innerRadius: 60,
                       outerRadius: 150,
                       paddingAngle: 1,
@@ -469,7 +434,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                       fontSize: 20,
                     },
                   }}
-                  onClick={handleDetailItemClick}
+                  onClick={chart.onClick}
                   width={400}
                   height={400}
                   slotProps={{
@@ -488,60 +453,8 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                   }}
                 />
               </div>
-              <div className=" pt-6 mt-4 text-center items-center justify-center">
-                <span className="font-semibold font-display leading-none text-gray-900 dark:text-white text-lg">
-                  Allocation Status
-                </span>
-                <PieChart
-                  margin={{ top: 0, bottom: 0, left: 0, right: 0 }}
-                  series={[
-                    {
-                      data: assignFilteredChartData,
-                      innerRadius: 60,
-                      outerRadius: 150,
-                      paddingAngle: 1,
-                      cornerRadius: 10,
-                      startAngle: 0,
-                      endAngle: 360,
-                      cx: 200,
-                      cy: 200,
-                      highlightScope: { faded: "global", highlighted: "item" },
-                      arcLabel: (item) => `${item.value}`,
-                      arcLabelMinAngle: 10,
-                      faded: {
-                        innerRadius: 60,
-                        additionalRadius: -60,
-                        color: "gray",
-                      },
-                    },
-                  ]}
-                  sx={{
-                    [`& .${pieArcLabelClasses.root}`]: {
-                      fill: "white",
-                      fontWeight: "light",
-                      fontSize: 20,
-                    },
-                  }}
-                  onClick={handleAssignItemClick}
-                  width={400}
-                  height={400}
-                  slotProps={{
-                    legend: {
-                      direction: "row",
-                      position: { vertical: "bottom", horizontal: "middle" },
-                      hidden: false,
-                      labelStyle: {
-                        fontSize: 11,
-                      },
-                      itemMarkWidth: 8,
-                      itemMarkHeight: 12,
-                      markGap: 2,
-                      itemGap: 8,
-                    },
-                  }}
-                />
-              </div>
-            </Stack>
+            ))}
+          </Stack>
           )}
         </Stack>
       </>
