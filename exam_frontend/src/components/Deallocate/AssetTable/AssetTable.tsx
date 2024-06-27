@@ -8,6 +8,7 @@ import SideDrawerComponent from "../../SideDrawerComponent/SideDrawerComponent";
 import UploadComponent from "../../Upload/UploadComponent";
 import DrawerViewRequest from "../../../pages/RequestPage/DrawerViewRequest";
 import GlobalSearch from "../../GlobalSearch/GlobalSearch";
+import { RefreshTwoTone } from "@mui/icons-material";
 
 const AssetTable = ({
   asset_uuid,
@@ -40,8 +41,8 @@ const AssetTable = ({
   setSearchTerm,
 }: AssetTableProps) => {
 
-  const handleSearch = (searchTerm: string) => {
-    setSearchTerm(searchTerm);
+  const handleRefreshClick = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+    event.preventDefault();
     const queryParams = `&global_search=${searchTerm}&sort_by=${sortedColumn}&sort_order=${sortOrder}&offset=20`;
     assetDataRefetch(queryParams);
   };
@@ -56,13 +57,22 @@ const AssetTable = ({
       <div className="mainHeading" style={{ background: "white" }}>
         <div className=" font-display">Deallocate Assets</div>
       </div>
-      <div style={{ marginLeft: "40px", marginBottom: "30px" }}>
-      <GlobalSearch    
-          assetDataRefetch={assetDataRefetch}      
+      <div className="flex" style={{ marginLeft: "40px", marginBottom: "30px" }}>
+        <GlobalSearch
+          assetDataRefetch={assetDataRefetch}
           searchTerm={searchTerm}
-          // onSearch={handleSearch}
           reset={reset}
           setSearchTerm={setSearchTerm}
+        />
+        <RefreshTwoTone
+          style={{
+            backgroundColor: "#63c5da",
+            cursor: "pointer",
+            margin: "10px",
+            borderRadius: '10px',
+            color: 'white'
+          }}
+          onClick={handleRefreshClick}
         />
       </div>
 
