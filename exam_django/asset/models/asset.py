@@ -11,8 +11,10 @@ status_choices = (
     ("IN USE", "IN USE"),
     ("IN STORE", "IN STORE"),
     ("IN REPAIR", "IN REPAIR"),
-    ("EXPIRED", "EXPIRED"),
+    ("OUTDATED", "OUTDATED"),
     ("DISPOSED", "DISPOSED"),
+    ("DAMAGED", "DAMAGED"),
+    ("UNREPAIRABLE", "UNREPAIRABLE")
 )
 
 os_choices = (
@@ -88,7 +90,7 @@ class Asset(models.Model):
     business_unit = models.ForeignKey(
         "BusinessUnit",
         on_delete=models.CASCADE,
-        null=True,blank=False
+        null=True, blank=False
     )
     os = models.CharField(max_length=50, null=True, blank=False, choices=os_choices)
     os_version = models.CharField(max_length=50, null=True, blank=False)
@@ -98,9 +100,9 @@ class Asset(models.Model):
     memory = models.ForeignKey("Memory", on_delete=models.CASCADE, null=True)
     storage = models.CharField(max_length=50, null=True, blank=False)
     configuration = models.CharField(max_length=255, null=True, blank=False)
-    accessories = models.CharField(max_length=50, null=True, blank=False)
+    accessories = models.TextField(max_length=255, null=True, blank=False)
     notes = models.TextField(null=True)
-    license_type=models.CharField(max_length=50,null=True,blank=False)
+    license_type = models.CharField(max_length=50, null=True, blank=False)
     approved_by = models.ForeignKey(
         User,
         related_name="%(app_label)s_%(class)s_conceder",
@@ -125,8 +127,7 @@ class Asset(models.Model):
     approval_status_message = models.TextField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    # TODO requester should be null=False, right?
-    # I think so too - Ananthan
+   
     requester = models.ForeignKey(
         User,
         related_name="%(app_label)s_%(class)s_requester",
