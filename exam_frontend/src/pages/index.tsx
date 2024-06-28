@@ -5,9 +5,9 @@ import DashboardAssetHandler from "../components/DashboardAssetTable/DashboardAs
 
 const DashboardPage: FC = function () {
   const [selectedTypeId, setSelectedTypeId] = useState<number>(0);
-  const [_assetState, setAssetState] = useState<string | null>(null);
-  const [_detailState, setDetailState] = useState<string | null>(null);
-  const [_assignState, setAssignState] = useState<string | null>(null);
+  const [assetState, setAssetState] = useState<string | null>(null);
+  const [detailState, setDetailState] = useState<string | null>(null);
+  const [assignState, setAssignState] = useState<string | null>(null);
   const dashboardAssetRef = useRef<HTMLDivElement>(null);
   
   const handleScroll = (percentage: number) => {
@@ -23,6 +23,10 @@ const DashboardPage: FC = function () {
   return (
     <div className="bg-white pt-20">
      <Statistics
+        selectedTypeId={selectedTypeId}
+        assetState ={assetState}
+        detailState={detailState}
+        assignState={assignState}
         setSelectedTypeId={setSelectedTypeId}
         setAssetState={setAssetState}
         setDetailState={setDetailState}
@@ -32,9 +36,9 @@ const DashboardPage: FC = function () {
       <div ref={dashboardAssetRef}>
         <DashboardAssetHandler
           selectedTypeId={selectedTypeId}
-          assetState={_assetState}
-          detailState={_detailState}
-          assignState={_assignState}
+          assetState={assetState}
+          detailState={detailState}
+          assignState={assignState}
           setSelectedTypeId= {setSelectedTypeId}
           setAssetState={setAssetState}
           setDetailState={setDetailState}
