@@ -1,4 +1,5 @@
 from asset.serializers.asset_serializer import AssetReadSerializer
+from utils.celery_status_checker import CeleryStatusChecker
 from exceptions import NotFoundException, PermissionDeniedException
 from asset.service.asset_unassign_service.asset_unassign_sys_admin_service import (
     AssetSysadminRoleUnassignService,
@@ -10,7 +11,7 @@ from messages import (
     UNAUTHORIZED_NO_PERMISSION,
     USER_UNAUTHORIZED,
 )
-from notification.service.email_service import EmailService
+from notification.service.email_service import send_email
 from asset.serializers import AssignAssetSerializer
 from asset.models import Asset
 from asset.models.employee import Employee  # Import the Employee model
@@ -44,11 +45,10 @@ class UnassignAssetService:
             asset.save()
             unassigned_asset_serializer = AssignAssetSerializer(asset)
 
-            # Send email notification
-            email_service = EmailService()
-
             # Compose email content
-            email_content = construct_deallocate_asset_email_body_content(**asset_to_be_unassigned_serializer.data)
+            email_content = construct_deallocate_asset_email_body_content(
+                **asset_to_be_unassigned_serializer.data
+            )
 
             recipients = [
                 "asimapalexperion23@gmail.com",
@@ -58,8 +58,8 @@ class UnassignAssetService:
                 "pavithraexperion@gmail.com",
             ]
 
-            # Send email using EmailService
-            email_service.send_email(email_subject, email_content, recipients)
+            if CeleryStatusChecker.check_celery_status():
+                send_email.delay(email_subject, email_content, recipients)
 
             return unassigned_asset_serializer.data, message, status.HTTP_202_ACCEPTED
 

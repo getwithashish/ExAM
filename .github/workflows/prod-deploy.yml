@@ -1,0 +1,121 @@
+name: Deploy to production environment
+
+on:
+  push:
+    branches:
+      - "prod"
+
+jobs:
+
+  deploy-backend:
+    runs-on: ubuntu-latest
+    environment: prod
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Deploy on AWS EC2
+        uses: easingthemes/ssh-deploy@main
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.AWS_EC2_SSH_PRIVATE_KEY }}
+          ARGS: "-rlgoDzvc -i"
+          SOURCE: "./"
+          REMOTE_HOST: ${{ secrets.AWS_EC2_HOSTNAME }}
+          REMOTE_USER: ${{ secrets.AWS_EC2_USERNAME }}
+          TARGET: "~/asset-management/"
+          EXCLUDE: "/dist/, /node_modules/"
+          SCRIPT_BEFORE: |
+          
+            ls -a
+            
+            echo "================="
+            echo "Update"
+            echo "================="
+            sudo apt-get update -y
+            
+            echo "================="
+            echo "Upgrade"
+            echo "================="
+            sudo apt-get upgrade -y
+
+            echo "================="
+            echo "Install rsync"
+            echo "================="
+            sudo apt-get install -y rsync
+
+            echo "================="
+            echo "Create Directory"
+            echo "================="
+            mkdir -p asset-management
+
+          SCRIPT_AFTER: |
+          
+            ls -a
+
+            echo "================="
+            echo "Change current directory to exam_django"
+            echo "================="
+            cd asset-management/exam_django
+
+            echo "================="
+            echo "Remove the current .prod.env file"
+            echo "================="
+            rm -f .prod.env
+
+            echo "================="
+            echo "Add environment variables to .prod.env file"
+            echo "================="
+            echo "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" >> .prod.env
+            echo "DEBUG_STATUS=${{ secrets.DEBUG_STATUS }}" >> .prod.env
+            echo "DB_NAME=${{ secrets.DB_NAME }}" >> .prod.env
+            echo "DB_USER=${{ secrets.DB_USER }}" >> .prod.env
+            echo "DB_PORT=${{ secrets.DB_PORT }}" >> .prod.env
+            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .prod.env
+            echo "DB_HOST=${{ secrets.DB_HOST }}" >> .prod.env
+            echo "ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}" >> .prod.env
+            echo "CORS_ORIGIN_WHITELIST=${{ secrets.CORS_ORIGIN_WHITELIST }}" >> .prod.env
+            echo "CORS_ALLOWED_ORIGINS=${{ secrets.CORS_ALLOWED_ORIGINS }}" >> .prod.env
+            echo "CELERY_BROKER_URL=${{ secrets.CELERY_BROKER_URL }}" >> .prod.env
+            echo "CELERY_RESULT_BACKEND=${{ secrets.CELERY_RESULT_BACKEND }}" >> .prod.env
+            echo "EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}" >> .prod.env
+            echo "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" >> .prod.env
+            echo "EMAIL_PORT=${{ secrets.EMAIL_PORT }}" >> .prod.env
+            echo "EMAIL_USE_TLS=${{ secrets.EMAIL_USE_TLS }}" >> .prod.env
+            echo "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" >> .prod.env
+            echo "HEALTH_CHECK_APP=${{ secrets.HEALTH_CHECK_APP }}" >> .prod.env
+            echo "HEALTH_CHECK_EXTERNAL=${{ secrets.HEALTH_CHECK_EXTERNAL }}" >> .prod.env
+            echo "BACKUP_PARENT_DIR=${{ secrets.BACKUP_PARENT_DIR }}" >> .prod.env
+            echo "FULL_BACKUP_DIR=${{ secrets.FULL_BACKUP_DIR }}" >> .prod.env
+            echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> .prod.env
+            
+            echo "================="
+            echo "Change current directory to exam_frontend"
+            echo "================="
+            cd ../exam_frontend
+
+            echo "================="
+            echo "Remove the current .env file"
+            echo "================="
+            rm -f .env
+
+            echo "================="
+            echo "Add environment variables to .env file"
+            echo "================="
+            echo "VITE_CONFIG_URL=${{ secrets.VITE_CONFIG_URL }}" >> .env
+            echo "VITE_ADD_ASSET_URL=${{ secrets.VITE_ADD_ASSET_URL }}" >> .env
+            echo "VITE_LOGIN_URL=${{ secrets.VITE_LOGIN_URL }}" >> .env
+            echo "VITE_GET_ASSET_TYPE=${{ secrets.VITE_GET_ASSET_TYPE }}" >> .env
+
+            echo "================="
+            echo "Change current directory to asset-management"
+            echo "================="
+            cd ..
+
+            echo "================="
+            echo "Start Production Deploy Script"
+            echo "================="
+            sudo chmod +x ./stage-deploy.sh
+            ./stage-deploy.sh

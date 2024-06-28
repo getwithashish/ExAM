@@ -8,6 +8,7 @@ import SideDrawerComponent from "../../SideDrawerComponent/SideDrawerComponent";
 import UploadComponent from "../../Upload/UploadComponent";
 import DrawerViewRequest from "../../../pages/RequestPage/DrawerViewRequest";
 import GlobalSearch from "../../GlobalSearch/GlobalSearch";
+import { RefreshTwoTone } from "@mui/icons-material";
 
 // interface ExpandedDataType {
 //   key: React.Key;
@@ -49,8 +50,8 @@ const AssetTable = ({
   setSearchTerm,
 }: AssetTableProps) => {
 
-  const handleSearch = (searchTerm: string) => {
-    setSearchTerm(searchTerm);
+  const handleRefreshClick = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+    event.preventDefault();
     const queryParams = `&global_search=${searchTerm}&sort_by=${sortedColumn}&sort_order=${sortOrder}&offset=20`;
     assetDataRefetch(queryParams);
   };
@@ -75,13 +76,22 @@ const AssetTable = ({
       <div className="mainHeading" style={{ background: "white" }}>
         <div className=" font-display">Allocate Assets</div>
       </div>
-      <div style={{ marginLeft: "40px", marginBottom: "30px" }}>
-      <GlobalSearch    
-          assetDataRefetch={assetDataRefetch}      
+      <div className="flex" style={{ marginLeft: "40px", marginBottom: "30px" }}>
+        <GlobalSearch
+          assetDataRefetch={assetDataRefetch}
           searchTerm={searchTerm}
-          // onSearch={handleSearch}
           reset={reset}
           setSearchTerm={setSearchTerm}
+        />
+        <RefreshTwoTone
+          style={{
+            backgroundColor: "#63c5da",
+            cursor: "pointer",
+            margin: "10px",
+            borderRadius: '10px',
+            color: 'white'
+          }}
+          onClick={handleRefreshClick}
         />
       </div>
       <div
@@ -118,27 +128,27 @@ const AssetTable = ({
           }}
           footer={() => (
             <Pagination
-            pageSize={20}
-            showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} assets`}
-            total={totalItemCount}
-            onChange={(page, pageSize) => {
-              const offset = (page - 1) * pageSize;
-              let additionalQueryParams = `&offset=${offset}`;
-              if (searchTerm !== "" && searchTerm !== null) {
+              pageSize={20}
+              showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} assets`}
+              total={totalItemCount}
+              onChange={(page, pageSize) => {
+                const offset = (page - 1) * pageSize;
+                let additionalQueryParams = `&offset=${offset}`;
+                if (searchTerm !== "" && searchTerm !== null) {
                   additionalQueryParams += `&global_search=${searchTerm}`;
-              }
-              let sortParams = "";
-              const queryParams = `${sortParams}${additionalQueryParams}`;
-              if (sortedColumn && sortOrder) {
+                }
+                let sortParams = "";
+                const queryParams = `${sortParams}${additionalQueryParams}`;
+                if (sortedColumn && sortOrder) {
                   if (queryParams.indexOf('sort_by') === -1) {
-                      sortParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
+                    sortParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
                   }
-              }
-              
-              assetPageDataFetch(queryParams);
-          }}
-            hideOnSinglePage={true}
-          />
+                }
+
+                assetPageDataFetch(queryParams);
+              }}
+              hideOnSinglePage={true}
+            />
           )}
         />
       </div>
