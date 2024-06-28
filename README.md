@@ -1,9 +1,11 @@
 # IT Asset Management Tool
 
 ## Overview
+
 This project is a Django-based web application with a MySQL database, utilizing Celery for asynchronous task processing and Gunicorn for serving the application in a production environment. The project is containerized using Docker and has a frontend built with React and TypeScript using Vite and Yarn for production builds.
 
 ## Project Structure
+
 ```
 .
 ├── exam_django
@@ -140,20 +142,52 @@ This project is a Django-based web application with a MySQL database, utilizing 
 ```
 
 ## Prerequisites
+
 - Docker and Docker Compose
 - Python 3.10+
 - Node.js 18.20+ and yarn
 - MySQL
 
-## Backend Setup for Development
-### Install Dependencies
+## Run using Docker
+
+Profiles are used for running docker containers in different environments.
+
+### For Development
+
+>Note: **Add .env in exam_django with the configurations required for deploying in development environment**
+>
+>Note: **Add aad.config.json in exam_django with the corresponding configurations**
+>
+>Note: **Update .env in exam_frontend with the configurations required for deploying in development environment**
+
+```bash
+docker compose --profile development up
 ```
+
+### For Stage
+
+>Note: **Add .prod.env in exam_django with the configurations required for deploying in stage environment**
+>
+>Note: **Add aad.config.json in exam_django with the corresponding configurations**
+>
+>Note: **Update .env in exam_frontend with the configurations required for deploying in stage environment**
+
+```bash
+docker compose --profile stage up
+```
+
+## Backend Setup for Development
+
+### Install Dependencies
+
+```bash
 cd exam_django
 // Create python virtual environment
 pip install -r requirements.txt
 ```
 
 ### Update Configurations in .env
+
 ```
 // Dummy Values
 
@@ -190,25 +224,102 @@ GOOGLE_API_KEY=your_api_key
 
 ```
 
+### Update configurations in aad.config.json
+
+Change values of:
+
+- client_id
+- client_credential
+- authority
+
+```
+// Dummy values
+
+{
+    "type": {
+        "client_type": "CONFIDENTIAL",
+        "authority_type": "SINGLE_TENANT",
+        "framework": "DJANGO"
+    },
+    "client": {
+        "client_id": "12312cab-2342342-df324-32434c",
+        "client_credential": "kasjdflasjdf3ou.asdjf~sdf23i9",
+        "authority": "https://login.microsoftonline.com/723ba763cdf2370238"
+    },
+    "auth_request": {
+        "redirect_uri": null,
+        "scopes": [],
+        "response_type": "code"
+    },
+    "flask": null,
+    "django": {
+        "id_web_configs": "MS_ID_WEB_CONFIGS",
+        "auth_endpoints": {
+            "prefix": "auth",
+            "sign_in": "sign_in",
+            "edit_profile": "edit_profile",
+            "redirect": "redirect",
+            "sign_out": "sign_out",
+            "post_sign_out": "post_sign_out"
+        }
+    }
+}
+```
+
 ### Migrations
+
 ```
 python manage.py migrate
 ```
 
-### Run Server
+### Run Development Server
+
 ```
 python manage.py runserver
 ```
-The development server will be hosted on http://localhost:8000 by default
+
+The development server will be hosted on http://localhost:8000 by default.
 
 ### Celery Setup
+
 #### Run Celery Worker
+
 In another terminal,
+
 ```
 celery -A exam_django worker --pool=solo --loglevel=info
 ```
 
 #### Run Celery Beat
+
+In another terminal,
+
 ```
 celery -A exam_django beat --loglevel=info
+```
+
+## Frontend Setup for Development
+
+### Install Dependencies
+
+```
+cd exam_frontend
+yarn install
+```
+
+### Update Configurations in .env
+
+```
+// Dummy values
+
+VITE_CONFIG_URL=http://localhost:8000/api/v1
+VITE_ADD_ASSET_URL=http://localhost:8000/api/v1/asset/
+VITE_LOGIN_URL=http://localhost:8000/auth/sign_in
+VITE_GET_ASSET_TYPE=http://localhost:8000/api/v1/asset/asset_type
+```
+
+### Run Development Server
+
+```
+yarn dev
 ```
