@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { InboxOutlined } from "@ant-design/icons";
 import { message, Upload as AntUpload, Button } from "antd";
 import { UploadProps, UploadFile } from "antd/lib/upload";
-import axios from "axios";
 import axiosInstance from "../../config/AxiosConfig";
 
 const { Dragger } = AntUpload;
@@ -10,9 +9,9 @@ const { Dragger } = AntUpload;
 const UploadComponent: React.FC = () => {
   const [fileList, setFileList] = useState<UploadFile<any>[]>([]);
   const [token, setToken] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    // Fetch JWT token from localStorage
     const storedToken = localStorage.getItem("jwt");
     if (storedToken) {
       setToken(storedToken);
@@ -23,85 +22,97 @@ const UploadComponent: React.FC = () => {
     name: "file",
     multiple: true,
     fileList,
-    action: "https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188",
+    beforeUpload: (file) => {
+      // Prevent default upload behavior
+      return false;
+    },
     onChange(info) {
-      const { status } = info.file;
-      if (status !== "uploading") {
-        console.log(info.file, info.fileList);
-      }
-      if (status === "done") {
-        message.success(`${info.file.name} file uploaded successfully.`);
-      } else if (status === "error") {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-      setFileList(info.fileList); // Update fileList state
+      setFileList(info.fileList);
     },
     onDrop(e) {
-      console.error("Dropped files", e.dataTransfer.files);
+      console.log("Dropped files", e.dataTransfer.files);
     },
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    if (fileList.length === 0) {
+      message.warning("Please select at least one file to upload.");
+      return;
+    }
+
+    setUploading(true);
     const formData = new FormData();
     let fileExtension = "";
 
     fileList.forEach((file) => {
       if (file.originFileObj) {
         const fileName = file.originFileObj.name;
-        fileExtension = fileName.split(".").pop();
+        fileExtension = fileName.split(".").pop() || "";
         formData.append("file", file.originFileObj);
       }
     });
-    
-    if (token) {
-      axiosInstance
-        .post("/asset/import-csv/", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`, 
-          },
-          params: {
-            file_type: fileExtension,
-          },
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            message.success("Files successfully submitted.");
-            const byteCharacters = atob(response.data);
-            const byteNumbers = Array.from(byteCharacters, (char) =>
-              char.charCodeAt(0)
-            );
-            const byteArray = new Uint8Array(byteNumbers);
-            const blob = new Blob([byteArray], { type: "application/zip" });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.href = url;
-            link.setAttribute("download", "import_status.zip"); 
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            setFileList([]);
-          } else {
-            console.error("Failed to submit files.");
-            message.error("Failed to submit files.");
-          }
-        })
-        .catch((error) => {
-          console.error("Error submitting files:", error);
-          message.error("Error submitting files.");
-        });
-    } else {
-      console.error("Token not available.");
-      message.error("Token not available.");
+
+    if (!token) {
+      message.error("Authentication token not available. Please log in again.");
+      setUploading(false);
+      return;
+    }
+
+    try {
+      const response = await axiosInstance.post("/asset/import-csv/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          file_type: fileExtension,
+        },
+      });
+
+      if (response.status === 200) {
+        message.success("Files successfully submitted.");
+        downloadZipFile(response.data);
+        setFileList([]);
+      } else {
+        throw new Error("Unexpected response status");
+      }
+    } catch (error) {
+      console.error("Error submitting files:", error);
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          message.error(`Error: ${error.response.data.message || 'Failed to submit files. Please try again.'}`);
+        } else if (error.request) {
+          message.error("Network error. Please check your connection and try again.");
+        } else {
+          message.error("An unexpected error occurred. Please try again.");
+        }
+      } else {
+        message.error("An unexpected error occurred. Please try again.");
+      }
+    } finally {
+      setUploading(false);
     }
   };
 
+  const downloadZipFile = (data: string) => {
+    const byteCharacters = atob(data);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: "application/zip" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "import_status.zip");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
-    <div
-      style={{
-        height: "70vh",
-      }}
-    >
+    <div style={{ height: "70vh" }}>
       <Dragger {...props}>
         <p className="ant-upload-drag-icon">
           <InboxOutlined />
@@ -110,10 +121,10 @@ const UploadComponent: React.FC = () => {
         <p className="ant-upload-hint">Support for a single or bulk upload.</p>
       </Dragger>
       <Button
-        style={{
-          marginTop: 20,
-        }}
+        style={{ marginTop: 20 }}
         onClick={handleSubmit}
+        loading={uploading}
+        disabled={fileList.length === 0}
       >
         Import
       </Button>
