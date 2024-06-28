@@ -46,24 +46,23 @@ class AssetImportService:
                 missing_fields_assets.append(row)
                 continue
 
+            
             date_of_purchase = row.get("Date Of Purchase", "")
+            default_date = datetime.strptime("1960-01-01", "%Y-%m-%d").date()
             if pd.isna(date_of_purchase) or date_of_purchase == "":
-                row["Error"] = "Missing or invalid date of purchase"
-                missing_fields_assets.append(row)
-                continue
-
-            try:
-                if isinstance(date_of_purchase, pd.Timestamp):
-                    date_of_purchase = date_of_purchase.strftime(
-                        "%Y-%m-%d"
-                    )  # Convert timestamp to string
-                    purchase_date = datetime.strptime(
-                        date_of_purchase, "%Y-%m-%d"
-                    ).date()
-            except ValueError:
-                row["Error"] = "Invalid date format"
-                missing_fields_assets.append(row)
-                continue
+                purchase_date = default_date
+            else:
+                try:
+                    if isinstance(date_of_purchase, pd.Timestamp):
+                        if pd.isna(date_of_purchase):
+                            purchase_date = None
+                        else:
+                            date_of_purchase = date_of_purchase.strftime("%Y-%m-%d")
+                            purchase_date = datetime.strptime(date_of_purchase, "%Y-%m-%d").date()
+                    else:
+                        purchase_date = datetime.strptime(date_of_purchase, "%Y-%m-%d").date()
+                except ValueError:
+                    purchase_date = None
 
             asset_type, _ = AssetType.objects.get_or_create(
                 asset_type_name=row.get("Asset Category", "").strip()
@@ -90,14 +89,25 @@ class AssetImportService:
                 memory_space = str(
                     memory_space
                 ).strip()  # Convert to string and strip whitespace
+
+                if '.' in memory_space:
+                # Convert float-like strings to float first, then to int
+                    memory_space = int(float(memory_space))
+                else:
+                # Convert integer-like strings directly to int
+                    memory_space = int(memory_space)
+
                 if memory_space == "nan" or memory_space == "":
                     memory = None
                 else:
                     try:
+                        
+                        
                         memory, _ = Memory.objects.get_or_create(
                             memory_space=memory_space
                         )
                     except ValueError:
+                        print("memory type =" ,type(memory_space))
                         row["Error"] = "Invalid memory value"
                         missing_fields_assets.append(row)
                         continue
