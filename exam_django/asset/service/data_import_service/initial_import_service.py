@@ -132,7 +132,7 @@ class AssetImportService:
                         missing_fields_assets.append(row)
                         continue
 
-            status = row.get("status", "").strip()
+            status = row.get("Status", "").strip()
             if status == "No Service":
                 status = "UNREPAIRABLE"
             elif status == "In Service" and row.get("Custodian"):
