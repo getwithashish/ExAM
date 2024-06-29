@@ -323,3 +323,7 @@ VITE_GET_ASSET_TYPE=http://localhost:8000/api/v1/asset/asset_type
 ```
 yarn dev
 ```
+
+# Contribution
+
+Feel free to open issues or pull requests if you find any bugs or have improvements.
