@@ -324,6 +324,37 @@ VITE_GET_ASSET_TYPE=http://localhost:8000/api/v1/asset/asset_type
 yarn dev
 ```
 
+## Populate Dummy Data
+
+You should have `curl` installed in your system
+
+### For Linux
+
+```bash
+cd exam_django/dummy_data_scripts/
+chmod +x dummy_data.sh
+./dummy_data.sh 127.0.0.1
+```
+
+### For Windows
+
+```bash
+cd exam_django/dummy_data_scripts/
+dummy_data.bat 127.0.0.1
+```
+
+### Login with test credentials
+
+#### System Admin
+
+- username: `getwithashish.sysadmin`
+- password: `getwithashish@sysadmin`
+
+#### Lead
+
+- username: `getwithashish.lead`
+- password: `getwithashish@lead`
+
 # Contribution
 
 Feel free to open issues or pull requests if you find any bugs or have improvements.
