@@ -154,11 +154,11 @@ Profiles are used for running docker containers in different environments.
 
 ### For Development
 
->Note: **Add .env in exam_django with the configurations required for deploying in development environment**
+> Note: **Add .env in exam_django with the configurations required for deploying in development environment**
 >
->Note: **Add aad.config.json in exam_django with the corresponding configurations**
+> Note: **Add aad.config.json in exam_django with the corresponding configurations**
 >
->Note: **Update .env in exam_frontend with the configurations required for deploying in development environment**
+> Note: **Update .env in exam_frontend with the configurations required for deploying in development environment**
 
 ```bash
 docker compose --profile development up
@@ -166,11 +166,11 @@ docker compose --profile development up
 
 ### For Stage
 
->Note: **Add .prod.env in exam_django with the configurations required for deploying in stage environment**
+> Note: **Add .prod.env in exam_django with the configurations required for deploying in stage environment**
 >
->Note: **Add aad.config.json in exam_django with the corresponding configurations**
+> Note: **Add aad.config.json in exam_django with the corresponding configurations**
 >
->Note: **Update .env in exam_frontend with the configurations required for deploying in stage environment**
+> Note: **Update .env in exam_frontend with the configurations required for deploying in stage environment**
 
 ```bash
 docker compose --profile stage up
