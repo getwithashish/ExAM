@@ -84,7 +84,6 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
   const [mobileOs, setMobileOs] = React.useState("");
   const [storage, setStorage] = React.useState("");
   const [accessoryValue, setAccessoryValue] = useState("");
-  const [warrantyValue, setWarrantyValue] = useState(-100);
 
   useEffect(() => {
     handleInputChange("asset_type", assettypeValue["id"]);
@@ -103,9 +102,43 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
   }, [assetBu]);
 
   useEffect(() => {
+    handleInputChange("memory", memory["id"]);
+  }, [memory]);
+
+  useEffect(() => {
     let fieldName = Object.keys(value)[0];
     handleInputChange(fieldName, value[fieldName]);
   }, [value]);
+
+  useEffect(() => {
+    let fieldName = Object.keys(os)[0];
+    handleInputChange(fieldName, os[fieldName]);
+  }, [os]);
+
+  useEffect(() => {
+    let fieldName = Object.keys(osVersion)[0];
+    handleInputChange(fieldName, osVersion[fieldName]);
+  }, [osVersion]);
+
+  useEffect(() => {
+    let fieldName = Object.keys(mobileOs)[0];
+    handleInputChange(fieldName, mobileOs[fieldName]);
+  }, [mobileOs]);
+
+  useEffect(() => {
+    let fieldName = Object.keys(processor)[0];
+    handleInputChange(fieldName, processor[fieldName]);
+  }, [processor]);
+
+  useEffect(() => {
+    let fieldName = Object.keys(processorGen)[0];
+    handleInputChange(fieldName, processorGen[fieldName]);
+  }, [processorGen]);
+
+  useEffect(() => {
+    let fieldName = Object.keys(storage)[0];
+    handleInputChange(fieldName, storage[fieldName]);
+  }, [storage]);
 
   useEffect(() => {
     let fieldName = Object.keys(licenseValue)[0];
@@ -158,7 +191,7 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
   const validateOsVersion = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     if (!warningShown && isNaN(value as any)) {
-      message.warning("Os Version should only contain digits.");
+      message.warning("OS Version should only contain digits");
       setWarningShown(true);
     } else if (warningShown && !isNaN(value as any)) {
       setWarningShown(false);
@@ -421,28 +454,28 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
     }
 
     if (formData.asset_category === "HARDWARE" && isAllHardwareFieldsFilled) {
-      const storageValue = formData.storage?.trim();
-      const formatPattern = /^\d{1,3}GB$/;
+      // const storageValue = formData.storage?.trim();
+      // const formatPattern = /^\d{1,3}GB$/;
 
-      if (storageValue && !formatPattern.test(storageValue)) {
-        message.error(
-          'Storage should be in the format "###GB", where ### is any one to three digits.'
-        );
-        return;
-      }
-      const processorValue = formData.processor?.trim();
-      const processorGenValue = formData.processor_gen?.trim();
-      const alphanumericPattern = /^[a-zA-Z0-9]+$/;
+      // if (storageValue && !formatPattern.test(storageValue)) {
+      //   message.error(
+      //     'Storage should be in the format "###GB", where ### is any one to three digits.'
+      //   );
+      //   return;
+      // }
+      // const processorValue = formData.processor?.trim();
+      // const processorGenValue = formData.processor_gen?.trim();
+      // const alphanumericPattern = /^[a-zA-Z0-9]+$/;
 
-      if (
-        (processorValue && !alphanumericPattern.test(processorValue)) ||
-        (processorGenValue && !alphanumericPattern.test(processorGenValue))
-      ) {
-        message.error(
-          "Processor and Processor Generation should be alphanumeric."
-        );
-        return;
-      }
+      // if (
+      //   (processorValue && !alphanumericPattern.test(processorValue)) ||
+      //   (processorGenValue && !alphanumericPattern.test(processorGenValue))
+      // ) {
+      //   message.error(
+      //     "Processor and Processor Generation should be alphanumeric."
+      //   );
+      //   return;
+      // }
       try {
         setLoading(true);
         // If hardware-specific validation passes, submit the form
@@ -452,7 +485,7 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
         );
         console.log("Asset Data Posted:", response.data);
 
-        message.success("Asset creation done successfully");
+        message.success("Asset created successfully");
         return; // Exit the function after successful submission
       } catch (error) {
         console.error("Error in asset creation :", error);
@@ -927,7 +960,7 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
                   />
                 </Form.Item>
 
-                <Form.Item label="OS  version" className={styles["formItem"]}>
+                <Form.Item label="OS Version" className={styles["formItem"]}>
                   <AssetFieldAutoComplete
                     assetField="os_version"
                     value={osVersion}

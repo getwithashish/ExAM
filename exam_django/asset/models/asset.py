@@ -15,12 +15,6 @@ status_choices = (
     ("UNREPAIRABLE", "UNREPAIRABLE"),
 )
 
-os_choices = (
-    ("WINDOWS", "WINDOWS"),
-    ("LINUX", "LINUX"),
-    ("MAC", "MAC"),
-)
-
 asset_detail_status = (
     ("CREATE_PENDING", "CREATE_PENDING"),
     ("UPDATE_PENDING", "UPDATE_PENDING"),
@@ -86,7 +80,7 @@ class Asset(models.Model):
     business_unit = models.ForeignKey(
         "BusinessUnit", on_delete=models.CASCADE, null=True, blank=False
     )
-    os = models.CharField(max_length=50, null=True, blank=False, choices=os_choices)
+    os = models.CharField(max_length=50, null=True, blank=False)
     os_version = models.CharField(max_length=50, null=True, blank=False)
     mobile_os = models.CharField(max_length=50, null=True, blank=False)
     processor = models.CharField(max_length=50, null=True, blank=False)
