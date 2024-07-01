@@ -14,7 +14,7 @@ import {
   getAssetTypeOptions,
   getLocationOptions,
   getMemoryOptions,
-  getBusinessUnitOptions
+  getBusinessUnitOptions,
 } from "./api/getAssetDetails";
 import {
   createAssetType,
@@ -255,25 +255,25 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
         <Autocomplete
           value={value}
           loading={isAssetDataLoading}
-          freeSolo
+          freeSolo={!["product_name", "owner"].includes(assetFieldKeyName())}
           onInputChange={(event, newValue) => {
             if (newValue !== "") {
               setValue({ [assetFieldKeyName()]: newValue });
-             
+            } else {
+              if (!["product_name", "owner"].includes(assetFieldKeyName())) {
+                setValue({ [assetFieldKeyName()]: "" });
+              }
             }
           }}
           onChange={(event, newValue) => {
             if (typeof newValue === "string") {
               setTimeout(() => {
                 setValue({ [assetFieldKeyName()]: newValue });
-               
               });
             } else if (newValue && newValue.inputValue) {
               setValue({ [assetFieldKeyName()]: newValue });
-              
             } else {
               setValue(newValue);
-          
             }
           }}
           onOpen={() => {
@@ -317,17 +317,6 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
 };
 
 export default AssetFieldAutoComplete;
-
-
-
-
-
-
-
-
-
-
-
 
 // import React from "react";
 
@@ -414,11 +403,11 @@ export default AssetFieldAutoComplete;
 //     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 //     let result = '';
 //     const charactersLength = characters.length;
-  
+
 //     for (let i = 0; i < length; i++) {
 //       result += characters.charAt(Math.floor(Math.random() * charactersLength));
 //     }
-  
+
 //     return result;
 //   }
 
