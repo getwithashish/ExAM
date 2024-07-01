@@ -83,6 +83,8 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
   const [osVersion, setOsVersion] = React.useState("");
   const [mobileOs, setMobileOs] = React.useState("");
   const [storage, setStorage] = React.useState("");
+  const [accessoryValue, setAccessoryValue] = useState("");
+  const [warrantyValue, setWarrantyValue] = useState(-100);
 
   useEffect(() => {
     handleInputChange("asset_type", assettypeValue["id"]);
@@ -120,9 +122,15 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
     handleInputChange(fieldName, modelNumber[fieldName]);
   }, [modelNumber]);
 
+  useEffect(() => {
+    let fieldName = "accessories";
+    handleInputChange(fieldName, accessoryValue);
+  }, [accessoryValue]);
+
   const onFormLayoutChange = ({ size }: { size: SizeType }) => {
     setComponentSize(size);
   };
+
   const handleInputChange = (key: string, value: any) => {
     if (value !== "") {
       setFormData({ ...formData, [key]: value });
@@ -142,7 +150,9 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
     } else if (warningShown && !isNaN(value as any)) {
       setWarningShown(false);
     }
-    handleInputChange("warranty_period", value);
+    if (value === "" || /^[0-9]*$/.test(value)) {
+      handleInputChange("warranty_period", value);
+    }
   };
 
   const validateOsVersion = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -256,7 +266,6 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
     }
   };
 
-  const [accessoryValue, setAccessoryValue] = useState("");
   const [accessoryWarningShown, setAccessoryWarningShown] = useState(false);
   const handleAccessoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -674,7 +683,7 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
                   /> */}
 
                   <TextField
-                    id="outlined-textarea"
+                    id="outlined-textarea-notes-hardware"
                     label="Notes"
                     placeholder="Information related to the Asset"
                     sx={{ width: "100%" }}
@@ -855,20 +864,22 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
                   label={<span>Warranty Period</span>}
                   className={styles["formItem"]}
                 >
-                  <Input
-                    className={styles["input"]}
-                    placeholder="Enter warranty period"
-                    onChange={(e) => validateWarrantyPeriod(e)}
-                    suffix={
-                      <Tooltip
-                        placement="top"
-                        title="Warranty period should be in months Eg: 12, 24"
-                      >
-                        <InfoCircleOutlined
-                          style={{ color: "rgba(0,0,0,.45)" }}
-                        />
-                      </Tooltip>
-                    }
+                  <TextField
+                    id="outlined-number-warranty-period"
+                    label="Warranty Period"
+                    InputProps={{
+                      endAdornment: (
+                        <Tooltip title="Warranty period should be in months Eg: 12, 24">
+                          <InfoCircleOutlined
+                            style={{ color: "rgba(0,0,0,.45)" }}
+                          />
+                        </Tooltip>
+                      ),
+                    }}
+                    sx={{ width: "100%" }}
+                    onChange={(e) => {
+                      validateWarrantyPeriod(e);
+                    }}
                   />
                 </Form.Item>
                 <Form.Item
@@ -971,27 +982,57 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
                   label="Configuration:"
                   className={styles["formItem"]}
                 >
-                  <Input
+                  {/* <Input
                     placeholder="Enter configuration"
                     className={styles["input"]}
                     onChange={(e) =>
                       handleInputChange("configuration", e.target.value)
                     }
+                  /> */}
+
+                  <TextField
+                    id="outlined-textarea-configuration-hardware"
+                    label="Configuration"
+                    sx={{ width: "100%" }}
+                    multiline
+                    onChange={(e) => {
+                      handleInputChange("configuration", e.target.value);
+                    }}
                   />
                 </Form.Item>
 
                 <Form.Item label="Accessories:" className={styles["formItem"]}>
-                  <Input
+                  {/* <Input
                     placeholder="Enter Accessory"
                     className={styles["input"]}
                     onChange={(e) => handleAccessoryChange(e)}
+                  /> */}
+
+                  <TextField
+                    id="outlined-textarea-accessories-hardware"
+                    label="Accessories"
+                    placeholder="Accessories obtained with the hardware"
+                    sx={{ width: "100%" }}
+                    multiline
+                    onChange={(e) => {
+                      handleAccessoryChange(e);
+                    }}
                   />
                 </Form.Item>
 
                 <Form.Item label="Notes:" className={styles["formItem"]}>
-                  <Input
+                  {/* <Input
                     placeholder="Enter reason for creation"
                     className={styles["input"]}
+                    onChange={(e) => handleInputChange("notes", e.target.value)}
+                  /> */}
+
+                  <TextField
+                    id="outlined-textarea-notes-software"
+                    label="Notes"
+                    placeholder="Information related to the Asset"
+                    sx={{ width: "100%" }}
+                    multiline
                     onChange={(e) => handleInputChange("notes", e.target.value)}
                   />
                 </Form.Item>
