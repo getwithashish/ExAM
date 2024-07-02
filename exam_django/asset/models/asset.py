@@ -5,8 +5,6 @@ from user_auth.models import User
 
 asset_category_choices = (("HARDWARE", "HARDWARE"), ("SOFTWARE", "SOFTWARE"))
 
-owner_choices = (("EXPERION", "EXPERION"),)
-
 status_choices = (
     ("IN USE", "IN USE"),
     ("IN STORE", "IN STORE"),
@@ -14,13 +12,7 @@ status_choices = (
     ("OUTDATED", "OUTDATED"),
     ("DISPOSED", "DISPOSED"),
     ("DAMAGED", "DAMAGED"),
-    ("UNREPAIRABLE", "UNREPAIRABLE")
-)
-
-os_choices = (
-    ("WINDOWS", "WINDOWS"),
-    ("LINUX", "LINUX"),
-    ("MAC", "MAC"),
+    ("UNREPAIRABLE", "UNREPAIRABLE"),
 )
 
 asset_detail_status = (
@@ -55,9 +47,7 @@ class Asset(models.Model):
     serial_number = models.CharField(
         max_length=255, null=True, blank=False, default=None
     )
-    owner = models.CharField(
-        max_length=50, default="EXPERION", choices=owner_choices, null=False
-    )
+    owner = models.CharField(max_length=50, default="EXPERION", null=False)
     custodian = models.ForeignKey(
         "Employee",
         related_name="%(app_label)s_%(class)s_custodian",
@@ -88,11 +78,9 @@ class Asset(models.Model):
         blank=False,
     )
     business_unit = models.ForeignKey(
-        "BusinessUnit",
-        on_delete=models.CASCADE,
-        null=True, blank=False
+        "BusinessUnit", on_delete=models.CASCADE, null=True, blank=False
     )
-    os = models.CharField(max_length=50, null=True, blank=False, choices=os_choices)
+    os = models.CharField(max_length=50, null=True, blank=False)
     os_version = models.CharField(max_length=50, null=True, blank=False)
     mobile_os = models.CharField(max_length=50, null=True, blank=False)
     processor = models.CharField(max_length=50, null=True, blank=False)
@@ -127,7 +115,7 @@ class Asset(models.Model):
     approval_status_message = models.TextField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-   
+
     requester = models.ForeignKey(
         User,
         related_name="%(app_label)s_%(class)s_requester",
