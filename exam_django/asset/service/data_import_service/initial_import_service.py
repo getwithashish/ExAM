@@ -7,9 +7,10 @@ from django.forms import ValidationError
 from asset.models import Asset, AssetType, BusinessUnit, Employee, Location, Memory
 
 def clean_field(value):
-    if pd.isna(value) or value == "nan":
+    if pd.isna(value) or value == "nan" or value == "":
         return None
-    return str(value).strip() if value != "" else None
+    return str(value).strip()
+
 
 class AssetImportService:
     @staticmethod
