@@ -46,7 +46,9 @@ class AssetImportService:
                 continue
 
             date_of_purchase = row.get("Date Of Purchase")
-            default_date = datetime.strptime("1960-01-01", "%Y-%m-%d").date()
+            
+            #default date.
+            default_date = datetime.strptime("2010-08-09", "%Y-%m-%d").date()
             if pd.isna(date_of_purchase) or date_of_purchase == "":
                 purchase_date = default_date
             else:
@@ -54,7 +56,7 @@ class AssetImportService:
                     if isinstance(date_of_purchase, pd.Timestamp):
                         purchase_date = date_of_purchase.date() if not pd.isna(date_of_purchase) else None
                     else:
-                        purchase_date = datetime.strptime(date_of_purchase, "%Y-%m-%d").date()
+                        purchase_date = datetime.strptime(date_of_purchase, "%m/%d/%Y").date()
                 except ValueError:
                     purchase_date = None
 
@@ -86,22 +88,32 @@ class AssetImportService:
                     missing_fields_assets.append(row)
                     continue
 
-            warranty = row.get("Warranty")
-            if pd.isna(warranty) or warranty == "":
-                warranty = None
-            elif isinstance(warranty, (int, float)):
-                warranty = int(warranty)
-            else:
-                warranty = str(warranty).strip()
-                if warranty == "Expired":
+                                    
+            try:
+                warranty = row.get("Warranty")
+                if pd.isna(warranty) or warranty == "":
                     warranty = -1
+                elif isinstance(warranty, (int, float)):
+                                warranty = int(warranty)
                 else:
-                    try:
-                        warranty = int(warranty)
-                    except ValueError:
-                        row["Error"] = "Invalid warranty value"
-                        missing_fields_assets.append(row)
-                        continue
+                    warranty = str(warranty).strip()
+                    if warranty == "1 Year Warranty":
+                       warranty = 12
+                    elif warranty == "3 Year Warranty":
+                        warranty = 36
+                    elif warranty == "Under Warranty":
+                        warranty = 48
+                    elif warranty == "under warranty":
+                        warranty = 48
+                    elif warranty == "Expired":
+                        warranty = -1
+                    else:
+                        raise ValueError(f"Unexpected warranty value: {warranty}")
+
+            except ValueError as e:
+                print(e)
+                missing_fields_assets.append(row)
+                continue        
 
             status = clean_field(row.get("Status"))
             if status == "No Service":
