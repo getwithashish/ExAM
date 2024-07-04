@@ -12,24 +12,65 @@ services:
       - 3307:3306
       - 33070:33060
 
-  # Production Environment
+  # Development Environment
 
-  prod-asset-management-backend-service:
-    container_name: prod-asset-management-backend
-    image: prod-asset-management-backend-image
+  dev-asset-management-backend-service:
+    container_name: dev-asset-management-backend
+    image: dev-asset-management-backend-image
     build: ./exam_django/
     ports:
       - 8000:8000
     restart: always
     depends_on:
       - mysql-db-service
+    profiles:
+      - development
 
-  prod-asset-management-frontend-service:
-    container_name: prod-asset-management-frontend
-    image: prod-asset-management-frontend-image
+  dev-asset-management-frontend-service:
+    container_name: dev-asset-management-frontend
+    image: dev-asset-management-frontend-image
     build: ./exam_frontend/
     ports:
       - 5173:5173
     restart: always
     depends_on:
-      - prod-asset-management-backend-service
+      - dev-asset-management-backend-service
+    profiles:
+      - development
+
+# Stage Environment
+
+  redis-service:
+    image: redis:alpine3.20
+    container_name: stage-asset-management-redis
+    ports:
+      - 6379:6379
+    profiles:
+      - stage
+
+  stage-asset-management-backend-service:
+    container_name: stage-asset-management-backend
+    image: stage-asset-management-backend-image
+    build: ./exam_django/
+    entrypoint: ["sh", "entrypoint-stage.sh"]
+    ports:
+      - 8000:8000
+    restart: always
+    depends_on:
+      - mysql-db-service
+      - redis-service
+    profiles:
+      - stage
+
+  stage-asset-management-frontend-service:
+    container_name: stage-asset-management-frontend
+    image: stage-asset-management-frontend-image
+    build: ./exam_frontend/
+    entrypoint: ["bash", "entrypoint-stage.sh"]
+    ports:
+      - 5173:4173
+    restart: always
+    depends_on:
+      - stage-asset-management-backend-service
+    profiles:
+      - stage

@@ -4,6 +4,10 @@ import ChartHandlers from "./chartHandlers/PieChartHandlers/ChartHandlers";
 import { fetchAssetData } from "./api/ChartApi";
 
 interface StatisticsProps {
+  selectedTypeId?:number;
+  assetState?: string | null;  
+  detailState?:string | null;
+  assignState:string | null;
   setSelectedTypeId: (id: number) => void;
   setAssetState: React.Dispatch<React.SetStateAction<string | null>>;
   setDetailState: React.Dispatch<React.SetStateAction<string | null>>;
@@ -12,6 +16,10 @@ interface StatisticsProps {
 }
 
 export const Statistics = ({
+  selectedTypeId,
+  assetState,
+  detailState,
+  assignState,
   setSelectedTypeId,
   setAssetState,
   setDetailState,
@@ -21,9 +29,6 @@ export const Statistics = ({
   const [assetCountData, setAssetCountData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [_assetState, _setAssetState] = useState<string | null>(null);
-  const [_detailState, _setDetailState] = useState<string | null>(null);
-  const [_assignState, _setAssignState] = useState<string | null>(null);
 
   useEffect(() => {
     fetchAssetData()
@@ -64,8 +69,11 @@ export const Statistics = ({
           <div className="items-center justify-center">
             <ChartHandlers
               assetCountData={assetCountData}
+              selectedTypeId={selectedTypeId}
+              assetState={assetState}
+              detailState={detailState}
+              assignState={assignState}
               setSelectedTypeId={setSelectedTypeId}
-              selectedTypeId={0}
               setAssetState={setAssetState}
               setDetailState={setDetailState}
               setAssignState={setAssignState}

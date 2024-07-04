@@ -141,6 +141,9 @@ env.bak/
 venv.bak/
 
 .prod.env
+celerybeat-schedule.*
+asset_management*.json
+jq.exe
 
 # Spyder project settings
 .spyderproject

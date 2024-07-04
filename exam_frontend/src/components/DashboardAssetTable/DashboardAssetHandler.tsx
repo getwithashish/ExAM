@@ -79,7 +79,6 @@ const DashboardAssetHandler = ({
     setQueryParam("");
     setJson_query("");
     setSearchTerm("");
-    setSelectedTypeId(0);
     setAssetState("");
     setDetailState("");
     setAssignState("");
