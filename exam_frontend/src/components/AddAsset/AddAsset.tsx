@@ -454,28 +454,6 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
     }
 
     if (formData.asset_category === "HARDWARE" && isAllHardwareFieldsFilled) {
-      // const storageValue = formData.storage?.trim();
-      // const formatPattern = /^\d{1,3}GB$/;
-
-      // if (storageValue && !formatPattern.test(storageValue)) {
-      //   message.error(
-      //     'Storage should be in the format "###GB", where ### is any one to three digits.'
-      //   );
-      //   return;
-      // }
-      // const processorValue = formData.processor?.trim();
-      // const processorGenValue = formData.processor_gen?.trim();
-      // const alphanumericPattern = /^[a-zA-Z0-9]+$/;
-
-      // if (
-      //   (processorValue && !alphanumericPattern.test(processorValue)) ||
-      //   (processorGenValue && !alphanumericPattern.test(processorGenValue))
-      // ) {
-      //   message.error(
-      //     "Processor and Processor Generation should be alphanumeric."
-      //   );
-      //   return;
-      // }
       try {
         setLoading(true);
         // If hardware-specific validation passes, submit the form
@@ -524,17 +502,6 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
               }
               className={styles["formItem"]}
             >
-              {/* <Select
-                className={styles["input"]}
-                placeholder="Select asset category"
-                onChange={(value) =>
-                  setFormData({ ...formData, asset_category: value })
-                }
-              >
-                <Option value="HARDWARE">Hardware</Option>
-                <Option value="SOFTWARE">Software</Option>
-              </Select> */}
-
               <Select
                 labelId="asset-category-select-label"
                 id="asset-category-select"
@@ -561,21 +528,6 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
                   label={<span>Asset ID</span>}
                   className={styles["formItem"]}
                 >
-                  {/* <Input
-                    placeholder="Enter Asset ID"
-                    className={styles["input"]}
-                    onChange={(e) =>
-                      handleInputChange("asset_id", e.target.value)
-                    }
-                    suffix={
-                      <Tooltip title="Asset Id should be alphanumeric Eg:ASS101">
-                        <InfoCircleOutlined
-                          style={{ color: "rgba(0,0,0,.45)" }}
-                        />
-                      </Tooltip>
-                    }
-                  /> */}
-
                   <TextField
                     id="outlined-basic"
                     label="Enter Asset ID"
@@ -618,15 +570,6 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
                   }
                   className={styles["formItem"]}
                 >
-                  {/* <DatePicker
-                    className={styles["input"]}
-                    placeholder="Enter purchase date"
-                    format="YYYY-MM-DD" // Set the format to YYYY-MM-DD
-                    onChange={(_date, dateString) =>
-                      handleInputChange("date_of_purchase", dateString)
-                    } // Use dateString to get the formatted date
-                  /> */}
-
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <StaticDatePicker
                       slotProps={{
@@ -654,17 +597,6 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
                   }
                   className={styles["formItem"]}
                 >
-                  {/* <Select
-                    className={styles["input"]}
-                    placeholder="Select license type"
-                    onChange={(value) =>
-                      handleInputChange("license_type", value)
-                    }
-                  >
-                    <Option value="Monthly">Monthly</Option>
-                    <Option value="Permanent">Permanent</Option>
-                  </Select> */}
-
                   <AssetFieldAutoComplete
                     assetField="license_type"
                     value={licenseValue}
@@ -673,14 +605,6 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
                 </Form.Item>
 
                 <Form.Item label="Owner" className={styles["formItem"]}>
-                  {/* <Select
-                    className={styles["input"]}
-                    placeholder="Select owner"
-                    onChange={(value) => handleInputChange("owner", value)}
-                  >
-                    <Option value="EXPERION">EXPERION</Option>
-                  </Select> */}
-
                   <AssetFieldAutoComplete
                     assetField="owner"
                     value={ownerValue}
@@ -709,12 +633,6 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
                   />
                 </Form.Item>
                 <Form.Item label="Notes:" className={styles["formItem"]}>
-                  {/* <Input
-                    placeholder="Enter reason for creation"
-                    className={styles["input"]}
-                    onChange={(e) => handleInputChange("notes", e.target.value)}
-                  /> */}
-
                   <TextField
                     id="outlined-textarea-notes-hardware"
                     label="Notes"
@@ -737,21 +655,6 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
                   label={<span>Asset ID</span>}
                   className={styles["formItem"]}
                 >
-                  {/* <Input
-                    placeholder="Enter Asset ID"
-                    className={styles["input"]}
-                    onChange={(e) =>
-                      handleInputChange("asset_id", e.target.value)
-                    }
-                    suffix={
-                      <Tooltip title="Asset Id should be alphanumeric Eg:ASS101">
-                        <InfoCircleOutlined
-                          style={{ color: "rgba(0,0,0,.45)" }}
-                        />
-                      </Tooltip>
-                    }
-                  /> */}
-
                   <TextField
                     id="outlined-basic-asset-id-software"
                     label="Enter Asset ID"
@@ -808,15 +711,6 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
                   }
                   className={styles["formItem"]}
                 >
-                  {/* <DatePicker
-                    className={styles["input"]}
-                    placeholder="Enter purchase date"
-                    format="YYYY-MM-DD" // Set the format to YYYY-MM-DD
-                    onChange={(_date, dateString) =>
-                      handleInputChange("date_of_purchase", dateString)
-                    } // Use dateString to get the formatted date
-                  /> */}
-
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <StaticDatePicker
                       slotProps={{
@@ -856,24 +750,6 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
                   }
                   className={styles["formItem"]}
                 >
-                  {/* <Input
-                    placeholder="Enter serial number"
-                    className={styles["input"]}
-                    onChange={(e) =>
-                      handleInputChange("serial_number", e.target.value)
-                    }
-                    suffix={
-                      <Tooltip
-                        placement="top"
-                        title="Serial number should be alphanumeric and should not exceed 30 characters Eg:ABC123DEF456"
-                      >
-                        <InfoCircleOutlined
-                          style={{ color: "rgba(0,0,0,.45)" }}
-                        />
-                      </Tooltip>
-                    }
-                  /> */}
-
                   <TextField
                     id="outlined-basic-serial-number"
                     label="Enter Serial Number"
@@ -1015,14 +891,6 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
                   label="Configuration:"
                   className={styles["formItem"]}
                 >
-                  {/* <Input
-                    placeholder="Enter configuration"
-                    className={styles["input"]}
-                    onChange={(e) =>
-                      handleInputChange("configuration", e.target.value)
-                    }
-                  /> */}
-
                   <TextField
                     id="outlined-textarea-configuration-hardware"
                     label="Configuration"
@@ -1035,12 +903,6 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
                 </Form.Item>
 
                 <Form.Item label="Accessories:" className={styles["formItem"]}>
-                  {/* <Input
-                    placeholder="Enter Accessory"
-                    className={styles["input"]}
-                    onChange={(e) => handleAccessoryChange(e)}
-                  /> */}
-
                   <TextField
                     id="outlined-textarea-accessories-hardware"
                     label="Accessories"
@@ -1054,12 +916,6 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
                 </Form.Item>
 
                 <Form.Item label="Notes:" className={styles["formItem"]}>
-                  {/* <Input
-                    placeholder="Enter reason for creation"
-                    className={styles["input"]}
-                    onChange={(e) => handleInputChange("notes", e.target.value)}
-                  /> */}
-
                   <TextField
                     id="outlined-textarea-notes-software"
                     label="Notes"

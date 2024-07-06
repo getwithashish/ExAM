@@ -1259,7 +1259,6 @@ const CardComponent: React.FC<CardType> = ({
               </Col>
             ))}
           </Row>
-          {/* <div className="rowone"></div> */}
         </Form>
       </div>
     </div>

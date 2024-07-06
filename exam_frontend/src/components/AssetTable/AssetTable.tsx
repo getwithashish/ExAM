@@ -38,8 +38,9 @@ const AssetTable: React.FC<AssetTableProps> = ({
   searchTerm,
   setSearchTerm,
 }: AssetTableProps) => {
-
-  const handleRefreshClick = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+  const handleRefreshClick = (
+    event: React.MouseEvent<SVGSVGElement, MouseEvent>
+  ) => {
     event.preventDefault();
     const queryParams = `&global_search=${searchTerm}&sort_by=${sortedColumn}&sort_order=${sortOrder}&offset=20`;
     assetDataRefetch(queryParams);
@@ -59,7 +60,10 @@ const AssetTable: React.FC<AssetTableProps> = ({
       <div className="mainHeading font-display">
         <h1>{pageHeading}</h1>
       </div>
-      <div className="flex" style={{ marginLeft: "40px", marginBottom: "30px" }}>
+      <div
+        className="flex"
+        style={{ marginLeft: "40px", marginBottom: "30px" }}
+      >
         <GlobalSearch
           assetDataRefetch={assetDataRefetch}
           searchTerm={searchTerm}
@@ -71,14 +75,16 @@ const AssetTable: React.FC<AssetTableProps> = ({
             backgroundColor: "#63c5da",
             cursor: "pointer",
             margin: "10px",
-            borderRadius: '10px',
-            color: 'white'
+            borderRadius: "10px",
+            color: "white",
           }}
           onClick={handleRefreshClick}
         />
       </div>
 
-      <div style={{ position: "relative", display: "inline-block", width: "80vw" }}>
+      <div
+        style={{ position: "relative", display: "inline-block", width: "80vw" }}
+      >
         <Table
           columns={columns}
           loading={isAssetDataLoading}
@@ -110,14 +116,13 @@ const AssetTable: React.FC<AssetTableProps> = ({
                 let sortParams = "";
                 const queryParams = `${sortParams}${additionalQueryParams}`;
                 if (sortedColumn && sortOrder) {
-                  if (queryParams.indexOf('sort_by') === -1) {
+                  if (queryParams.indexOf("sort_by") === -1) {
                     sortParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
                   }
                 }
 
                 assetPageDataFetch(queryParams);
               }}
-
               hideOnSinglePage={true}
             />
           )}
