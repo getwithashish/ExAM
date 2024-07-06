@@ -19,7 +19,7 @@ const DrawerViewRequest: FC<DrawerViewRequestProps> = ({
 }) => {
   return (
     <>
-      <Drawer title={title} onClose={onClose} open={open} width={1200}>
+      <Drawer destroyOnClose={true} title={title} onClose={onClose} open={open} width={1200}>
         {children}
       </Drawer>
     </>

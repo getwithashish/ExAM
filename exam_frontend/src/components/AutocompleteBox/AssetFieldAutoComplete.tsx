@@ -26,12 +26,23 @@ import { getUserOptions } from "./api/getUserDetails";
 
 const filter = createFilterOptions();
 
-const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
+const AssetFieldAutoComplete = ({
+  assetField,
+  value,
+  setValue,
+  defaultValue,
+}) => {
   const [open, toggleOpen] = React.useState(false);
 
   const [dialogValue, setDialogValue] = React.useState({
     [assetField]: "",
   });
+
+  if (defaultValue) {
+    if (!value) {
+      setValue(defaultValue);
+    }
+  }
 
   const foreignFieldValueNames = [
     "asset_type",
@@ -154,7 +165,7 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
           <Autocomplete
             value={value}
             loading={isAssetDataLoading}
-            onChange={(event, newValue) => {
+            onChange={(event, newValue, reason) => {
               if (typeof newValue === "string") {
                 setTimeout(() => {
                   toggleOpen(true);
@@ -169,7 +180,13 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
                 });
               } else {
                 if (newValue == null) {
-                  setValue("");
+                  if (assetField === "memory") {
+                    setValue({
+                      [assetFieldKeyName()]: "",
+                    });
+                  } else {
+                    setValue("");
+                  }
                 } else {
                   setValue(newValue);
                 }
@@ -214,7 +231,12 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
               </li>
             )}
             sx={{ width: "100%" }}
-            renderInput={(params) => <TextField {...params} label="Search" />}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={splitAndCapitalizeWords(assetField)}
+              />
+            )}
           />
 
           <Dialog open={open} onClose={handleClose}>
@@ -261,7 +283,7 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
               setValue({ [assetFieldKeyName()]: newValue });
             } else {
               if (!["product_name", "owner"].includes(assetFieldKeyName())) {
-                setValue({ [assetFieldKeyName()]: "" });
+                setValue({ [assetFieldKeyName()]: newValue });
               }
             }
           }}
@@ -309,7 +331,12 @@ const AssetFieldAutoComplete = ({ assetField, value, setValue }) => {
             <li {...props}>{option[assetFieldKeyName()]}</li>
           )}
           sx={{ width: "100%" }}
-          renderInput={(params) => <TextField {...params} label="Search" />}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label={splitAndCapitalizeWords(assetField)}
+            />
+          )}
         />
       )}
     </React.Fragment>

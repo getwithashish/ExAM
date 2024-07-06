@@ -5,49 +5,48 @@ export interface DataType {
   asset_id: string;
   asset_category: string;
   asset_type: string;
-  version:number;
-  status:string;
-  location:string;
-  invoice_location:string,
-  business_unit:string;
-  os:string;
-  os_version:string;
-  mobile_os:string;
-  processor:string;
-  Generation:string;
-  accessories:string;
-  date_of_purchase:Date;
-  warranty_period:number;
-  WarrantyCountdown:number;
-  asset_detail_status:string;
-  assign_status:string;
-  conceder:string;
-  AssignAsset:string;
-  model_number:string;
-  serial_number:string;
-  custodian:string;
-  product_name:string;
-  memory:string;
-  storage:string;
-  configuration:string;
-  owner:string;
-  requester:string;
-  notes:string;
-  created_at:Date;
-  updated_at:Date;
-  
+  version: number;
+  status: string;
+  location: string;
+  invoice_location: string;
+  business_unit: string;
+  os: string;
+  os_version: string;
+  mobile_os: string;
+  license_type: string;
+  processor: string;
+  Generation: string;
+  accessories: string;
+  date_of_purchase: Date;
+  warranty_period: number;
+  WarrantyCountdown: number;
+  asset_detail_status: string;
+  assign_status: string;
+  conceder: string;
+  AssignAsset: string;
+  model_number: string;
+  serial_number: string;
+  custodian: string;
+  product_name: string;
+  memory: string;
+  storage: string;
+  configuration: string;
+  owner: string;
+  requester: string;
+  notes: string;
+  approval_status_message: string;
+  created_at: Date;
+  updated_at: Date;
 }
- export interface ColumnFilterItem {
+export interface ColumnFilterItem {
   text: React.ReactNode;
   value: string | number | boolean;
 }
 export interface AssetResult {
-  status: string; 
-  business_unit:any;
-  business_unit_name:string;
-  location:string;
- 
-
+  status: string;
+  business_unit: any;
+  business_unit_name: string;
+  location: string;
 }
 
 export interface FilterDropdownProps {
@@ -88,7 +87,7 @@ interface Requester {
 }
 
 interface AssetLog {
-  id:string,
+  id: string;
   accessories: string | null;
   approval_status_message: string | null;
   approved_by_id: number | null;
@@ -124,7 +123,7 @@ interface AssetLog {
 }
 
 export interface LogData {
-  id:number,
+  id: number;
   asset_uuid: string;
   timestamp: string;
   asset_log: AssetLog;
@@ -140,32 +139,29 @@ export interface AssetTableProps {
   selectedRow: any;
   drawerVisible: boolean;
   assetData: any;
-  columns:any;
+  columns: any;
   expandedRowRender?: (assetId: string) => JSX.Element | null;
-  statusOptions: string[],
-  businessUnitOptions: string[],
-  locations:string[],
-  memoryData:string[],
-  assetTypeData:string[],
-  handleUpdateData: (updatedData: {
-    key: any;
-}) => void,
-  drawerTitle:string
+  statusOptions: string[];
+  businessUnitOptions: string[];
+  locations: string[];
+  memoryData: string[];
+  assetTypeData: string[];
+  handleUpdateData: (updatedData: { key: any }) => void;
+  drawerTitle: string;
   asset_uuid: string;
-  heading:string
+  heading: string;
   assetDataRefetch: (queryParam: string) => void;
-  setTableData:any
-  handleDelete:any
-  modifiedData:any
-  reset:()=> void;
-  sortOrder:string;
-  sortedColumn:any;
-  setSearchTerm:any;
-  searchTerm:any;
-  assetPageDataFetch:any
-  isAssetDataLoading:any
-  totalItemCount:any
-  userRole:any
-  isMyApprovalPage:any
+  setTableData: any;
+  handleDelete: any;
+  modifiedData: any;
+  reset: () => void;
+  sortOrder: string;
+  sortedColumn: any;
+  setSearchTerm: any;
+  searchTerm: any;
+  assetPageDataFetch: any;
+  isAssetDataLoading: any;
+  totalItemCount: any;
+  userRole: any;
+  isMyApprovalPage: any;
 }
-

@@ -5,20 +5,25 @@ import {
   Space,
   Input,
   Button,
-  Select,
   ConfigProvider,
   Row,
   Col,
   message,
   Modal,
+  Tooltip,
 } from "antd";
+import { InfoCircleOutlined } from "@ant-design/icons";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import "./CardComponent.css";
 import { DataType } from "../AssetTable/types/index";
 import { CardType } from "./types/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axiosInstance from "../../config/AxiosConfig";
-import { CommentOutlined } from "@ant-design/icons";
 import { Spin } from "antd";
+import AssetFieldAutoComplete from "../AutocompleteBox/AssetFieldAutoComplete";
+import { MenuItem, Select, TextField } from "@mui/material";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 
 interface UpdateData {
   asset_uuid: string;
@@ -46,6 +51,257 @@ const CardComponent: React.FC<CardType> = ({
   const uniqueLocationoptions = Array.from(new Set(locations));
   const uniqueMemoryOptions = Array.from(new Set(memoryData));
   const uniqueAssetTypeOptions = Array.from(new Set(assetTypeData));
+
+  const [_assetCategoryOption, setAssetCategoryOption] = React.useState();
+  const [assetName, setAssetName] = React.useState("");
+  const [assetModelNumber, setAssetModelNumber] = React.useState("");
+  const [assetLocation, setAssetLocation] = React.useState("");
+  const [assetInLocation, setAssetInLocation] = React.useState("");
+  const [assetType, setAssetType] = React.useState("");
+  const [assetBusinessUnit, setAssetBusinessUnit] = React.useState("");
+  const [assetStatusOption, setAssetStatusOption] = React.useState("");
+  const [assetMemory, setAssetMemory] = React.useState("");
+  const [assetStorage, setAssetStorage] = React.useState("");
+  const [assetDetailStatusOption, setAssetDetailStatusOption] =
+    React.useState("");
+  const [assetOs, setAssetOs] = React.useState("");
+  const [assetOsVersion, setAssetOsVersion] = React.useState("");
+  const [assetMobileOs, setAssetMobileOs] = React.useState("");
+  const [assetLicenseType, setAssetLicenseType] = React.useState("");
+  const [assetProcessor, setAssetProcessor] = React.useState("");
+  const [assetProcessorGen, setAssetProcessorGen] = React.useState("");
+  const [assetPurchaseDate, setAssetPurchaseDate] = React.useState("");
+  const [assetWarrantyPeriod, setAssetWarrantyPeriod] = React.useState("");
+  const [assetOwner, setAssetOwner] = React.useState("");
+  const [assetConfiguration, setAssetConfiguration] = React.useState("");
+
+  const assetCategoryValues = ["HARDWARE", "SOFTWARE"];
+  const assetStatusValues = [
+    "IN USE",
+    "IN STORE",
+    "IN REPAIR",
+    "EXPIRED",
+    "DISPOSED",
+  ];
+
+  useEffect(() => {
+    if (
+      assetType === data?.asset_type ||
+      assetType?.asset_type_name === data?.asset_type
+    ) {
+      removeKeyFromUpdatedData("asset_type");
+    } else {
+      handleUpdateChange("asset_type", assetType?.id);
+    }
+  }, [assetType]);
+
+  useEffect(() => {
+    if (
+      assetName === data?.product_name ||
+      assetName?.product_name === data?.product_name
+    ) {
+      removeKeyFromUpdatedData("product_name");
+    } else {
+      handleUpdateChange("product_name", assetName?.product_name);
+    }
+  }, [assetName]);
+
+  useEffect(() => {
+    if (
+      assetModelNumber === data?.model_number ||
+      assetModelNumber?.model_number === data?.model_number
+    ) {
+      removeKeyFromUpdatedData("model_number");
+    } else {
+      handleUpdateChange(
+        "model_number",
+        assetModelNumber?.model_number === ""
+          ? null
+          : assetModelNumber?.model_number
+      );
+    }
+  }, [assetModelNumber]);
+
+  useEffect(() => {
+    if (
+      assetBusinessUnit === data?.business_unit ||
+      assetBusinessUnit?.business_unit_name === data?.business_unit
+    ) {
+      removeKeyFromUpdatedData("business_unit");
+    } else {
+      handleUpdateChange("business_unit", assetBusinessUnit?.id);
+    }
+  }, [assetBusinessUnit]);
+
+  useEffect(() => {
+    if (assetOwner === data?.owner || assetOwner?.owner === data?.owner) {
+      removeKeyFromUpdatedData("owner");
+    } else {
+      handleUpdateChange("owner", assetOwner?.owner);
+    }
+  }, [assetOwner]);
+
+  useEffect(() => {
+    if (
+      assetLocation === data?.location ||
+      assetLocation?.location_name === data?.location
+    ) {
+      removeKeyFromUpdatedData("location");
+    } else {
+      handleUpdateChange("location", assetLocation?.id);
+    }
+  }, [assetLocation]);
+
+  useEffect(() => {
+    if (
+      assetInLocation === data?.invoice_location ||
+      assetInLocation?.location_name === data?.invoice_location
+    ) {
+      removeKeyFromUpdatedData("invoice_location");
+    } else {
+      handleUpdateChange("invoice_location", assetInLocation?.id);
+    }
+  }, [assetInLocation]);
+
+  useEffect(() => {
+    if (assetPurchaseDate === data?.date_of_purchase) {
+      removeKeyFromUpdatedData("date_of_purchase");
+    } else {
+      handleUpdateChange("date_of_purchase", assetPurchaseDate);
+    }
+  }, [assetPurchaseDate]);
+
+  useEffect(() => {
+    if (assetOs === data?.os || assetOs?.os === data?.os) {
+      removeKeyFromUpdatedData("os");
+    } else {
+      handleUpdateChange("os", assetOs?.os === "" ? null : assetOs?.os);
+    }
+  }, [assetOs]);
+
+  useEffect(() => {
+    if (
+      assetOsVersion === data?.os_version ||
+      assetOsVersion?.os_version === data?.os_version
+    ) {
+      removeKeyFromUpdatedData("os_version");
+    } else {
+      handleUpdateChange(
+        "os_version",
+        assetOsVersion?.os_version === "" ? null : assetOsVersion?.os_version
+      );
+    }
+  }, [assetOsVersion]);
+
+  useEffect(() => {
+    if (
+      assetMobileOs === data?.mobile_os ||
+      assetMobileOs?.mobile_os === data?.mobile_os
+    ) {
+      removeKeyFromUpdatedData("mobile_os");
+    } else {
+      handleUpdateChange(
+        "mobile_os",
+        assetMobileOs?.mobile_os === "" ? null : assetMobileOs?.mobile_os
+      );
+    }
+  }, [assetMobileOs]);
+
+  useEffect(() => {
+    if (
+      assetLicenseType === data?.license_type ||
+      assetLicenseType?.license_type === (data?.license_type ?? "")
+    ) {
+      removeKeyFromUpdatedData("license_type");
+    } else {
+      handleUpdateChange(
+        "license_type",
+        assetLicenseType?.license_type === ""
+          ? null
+          : assetLicenseType?.license_type
+      );
+    }
+  }, [assetLicenseType]);
+
+  useEffect(() => {
+    if (
+      assetProcessor === data?.processor ||
+      assetProcessor?.processor === data?.processor
+    ) {
+      removeKeyFromUpdatedData("processor");
+    } else {
+      handleUpdateChange(
+        "processor",
+        assetProcessor?.processor === "" ? null : assetProcessor?.processor
+      );
+    }
+  }, [assetProcessor]);
+
+  useEffect(() => {
+    if (
+      assetProcessorGen === data?.Generation ||
+      assetProcessorGen?.processor_gen === data?.Generation
+    ) {
+      removeKeyFromUpdatedData("processor_gen");
+    } else {
+      handleUpdateChange(
+        "processor_gen",
+        assetProcessorGen?.processor_gen === ""
+          ? null
+          : assetProcessorGen?.processor_gen
+      );
+    }
+  }, [assetProcessorGen]);
+
+  useEffect(() => {
+    if (
+      assetMemory === data?.memory?.toString() ||
+      assetMemory?.memory_space === (data?.memory ?? "")
+    ) {
+      removeKeyFromUpdatedData("memory");
+    } else {
+      handleUpdateChange("memory", assetMemory?.id ?? null);
+    }
+  }, [assetMemory]);
+
+  useEffect(() => {
+    if (
+      assetStorage === data?.storage ||
+      assetStorage?.storage === data?.storage
+    ) {
+      removeKeyFromUpdatedData("storage");
+    } else {
+      handleUpdateChange(
+        "storage",
+        assetStorage?.storage === "" ? null : assetStorage?.storage
+      );
+    }
+  }, [assetStorage]);
+
+  const handleWarrantyPeriodChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = e.target.value;
+    console.log("Warranty Value: ", value);
+    var currentWarrantyPeriod = data?.warranty_period?.toString();
+    if (data?.warranty_period === null) {
+      currentWarrantyPeriod = "";
+    }
+    if (value === "" || /^[0-9]*$/.test(value)) {
+      if (value === currentWarrantyPeriod) {
+        removeKeyFromUpdatedData("warranty_period");
+      } else {
+        if (value === "" || value === null) {
+          handleUpdateChange("warranty_period", null);
+        } else {
+          handleUpdateChange("warranty_period", parseInt(value));
+        }
+      }
+    } else {
+      message.warning("Warranty period should only contain digits.");
+      removeKeyFromUpdatedData("warranty_period");
+    }
+  };
 
   const inputStyle: React.CSSProperties = {
     border: "0.5px solid #d3d3d3",
@@ -119,43 +375,43 @@ const CardComponent: React.FC<CardType> = ({
       }
     });
 
-    if (invalidField) {
-      if (
-        invalidField === "processor" ||
-        invalidField === "processor_gen" ||
-        invalidField === "model_number" ||
-        invalidField === "storage" ||
-        (invalidField === "configuration" &&
-          !/^(?=.*[a-zA-Z])(?=.*[0-9])/.test(updatedData[invalidField]))
-      ) {
-        message.error(
-          `${fieldDisplayNames[invalidField]} must contain both letters and digits.`
-        );
-      } else if (
-        (invalidField === "processor_gen" ||
-          invalidField === "model_number" ||
-          invalidField === "storage" ||
-          invalidField === "configuration") &&
-        !alphanumericRegex.test(updatedData[invalidField])
-      ) {
-        message.error(
-          `${fieldDisplayNames[invalidField]} must be alphanumeric.`
-        );
-      } else {
-        const displayName = fieldDisplayNames[invalidField];
-        message.error(`${displayName} must contain only digits.`);
-      }
-      setIsLoading(false); // Set loading to false when update fails
-      return; // Exit the function without updating
-    }
-    if (
-      updatedData.hasOwnProperty("accessories") &&
-      updatedData.accessories.split(",").length > 3
-    ) {
-      message.error("Only a maximum of three accessories are allowed.");
-      setIsLoading(false); // Set loading to false when update fails
-      return; // Exit the function without updating
-    }
+    // if (invalidField) {
+    //   if (
+    //     invalidField === "processor" ||
+    //     invalidField === "processor_gen" ||
+    //     invalidField === "model_number" ||
+    //     invalidField === "storage" ||
+    //     (invalidField === "configuration" &&
+    //       !/^(?=.*[a-zA-Z])(?=.*[0-9])/.test(updatedData[invalidField]))
+    //   ) {
+    //     message.error(
+    //       `${fieldDisplayNames[invalidField]} must contain both letters and digits.`
+    //     );
+    //   } else if (
+    //     (invalidField === "processor_gen" ||
+    //       invalidField === "model_number" ||
+    //       invalidField === "storage" ||
+    //       invalidField === "configuration") &&
+    //     !alphanumericRegex.test(updatedData[invalidField])
+    //   ) {
+    //     message.error(
+    //       `${fieldDisplayNames[invalidField]} must be alphanumeric.`
+    //     );
+    //   } else {
+    //     const displayName = fieldDisplayNames[invalidField];
+    //     message.error(`${displayName} must contain only digits.`);
+    //   }
+    //   setIsLoading(false); // Set loading to false when update fails
+    //   return; // Exit the function without updating
+    // }
+    // if (
+    //   updatedData.hasOwnProperty("accessories") &&
+    //   updatedData.accessories.split(",").length > 3
+    // ) {
+    //   message.error("Only a maximum of three accessories are allowed.");
+    //   setIsLoading(false); // Set loading to false when update fails
+    //   return; // Exit the function without updating
+    // }
 
     try {
       const updatePayload = {
@@ -168,10 +424,10 @@ const CardComponent: React.FC<CardType> = ({
           "Content-Type": "application/json",
         },
       });
-      message.success("Asset Details successfully updated");
+      message.success("Asset Details Successfully Updated");
     } catch (error) {
       console.error("Error updating data:", error);
-      message.error("Error updating asset details. Please try again.");
+      message.error("Error Updating Asset Details. Please try again.");
     }
     setIsLoading(false); // Set loading to false when update completes
     assetDataRefetch();
@@ -179,29 +435,16 @@ const CardComponent: React.FC<CardType> = ({
   };
 
   const handleUpdateChange = (field: string, value: any) => {
-    if (field === "business_unit") {
-      // Map the business unit name to its primary key
-      const businessUnitPK = uniqueBusinessOptions.find(
-        (option) => option.name === value
-      )?.id;
-      setUpdatedData((prevData) => ({
-        ...prevData,
-        [field]: businessUnitPK,
-      }));
-    } else {
-      if (field === "status" && value === "IN STORE") {
-        // Change the status to "IN STOCK" when the value is "IN STORE"
-        setUpdatedData((prevData) => ({
-          ...prevData,
-          [field]: "IN STOCK",
-        }));
-      } else {
-        setUpdatedData((prevData) => ({
-          ...prevData,
-          [field]: value,
-        }));
-      }
-    }
+    setUpdatedData((prevData) => ({
+      ...prevData,
+      [field]: value,
+    }));
+  };
+
+  const removeKeyFromUpdatedData = (keyName: string) => {
+    var newUpdatedData = updatedData;
+    delete newUpdatedData[keyName];
+    setUpdatedData(newUpdatedData);
   };
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -212,107 +455,191 @@ const CardComponent: React.FC<CardType> = ({
 
   const formItems = [
     {
+      label: "Product Name",
+      name: "productName",
+      value: (
+        <Form.Item name="product name">
+          <b>Product Name:</b>
+          <br></br>
+          <br></br>
+          <AssetFieldAutoComplete
+            assetField="product_name"
+            value={assetName}
+            setValue={setAssetName}
+            defaultValue={data.product_name}
+          />
+        </Form.Item>
+      ),
+    },
+    {
       label: "Asset Category",
       value: (
-        <Form.Item
-          name="assetCategory"
-          style={{ flex: "1" }}
-          className="formItem"
-        >
+        <Form.Item name="assetCategory">
           <b style={{ display: "block" }}>Asset Category: </b> <br></br>
-          <Input
-            defaultValue={data.asset_category}
-            onChange={(e) =>
-              handleUpdateChange("asset_category", e.target.value)
-            }
-            style={inputStyle}
-          />{" "}
+          <Select
+            id="simple-select-modify-category"
+            label="Asset Category"
+            sx={{ width: "100%" }}
+            displayEmpty
+            onChange={(event) => {
+              var categoryValue = (event.target.value as string).toUpperCase();
+              if (categoryValue === data?.asset_category?.toUpperCase()) {
+                removeKeyFromUpdatedData("asset_category");
+              } else {
+                handleUpdateChange("asset_category", categoryValue);
+              }
+              setAssetCategoryOption(categoryValue);
+            }}
+            renderValue={(value) => {
+              if (value === undefined || value === "") {
+                return data?.asset_category?.toUpperCase();
+              } else {
+                return value;
+              }
+            }}
+          >
+            {assetCategoryValues.map((field, index) => (
+              <MenuItem key={index} value={field.toUpperCase()}>
+                {field}
+              </MenuItem>
+            ))}
+          </Select>
         </Form.Item>
       ),
     },
     {
       label: "Asset Type",
       value: (
-        <Form.Item
-          name="status"
-          style={{ flex: "1", marginLeft: "8px" }}
-          className="formItem"
-        >
+        <Form.Item name="status">
           <b> Asset Type:</b>
           <br></br>
           <br></br>
-          <Select
-            variant="filled"
+          <AssetFieldAutoComplete
+            assetField="asset_type"
+            value={assetType}
+            setValue={setAssetType}
             defaultValue={data.asset_type}
-            style={{
-              boxShadow: "none",
-              border: "0.5px solid #d3d3d3",
-              width: "170px",
-              height: "40px",
-              borderRadius: "5px",
-              background: "#f0f0f0",
-            }}
-            onChange={(value) => handleUpdateChange("asset_type", value)}
-          >
-            {uniqueAssetTypeOptions.map((asset_type, index) => (
-              <Select.Option key={index} value={asset_type.id}>
-                {asset_type.asset_type_name}
-              </Select.Option>
-            ))}
-          </Select>
+          />
         </Form.Item>
       ),
     },
-    {
-      label: "Version",
-      value: (
-        <Form.Item
-          name="version"
-          style={{ flex: "1", marginLeft: "8px", width: "180px" }}
-          className="formItem"
-        >
-          <b>Version: </b>
-          <br></br>
-          <br></br>{" "}
-          <Input
-            defaultValue={data.version}
-            onChange={(e) => handleUpdateChange("version", e.target.value)}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      ),
-    },
-
     {
       label: "Asset Status",
       name: "assetStatus",
       value: (
-        <Form.Item
-          name="assetStatus"
-          style={{ boxShadow: "none", border: "none" }}
-        >
+        <Form.Item name="assetStatus">
           <b> Asset Status:</b>
           <br></br>
           <br></br>
           <Select
-            variant="filled"
-            defaultValue={uniqueStatusOptions[0]}
-            style={{
-              boxShadow: "none",
-              border: "0.5px solid #d3d3d3",
-              width: "180px",
-              height: "40px",
-              borderRadius: "5px",
-              background: "#f0f0f0",
+            id="simple-select-modify-status"
+            sx={{ width: "100%" }}
+            label="Asset Status"
+            displayEmpty
+            onChange={(event) => {
+              var statusValue = (event.target.value as string).toUpperCase();
+              if (statusValue === data?.status?.toUpperCase()) {
+                removeKeyFromUpdatedData("status");
+              } else {
+                handleUpdateChange("status", statusValue);
+              }
+              setAssetStatusOption(statusValue);
             }}
-            onChange={(value) => handleUpdateChange("status", value)} // Pass only the value
+            renderValue={(value) => {
+              if (value === undefined || value === "") {
+                return data.status.toUpperCase();
+              } else {
+                return value;
+              }
+            }}
           >
-            {uniqueStatusOptions.map((status, index) => (
-              <Select.Option key={index} value={status}>
-                {status}
-              </Select.Option>
+            {assetStatusValues.map((field, index) => (
+              <MenuItem key={index} value={field.toUpperCase()}>
+                {field}
+              </MenuItem>
             ))}
           </Select>
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Serial Number",
+      name: "serialNumber",
+      value: (
+        <Form.Item name="serial number">
+          <b>Serial Number:</b> <br></br>
+          <br></br>
+          <TextField
+            id="outlined-textarea-serial-hardware-modify"
+            label="Serial Number"
+            defaultValue={data?.serial_number}
+            sx={{ width: "100%" }}
+            onChange={(e) => {
+              var serialNumberValue = e.target.value as string;
+              if (serialNumberValue === data?.serial_number) {
+                removeKeyFromUpdatedData("serial_number");
+              } else {
+                if (serialNumberValue === "" || serialNumberValue === null) {
+                  handleUpdateChange("serial_number", null);
+                } else {
+                  handleUpdateChange("serial_number", serialNumberValue);
+                }
+              }
+            }}
+          />
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Model Number",
+      name: "modelNumber",
+      value: (
+        <Form.Item name="model number">
+          <b>Model Number:</b> <br></br>
+          <br></br>
+          <AssetFieldAutoComplete
+            assetField="model_number"
+            value={assetModelNumber}
+            setValue={setAssetModelNumber}
+            defaultValue={data.model_number}
+          />
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Business Unti",
+      name: "businessUnit",
+      value: (
+        <Form.Item
+          name="business_unit"
+          style={{ boxShadow: "none", border: "none" }}
+        >
+          <b>Business Unit:</b>
+          <br></br>
+          <br></br>
+          <AssetFieldAutoComplete
+            assetField="business_unit"
+            value={assetBusinessUnit}
+            setValue={setAssetBusinessUnit}
+            defaultValue={data.business_unit}
+          />
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Owner",
+      name: "owner",
+      value: (
+        <Form.Item name="owner">
+          <b>Owner: </b>
+          <br></br>
+          <br></br>
+          <AssetFieldAutoComplete
+            assetField="owner"
+            value={assetOwner}
+            setValue={setAssetOwner}
+            defaultValue={data.owner}
+          />
         </Form.Item>
       ),
     },
@@ -320,65 +647,87 @@ const CardComponent: React.FC<CardType> = ({
       label: "Location",
       name: "location",
       value: (
-        <Form.Item
-          name="location"
-          style={{ boxShadow: "none", border: "none" }}
-        >
+        <Form.Item name="location" className="formItem">
           <b> Asset Location:</b>
           <br></br>
           <br></br>
-          <Select
-            variant="filled"
+          <AssetFieldAutoComplete
+            assetField="location"
+            value={assetLocation}
+            setValue={setAssetLocation}
             defaultValue={data.location}
-            style={{
-              boxShadow: "none",
-              border: "0.5px solid #d3d3d3",
-              width: "170px",
-              height: "40px",
-              borderRadius: "5px",
-              background: "#f0f0f0",
-            }}
-            onChange={(value) => handleUpdateChange("location", value)}
-          >
-            {uniqueLocationoptions.map((location, index) => (
-              <Select.Option key={index} value={location.id}>
-                {location.location_name}
-              </Select.Option>
-            ))}
-          </Select>
+          />
         </Form.Item>
       ),
     },
     {
-      label: "Location",
-      name: "location",
+      label: "Invoice Location",
+      name: "invoice location",
       value: (
-        <Form.Item
-          name="location"
-          style={{ boxShadow: "none", border: "none" }}
-        >
+        <Form.Item name="location">
           <b>Invoice Location:</b>
           <br></br>
           <br></br>
-          <Select
-            variant="filled"
+          <AssetFieldAutoComplete
+            assetField="location"
+            value={assetInLocation}
+            setValue={setAssetInLocation}
             defaultValue={data.invoice_location}
-            style={{
-              boxShadow: "none",
-              border: "0.5px solid #d3d3d3",
-              width: "180px",
-              height: "40px",
-              borderRadius: "5px",
-              background: "#f0f0f0",
+          />
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Date of Purchase",
+      name: "dateOfPurchase",
+      value: (
+        <Form.Item name="date of purchase">
+          <b>Date of Purchase:</b> <br></br>
+          <br></br>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              label={"Purchase Date"}
+              format="YYYY/MM/DD"
+              defaultValue={dayjs(data.date_of_purchase)}
+              sx={{ width: "100%" }}
+              onChange={(value) => {
+                if (value === null || !value.isValid()) {
+                  setAssetPurchaseDate(
+                    dayjs(data.date_of_purchase).format("YYYY-MM-DD")
+                  );
+                } else {
+                  setAssetPurchaseDate(value.format("YYYY-MM-DD"));
+                }
+              }}
+            />
+          </LocalizationProvider>
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Warranty Period",
+      name: "warrantyPeriod",
+      value: (
+        <Form.Item name="warranty period">
+          <b>Warranty Period:</b>
+          <br></br>
+          <br></br>
+          <TextField
+            id="outlined-number-warranty-period-modify"
+            label="Warranty Period"
+            defaultValue={data.warranty_period}
+            InputProps={{
+              endAdornment: (
+                <Tooltip title="Warranty period should be in months Eg: 12, 24">
+                  <InfoCircleOutlined style={{ color: "rgba(0,0,0,.45)" }} />
+                </Tooltip>
+              ),
             }}
-            onChange={(value) => handleUpdateChange("invoice_location", value)} // Pass only the value
-          >
-            {uniqueLocationoptions.map((location, index) => (
-              <Select.Option key={index} value={location.id}>
-                {location.location_name}
-              </Select.Option>
-            ))}
-          </Select>
+            sx={{ width: "100%" }}
+            onChange={(e) => {
+              handleWarrantyPeriodChange(e);
+            }}
+          />
         </Form.Item>
       ),
     },
@@ -391,12 +740,13 @@ const CardComponent: React.FC<CardType> = ({
         <Form.Item name="os">
           <b>OS: </b>
           <br></br>
-          <br></br>{" "}
-          <Input
+          <br></br>
+          <AssetFieldAutoComplete
+            assetField="os"
+            value={assetOs}
+            setValue={setAssetOs}
             defaultValue={data.os}
-            onChange={(e) => handleUpdateChange("os", e.target.value)}
-            style={inputStyle}
-          />{" "}
+          />
         </Form.Item>
       ),
     },
@@ -407,12 +757,13 @@ const CardComponent: React.FC<CardType> = ({
         <Form.Item name="os version">
           <b>OS Version:</b>
           <br></br>
-          <br></br>{" "}
-          <Input
+          <br></br>
+          <AssetFieldAutoComplete
+            assetField="os_version"
+            value={assetOsVersion}
+            setValue={setAssetOsVersion}
             defaultValue={data.os_version}
-            onChange={(e) => handleUpdateChange("os_version", e.target.value)}
-            style={inputStyle}
-          />{" "}
+          />
         </Form.Item>
       ),
     },
@@ -423,12 +774,30 @@ const CardComponent: React.FC<CardType> = ({
         <Form.Item name="mobile os">
           <b>Mobile OS: </b>
           <br></br>
-          <br></br>{" "}
-          <Input
+          <br></br>
+          <AssetFieldAutoComplete
+            assetField="mobile_os"
+            value={assetMobileOs}
+            setValue={setAssetMobileOs}
             defaultValue={data.mobile_os}
-            onChange={(e) => handleUpdateChange("mobile_os", e.target.value)}
-            style={inputStyle}
-          />{" "}
+          />
+        </Form.Item>
+      ),
+    },
+    {
+      label: "License Type",
+      name: "licenseType",
+      value: (
+        <Form.Item name="license type">
+          <b>License Type: </b>
+          <br></br>
+          <br></br>
+          <AssetFieldAutoComplete
+            assetField="license_type"
+            value={assetLicenseType}
+            setValue={setAssetLicenseType}
+            defaultValue={data.license_type ?? null}
+          />
         </Form.Item>
       ),
     },
@@ -439,12 +808,13 @@ const CardComponent: React.FC<CardType> = ({
         <Form.Item name="processor">
           <b>Processor: </b>
           <br></br>
-          <br></br>{" "}
-          <Input
+          <br></br>
+          <AssetFieldAutoComplete
+            assetField="processor"
+            value={assetProcessor}
+            setValue={setAssetProcessor}
             defaultValue={data.processor}
-            onChange={(e) => handleUpdateChange("processor", e.target.value)}
-            style={inputStyle}
-          />{" "}
+          />
         </Form.Item>
       ),
     },
@@ -455,321 +825,30 @@ const CardComponent: React.FC<CardType> = ({
         <Form.Item name="generation">
           <b>Generation:</b>
           <br></br>
-          <br></br>{" "}
-          <Input
+          <br></br>
+          <AssetFieldAutoComplete
+            assetField="processor_gen"
+            value={assetProcessorGen}
+            setValue={setAssetProcessorGen}
             defaultValue={data.Generation}
-            onChange={(e) =>
-              handleUpdateChange("processor_gen", e.target.value)
-            }
-            style={inputStyle}
-          />{" "}
+          />
         </Form.Item>
       ),
     },
-    {
-      label: "Accessories",
-      name: "accessories",
-      value: (
-        <Form.Item name="accessories">
-          <b>Accessories:</b> <br></br>
-          <br></br>{" "}
-          <Input
-            defaultValue={data.accessories}
-            onChange={(e) => handleUpdateChange("accessories", e.target.value)}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      ),
-    },
-    {
-      label: "Date of Purchase",
-      name: "dateOfPurchase",
-      value: (
-        <Form.Item name="date of purchase">
-          <b>Date of Purchase:</b> <br></br>
-          <br></br>{" "}
-          <Input
-            defaultValue={formatDate(data.date_of_purchase.toString())}
-            onChange={(e) =>
-              handleUpdateChange("date_of_purchase", e.target.value)
-            }
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      ),
-    },
-    {
-      label: "Warranty Period",
-      name: "warrantyPeriod",
-      value: (
-        <Form.Item name="warranty period">
-          <b>Warranty Period:</b>
-          <br></br>
-          <br></br>{" "}
-          <Input
-            defaultValue={data.warranty_period}
-            onChange={(e) =>
-              handleUpdateChange("warranty_period", e.target.value)
-            }
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      ),
-    },
-    {
-      label: "Expiry Date",
-      name: "Expiry Date",
-      value: (
-        <Form.Item name="Expiry Date">
-          <b>Expiry Date: </b>
-          <br></br>
-          <br></br>{" "}
-          <Input
-            defaultValue={formattedExpiryDate}
-            style={inputStyle}
-            disabled
-          />{" "}
-        </Form.Item>
-      ),
-    },
-    {
-      label: "Asset detail status",
-      name: "asset_detail_status",
-      value: (
-        <Form.Item name="asset_detail_status">
-          <b>Asset Detail Status </b>
-          <br></br>
-          <br></br>{" "}
-          <Input
-            defaultValue={data.asset_detail_status}
-            onChange={(e) =>
-              handleUpdateChange("asset_detail_status", e.target.value)
-            }
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      ),
-    },
-    {
-      label: "Assign status",
-      name: "assign_status",
-      value: (
-        <Form.Item name="assign_status">
-          <b>Assign Status </b>
-          <br></br>
-          <br></br>{" "}
-          <Input
-            defaultValue={data.assign_status}
-            onChange={(e) =>
-              handleUpdateChange("assign_status", e.target.value)
-            }
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      ),
-    },
-
-    {
-      label: "Approver",
-      name: "approver",
-      value: (
-        <Form.Item name="date of purchase">
-          <b>Approved By:</b>
-          <br></br>
-          <br></br>{" "}
-          <Input
-            disabled
-            defaultValue={data.conceder}
-            onChange={(e) => handleUpdateChange("conceder", e.target.value)}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      ),
-    },
-    {
-      label: "Serial Number",
-      name: "serialNumber",
-      value: (
-        <Form.Item name="serial number">
-          <b>Serial Number:</b> <br></br>
-          <br></br>{" "}
-          <Input
-            defaultValue={data.serial_number}
-            onChange={(e) =>
-              handleUpdateChange("serial_number", e.target.value)
-            }
-            readOnly
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      ),
-    },
-
-    {
-      label: "Model Number",
-      name: "modelNumber",
-      value: (
-        <Form.Item name="model number">
-          <b>Model Number:</b> <br></br>
-          <br></br>{" "}
-          <Input
-            defaultValue={data.model_number}
-            onChange={(e) => handleUpdateChange("model_number", e.target.value)}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      ),
-    },
-    {
-      label: "Custodian",
-      name: "custodian",
-      value: (
-        <Form.Item name="date of purchase">
-          <b>Custodian:</b>
-          <br></br>
-          <br></br>{" "}
-          <Input
-            disabled
-            defaultValue={data.custodian}
-            onChange={(e) => handleUpdateChange("custodian", e.target.value)}
-            style={{
-              border: "0.5px solid #d3d3d3",
-              width: "180px",
-              boxShadow: "none",
-              textAlign: "left",
-              background: " #f0f0f0",
-              borderRadius: "5px",
-            }}
-          />{" "}
-        </Form.Item>
-      ),
-    },
-    {
-      label: "Owner",
-      name: "owner",
-      value: (
-        <Form.Item name="owner">
-          <b>Owner: </b>
-          <br></br>
-          <br></br>{" "}
-          <Input
-            defaultValue={data.owner}
-            onChange={(e) => handleUpdateChange("owner", e.target.value)}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      ),
-    },
-    {
-      label: "Requester",
-      name: "requester",
-      value: (
-        <Form.Item name="requester">
-          <b>Requester: </b>
-          <br></br>
-          <br></br>{" "}
-          <Input
-            disabled
-            defaultValue={data.requester}
-            onChange={(e) => handleUpdateChange("requester", e.target.value)}
-            style={{
-              border: "0.5px solid #d3d3d3",
-              width: "180px",
-              boxShadow: "none",
-              textAlign: "left",
-              background: " #f0f0f0",
-              borderRadius: "5px",
-            }}
-          />{" "}
-        </Form.Item>
-      ),
-    },
-
-    {
-      label: "Product Name",
-      name: "productName",
-      value: (
-        <Form.Item name="product name">
-          <b>Product Name:</b>
-          <br></br>
-          <br></br>{" "}
-          <Input
-            defaultValue={data.product_name}
-            onChange={(e) => handleUpdateChange("product_name", e.target.value)}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      ),
-    },
-
-    {
-      label: "Business Unti",
-      name: "businessUnit",
-      value: (
-        <Form.Item
-          name="business_unit"
-          style={{ boxShadow: "none", border: "none" }}
-        >
-          <b>Business Unit:</b>
-          <br></br>
-          <br></br>
-          <Select
-            variant="filled"
-            defaultValue={uniqueBusinessOptions[0]}
-            style={{
-              boxShadow: "none",
-              border: "0.5px solid #d3d3d3",
-              width: "180px",
-              height: "40px",
-              borderRadius: "5px",
-              background: "#f0f0f0",
-            }}
-            onChange={(value) => handleUpdateChange("business_unit", value)} // Pass only the value
-          >
-            {uniqueBusinessOptions.map((business_unit, index) => (
-              <Select.Option
-                key={index}
-                value={business_unit}
-                style={{ background: "#f0f0f0" }}
-              >
-                {business_unit.business_unit_name}
-              </Select.Option>
-            ))}
-          </Select>
-        </Form.Item>
-      ),
-    },
-
     {
       label: "Memory",
       name: "memory",
       value: (
-        <Form.Item
-          name="business_unit"
-          style={{ boxShadow: "none", border: "none" }}
-        >
+        <Form.Item name="business_unit">
           <b>Memory:</b>
           <br></br>
           <br></br>
-          <Select
-            variant="filled"
-            defaultValue={data.memory}
-            style={{
-              boxShadow: "none",
-              border: "0.5px solid #d3d3d3",
-              width: "180px",
-              height: "40px",
-              borderRadius: "5px",
-              background: "#f0f0f0",
-            }}
-            onChange={(value) => handleUpdateChange("memory", value)} // Pass only the value
-          >
-            {uniqueMemoryOptions.map((memory, index) => (
-              <Select.Option key={index} value={memory.id}>
-                {memory.memory_space}
-              </Select.Option>
-            ))}
-          </Select>
+          <AssetFieldAutoComplete
+            assetField="memory"
+            value={assetMemory}
+            setValue={setAssetMemory}
+            defaultValue={data?.memory?.toString()}
+          />
         </Form.Item>
       ),
     },
@@ -780,12 +859,41 @@ const CardComponent: React.FC<CardType> = ({
         <Form.Item name="storage">
           <b>Storage: </b>
           <br></br>
-          <br></br>{" "}
-          <Input
+          <br></br>
+          <AssetFieldAutoComplete
+            assetField="storage"
+            value={assetStorage}
+            setValue={setAssetStorage}
             defaultValue={data.storage}
-            onChange={(e) => handleUpdateChange("storage", e.target.value)}
-            style={inputStyle}
-          />{" "}
+          />
+        </Form.Item>
+      ),
+    },
+    {
+      label: "Accessories",
+      name: "accessories",
+      value: (
+        <Form.Item name="accessories">
+          <b>Accessories:</b> <br></br>
+          <br></br>
+          <TextField
+            id="outlined-textarea-accessories-hardware-modify"
+            label="Accessories"
+            defaultValue={data.accessories}
+            sx={{ width: "100%" }}
+            onChange={(e) => {
+              var accessoriesValue = e.target.value as string;
+              if (accessoriesValue === data?.accessories) {
+                removeKeyFromUpdatedData("accessories");
+              } else {
+                if (accessoriesValue === "" || accessoriesValue === null) {
+                  handleUpdateChange("accessories", null);
+                } else {
+                  handleUpdateChange("accessories", accessoriesValue);
+                }
+              }
+            }}
+          />
         </Form.Item>
       ),
     },
@@ -796,60 +904,17 @@ const CardComponent: React.FC<CardType> = ({
         <Form.Item name="configuration">
           <b>Configuration: </b>
           <br></br>
-          <br></br>{" "}
-          <Input
+          <br></br>
+          <TextField
+            id="outlined-textarea-configuration-hardware-modify"
+            label="Configuration"
+            multiline
+            disabled
             defaultValue={data.configuration}
-            onChange={(e) =>
-              handleUpdateChange("configuration", e.target.value)
-            }
-            readOnly
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      ),
-    },
-    {
-      label: "Created At",
-      name: "createdAt",
-      value: (
-        <Form.Item name="created_at">
-          <b>Created At: </b>
-          <br></br>
-          <br></br>
-          <Input
-            disabled
-            defaultValue={formatDate(data.created_at)}
-            style={{
-              border: "0.5px solid #d3d3d3",
-              width: "180px",
-              boxShadow: "none",
-              textAlign: "left",
-              background: " #f0f0f0",
-              borderRadius: "5px",
-            }}
-          />
-        </Form.Item>
-      ),
-    },
-    {
-      label: "Updated At",
-      name: "updatedAt",
-      value: (
-        <Form.Item name="updated_at">
-          <b>Updated At: </b>
-          <br></br>
-          <br></br>
-          <Input
-            disabled
-            defaultValue={formatDate(data.updated_at)}
-            style={{
-              border: "0.5px solid #d3d3d3",
-              width: "180px",
-              boxShadow: "none",
-              textAlign: "left",
-              background: " #f0f0f0",
-              borderRadius: "5px",
-            }}
+            sx={{ width: "100%" }}
+            // onChange={(e) => {
+            //   handleAccessoryChange(e);
+            // }}
           />
         </Form.Item>
       ),
@@ -861,18 +926,26 @@ const CardComponent: React.FC<CardType> = ({
         <Form.Item name="comments">
           <b>Comments: </b>
           <br></br>
-          <br></br>{" "}
-          <Input
+          <br></br>
+          <TextField
+            id="outlined-textarea-comments-modify"
+            label="Comments"
+            multiline
             defaultValue={data.notes}
-            onChange={(e) => handleUpdateChange("comments", e.target.value)}
-            style={{
-              width: "387px",
-              height: "100px",
-              background: "#f0f0f0",
-              borderRadius: "5px",
-              border: "0.5px solid #d3d3d3",
+            sx={{ width: "100%" }}
+            onChange={(e) => {
+              var comments = e.target.value as string;
+              if (comments === data?.notes) {
+                removeKeyFromUpdatedData("notes");
+              } else {
+                if (comments === "" || comments === null) {
+                  handleUpdateChange("notes", null);
+                } else {
+                  handleUpdateChange("notes", comments);
+                }
+              }
             }}
-          />{" "}
+          />
         </Form.Item>
       ),
     },
@@ -883,22 +956,15 @@ const CardComponent: React.FC<CardType> = ({
         <Form.Item name="approval_status_message">
           <b>Approver Message: </b>
           <br></br>
-          <br></br>{" "}
-          <Input
-            defaultValue={data["approval_status_message"]}
-            onChange={(e) =>
-              handleUpdateChange("approval_status_message", e.target.value)
-            }
-            style={{
-              width: "387px",
-              height: "100px",
-              background: "#f0f0f0",
-              borderRadius: "5px",
-              border: "0.5px solid #d3d3d3",
-              textAlign: "center",
-            }}
-            readOnly
-          />{" "}
+          <br></br>
+          <TextField
+            id="outlined-textarea-approver-notes-modify"
+            label="Approver Notes"
+            multiline
+            disabled
+            defaultValue={data.approval_status_message}
+            sx={{ width: "100%" }}
+          />
         </Form.Item>
       ),
     },
@@ -911,21 +977,6 @@ const CardComponent: React.FC<CardType> = ({
       (typeof item.value === "string" &&
         item.value.toLowerCase().includes(searchQuery))
   );
-
-  const mainCardStyle = {
-    width: "90%",
-    display: "flex",
-    flexWrap: "wrap",
-    background: "white",
-    marginLeft: "6%",
-    alignItems: "flex-start",
-    rowGap: "-10px",
-  };
-  const formItemStyle = {
-    flex: "0 0 calc(16.66% - 20px)",
-    margin: "10px",
-    boxSizing: "border-box",
-  };
 
   <ConfigProvider
     theme={{
@@ -948,7 +999,7 @@ const CardComponent: React.FC<CardType> = ({
     }
     return date.toLocaleDateString();
   }
-  
+
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const handleDeleteClick = () => {
@@ -1191,21 +1242,24 @@ const CardComponent: React.FC<CardType> = ({
       </div>
 
       <div className="scrollable-content">
-        <Form
-          key={data.asset_id}
-          className="mainCard"
-          title=""
-          style={mainCardStyle}
-        >
-          {filteredFormItems.map((item, index) => (
-            <Form.Item key={index}>
-              <div key={index} style={formItemStyle}>
-                {item.value}
-              </div>
-            </Form.Item>
-          ))}
-
-          <div className="rowone"></div>
+        <Form key={data.asset_id} title="">
+          <Row gutter={{ xs: 16, sm: 32, md: 24, lg: 32 }}>
+            {filteredFormItems.map((item, index) => (
+              <Col
+                className="gutter-row"
+                span={6}
+                xs={24}
+                sm={12}
+                md={8}
+                lg={6}
+              >
+                <Form.Item key={index}>
+                  <div key={index}>{item.value}</div>
+                </Form.Item>
+              </Col>
+            ))}
+          </Row>
+          {/* <div className="rowone"></div> */}
         </Form>
       </div>
     </div>
