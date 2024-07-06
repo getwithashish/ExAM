@@ -5,10 +5,10 @@ import type { DrawerProps } from "antd";
 interface DrawerViewRequestProps extends DrawerProps {
   title: string;
   onClose: () => void;
-  selectedRow: any; 
+  selectedRow: any;
   drawerTitle: string;
-  onUpdateData: (updatedData: { key: any }) => void; 
-  closeIcon: JSX.Element; 
+  onUpdateData: (updatedData: { key: any }) => void;
+  closeIcon: JSX.Element;
 }
 
 const DrawerViewRequest: FC<DrawerViewRequestProps> = ({
@@ -19,7 +19,13 @@ const DrawerViewRequest: FC<DrawerViewRequestProps> = ({
 }) => {
   return (
     <>
-      <Drawer destroyOnClose={true} title={title} onClose={onClose} open={open} width={1200}>
+      <Drawer
+        destroyOnClose={true}
+        title={title}
+        onClose={onClose}
+        open={open}
+        width={1200}
+      >
         {children}
       </Drawer>
     </>
