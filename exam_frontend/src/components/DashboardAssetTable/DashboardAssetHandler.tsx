@@ -581,16 +581,23 @@ const DashboardAssetHandler = ({
       width: 120,
       render: renderClickableColumn("Accessories", "accessories"),
     },
-    {
-      title: "Approver Notes",
-      dataIndex: "approval_status_message",
-      responsive: ["md"],
-      width: 120,
-      render: renderClickableColumn(
-        "approval_status_message",
-        "approval_status_message"
-      ),
-    },
+    // {
+    //   title: "Notes",
+    //   dataIndex: "Notes",
+    //   responsive: ["md"],
+    //   width: 120,
+    //   render: renderClickableColumn("Comment", "notes"),
+    // },
+    // {
+    //   title: "Approver Notes",
+    //   dataIndex: "approval_status_message",
+    //   responsive: ["md"],
+    //   width: 120,
+    //   render: renderClickableColumn(
+    //     "approval_status_message",
+    //     "approval_status_message"
+    //   ),
+    // },
     {
       title: "View Asset Log",
       dataIndex: "Accessories",
@@ -649,6 +656,7 @@ const DashboardAssetHandler = ({
       requester: { username: any };
       created_at: any;
       updated_at: any;
+      notes: any;
       approval_status_message: any;
     }) => ({
       key: result.asset_uuid,
@@ -684,6 +692,7 @@ const DashboardAssetHandler = ({
       AssignAsset: "assign",
       created_at: result.created_at,
       updated_at: result.updated_at,
+      notes: result.notes,
       approval_status_message: result.approval_status_message,
     })
   );

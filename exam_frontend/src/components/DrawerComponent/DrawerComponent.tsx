@@ -21,7 +21,7 @@ const DrawerComponent:React.FC<DrawerProps> = ({ visible, onClose,drawerTitle ,c
       borderTopRightRadius: "5%",
       borderBottomLeftRadius: "0%",
       borderBottomRightRadius: "0%",
-      marginBottom:"0px"
+      marginBottom:"0px",
      }}
     >
       <div className='fixed-header  font-display'>
