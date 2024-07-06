@@ -439,30 +439,6 @@ const CardComponent: React.FC<CardType> = ({
       ...prevData,
       [field]: value,
     }));
-
-    // if (field === "business_unit") {
-    //   // Map the business unit name to its primary key
-    //   const businessUnitPK = uniqueBusinessOptions.find(
-    //     (option) => option.name === value
-    //   )?.id;
-    //   setUpdatedData((prevData) => ({
-    //     ...prevData,
-    //     [field]: businessUnitPK,
-    //   }));
-    // } else {
-    //   if (field === "status" && value === "IN STORE") {
-    //     // Change the status to "IN STOCK" when the value is "IN STORE"
-    //     setUpdatedData((prevData) => ({
-    //       ...prevData,
-    //       [field]: "IN STOCK",
-    //     }));
-    //   } else {
-    //     setUpdatedData((prevData) => ({
-    //       ...prevData,
-    //       [field]: value,
-    //     }));
-    //   }
-    // }
   };
 
   const removeKeyFromUpdatedData = (keyName: string) => {
@@ -475,38 +451,6 @@ const CardComponent: React.FC<CardType> = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value.toLowerCase());
-  };
-
-  const mainCardStyle = {
-    // width: "90%",
-    // display: "flex",
-    // flexWrap: "wrap",
-    // background: "white",
-    // marginLeft: "6%",
-    // alignItems: "flex-start",
-    // rowGap: "-10px",
-    // width: "90%",
-    // display: "flex",
-    // "flex-wrap": "wrap",
-    // background: "white",
-    // "margin-left": "6%",
-    // "align-items": "flex-start",
-    // "row-gap": "10px",
-    // display: "grid",
-    // "grid-template-columns": "repeat(3, 1fr)" /* Creates 4 equal columns */,
-    // gap: "10px" /* Sets the space between the grid items */,
-    // width: "90%",
-    // background: "white",
-    // "margin-left": "6%",
-    // "align-items": "flex-start",
-  };
-  const formItemStyle = {
-    // flex: "0 0 calc(16.66% - 20px)",
-    // margin: "10px",
-    // boxSizing: "border-box",
-    // flex: "1 1 calc(25% - 10px)",
-    // "margin-right": "10px",
-    // width: "100%",
   };
 
   const formItems = [
@@ -583,7 +527,7 @@ const CardComponent: React.FC<CardType> = ({
       label: "Asset Status",
       name: "assetStatus",
       value: (
-        <Form.Item name="assetStatus" style={formItemStyle}>
+        <Form.Item name="assetStatus">
           <b> Asset Status:</b>
           <br></br>
           <br></br>
@@ -1298,7 +1242,7 @@ const CardComponent: React.FC<CardType> = ({
       </div>
 
       <div className="scrollable-content">
-        <Form key={data.asset_id} title="" style={mainCardStyle}>
+        <Form key={data.asset_id} title="">
           <Row gutter={{ xs: 16, sm: 32, md: 24, lg: 32 }}>
             {filteredFormItems.map((item, index) => (
               <Col
@@ -1310,9 +1254,7 @@ const CardComponent: React.FC<CardType> = ({
                 lg={6}
               >
                 <Form.Item key={index}>
-                  <div key={index} style={formItemStyle}>
-                    {item.value}
-                  </div>
+                  <div key={index}>{item.value}</div>
                 </Form.Item>
               </Col>
             ))}
