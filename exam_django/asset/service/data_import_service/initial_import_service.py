@@ -140,7 +140,12 @@ class AssetImportService:
             else:
                 asset_detail_status = "UNKNOWN"
 
-            assign_status = "ASSIGNED" if row.get("Custodian") else "UNASSIGNED"
+            assign_status = (
+                                "UNASSIGNED" 
+                                if not row.get("Custodian") or (row.get("Custodian") == "Experion SFM" and row.get("Asset Category") == "Laptop") 
+                                else "ASSIGNED")
+
+                
 
             asset = Asset(
                 asset_id=asset_id,
