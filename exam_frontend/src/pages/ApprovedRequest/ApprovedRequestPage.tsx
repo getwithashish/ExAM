@@ -4,6 +4,9 @@ const ApprovedRequestPage = () => {
   const decodeJWT = (token: string) => {
     try {
       const base64Url = token.split(".")[1];
+      if (!base64Url) {
+        throw new Error("Invalid Jwt token: Missing base URL segment")
+      }
       const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
       const jsonPayload = decodeURIComponent(
         atob(base64)
@@ -37,6 +40,8 @@ const ApprovedRequestPage = () => {
         isRejectedPage={false}
         queryParamProp={queryParamProp}
         heading={heading}
+        userRole={undefined}
+        isMyApprovalPage={undefined}
       />
     </div>
   );

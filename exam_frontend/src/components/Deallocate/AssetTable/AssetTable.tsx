@@ -40,11 +40,13 @@ const AssetTable = ({
   searchTerm,
   setSearchTerm,
 }: AssetTableProps) => {
+  const[ currentPage, setCurrentPage ] = useState(1);
 
   const handleRefreshClick = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
     event.preventDefault();
-    const queryParams = `&global_search=${searchTerm}&sort_by=${sortedColumn}&sort_order=${sortOrder}&offset=20`;
+    const queryParams = `&global_search=${searchTerm}`;
     assetDataRefetch(queryParams);
+    setCurrentPage(1);    
   };
 
   const [showUpload, setShowUpload] = useState(false);
@@ -66,11 +68,11 @@ const AssetTable = ({
         />
         <RefreshTwoTone
           style={{
-            backgroundColor: "#63c5da",
             cursor: "pointer",
-            margin: "10px",
-            borderRadius: '10px',
-            color: 'white'
+            marginLeft : "10px",
+            width: "30px",
+            height: "40px",
+            color: '#2979ff'
           }}
           onClick={handleRefreshClick}
         />
@@ -107,32 +109,31 @@ const AssetTable = ({
             style={{
               fontSize: "50px",
               borderColor: "white",
-              // width: "29%",
             }}
             footer={() => (
               <Pagination
-            pageSize={20}
-            showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} assets`}
-            total={totalItemCount}
-            onChange={(page, pageSize) => {
-              const offset = (page - 1) * pageSize;
-              let additionalQueryParams = `&offset=${offset}`;
-              if (searchTerm !== "" && searchTerm !== null) {
-                  additionalQueryParams += `&global_search=${searchTerm}`;
-              }
-              let sortParams = "";
-              const queryParams = `${sortParams}${additionalQueryParams}`;
-              if (sortedColumn && sortOrder) {
-                  // Check if sortParams already contains sorting parameters
-                  if (queryParams.indexOf('sort_by') === -1) {
-                      sortParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
+                pageSize={20}
+                current={currentPage}
+                showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} assets`}
+                total={totalItemCount}
+                onChange={(page, pageSize) => {
+                  setCurrentPage(page);
+                  const offset = (page - 1) * pageSize;
+                  let additionalQueryParams = `&offset=${offset}`;
+                  if (searchTerm !== "" && searchTerm !== null) {
+                      additionalQueryParams += `&global_search=${searchTerm}`;
                   }
-              }
-              
-              assetPageDataFetch(queryParams);
-          }}
-            hideOnSinglePage={true}
-          />
+                  let sortParams = "";
+                  const queryParams = `${sortParams}${additionalQueryParams}`;
+                  if (sortedColumn && sortOrder) {
+                      if (queryParams.indexOf('sort_by') === -1) {
+                          sortParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
+                      }
+                  }                  
+                  assetPageDataFetch(queryParams);
+              }}
+                hideOnSinglePage={true}
+              />
             )}
           />
         </div>

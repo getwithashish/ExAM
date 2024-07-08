@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { fetchAssetData } from '../api/ChartApi';
-import { AxisConfig, BarChart } from '@mui/x-charts';
+import { AxisConfig, BarChart, barElementClasses } from '@mui/x-charts';
+import { axisClasses } from '@mui/x-charts/ChartsAxis';
 import { AxiosError } from 'axios';
 import { MakeOptional } from '@mui/x-charts/models/helpers';
 import CircularWithValueLabel from './circularProgessBar';
-import { axisClasses } from "@mui/x-charts";
 import { ErrorResponse } from './types';
 
 type Error = AxiosError<ErrorResponse>;
@@ -44,29 +44,34 @@ export default function BarChartHandler() {
   const xAxis: MakeOptional<AxisConfig, "id">[] = [
     { scaleType: "band", data: assetData.map(asset => asset.name) },
   ];
-
   const series = [{ data: assetData.map(asset => asset.count) }];
 
-  const chartSetting = {
-    sx: {
-      [`.${axisClasses.bottom} .${axisClasses.tickLabel}`]: {
-        overflow: "visible !important",
-      },
-      '& .MuiLegend-root': {
-        fontSize: '6px',
-      },
-    },
-  };
-
   return (
-    <div className='text-center items-center'>
-      <span className='font-medium text-md sm:text-sm md:text-md lg:text-lg'>Individual Asset Count</span>
+    <div className='text-center pt-4 items-center'>
+      <span className='font-bold font-display text-gray-200 sm:text-sm md:text-md lg:text-lg'>
+        INDIVIDUAL ASSET COUNT
+      </span>
       <BarChart
-        sx={chartSetting.sx}
-        xAxis={xAxis}
-        series={series}
-        height={250}
-      />
+        sx={() => ({
+          [`.${barElementClasses.root}`]: {
+            fill: '#075985',
+            strokeWidth: 0,
+          },
+          [`.${axisClasses.root}`]: {
+            '.MuiChartsAxis-line, .MuiChartsAxis-tick': {
+              stroke: '#ffffff',
+              strokeWidth: 0,
+            },
+            '.MuiChartsAxis-tickLabel': { 
+              fill: '#ffffff',
+              fontFamily:'Inter'
+            },
+          },
+        })}
+          xAxis={xAxis}
+          series={series}
+          height={350}
+        />
     </div>
   );
 }

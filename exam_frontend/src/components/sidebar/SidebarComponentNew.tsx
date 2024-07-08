@@ -20,24 +20,21 @@ import SideDrawerComponent from "../SideDrawerComponent/SideDrawerComponent";
 import AddAsset from "../AddAsset/AddAsset";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../pages/authentication/AuthContext";
-import Avatars from "../Avatar/Avatar";
 import { EditOutlined } from "@mui/icons-material";
-import ToolTip from "../Tooltip/Tooltip";
 import { Footer as FlowbiteFooter } from "flowbite-react";
 import { MdFacebook } from "react-icons/md";
 import { useEffect, useState } from "react";
 import React from "react";
-import SubMenu from "antd/es/menu/SubMenu";
-import { Button } from "@mui/material";
+import { Avatar, Button } from "@mui/material";
+import { Polygon } from "../../assets";
+import Tooltip from "../Tooltip/Tooltip";
 
-const SidebarComponentNew = ({ children }) => {
+const SidebarComponentNew = ({ children }: any) => {
   const { userRole, setUserRole, login, logout } = useAuth();
-
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleDownload = async () => {
     const fileUrl = "/static/asset_management_windows.exe";
-
     try {
       const response = await fetch(fileUrl);
       const blob = await response.blob();
@@ -81,6 +78,9 @@ const SidebarComponentNew = ({ children }) => {
     const decodeJWT = (token: string) => {
       try {
         const base64Url = token.split(".")[1];
+        if (!base64Url) {
+          throw new Error("Invalid Jwt token: Missing base URL segment")
+        }
         const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
         const jsonPayload = decodeURIComponent(
           atob(base64)
@@ -97,26 +97,19 @@ const SidebarComponentNew = ({ children }) => {
       }
     };
 
-    // Get JWT token from localStorage
     const jwtToken = localStorage.getItem("jwt");
     if (jwtToken) {
       const payload = decodeJWT(jwtToken);
       setJwtPayload(payload);
-      // login()
       setUserRole(payload.user_scope);
     }
   }, []);
 
   const navigate = useNavigate();
 
-  const toggleLogout = () => {
-    setShowLogout(!showLogout);
-  };
-
   const handleLogout = () => {
     localStorage.removeItem("jwt");
     localStorage.removeItem("refresh_token");
-    // logout()
     setUserRole("None");
     navigate("/login", { replace: true });
   };
@@ -125,7 +118,7 @@ const SidebarComponentNew = ({ children }) => {
     {
       key: "logout",
       label: (
-        <Button color="error" onClick={handleLogout}>
+        <Button color="primary" onClick={handleLogout}>
           Logout &nbsp;
           <LogoutOutlined />
         </Button>
@@ -134,215 +127,238 @@ const SidebarComponentNew = ({ children }) => {
   ];
 
   return (
-    <Layout>
-      <Header
+    <Layout style={{ marginLeft: 0, minHeight: '100vh' }}>
+      <Sider
         style={{
-          backgroundColor: "white",
-          zIndex: 110,
-          position: "fixed",
-          left: 0,
-          top: 0,
-          bottom: 0,
-          borderBottom: "1px solid #e8e8e8",
-          padding: 0,
-          width: "100%",
+          position: 'fixed',
+          height: '100%',
+          zIndex: 10,
+          backgroundColor: '#161B21'
         }}
+        width={265}
+        breakpoint="lg"
+        collapsedWidth="0"
       >
-        <div className="flex w-screen lg:px-5 lg:pl-3">
-          <div className="text-left my-5 px-4 font-display text-lg p-0 m-0 items-center justify-between flex-1">
-            <b>Asset Management System</b>
-          </div>
-          <div className="flex-1 px-4">
-            <div className="flex gap-4">
-              <div className="flex-1 text-right">
-                {jwtPayload && jwtPayload.username && (
-                  <div>
-                    <div className={styles["username"]}>
-                      Hi, {jwtPayload.username}
-                    </div>
-                    {jwtPayload.user_scope && (
-                      <div className={styles["userscope"]}>
-                        {jwtPayload.user_scope}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              <div className="flex-2">
-                <Dropdown menu={{ items: menuItems }} placement="bottom" arrow>
-                  <div className="cursor-pointer">
-                    <Avatars />
-                  </div>
-                </Dropdown>
-              </div>
-            </div>
-          </div>
+        <div className="bg-custom-400 rounded-lg h-screen m-2">
+          <div className="justify-center p-2items-center pt-6 mx-8">
+          <img className="h-8" src="../../public/images/experion technologies.png" alt="Company Logo" />
         </div>
-      </Header>
-      <Layout>
-        <Sider
-          theme="light"
-          style={{
-            // overflow: "auto",
-            zIndex: 100,
-            height: "100vh",
-            position: "sticky",
-            fontSize: "600px",
-            width: "400px",
-            left: 0,
-            top: 0,
-            bottom: 0,
-            paddingTop: 100,
-            paddingLeft: 15,
-            borderRight: "1px solid  #e8e8e8",
-            // marginRight:"30px"
-          }}
-          width="250px"
-          breakpoint="lg"
-          collapsedWidth="0"
-        >
-          <div className="demo-logo-vertical" />
-
-          <Menu theme="light" mode="inline" className="text-base">
-            <Menu.Item icon={<PieChartOutlined />}>
-              <ToolTip title="Dashboard">
+          <Menu theme="dark" mode="vertical" className="text-base font-display items-center justify-between bg-transparent pt-10 mx-2 ">
+            <Menu.Item
+              icon={<PieChartOutlined />}
+            >
+              <Tooltip title="Dashboard">
                 <Link to="/exam/dashboard">Dashboard</Link>
-              </ToolTip>
+              </Tooltip>
             </Menu.Item>
-            <React.Fragment>
-              {userRole === "SYSTEM_ADMIN" ? (
-                <React.Fragment>
-                  <Menu.Item
-                    onClick={() => showDefaultDrawer()}
-                    icon={<AppstoreAddOutlined />}
-                  >
-                    <ToolTip title="To Create an Asset">Create Assets</ToolTip>
-                  </Menu.Item>
-                  <Menu.Item icon={<EditOutlined />}>
-                    <ToolTip title="To modify an Asset">
-                      <Link to="/exam/updatable_assets">Modify Assets</Link>
-                    </ToolTip>
-                  </Menu.Item>
-                  <Menu.Item icon={<UserSwitchOutlined />}>
-                    <ToolTip title="To allocate an Asset to an employee">
-                      <Link to="/exam/assignable_asset">Allocate Assets</Link>
-                    </ToolTip>
-                  </Menu.Item>
-                  <Menu.Item icon={<UserSwitchOutlined />}>
-                    <ToolTip title="To deallocate an Asset from an employee">
-                      <Link to="/exam/deallocate">Deallocate Assets</Link>
-                    </ToolTip>
-                  </Menu.Item>
-                </React.Fragment>
-              ) : userRole === "LEAD" ? (
-                <React.Fragment>
-                  <Menu.Item icon={<EditOutlined />}>
-                    <ToolTip title="To delete an Asset">
-                      <Link to="/exam/updatable_assets">Delete Assets</Link>
-                    </ToolTip>
-                  </Menu.Item>
-                </React.Fragment>
-              ) : userRole === "MANAGER" ? (
-                <React.Fragment>
-                  <Menu.Item icon={<EditOutlined />}>
-                    <ToolTip title="View Deleted Assets">
-                      <Link to="/exam/updatable_assets">Deleted Assets</Link>
-                    </ToolTip>
-                  </Menu.Item>
-                </React.Fragment>
-              ) : (
-                ""
-              )}
-            </React.Fragment>
 
-            {userRole === "LEAD" ? (
-              <SubMenu
+            {userRole === "SYSTEM_ADMIN" && (
+              <>
+                <Menu.Item
+                  onClick={() => showDefaultDrawer()}
+                  icon={<AppstoreAddOutlined />}
+                >
+                  <Tooltip title="To Create an Asset">Create Assets</Tooltip>
+                </Menu.Item>
+                <Menu.Item
+                  icon={<EditOutlined />}
+                >
+                  <Tooltip title="To modify an Asset">
+                    <Link to="/exam/updatable_assets">Modify Assets</Link>
+                  </Tooltip>
+                </Menu.Item>
+                <Menu.Item
+                  icon={<UserSwitchOutlined />}
+                >
+                  <Tooltip title="To allocate an Asset to an employee">
+                    <Link to="/exam/assignable_asset">Allocate Assets</Link>
+                  </Tooltip>
+                </Menu.Item>
+                <Menu.Item
+                  icon={<UserSwitchOutlined />}
+                >
+                  <Tooltip title="To deallocate an Asset from an employee">
+                    <Link to="/exam/deallocate">Deallocate Assets</Link>
+                  </Tooltip>
+                </Menu.Item>
+              </>
+            )}
+
+            {userRole === "LEAD" && (
+              <Menu.Item
+                icon={<EditOutlined />}
+              >
+                <Tooltip title="To delete an Asset">
+                  <Link to="/exam/updatable_assets">Delete Assets</Link>
+                </Tooltip>
+              </Menu.Item>
+            )}
+
+            {userRole === "MANAGER" && (
+              <Menu.Item
+                icon={<EditOutlined />}
+              >
+                <Tooltip title="View Deleted Assets">
+                  <Link to="/exam/updatable_assets">Deleted Assets</Link>
+                </Tooltip>
+              </Menu.Item>
+            )}
+
+            {userRole === "LEAD" && (
+              <Menu.SubMenu
                 key="sub1"
                 icon={<CheckSquareOutlined />}
                 title="Approve Assets"
+                className="bg-custom-400"
               >
-                <Menu.Item icon={<CarryOutOutlined />}>
-                  <ToolTip title="Approve Assets that are pending to be created">
+                <Menu.Item
+                  icon={<CarryOutOutlined />}
+                >
+                  <Tooltip title="Approve Assets that are pending to be created">
                     <Link to="/exam/creation_requests">In Creation</Link>
-                  </ToolTip>
+                  </Tooltip>
                 </Menu.Item>
-
-                <Menu.Item icon={<CarryOutOutlined />}>
-                  <ToolTip title="Approve Assets that are pending to be updated">
+                <Menu.Item
+                  icon={<CarryOutOutlined />}
+                >
+                  <Tooltip title="Approve Assets that are pending to be updated">
                     <Link to="/exam/updation_requests">In Modification</Link>
-                  </ToolTip>
+                  </Tooltip>
                 </Menu.Item>
-
-                <Menu.Item icon={<CarryOutOutlined />}>
-                  <ToolTip title="Approve Assets that are pending to be allocated">
+                <Menu.Item
+                  icon={<CarryOutOutlined />}
+                >
+                  <Tooltip title="Approve Assets that are pending to be allocated">
                     <Link to="/exam/assign_requests">In Allocation</Link>
-                  </ToolTip>
+                  </Tooltip>
                 </Menu.Item>
-              </SubMenu>
-            ) : (
-              ""
+              </Menu.SubMenu>
             )}
 
-            {userRole === "LEAD" ? (
-              <Menu.Item icon={<MailOutlined />}>
-                {/* For lead */}
-                <ToolTip title="Show Assets that I have approved">
+            {userRole === "LEAD" && (
+              <Menu.Item
+                icon={<MailOutlined />}
+              >
+                <Tooltip title="Show Assets that I have approved">
                   <Link to="/exam/my_approvals">My Approval History</Link>
-                </ToolTip>
+                </Tooltip>
               </Menu.Item>
-            ) : userRole === "SYSTEM_ADMIN" ? (
-              <SubMenu key="sub1" icon={<MailOutlined />} title="My Requests">
-                <Menu.Item icon={<CheckCircleOutlined />}>
-                  {/* For sysadmin */}
-                  <ToolTip title="Show my Asset Requests which have been approved">
-                    <Link to="/exam/approved_requests">Approved</Link>
-                  </ToolTip>
-                </Menu.Item>
-                <Menu.Item icon={<CheckCircleOutlined />}>
-                  {/* For sysadmin */}
-                  <ToolTip title="Show the requests which are in pending status">
-                    <Link to="/exam/pending_requests">Pending Requests</Link>
-                  </ToolTip>
-                </Menu.Item>
-                <Menu.Item icon={<CloseCircleOutlined />}>
-                  {/* For sysadmin */}
-                  <ToolTip title="Show my Asset creation and updation Requests which have been rejected">
-                    <Link to="/exam/rejected_assets">Rejected Asset</Link>
-                  </ToolTip>
-                </Menu.Item>
-                <Menu.Item icon={<CloseCircleOutlined />}>
-                  {/* For sysadmin */}
-                  <ToolTip title="Show my Asset allocation Requests which have been rejected">
-                    <Link to="/exam/rejected_allocation">
-                      Rejected Allocation
-                    </Link>
-                  </ToolTip>
-                </Menu.Item>
-              </SubMenu>
-            ) : (
-              ""
             )}
-            <Menu.Item icon={<UserSwitchOutlined />}>
-              <ToolTip title="To view the expired assets">
+
+            {userRole === "SYSTEM_ADMIN" && (
+              <Menu.SubMenu
+                key="sub1"
+                icon={<MailOutlined />}
+                title="My Requests"
+                style={{ backgroundColor: '#1D232C' }} // Adjust background color here
+              >
+                <Menu.Item
+                  icon={<CheckCircleOutlined />}
+                >
+                  <Tooltip title="Show my Asset Requests which have been approved">
+                    <Link to="/exam/approved_requests">Approved</Link>
+                  </Tooltip>
+                </Menu.Item>
+                <Menu.Item
+                  icon={<CheckCircleOutlined />}
+                >
+                  <Tooltip title="Show the requests which are in pending status">
+                    <Link to="/exam/pending_requests">Pending Requests</Link>
+                  </Tooltip>
+                </Menu.Item>
+                <Menu.Item
+                  icon={<CloseCircleOutlined />}
+                >
+                  <Tooltip title="Show my Asset creation and updation Requests which have been rejected">
+                    <Link to="/exam/rejected_assets">Rejected Asset</Link>
+                  </Tooltip>
+                </Menu.Item>
+                <Menu.Item
+                  icon={<CloseCircleOutlined />}
+                >
+                  <Tooltip title="Show my Asset allocation Requests which have been rejected">
+                    <Link to="/exam/rejected_allocation">Rejected Allocation</Link>
+                  </Tooltip>
+                </Menu.Item>
+              </Menu.SubMenu>
+            )}
+
+            <Menu.Item
+              icon={<UserSwitchOutlined />}
+            >
+              <Tooltip title="To view the expisky assets">
                 <Link to="/exam/expired_assets">Expired Assets</Link>
-              </ToolTip>
+              </Tooltip>
             </Menu.Item>
-            <Menu.Item icon={<CarryOutOutlined />}>
-              <ToolTip title="Download user agent">
-                <Link to="#" onClick={handleDownload}>
-                  Download
-                </Link>
-              </ToolTip>
+
+            <Menu.Item
+              icon={<CarryOutOutlined />}
+            >
+              <Tooltip title="Download user agent">
+                <Link to="#" onClick={handleDownload}>Download</Link>
+              </Tooltip>
             </Menu.Item>
-            <Menu.Item icon={<RobotOutlined />}>
-              <ToolTip title="AI Assistant">
+
+            <Menu.Item
+              icon={<RobotOutlined />}
+            >
+              <Tooltip title="AI Assistant">
                 <Link to="/exam/chat">AssetSense Ai</Link>
-              </ToolTip>
+              </Tooltip>
             </Menu.Item>
           </Menu>
-        </Sider>
-        <Content className="bg-white">
+
+        </div>
+
+      </Sider>
+      <Layout style={{ marginLeft: 0, minHeight: '100vh' }}>
+        <Header
+          style={{
+            position: 'fixed',
+            zIndex: 0,
+            width: '100%',
+            backgroundColor: '#161B21',
+            padding: '0 24px',
+            height:'97px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <div className="flex w-screen lg:ml-60 sm:px-2 mx-2 bg-custom-400 rounded-lg items-center">
+            <div className="flex-1">
+              <span className="font-display font-bold text-white ml-8 text-2xl">
+                A M S
+              </span>
+            </div>
+            <div className="flex-1 text-right text-gray-200">
+              {jwtPayload && jwtPayload.username && (
+                <div>
+                  <div className={styles["username"]}>
+                    <span className="font-display text-base">
+                      {jwtPayload.username}
+                    </span>
+                  </div>
+                  {jwtPayload.user_scope && (
+                    <div className={styles["userscope"]}>
+                      <span className="font-display text-gray-400">
+                        {jwtPayload.user_scope.split("_").join(" ")}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            <div className="mx-2">
+              <Dropdown menu={{ items: menuItems }} placement="bottom" arrow>
+                <div className="cursor-pointer">
+                  <Avatar />
+                </div>
+              </Dropdown>
+            </div>
+          </div>
+        </Header>
+        <Content style={{ overflow: 'initial' }}>
           <Spin spinning={loading}>
             {children}
             <SideDrawerComponent
@@ -355,8 +371,7 @@ const SidebarComponentNew = ({ children }) => {
                 setDisplayDrawer={setDisplayDrawer}
               />
             </SideDrawerComponent>
-
-            <Footer className="bg-white">
+            <Footer style={{ textAlign: 'center' }}>
               <FlowbiteFooter container>
                 <div className="flex w-full flex-col gap-y-6 lg:flex-row lg:justify-between lg:gap-y-0">
                   <FlowbiteFooter.LinkGroup>

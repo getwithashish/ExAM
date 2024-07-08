@@ -52,20 +52,15 @@ export const Statistics = ({
   }
 
   return (
-    <div className="bg-white">
-      <div className="shrink-0 m-4">
-        <span className="font-semibold font-display mx-6 text-grey-900 dark:text-white text-lg">
+    <div className="rounded-xl bg-custom-400 pt-10 sm:mx-6 ">
+      <div className="">
+        <span className="font-bold font-display text-white m-10 text-grey-900 text-xl">
           Asset Overview
         </span>
-      </div>
-      <div
-        className="rounded-lg bg-gray-50 shadow-md dark:bg-gray-800 xl:p-4 mx-10 py-2"
-        style={{ boxShadow: "0 0 20px rgba(0, 0, 0, 0.2)" }}
-      >
-        <div className="mx-4">
-          <div className="">
+      </div>  
+      <div className="xl:p-2 mx-6 py-2">
+        <div className="mx-2">
             <AssetCountComponent />
-          </div>
           <div className="items-center justify-center">
             <ChartHandlers
               assetCountData={assetCountData}

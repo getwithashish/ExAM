@@ -53,13 +53,13 @@ const DashboardAssetTable = ({
   };
 
   return (
-    <div className="bg-white py-4">
+    <div className="bg-custom-400 m-4 sm:mx-6">
       <div className="mainHeading font-medium font-display font-semibold">
-        <span className="font-semibold font-display text-grey-900 dark:text-white text-xl">
+        <span className="font-semibold font-display text-white dark:text-white text-xl">
           Asset Details
         </span>
       </div>
-      <div className="mx-10">
+      <div className="mx-8">
         <TableNavbar
           showUpload={showUpload}
           setShowUpload={setShowUpload}

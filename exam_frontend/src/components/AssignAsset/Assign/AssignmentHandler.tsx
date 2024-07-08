@@ -8,8 +8,9 @@ import { message, Spin } from "antd";
 import { Assignment } from "./Assignment";
 
 interface AssignmentHandlerProps {
-  record: DataType | null;
-  closeAssignDrawer: () => void;
+  record?: DataType | null;
+  closeAssignDrawer?: () => void;
+  assetDataRefetch?:any;
 }
 
 export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({

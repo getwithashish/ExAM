@@ -19,7 +19,7 @@ export interface PieChartGraphProps {
   };  
   selectedAssetType?: string;
   type?: string;
-  selectedTypeId:number;
+  selectedTypeId?:number | undefined;
   assetState?: string | null;  
   detailState?:string | null;
   assignState:string | null;

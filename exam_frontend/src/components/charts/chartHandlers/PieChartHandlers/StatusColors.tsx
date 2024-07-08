@@ -1,10 +1,13 @@
 export const statusColors: { [key: string]: string } = {
-    "IN STORE": "#FFB92A",
+    "IN STORE": "#FFCE30",
     "IN REPAIR": "#FEEB51",
-    "IN USE": "#9BCA3E",
-    "IN SERVICE": "#3ABBC9",
+    "IN USE": "#764AB0",
+    "ACTIVE": "#288BA8",
     DISPOSED: "#3ABBC9",
-    EXPIRED: "#CC0000",
+    EXPIRED: "#E83845",
+
+
+
     UNASSIGNED: "#E6E6E6",
     ASSIGN_PENDING: "#FFB92A",
     ASSIGNED: "#9BCA3E",
