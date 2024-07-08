@@ -132,7 +132,7 @@ const SidebarComponentNew = ({ children }: any) => {
         style={{
           position: 'fixed',
           height: '100%',
-          zIndex: 10,
+          zIndex: 110,
           backgroundColor: '#161B21'
         }}
         width={265}
@@ -315,10 +315,10 @@ const SidebarComponentNew = ({ children }: any) => {
         <Header
           style={{
             position: 'fixed',
-            zIndex: 0,
-            width: '100%',
+            zIndex: 100,
+            width: '100vw',
             backgroundColor: '#161B21',
-            padding: '0 24px',
+            padding: '0 28px',
             height:'97px',
             display: 'flex',
             alignItems: 'center',
@@ -371,58 +371,53 @@ const SidebarComponentNew = ({ children }: any) => {
                 setDisplayDrawer={setDisplayDrawer}
               />
             </SideDrawerComponent>
-            <Footer style={{ textAlign: 'center' }}>
-              <FlowbiteFooter container>
-                <div className="flex w-full flex-col gap-y-6 lg:flex-row lg:justify-between lg:gap-y-0">
+            <Footer className="lg:ml-60 text-center md:ml-40 bg-custom-400">
+              <FlowbiteFooter container className="bg-custom-500">
+                <div className="flex flex-col lg:flex-row lg:justify-between lg:gap-y-0">
                   <FlowbiteFooter.LinkGroup>
                     <FlowbiteFooter.Link
                       href="https://experionglobal.com/terms-of-use/"
-                      className="mr-3 mb-3 lg:mb-0"
+                      className="mr-3 mb-3 lg:mb-0 text-gray-400"
                     >
                       Terms and conditions
                     </FlowbiteFooter.Link>
                     <FlowbiteFooter.Link
                       href="https://experionglobal.com/privacy-policy/"
-                      className="mr-3 mb-3 lg:mb-0"
+                      className="mr-3 mb-3 lg:mb-0 text-gray-400"
                     >
                       Privacy Policy
                     </FlowbiteFooter.Link>
 
-                    <FlowbiteFooter.Link href="https://experionglobal.com/">
+                    <FlowbiteFooter.Link href="https://experionglobal.com/"
+                    className="mr-3 mb-3 lg:mb-0 text-gray-400">
                       Contact
                     </FlowbiteFooter.Link>
                   </FlowbiteFooter.LinkGroup>
                   <FlowbiteFooter.LinkGroup>
-                    <div className="flex gap-x-1">
+                    <div className="flex mx-10 gap-x-1">
                       <FlowbiteFooter.Link
                         href="https://www.facebook.com/experiontechnologies/"
-                        className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
+                        className="hover:[&>*]:text-black dark:hover:[&>*]:text-white"
                       >
                         <MdFacebook className="text-lg" />
                       </FlowbiteFooter.Link>
                       <FlowbiteFooter.Link
                         href="https://www.instagram.com/experion_technologies/?hl=en"
-                        className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
+                        className="hover:[&>*]:text-black dark:hover:[&>*]:text-white"
                       >
                         <FaInstagram className="text-lg" />
                       </FlowbiteFooter.Link>
                       <FlowbiteFooter.Link
                         href="https://twitter.com/experionglobal"
-                        className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
+                        className="hover:[&>*]:text-black dark:hover:[&>*]:text-white"
                       >
                         <FaTwitter className="text-lg" />
                       </FlowbiteFooter.Link>
                       <FlowbiteFooter.Link
                         href="https://www.linkedin.com/company/experion-technologies/posts/"
-                        className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
+                        className="hover:[&>*]:text-black dark:hover:[&>*]:text-white"
                       >
                         <FaLinkedin className="text-lg" />
-                      </FlowbiteFooter.Link>
-                      <FlowbiteFooter.Link
-                        href="https://www.linkedin.com/uas/login?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Fcompany%2Fexperion-technologies%2Fposts"
-                        className="hover:[&>*]:text-black dark:hover:[&>*]:text-gray-300"
-                      >
-                        {/* <FaDribbble className="text-lg" /> */}
                       </FlowbiteFooter.Link>
                     </div>
                   </FlowbiteFooter.LinkGroup>

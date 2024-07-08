@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Pagination, Table } from "antd";
+import { Pagination, Table,  ConfigProvider, theme, } from "antd";
 import "./DasboardAssetTable.css";
 import { CloseOutlined } from "@ant-design/icons";
 import { AssetTableProps } from "./types";
@@ -46,16 +46,27 @@ const DashboardAssetTable = ({
     const queryParams = `&global_search=${searchTerm}&sort_by=${sortedColumn}&sort_order=${sortOrder}&offset=20`;
     assetDataRefetch(queryParams);
   };
+  const { darkAlgorithm } = theme;
+  const [isDarkMode, setIsDarkMode] = useState(true);
 
   const [showUpload, setShowUpload] = useState(false);
   const closeImportDrawer = () => {
     setShowUpload(false);
   };
 
+  const customTheme = {
+    algorithm: darkAlgorithm,
+    components: {
+      Table: {
+        colorBgContainer: '#161B21', // Replace with your desired color
+      },
+    },
+  };
+
   return (
-    <div className="bg-custom-400 m-4 sm:mx-6">
+    <div className="bg-custom-400 sm:mx-2">
       <div className="mainHeading font-medium font-display font-semibold">
-        <span className="font-semibold font-display text-white dark:text-white text-xl">
+        <span className="font-semibold font-display text-white dark:text-white text-xl ml-6">
           Asset Details
         </span>
       </div>
@@ -83,6 +94,7 @@ const DashboardAssetTable = ({
         </SideDrawerComponent>
         <br></br>
         <br></br>
+        <ConfigProvider theme={customTheme}>
         <Table
           columns={columns.map((column: { dataIndex: string }) => ({
             ...column,
@@ -97,10 +109,12 @@ const DashboardAssetTable = ({
           scroll={{ x: 1300, y: 600 }}
           handleRowClick={handleRowClick}
           style={{
-            fontSize: "50px",
+            fontSize: "100px",
             borderColor: "white",
+            borderRadius:"10px",
             marginLeft: "3.5%",
             boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+            fontFamily:"Inter"
           }}
           footer={() => (
             <Pagination
@@ -141,8 +155,10 @@ const DashboardAssetTable = ({
               
               hideOnSinglePage={true}
             />
+            
           )}
         />
+        </ConfigProvider>
       </div>
       <DrawerViewRequest
         title=""

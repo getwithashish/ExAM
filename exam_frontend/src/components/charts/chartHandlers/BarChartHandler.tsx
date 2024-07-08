@@ -6,6 +6,7 @@ import { AxiosError } from 'axios';
 import { MakeOptional } from '@mui/x-charts/models/helpers';
 import CircularWithValueLabel from './circularProgessBar';
 import { ErrorResponse } from './types';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 type Error = AxiosError<ErrorResponse>;
 
@@ -46,11 +47,18 @@ export default function BarChartHandler() {
   ];
   const series = [{ data: assetData.map(asset => asset.count) }];
 
+  const darkTheme = createTheme({
+    palette: {
+      mode: 'dark',
+    },
+  });
+
   return (
     <div className='text-center pt-4 items-center'>
       <span className='font-bold font-display text-gray-200 sm:text-sm md:text-md lg:text-lg'>
-        INDIVIDUAL ASSET COUNT
+        Individual Asset Count
       </span>
+      <ThemeProvider theme={darkTheme}>
       <BarChart
         sx={() => ({
           [`.${barElementClasses.root}`]: {
@@ -72,6 +80,7 @@ export default function BarChartHandler() {
           series={series}
           height={350}
         />
+        </ThemeProvider>
     </div>
   );
 }

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { PieChart, pieArcLabelClasses } from '@mui/x-charts/PieChart';
 import Stack from "@mui/material/Stack";
 import { fetchAssetData, fetchAssetTypeData } from "../../api/ChartApi";
 import {
@@ -398,23 +399,11 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
 
   if (assetError) return <div>Error fetching data</div>;
 
-  const chartsData = [
-    {
-      title: 'Asset Status',
-      data: assetFilteredChartData,
-      onClick: handleAssetItemClick,
+  const darkTheme = createTheme({
+    palette: {
+      mode: 'dark',
     },
-    {
-      title: 'Asset Approval Status',
-      data: detailFilteredChartData,
-      onClick: handleDetailItemClick,
-    },
-    {
-      title: 'Asset Allocation Status',
-      data: assignFilteredChartData,
-      onClick: handleAssignItemClick,
-    },
-  ];
+  });
 
   return (
     <Stack>
@@ -464,17 +453,22 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
               <NoData />
             </div>
           ) : (
-            <Stack direction="row" sx={{ flexWrap: "wrap" }} className="m-auto lg:p-10">
-              {chartsData.map((chart, index) => (
-                <div key={index} className="pt-6 mt-4 text-center items-center justify-center">
+            < Stack
+              direction="row"
+              sx={{ flexWrap: "wrap" }}
+              className="m-auto lg:p-10"
+            >
+              <ThemeProvider theme={darkTheme}>
+                <div className=" pt-6 mt-4 text-center items-center justify-center">
                   <span className="font-semibold font-display leading-none text-white dark:text-white text-lg">
-                    {chart.title}
+                    Asset Status
                   </span>
+
                   <PieChart
                     margin={{ top: 0, bottom: 0, left: 0, right: 0 }}
                     series={[
                       {
-                        data: chart.data,
+                        data: assetFilteredChartData,
                         innerRadius: 60,
                         outerRadius: 150,
                         paddingAngle: 1,
@@ -487,22 +481,23 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                         arcLabel: (item) => `${item.value}`,
                         arcLabelMinAngle: 10,
                         faded: {
-                          innerRadius: 80,
-                          additionalRadius: 0,
-                          color: "gray",
+                          innerRadius: 60,
+                          additionalRadius: -60,
+                          color: "grey",
                         },
                       },
                     ]}
                     sx={{
                       [`& .${pieArcLabelClasses.root}`]: {
-                        fill: "white", 
+                        fill: "white",
                         fontWeight: "light",
-                        fontSize: 16,
+                        fontSize: 20,
                       },
                     }}
-                    onClick={() =>{chart.onClick}}
+                    onItemClick={handleAssetItemClick}
                     width={400}
                     height={400}
+                    tooltip={{ trigger: 'item' }}
                     slotProps={{
                       legend: {
                         direction: "row",
@@ -510,7 +505,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                         hidden: false,
                         labelStyle: {
                           fontSize: 11,
-                          fill: "#ffffff",
+                          fill: "#ffffff"
                         },
                         itemMarkWidth: 8,
                         itemMarkHeight: 12,
@@ -520,7 +515,119 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                     }}
                   />
                 </div>
-              ))}
+                <div className=" pt-6 mt-4 text-center items-center justify-center">
+                  <span className="font-semibold font-display leading-none text-white dark:text-white text-lg">
+                    Asset Approval Status
+                  </span>
+                  <PieChart
+                    margin={{ top: 0, bottom: 0, left: 0, right: 0 }}
+                    series={[
+                      {
+                        data: detailFilteredChartData,
+                        innerRadius: 60,
+                        outerRadius: 150,
+                        paddingAngle: 1,
+                        cornerRadius: 10,
+                        startAngle: 0,
+                        endAngle: 360,
+                        cx: 200,
+                        cy: 200,
+                        highlightScope: { faded: "global", highlighted: "item" },
+                        arcLabel: (item) => `${item.value}`,
+                        arcLabelMinAngle: 10,
+                        faded: {
+                          innerRadius: 60,
+                          additionalRadius: -60,
+                          color: "gray",
+                        },
+                      },
+                    ]}
+                    sx={{
+                      [`& .${pieArcLabelClasses.root}`]: {
+                        fill: "white",
+                        fontWeight: "light",
+                        fontSize: 20,
+                      },
+                    }}
+                    onItemClick={handleDetailItemClick}
+                    width={400}
+                    height={400}
+                    slotProps={{
+                      legend: {
+                        direction: "row",
+                        position: { vertical: "bottom", horizontal: "middle" },
+                        hidden: false,
+                        labelStyle: {
+                          fontSize: 11,
+                          fill: "#ffffff"
+                        },
+                        itemMarkWidth: 8,
+                        itemMarkHeight: 12,
+                        markGap: 2,
+                        itemGap: 8,
+                      },
+                      pieArc: {
+                        strokeWidth: 0,
+                      },
+                    }}
+                  />
+                </div>
+                <div className=" pt-6 mt-4 text-center items-center justify-center">
+                  <span className="font-semibold font-display leading-none text-white dark:text-white text-lg">
+                    Asset Allocation Status
+                  </span>
+                  <PieChart
+                    margin={{ top: 0, bottom: 0, left: 0, right: 0 }}
+                    series={[
+                      {
+                        data: assignFilteredChartData,
+                        innerRadius: 60,
+                        outerRadius: 150,
+                        paddingAngle: 1,
+                        cornerRadius: 10,
+                        startAngle: 0,
+                        endAngle: 360,
+                        cx: 200,
+                        cy: 200,
+                        highlightScope: { faded: "global", highlighted: "item" },
+                        arcLabel: (item) => `${item.value}`,
+                        arcLabelMinAngle: 10,
+                        faded: {
+                          innerRadius: 60,
+                          additionalRadius: -60,
+                          color: "gray",
+                        },
+                      },
+                    ]}
+                    sx={{
+                      [`& .${pieArcLabelClasses.root}`]: {
+                        fill: "white",
+                        fontWeight: "light",
+                        fontSize: 20,
+                      },
+                    }}
+                    onItemClick={handleAssignItemClick}
+                    width={400}
+                    height={400}
+                    slotProps={{
+                      legend: {
+                        direction: "row",
+                        position: { vertical: "bottom", horizontal: "middle" },
+                        hidden: false,
+                        labelStyle: {
+                          fontSize: 11,
+                          fill: "#ffffff"
+                        },
+                        itemMarkWidth: 8,
+                        itemMarkHeight: 12,
+                        markGap: 2,
+                        itemGap: 8,
+                      },
+                    }}
+                  />
+
+                </div>
+              </ThemeProvider>
             </Stack>
           )}
         </Stack>
