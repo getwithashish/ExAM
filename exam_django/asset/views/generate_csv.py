@@ -69,7 +69,7 @@ with open(file_path, mode="w", newline="") as file:
                 fake.random_int(),  # serial_number
                 "EXPERION",  # owner
                 fake.date(),  # date_of_purchase
-                "IN USE",  # status
+                "USE",  # status
                 fake.random_element(elements=(12, 24)),  # warranty_period
                 "",  # os
                 "",  # os_version
