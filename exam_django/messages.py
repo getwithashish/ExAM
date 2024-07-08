@@ -145,7 +145,7 @@ BUSINESS_UNIT_CREATED_UNSUCCESSFUL = (
 UNAUTHORIZED_NO_PERMISSION = (
     "Unauthorized. You do not have permission to assign assets."
 )
-STATUS_EXPIRED_OR_DISPOSED = "Cannot assign the asset. Status is expired or disposed."
+STATUS_EXPIRED_OR_DISPOSED = "Cannot assign the asset. Status is Damaged, Repair or Scrap."
 CANNOT_REQUEST_ASSIGN_FOR_ASSETS_IN_ASSIGN_PENDING = "Cannot request for assignment for assets which are already in pending state"
 CANNOT_REQUEST_UNASSIGN_FOR_ASSETS_IN_ASSIGN_PENDING = "Cannot request for unassignment for assets which are already in pending state"
 

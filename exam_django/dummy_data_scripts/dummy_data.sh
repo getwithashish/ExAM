@@ -138,7 +138,7 @@ curl --request POST \
     "owner":"EXPERION",
     "custodian":"1",
     "date_of_purchase":"2024-02-20" ,
-     "status":"IN STORE",
+     "status":"STOCK",
       "warranty_period":"4",
         "location":"1", 
         "invoice_location":"1",
