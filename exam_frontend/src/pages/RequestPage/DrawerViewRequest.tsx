@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { Drawer } from "antd";
-import type { DrawerProps } from "antd";
+import type { DrawerProps} from "antd";
 
 interface DrawerViewRequestProps extends DrawerProps {
   title?: string;

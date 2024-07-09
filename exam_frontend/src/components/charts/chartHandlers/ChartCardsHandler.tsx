@@ -75,8 +75,8 @@ const AssetCountComponent = () => {
   }
 
   return (
-    <>
-      <div className="flex flex-wrap lg:gap-10 lg:px-16 lg:my-10 md:gap-20 lg:px-8 lg:my-5 sm:gap-20 sm:px-4 sm:my-2 ">
+    <div className="mx-auto">
+      <div className="flex flex-wrap lg:gap-10 lg:px-16 lg:my-10 md:gap-20 lg:px-8 lg:my-5 sm:gap-20 sm:px-4 sm:my-2">
         <div className="relative font-bold text-white rounded-full bg-gradient-to-r from-purple-800 to-purple-800 hover:from-purple-600 hover:to-purple-700 flex items-center justify-center" style={{ height: '13rem', width: '13rem', boxShadow: "0 0 5px rgba(0, 0, 0, 0.5)", animation: "glow-purple 1.5s ease-in-out infinite" }}>
           <div className="absolute inset-0 rounded-full bg-custom-400" style={{ clipPath: "circle(45%)" }}></div>
           <div className="relative flex flex-col items-center justify-center z-10">
@@ -149,7 +149,7 @@ const AssetCountComponent = () => {
           <BarChartHandler />
         </div>
       </div>
-    </>
+    </div>
 
   );
 };
