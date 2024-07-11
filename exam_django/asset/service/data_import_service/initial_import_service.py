@@ -135,15 +135,17 @@ class AssetImportService:
 
             status = clean_field(row.get("Status"))
             if status == "No Service":
-                status = "UNREPAIRABLE"
+                status = " SCRAP"
             elif status == "In Service" and assign_status=="ASSIGNED":
-                status = "IN USE"
+                status = "USE"
             elif status == "In Service" and assign_status=="UNASSIGNED":
-                status = "IN STORE"
+                status = "STOCK"
             elif status == "Damaged":
                 status = "DAMAGED"
             elif status == "Expired":
                 status = "OUTDATED"
+            elif status == "Repair":
+                status = "REPAIR"
             else:
                 status = "UNKNOWN"
                 
