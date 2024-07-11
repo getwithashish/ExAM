@@ -13,7 +13,6 @@ import {
 } from "./api/getAssetDetails";
 import moment from "moment";
 
-
 const AssetTableHandler = ({
   userRole,
   isRejectedPage,
@@ -21,12 +20,11 @@ const AssetTableHandler = ({
   heading,
   isMyApprovalPage,
   assets,
-
 }) => {
-  const [selectedRow, setSelectedRow] = useState(null); 
+  const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [sortedColumn, setSortedColumn] = useState<string>('');
-  const [sortOrder, setSortOrder] = useState<string>('asc');
+  const [sortedColumn, setSortedColumn] = useState<string>("");
+  const [sortOrder, setSortOrder] = useState<string>("asc");
   const [sortOrders, setSortOrders] = useState<{ [key: string]: string }>({});
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [queryParam, setQueryParam] = useState("");
@@ -129,8 +127,8 @@ const AssetTableHandler = ({
     <h1>Asset Overview</h1>
   </div>;
   const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
-    if (dataIndex === 'created_at' || dataIndex === 'updated_at') {
-      const formattedDate = moment(record[dataIndex]).format('DD-MM-YYYY'); 
+    if (dataIndex === "created_at" || dataIndex === "updated_at") {
+      const formattedDate = moment(record[dataIndex]).format("DD-MM-YYYY");
       return (
         <div
           data-column-name={columnName}
@@ -152,31 +150,29 @@ const AssetTableHandler = ({
     );
   };
 
-    const handleSort = (column: string) => {
-      const isCurrentColumn = column === sortedColumn;
-      let newSortOrders = { ...sortOrders };
-    
-      if (!isCurrentColumn) {
-        newSortOrders = { [column]: "asc" };
-      } else {
-        newSortOrders[column] = sortOrders[column] === "asc" ? "desc" : "asc";
-      }
-    
-      setSortedColumn(column);
-      setSortOrder(newSortOrders[column]);
-      setSortOrders(newSortOrders);
-    
-      const queryParams = Object.keys(newSortOrders)
+  const handleSort = (column: string) => {
+    const isCurrentColumn = column === sortedColumn;
+    let newSortOrders = { ...sortOrders };
+
+    if (!isCurrentColumn) {
+      newSortOrders = { [column]: "asc" };
+    } else {
+      newSortOrders[column] = sortOrders[column] === "asc" ? "desc" : "asc";
+    }
+
+    setSortedColumn(column);
+    setSortOrder(newSortOrders[column]);
+    setSortOrders(newSortOrders);
+
+    const queryParams = Object.keys(newSortOrders)
       .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
       .join("");
-      let additionalQueryParams = '&offset=0';
-      if (searchTerm !== '' && searchTerm !== null) {
-        additionalQueryParams += `&global_search=${searchTerm}`;
-      }
-      refetchAssetData(queryParams + additionalQueryParams);
-    };
-    
-
+    let additionalQueryParams = "&offset=0";
+    if (searchTerm !== "" && searchTerm !== null) {
+      additionalQueryParams += `&global_search=${searchTerm}`;
+    }
+    refetchAssetData(queryParams + additionalQueryParams);
+  };
 
   const columns = [
     {
@@ -291,7 +287,6 @@ const AssetTableHandler = ({
       render: renderClickableColumn("Custodian", "custodian"),
     },
 
-   
     {
       title: "Business Unit",
       dataIndex: "business_unit",
@@ -370,7 +365,7 @@ const AssetTableHandler = ({
       dataIndex: "license_type",
       responsive: ["md"],
       width: 120,
-     
+
       render: renderClickableColumn("license_type", "license_type"),
     },
     {
@@ -403,20 +398,28 @@ const AssetTableHandler = ({
       responsive: ["md"],
       width: 120,
       render: (_, record) => {
-        const dateOfPurchase = record.date_of_purchase ? new Date(record.date_of_purchase) : null;
+        const dateOfPurchase = record.date_of_purchase
+          ? new Date(record.date_of_purchase)
+          : null;
         const warrantyPeriod = parseInt(record.warranty_period) || 0; // Defaulting to 0 if warranty_period is not provided or invalid
         if (dateOfPurchase instanceof Date && !isNaN(dateOfPurchase)) {
-          const expiryDate = new Date(dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000); // Calculating expiry date in milliseconds
-          const formattedExpiryDate = expiryDate.toISOString().split('T')[0];
+          const expiryDate = new Date(
+            dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000
+          ); // Calculating expiry date in milliseconds
+          const formattedExpiryDate = expiryDate.toISOString().split("T")[0];
           const currentDate = new Date();
           const isExpired = expiryDate < currentDate;
-    
+
           // Apply renderClickableColumn logic here
           return (
             <div
               data-column-name="Expiry Date"
               onClick={() => handleColumnClick(record, "Expiry Date")}
-              style={{ cursor: "pointer", color: isExpired ? "red" : "green", fontWeight: isExpired ? "bold" : "bold" }}
+              style={{
+                cursor: "pointer",
+                color: isExpired ? "red" : "green",
+                fontWeight: isExpired ? "bold" : "bold",
+              }}
             >
               {formattedExpiryDate}
             </div>
@@ -425,8 +428,8 @@ const AssetTableHandler = ({
           return "Invalid Date";
         }
       },
-    },  
-  
+    },
+
     {
       title: "Owner",
       dataIndex: "owner",
@@ -522,13 +525,15 @@ const AssetTableHandler = ({
       render: renderClickableColumn("notes", "notes"),
     },
     {
-      title: 'Approver Notes',
-      dataIndex: 'approval_status_message',
-      responsive: ['md'],
+      title: "Approver Notes",
+      dataIndex: "approval_status_message",
+      responsive: ["md"],
       width: 120,
-      render:renderClickableColumn("approval_status_message", "approval_status_message")
+      render: renderClickableColumn(
+        "approval_status_message",
+        "approval_status_message"
+      ),
     },
-    
 
     ...(isRejectedPage
       ? [
@@ -601,18 +606,19 @@ const AssetTableHandler = ({
     configuration: result.configuration,
     custodian: result.custodian?.employee_name,
     product_name: result.product_name,
-    license_type:result.license_type,
+    license_type: result.license_type,
     owner: result.owner,
     requester: result.requester?.username,
     AssignAsset: "assign",
     created_at: result.created_at,
     updated_at: result.updated_at,
+    notes: result.notes,
     approval_status_message: result.approval_status_message,
   }));
 
   return (
     <AssetTable
-     userRole={userRole}
+      userRole={userRole}
       heading={heading}
       isAssetDataLoading={isAssetDataLoading}
       // drawerTitle={drawerTitle}

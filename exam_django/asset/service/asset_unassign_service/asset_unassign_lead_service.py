@@ -5,7 +5,7 @@ class AssetLeadRoleUnassignService:
     @staticmethod
     def unassign_asset(asset, requester):
         asset.assign_status = "UNASSIGNED"
-        asset.status = "IN STORE"
+        asset.status = "STOCK"
         asset.custodian = None
         asset.requester = requester
         message = ASSET_SUCCESSFULLY_UNASSIGNED

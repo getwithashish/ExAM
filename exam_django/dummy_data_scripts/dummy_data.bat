@@ -101,7 +101,7 @@ curl --request POST ^
   --url http://%hostname%:8000/api/v1/asset/ ^
   --header "Authorization: Bearer %access_token%" ^
   --header "Content-Type: application/json" ^
-  --data "{\"asset_id\":\"91023\",\"version\":\"5\",\"asset_category\":\"HARDWARE\",\"asset_type\":\"1\",\"product_name\":\"HP Pavilion Yahoo Smart Glass\",\"model_number\":\"HPModel2423\",\"serial_number\":\"001234\",\"owner\":\"EXPERION\",\"custodian\":\"1\",\"date_of_purchase\":\"2024-02-20\",\"status\":\"IN STORE\",\"warranty_period\":\"4\",\"location\":\"1\",\"invoice_location\":\"1\",\"business_unit\":\"1\",\"os\":\"WINDOWS\",\"os_version\":\"11\",\"memory\":\"\",\"configuration\":\"i5/8GB/256GB+SSD\",\"accessories\":\"bag,charger\",\"approval_status\":\"PENDING\",\"conceder\":\"1\",\"created_at\":\"20/02/24\",\"notes\":\"Asset laptop added\"}"
+  --data "{\"asset_id\":\"91023\",\"version\":\"5\",\"asset_category\":\"HARDWARE\",\"asset_type\":\"1\",\"product_name\":\"HP Pavilion Yahoo Smart Glass\",\"model_number\":\"HPModel2423\",\"serial_number\":\"001234\",\"owner\":\"EXPERION\",\"custodian\":\"1\",\"date_of_purchase\":\"2024-02-20\",\"status\":\"STOCK\",\"warranty_period\":\"4\",\"location\":\"1\",\"invoice_location\":\"1\",\"business_unit\":\"1\",\"os\":\"WINDOWS\",\"os_version\":\"11\",\"memory\":\"\",\"configuration\":\"i5/8GB/256GB+SSD\",\"accessories\":\"bag,charger\",\"approval_status\":\"PENDING\",\"conceder\":\"1\",\"created_at\":\"20/02/24\",\"notes\":\"Asset laptop added\"}"
 
 :: Remove jq
 del "%target_filename%"

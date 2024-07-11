@@ -38,7 +38,7 @@ class AssignAssetService:
         except Asset.DoesNotExist:
             raise NotFoundException({}, ASSET_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
-        if asset.status in ["EXPIRED", "DISPOSED"]:
+        if asset.status in ["DAMAGED", "REPAIR", "SCRAP"]:
             raise NotAcceptableOperationException(
                 {}, STATUS_EXPIRED_OR_DISPOSED, status.HTTP_406_NOT_ACCEPTABLE
             )

@@ -5,15 +5,34 @@ from user_auth.models import User
 
 asset_category_choices = (("HARDWARE", "HARDWARE"), ("SOFTWARE", "SOFTWARE"))
 
+# status_choices = (
+#     ("IN USE", "IN USE"),
+#     ("IN STORE", "IN STORE"),
+#     ("IN REPAIR", "IN REPAIR"),
+#     ("OUTDATED", "OUTDATED"),
+#     ("DISPOSED", "DISPOSED"),
+#     ("DAMAGED", "DAMAGED"),
+#     ("UNREPAIRABLE", "UNREPAIRABLE"),
+# )
+
 status_choices = (
-    ("IN USE", "IN USE"),
-    ("IN STORE", "IN STORE"),
-    ("IN REPAIR", "IN REPAIR"),
-    ("OUTDATED", "OUTDATED"),
-    ("DISPOSED", "DISPOSED"),
+    ("STOCK", "STOCK"),
+    ("USE", "USE"),
     ("DAMAGED", "DAMAGED"),
-    ("UNREPAIRABLE", "UNREPAIRABLE"),
+    ("REPAIR", "REPAIR"),
+    ("OUTDATED", "OUTDATED"),
+    ("SCRAP", "SCRAP"),
 )
+# STOCK - Assets which are currently in stock, which are not being used
+# ALLOCATED(USE) - Assets which are currently being used (includes both assets allocated to custodians and also used by SFM)
+# ACTIVE - STOCK + USE
+
+# DAMAGED - Assets which are damaged, which needs to be repaired or thrown to scrap
+# REPAIR - Assets which are currently being repaired
+# OUTDATED - Assets which are not currently being used, but still working
+# INACTIVE - DAMAGED + REPAIR + OUTDATED
+
+# SCRAP - Assets which are not used anymore, and thrown out
 
 asset_detail_status = (
     ("CREATE_PENDING", "CREATE_PENDING"),
@@ -57,7 +76,7 @@ class Asset(models.Model):
     date_of_purchase = models.DateField(null=False)
     status = models.CharField(
         max_length=50,
-        default="IN STORE",
+        default="STOCK",
         choices=status_choices,
         null=False,
         blank=False,
