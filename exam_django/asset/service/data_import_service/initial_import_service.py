@@ -116,19 +116,7 @@ class AssetImportService:
                 missing_fields_assets.append(row)
                 continue        
 
-            status = clean_field(row.get("Status"))
-            if status == "No Service":
-                status = "UNREPAIRABLE"
-            elif status == "In Service" and row.get("Custodian"):
-                status = "IN USE"
-            elif status == "In Service" and not row.get("Custodian"):
-                status = "IN STORE"
-            elif status == "Damaged":
-                status = "DAMAGED"
-            elif status == "Expired":
-                status = "OUTDATED"
-            else:
-                status = "UNKNOWN"
+            
 
             approval_status = clean_field(row.get("Approval Status"))
             if approval_status == "Approved":
@@ -145,6 +133,19 @@ class AssetImportService:
                                 if not row.get("Custodian") or (row.get("Custodian") == "Experion SFM" and row.get("Asset Category") == "Laptop") 
                                 else "ASSIGNED")
 
+            status = clean_field(row.get("Status"))
+            if status == "No Service":
+                status = "UNREPAIRABLE"
+            elif status == "In Service" and assign_status=="ASSIGNED":
+                status = "IN USE"
+            elif status == "In Service" and assign_status=="UNASSIGNED":
+                status = "IN STORE"
+            elif status == "Damaged":
+                status = "DAMAGED"
+            elif status == "Expired":
+                status = "OUTDATED"
+            else:
+                status = "UNKNOWN"
                 
 
             asset = Asset(
