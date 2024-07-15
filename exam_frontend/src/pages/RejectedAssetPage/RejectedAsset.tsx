@@ -32,7 +32,7 @@ const RejectedAsset = () => {
   let heading = "My Rejected Request";
 
   return (
-    <div className="bg-white pt-10">
+    <div className="pt-8">
       <AssetTableHandler
         isRejectedPage={false}
         queryParamProp={queryParamProp}

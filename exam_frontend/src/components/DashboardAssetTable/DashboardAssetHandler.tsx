@@ -12,7 +12,7 @@ import {
   getAssetTypeOptions,
   getMemoryOptions,
 } from "../AssetTable/api/getAssetDetails";
-import moment from 'moment';
+import moment from "moment";
 
 interface DashboardAssetHandlerProps {
   selectedTypeId: number;
@@ -86,9 +86,7 @@ const DashboardAssetHandler = ({
   };
 
   const statusOptions =
-    assetData?.results?.map((item: AssetResult) =>
-      item.status === "IN STORE" ? "IN STOCK" : item.status
-    ) || [];
+    assetData?.results?.map((item: AssetResult) => item.status) || [];
 
   const businessUnitOptions =
     assetData?.results?.map(
@@ -142,8 +140,8 @@ const DashboardAssetHandler = ({
   };
 
   const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
-    if (dataIndex === 'created_at' || dataIndex === 'updated_at') {
-      const formattedDate = moment(record[dataIndex]).format('DD-MM-YYYY'); 
+    if (dataIndex === "created_at" || dataIndex === "updated_at") {
+      const formattedDate = moment(record[dataIndex]).format("DD-MM-YYYY");
       return (
         <div
           data-column-name={columnName}
@@ -154,7 +152,7 @@ const DashboardAssetHandler = ({
         </div>
       );
     }
-  
+
     return (
       <div
         data-column-name={columnName}
@@ -228,18 +226,27 @@ const DashboardAssetHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("product_name"),
       }),
-      render: renderClickableColumn("Product Name", "product_name"),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn("Product Name", "product_name")(text, record)}
+        </div>
+      ),
     },
-
     {
       title: "Serial Number",
       dataIndex: "serial_number",
       responsive: ["md"],
       width: 120,
       filterIcon: <SearchOutlined />,
-      render: renderClickableColumn("Serial Number", "serial_number"),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn("Serial Number", "serial_number")(
+            text,
+            record
+          )}
+        </div>
+      ),
     },
-
     {
       title: "Asset Location",
       dataIndex: "location",
@@ -260,9 +267,12 @@ const DashboardAssetHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("location"),
       }),
-      render: renderClickableColumn("Location", "location"),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn("Location", "location")(text, record)}
+        </div>
+      ),
     },
-
     {
       title: "Invoice Location",
       dataIndex: "invoice_location",
@@ -283,7 +293,14 @@ const DashboardAssetHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("invoice_location"),
       }),
-      render: renderClickableColumn("Invoice Location", "invoice_location"),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn("Invoice Location", "invoice_location")(
+            text,
+            record
+          )}
+        </div>
+      ),
     },
     {
       title: "Asset Type",
@@ -305,7 +322,11 @@ const DashboardAssetHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("asset_type"),
       }),
-      render: renderClickableColumn("Asset Type", "asset_type"),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn("Asset Type", "asset_type")(text, record)}
+        </div>
+      ),
     },
     {
       title: "Asset Category",
@@ -317,7 +338,15 @@ const DashboardAssetHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("asset_category"),
       }),
-      render: renderClickableColumn("Asset Category", "asset_category"),
+      // render: renderClickableColumn("Asset Category", "asset_category"),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn("Asset Category", "asset_category")(
+            text,
+            record
+          )}
+        </div>
+      ),
     },
     {
       title: "Custodian",
@@ -329,7 +358,12 @@ const DashboardAssetHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("custodian"),
       }),
-      render: renderClickableColumn("Custodian", "custodian"),
+      // render: renderClickableColumn("Custodian", "custodian"),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn("Custodian", "custodian")(text, record)}
+        </div>
+      ),
     },
     {
       title: "Business Unit",
@@ -337,7 +371,15 @@ const DashboardAssetHandler = ({
       responsive: ["md"],
       width: 120,
 
-      render: renderClickableColumn("Business Unit", "business_unit"),
+      // render: renderClickableColumn("Business Unit", "business_unit"),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn("Business_Unit", "business_unit")(
+            text,
+            record
+          )}
+        </div>
+      ),
     },
 
     {
@@ -350,7 +392,12 @@ const DashboardAssetHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("version"),
       }),
-      render: renderClickableColumn("Version", "version"),
+      // render: renderClickableColumn("Version", "version"),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn("Version", "version")(text, record)}
+        </div>
+      ),
     },
 
     {
@@ -358,7 +405,12 @@ const DashboardAssetHandler = ({
       dataIndex: "os",
       responsive: ["md"],
       width: 120,
-      render: renderClickableColumn("Os", "os"),
+      // render: renderClickableColumn("Os", "os"),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn("Os", "os")(text, record)}
+        </div>
+      ),
     },
     {
       title: "Os Version",
@@ -366,7 +418,12 @@ const DashboardAssetHandler = ({
       responsive: ["md"],
       width: 120,
 
-      render: renderClickableColumn("Os Version", "os_version"),
+      // render: renderClickableColumn("Os Version", "os_version"),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn("Os Version", "os_version")(text, record)}
+        </div>
+      ),
     },
     {
       title: "Processor",
@@ -374,14 +431,27 @@ const DashboardAssetHandler = ({
       responsive: ["md"],
       width: 120,
 
-      render: renderClickableColumn("Processor", "processor"),
+      // render: renderClickableColumn("Processor", "processor"),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn("Processor", "processor")(text, record)}
+        </div>
+      ),
     },
     {
       title: "Generation",
       dataIndex: "processor_gen",
       responsive: ["md"],
       width: 120,
-      render: renderClickableColumn("processor_gen", "processor_gen"),
+      // render: renderClickableColumn("processor_gen", "processor_gen"),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn("processor_gen", "processor_gen")(
+            text,
+            record
+          )}
+        </div>
+      ),
     },
     {
       title: "Model Number",
@@ -393,7 +463,12 @@ const DashboardAssetHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("model_number"),
       }),
-      render: renderClickableColumn("Model Number", "model_number"),
+      // render: renderClickableColumn("Model Number", "model_number"),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn("Model Number", "model_number")(text, record)}
+        </div>
+      ),
     },
     {
       title: "Memory",
@@ -405,14 +480,24 @@ const DashboardAssetHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("memory"),
       }),
-      render: renderClickableColumn("Memory", "memory"),
+      // render: renderClickableColumn("Memory", "memory"),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn("Memory", "memory")(text, record)}
+        </div>
+      ),
     },
     {
       title: "Storage",
       dataIndex: "storage",
       responsive: ["md"],
       width: 120,
-      render: renderClickableColumn("Storage", "storage"),
+      // render: renderClickableColumn("Storage", "storage"),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn("Storage", "storage")(text, record)}
+        </div>
+      ),
     },
     {
       title: "License Type",
@@ -420,7 +505,12 @@ const DashboardAssetHandler = ({
       responsive: ["md"],
       width: 120,
 
-      render: renderClickableColumn("license_type", "license_type"),
+      // render: renderClickableColumn("license_type", "license_type"),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn("License_type", "license_type")(text, record)}
+        </div>
+      ),
     },
 
     {
@@ -433,7 +523,15 @@ const DashboardAssetHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("date_of_purchase"),
       }),
-      render: renderClickableColumn("Date of Purchase", "date_of_purchase"),
+      // render: renderClickableColumn("Date of Purchase", "date_of_purchase"),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn("Date of Purchase", "date_of_purchase")(
+            text,
+            record
+          )}
+        </div>
+      ),
     },
 
     {
@@ -446,7 +544,15 @@ const DashboardAssetHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("warranty_period"),
       }),
-      render: renderClickableColumn("Warranty Period", "warranty_period"),
+      // render: renderClickableColumn("Warranty Period", "warranty_period"),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn("Warranty Period", "warranty_period")(
+            text,
+            record
+          )}
+        </div>
+      ),
     },
 
     {
@@ -491,7 +597,12 @@ const DashboardAssetHandler = ({
       dataIndex: "owner",
       responsive: ["md"],
       width: 120,
-      render: renderClickableColumn("Owner", "owner"),
+      // render: renderClickableColumn("Owner", "owner"),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn("Owner", "owner")(text, record)}
+        </div>
+      ),
     },
 
     {
@@ -504,7 +615,12 @@ const DashboardAssetHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("approved_by"),
       }),
-      render: renderClickableColumn("Approved By", "approved_by"),
+      // render: renderClickableColumn("Approved By", "approved_by"),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn("Approved", "approved_by")(text, record)}
+        </div>
+      ),
     },
 
     {
@@ -517,7 +633,12 @@ const DashboardAssetHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("requester"),
       }),
-      render: renderClickableColumn("Requester", "requester"),
+      // render: renderClickableColumn("Requester", "requester"),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn("Requester", "requester")(text, record)}
+        </div>
+      ),
     },
     {
       title: "Asset Status",
@@ -525,7 +646,12 @@ const DashboardAssetHandler = ({
       responsive: ["md"],
       width: 140,
 
-      render: renderClickableColumn("Asset Status", "status"),
+      // render: renderClickableColumn("Asset Status", "status"),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn("Asset Status", "status")(text, record)}
+        </div>
+      ),
     },
 
     {
@@ -533,10 +659,18 @@ const DashboardAssetHandler = ({
       dataIndex: "asset_detail_status",
       responsive: ["md"],
       width: 140,
-      render: renderClickableColumn(
-        "Asset Detail Status",
-        "asset_detail_status",
-        detailStatusStyleCondition
+      // render: renderClickableColumn(
+      //   "Asset Detail Status",
+      //   "asset_detail_status",
+      //   detailStatusStyleCondition
+      // ),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn("Asset Detail Status", "asset_detail_status")(
+            text,
+            record
+          )}
+        </div>
       ),
     },
     {
@@ -544,10 +678,18 @@ const DashboardAssetHandler = ({
       dataIndex: "assign_status",
       responsive: ["md"],
       width: 140,
-      render: renderClickableColumn(
-        "Asset Assign Status",
-        "assign_status",
-        assignStatusStyleCondition
+      // render: renderClickableColumn(
+      //   "Asset Assign Status",
+      //   "assign_status",
+      //   assignStatusStyleCondition
+      // ),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn("Asset Assign Status", "assign_status")(
+            text,
+            record
+          )}
+        </div>
       ),
     },
     {
@@ -560,7 +702,12 @@ const DashboardAssetHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("created_at"),
       }),
-      render: renderClickableColumn("Created At", "created_at"),
+      // render: renderClickableColumn("Created At", "created_at"),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn("Created At", "created_at")(text, record)}
+        </div>
+      ),
     },
     {
       title: "Updated At",
@@ -572,32 +719,43 @@ const DashboardAssetHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("updated_at"),
       }),
-      render: renderClickableColumn("Updated At", "updated_at"),
+      // render: renderClickableColumn("Updated At", "updated_at"),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn("Updated At", "updated_at")(text, record)}
+        </div>
+      ),
     },
     {
       title: "Accessories",
       dataIndex: "Accessories",
       responsive: ["md"],
       width: 120,
-      render: renderClickableColumn("Accessories", "accessories"),
+      // render: renderClickableColumn("Accessories", "accessories"),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn("Accessories", "accessories")(text, record)}
+        </div>
+      ),
     },
-    // {
-    //   title: "Notes",
-    //   dataIndex: "Notes",
-    //   responsive: ["md"],
-    //   width: 120,
-    //   render: renderClickableColumn("Comment", "notes"),
-    // },
-    // {
-    //   title: "Approver Notes",
-    //   dataIndex: "approval_status_message",
-    //   responsive: ["md"],
-    //   width: 120,
-    //   render: renderClickableColumn(
-    //     "approval_status_message",
-    //     "approval_status_message"
-    //   ),
-    // },
+    {
+      title: "Approver Notes",
+      dataIndex: "approval_status_message",
+      responsive: ["md"],
+      width: 120,
+      // render: renderClickableColumn(
+      //   "approval_status_message",
+      //   "approval_status_message"
+      // ),
+      render: (text: string, record: any) => (
+        <div style={{ color: "#ffffff" }}>
+          {renderClickableColumn(
+            "approval_status_message",
+            "approval_status_message"
+          )(text, record)}
+        </div>
+      ),
+    },
     {
       title: "View Asset Log",
       dataIndex: "Accessories",
@@ -664,7 +822,7 @@ const DashboardAssetHandler = ({
       asset_category: result.asset_category,
       asset_type: result.asset_type.asset_type_name,
       version: result.version,
-      status: result.status === "IN STORE" ? "IN STOCK" : result.status,
+      status: result.status,
       location: result.location?.location_name,
       invoice_location: result.invoice_location?.location_name,
       business_unit: result.business_unit.business_unit_name,

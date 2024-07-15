@@ -9,6 +9,8 @@ export const statusMapping: { [key: string]: string } = {
   UPDATED: "UPDATED",
   CREATE_REJECTED: "REJECTED",
   UPDATE_REJECTED: "REJECTED",
-  "IN STORE": "IN STOCK",
-  EXPIRED:"NO SERVICE"
+  // "IN STORE": "STOCK",
+  EXPIRED: "INACTIVE",
+  SCRAP: "SCRAP",
+  // "IN USE": "ALLOCATED"
 };

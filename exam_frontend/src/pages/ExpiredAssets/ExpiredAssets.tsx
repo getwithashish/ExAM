@@ -27,8 +27,8 @@ const ExpiredAssets = () => {
   // }, []);
 
   return (
-    <div style={{ background: "white" }}>
-       <div className="bg-white pt-10">
+    <div >
+       <div className="pt-8">
         {loading ? (
           <Spin size="large" />
         ) : (

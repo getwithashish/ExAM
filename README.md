@@ -355,6 +355,16 @@ dummy_data.bat 127.0.0.1
 - username: `getwithashish.lead`
 - password: `getwithashish@lead`
 
+## Screenshots
+
+### Dashboard
+
+![Dashboard 1](exam_frontend/info-images/Dashboard1.png)
+
+![Dashboard 2](exam_frontend/info-images/Dashboard2.png)
+
+![Dashboard 3](exam_frontend/info-images/Dashboard3.png)
+
 # Contribution
 
 Feel free to open issues or pull requests if you find any bugs or have improvements.

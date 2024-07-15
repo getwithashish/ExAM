@@ -17,7 +17,10 @@ module.exports = {
     },  
     colors: {
       primary: {
-        50: "#eff6ff",
+        50: "#16161a",
+        60: "#202124",
+        150: "#4a4a4a",
+        180: "#1c1c20",
         100: "#dbeafe",
         200: "#bfdbfe",
         300: "#93c5fd",
@@ -64,6 +67,16 @@ module.exports = {
         800: '#00838f',
         900: '#006064',
       },
+      custom:{
+        50:'#A05AFF',
+        100: "#1BCFB4", //green
+        150:'#4BCBEB', // blue
+        200:'#FE9496', // pink
+        250:'#9E5AFF', //purple
+        300:'#FF0044', //strong red
+        400: '#1D232C', // new deep blue dark black
+        500: '#161B21' //secondary blue black
+      }
     },
     fontFamily: {
       display: ['Inter', ...defaultTheme.fontFamily.sans],

@@ -4,21 +4,24 @@ import { Button, Card, Label, TextInput } from "flowbite-react";
 import axiosInstance from "../../config/AxiosConfig";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import SidebarComponentNew from "../../components/sidebar/SidebarComponentNew";
 import { useAuth } from "./AuthContext";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 export default function Login() {
   const { setAuthenticated, setUserRole } = useAuth();
-
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [showPassword, setShowPassword] = useState(false)
 
   const decodeJWT = (token: string) => {
     try {
       const base64Url = token.split(".")[1];
+      if (!base64Url) {
+        throw new Error("Invalid Jwt token: Missing base URL segment")
+      }
       const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
       const jsonPayload = decodeURIComponent(
         atob(base64)
@@ -35,7 +38,7 @@ export default function Login() {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     setUsernameError("");
@@ -117,16 +120,25 @@ export default function Login() {
               />
               {usernameError && <p className="text-red-500">{usernameError}</p>}
             </div>
-            <div className="mb-8">
+            <div className="mb-8 font-display">
               <Label htmlFor="password">Password:</Label>
-              <TextInput
-                id="password"
-                name="password"
-                placeholder="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <div className="relative">
+                <TextInput
+                  id="password"
+                  name="password"
+                  placeholder="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 px-3 py-2"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <FiEyeOff /> : <FiEye />}
+                </button>
+              </div>
               {passwordError && <p className="text-red-500">{passwordError}</p>}
             </div>
             <div className="mb-6">
@@ -144,8 +156,8 @@ export default function Login() {
                   type="button"
                   className="w-full bg-blue-500 text-white hover:bg-blue-700 font-display"
                   onClick={() =>
-                    (window.location.href =
-                      import.meta.env["VITE_LOGIN_URL"])
+                  (window.location.href =
+                    import.meta.env["VITE_LOGIN_URL"])
                   }
                 >
                   <img

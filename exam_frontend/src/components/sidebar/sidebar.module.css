@@ -69,8 +69,7 @@
   }
   
   .username {
-    font-size: large;
-    font-family: "Poppins", sans-serif;
+    font-size: small;
     text-transform: capitalize;
     padding: 0;
     height: 10px;
@@ -79,7 +78,6 @@
   
   .userscope {
     font-size: x-small;
-    font-family: "Poppins", sans-serif;
     text-transform: capitalize;
     padding: 0;
     padding-top: 7px;  
@@ -89,4 +87,20 @@
   {
     font-size: "Poppins";
     font-size: medium;
+  }
+
+  .custom-menu-link {
+    color: white; /* Default text color */
+  }
+  
+  .custom-menu-link:hover {
+    color: red; /* Text color on hover */
+  }
+  
+  .custom-menu-link.ant-menu-item-selected {
+    background-color: lightcoral; /* Background color when selected */
+  }
+  
+  .custom-menu-link.ant-menu-item-selected .ant-menu-item {
+    color: red; /* Text color when selected */
   }

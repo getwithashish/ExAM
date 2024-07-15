@@ -16,6 +16,7 @@ const initializeAxiosInstance = async () => {
 export const fetchAssetData = async (): Promise<AssetData> => {
   const instance = await initializeAxiosInstance();
   const res = await instance.get('/asset/asset_count');
+  console.log(res.data.data, 'assetCount')
   return res.data.data;
 };
 

@@ -1,14 +1,14 @@
 import { FC } from "react";
 import { Drawer } from "antd";
-import type { DrawerProps } from "antd";
+import type { DrawerProps} from "antd";
 
 interface DrawerViewRequestProps extends DrawerProps {
-  title: string;
-  onClose: () => void;
-  selectedRow: any;
-  drawerTitle: string;
-  onUpdateData: (updatedData: { key: any }) => void;
-  closeIcon: JSX.Element;
+  title?: string;
+  onClose?: () => void;
+  selectedRow?: any;
+  drawerTitle?: string;
+  onUpdateData?: (updatedData: { key: any }) => void;
+  closeIcon?: JSX.Element;
 }
 
 const DrawerViewRequest: FC<DrawerViewRequestProps> = ({
