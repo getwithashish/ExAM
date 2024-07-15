@@ -96,7 +96,7 @@ const MuiAutocomplete = ({
   ];
 
   const DropDownFieldValue = {
-    status: ["IN STOCK", "IN USE", "IN REPAIR", "DISPOSED"],
+    status: ["STOCK", "USE", "DAMAGED", "REPAIR", "OUTDATED", "SCRAP"],
     asset_detail_status: ["CREATED", "UPDATED", "PENDING", "REJECTED"],
     assign_status: ["ASSIGNED", "UNASSIGNED", "PENDING", "REJECTED"],
   };
@@ -330,7 +330,7 @@ const MuiAutocomplete = ({
                   ...newValue.flatMap((obj: string) => {
                     if (fieldName == "status") {
                       return {
-                        [fieldName]: obj == "IN STOCK" ? "IN STORE" : obj,
+                        [fieldName]: obj,
                       };
                     } else if (fieldName == "asset_detail_status") {
                       if (obj == "PENDING") {
