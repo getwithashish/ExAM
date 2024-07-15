@@ -7,7 +7,7 @@ import Zoom from "@mui/material/Zoom";
 const ToolTip: React.FC<TooltipProps> = ({ title, children }) => (
   <Tooltip
     title={title}
-    disableInteractive
+    // disableInteractive
     placement="top"
     TransitionComponent={Zoom}
   >

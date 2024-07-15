@@ -22,8 +22,8 @@ const DashboardPage: FC = function () {
     });
   };
   return (
-    <div className="bg-white pt-20">
-      <Statistics
+    <div className="bg-custom-500 lg:ml-60 mt-20">
+     <Statistics
         selectedTypeId={selectedTypeId}
         assetState={assetState}
         detailState={detailState}
