@@ -10,7 +10,7 @@ RUN npm install -g --force yarn
 
 RUN yarn config set "strict-ssl" false -g
 
-RUN yarn install
+RUN yarn install --network-timeout=300000
 
 COPY . .
 
