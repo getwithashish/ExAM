@@ -76,13 +76,7 @@ const CardComponent: React.FC<CardType> = ({
   const [assetConfiguration, setAssetConfiguration] = React.useState("");
 
   const assetCategoryValues = ["HARDWARE", "SOFTWARE"];
-  const assetStatusValues = [
-    "IN USE",
-    "IN STORE",
-    "IN REPAIR",
-    "EXPIRED",
-    "DISPOSED",
-  ];
+  const assetStatusValues = ["DAMAGED", "REPAIR", "OUTDATED", "SCRAP"];
 
   useEffect(() => {
     if (

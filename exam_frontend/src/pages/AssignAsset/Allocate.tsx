@@ -29,7 +29,7 @@ const Assignableasset = () => {
     setOpen(false);
   };
 
-  let queryParamProp = "&assign_status=UNASSIGNED|REJECTED&status=IN STORE";
+  let queryParamProp = "&assign_status=UNASSIGNED|REJECTED&status=STOCK";
   return (
     <div className="pt-8">
       <AssetTableHandler
@@ -41,10 +41,7 @@ const Assignableasset = () => {
         showAssignDrawer={showAssignDrawer}
         queryParamProp={queryParamProp}
       />
-      <DrawerViewRequest
-        title="assign"
-        onClose={closeAssignDrawer}
-        open={open}>
+      <DrawerViewRequest title="assign" onClose={closeAssignDrawer} open={open}>
         {record && (
           <AssignmentHandler
             record={record}
