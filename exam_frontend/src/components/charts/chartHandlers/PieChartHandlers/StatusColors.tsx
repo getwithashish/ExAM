@@ -1,22 +1,20 @@
 export const statusColors: { [key: string]: string } = {
-    "IN STORE": "#FFCE30",
-    "IN REPAIR": "#FEEB51",
-    "IN USE": "#764AB0",
-    "ACTIVE": "#288BA8",
-    DISPOSED: "#3ABBC9",
-    EXPIRED: "#E83845",
+    "IN STORE": "#eab308",
+    "IN REPAIR": "#c2410c",
+    "IN USE": "#4338ca",
+    "ACTIVE": "#0369a1",
+    // DISPOSED: "#3ABBC9",
+    EXPIRED: "#b91c1c",
 
-
-
-    UNASSIGNED: "#E6E6E6",
+    UNASSIGNED: "#334155",
     ASSIGN_PENDING: "#FFB92A",
-    ASSIGNED: "#9BCA3E",
+    ASSIGNED: "#047857",
     REJECTED: "#CC0000",
     CREATE_PENDING: "#FD6A02",
     UPDATE_PENDING: "#FD6A02",
-    CREATED: "#9BCA3E",
-    UPDATED: "#3ABBC9",
+    CREATED: "#15803d",
+    UPDATED: "#0e7490",
     CREATE_REJECTED: "#CC0000",
     UPDATE_REJECTED: "#CC0000",
-    PENDING: "#FFB92A",
+    PENDING: "#c2410c",
   };

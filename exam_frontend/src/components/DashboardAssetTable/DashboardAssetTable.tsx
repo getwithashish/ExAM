@@ -58,7 +58,7 @@ const DashboardAssetTable = ({
     algorithm: darkAlgorithm,
     components: {
       Table: {
-        colorBgContainer: '#161B21', // Replace with your desired color
+        colorBgContainer: '#161B21',
       },
     },
   };

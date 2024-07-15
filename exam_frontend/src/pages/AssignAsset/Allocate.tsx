@@ -31,7 +31,7 @@ const Assignableasset = () => {
 
   let queryParamProp = "&assign_status=UNASSIGNED|REJECTED&status=IN STORE";
   return (
-    <div className="pt-10">
+    <div className="pt-8">
       <AssetTableHandler
         queryParam={queryParam}
         setQueryParam={setQueryParam}

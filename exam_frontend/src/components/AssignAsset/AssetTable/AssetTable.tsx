@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Pagination, Table } from "antd";
+import { Pagination, Table, ConfigProvider, theme } from "antd";
 import "./AssetTable.css";
 import CardComponent from "./CardComponent/CardComponent";
 import { CloseOutlined } from "@ant-design/icons";
@@ -50,6 +50,16 @@ const AssetTable = ({
   setSearchTerm,
 }: AssetTableProps) => {
   const [ currentPage, setCurrentPage ] = useState (1);
+  const { darkAlgorithm } = theme;
+
+  const customTheme = {
+    algorithm: darkAlgorithm,
+    components: {
+      Table: {
+        colorBgContainer: '#161B21',
+      },
+    },
+  };
 
   const handleRefreshClick = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
     event.preventDefault();
@@ -74,11 +84,11 @@ const AssetTable = ({
   };
 
   return (
-    <>
-      <div className="mainHeading" style={{ background: "white" }}>
-        <div className=" font-display">Allocate Assets</div>
+    <div className="bg-custom-400 lg:ml-60 mt-10 lg:pl-10">
+      <div className="mainHeading pt-4">
+        <div className=" font-display text-white ml-4">Allocate Assets</div>
       </div>
-      <div className="flex" style={{ marginLeft: "40px", marginBottom: "30px" }}>
+      <div className="flex" style={{ marginLeft: "55px", marginBottom: "30px" }}>
         <GlobalSearch
           assetDataRefetch={assetDataRefetch}
           searchTerm={searchTerm}
@@ -91,7 +101,7 @@ const AssetTable = ({
             marginLeft : "10px",
             width: "30px",
             height: "40px",
-            color: '#2979ff'
+            color: '#ffffff'
           }}
           onClick={handleRefreshClick}
         />
@@ -100,7 +110,6 @@ const AssetTable = ({
         style={{
           position: "relative",
           display: "inline-block",
-          background: "white",
           width: "80vw",
         }}
       >
@@ -111,6 +120,7 @@ const AssetTable = ({
           <UploadComponent />
         </SideDrawerComponent>
 
+        <ConfigProvider theme={customTheme}>
         <Table
           columns={columns}
           dataSource={assetData}
@@ -154,6 +164,7 @@ const AssetTable = ({
             />
           )}
         />
+        </ConfigProvider>
       </div>
       <DrawerViewRequest
         open={drawerVisible}
@@ -186,7 +197,7 @@ const AssetTable = ({
           />
         )}
       </DrawerViewRequest>
-    </>
+    </div>
   );
 };
 

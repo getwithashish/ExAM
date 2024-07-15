@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import AssetCountComponent from "./chartHandlers/ChartCardsHandler";
 import ChartHandlers from "./chartHandlers/PieChartHandlers/ChartHandlers";
 import { fetchAssetData } from "./api/ChartApi";
+import BarChartHandler from "./chartHandlers/BarChartHandler";
 
 interface StatisticsProps {
   selectedTypeId?:number;
@@ -59,8 +60,13 @@ export const Statistics = ({
         </span>
       </div>  
       <div className="xl:p-2 mx-6 py-2">
-        <div className="mx-2">
+        <div className="mx-auto">
             <AssetCountComponent />
+              <div className="w-full my-14">
+        <div className="bg-custom-500 rounded-lg shadow-md m-2" style={{ boxShadow: "0 0 5px rgba(0, 0, 0, 0.5)" }}>
+          <BarChartHandler />
+        </div>
+      </div>
           <div className="items-center justify-center">
             <ChartHandlers
               assetCountData={assetCountData}
