@@ -6,6 +6,11 @@ from datetime import datetime
 from django.forms import ValidationError
 from asset.models import Asset, AssetType, BusinessUnit, Employee, Location, Memory
 
+def clean_field(value):
+    if pd.isna(value) or value == "nan" or value == "":
+        return None
+    return str(value).strip()
+
 
 class AssetImportService:
     @staticmethod
@@ -29,124 +34,91 @@ class AssetImportService:
         new_assets = []
 
         for row in csv_reader:
-            asset_id = row.get("ID", "")
+            asset_id = clean_field(row.get("ID"))
 
             if asset_id in existing_asset_ids:
                 skipped_assets_count += 1
                 skipped_fields_assets.append(row)
                 continue
 
-            mandatory_fields = [
-                "Category",
-                "Asset Category",
-                "Product Name",
-                "Owner",
-            ]
-            if any(str(row.get(field, "")).strip() == "" for field in mandatory_fields):
+            mandatory_fields = ["Category", "Asset Category", "Product Name", "Owner"]
+            if any(clean_field(row.get(field)) is None for field in mandatory_fields):
                 missing_fields_assets.append(row)
                 continue
 
+            date_of_purchase = row.get("Date Of Purchase")
             
-            date_of_purchase = row.get("Date Of Purchase", "")
-            default_date = datetime.strptime("1960-01-01", "%Y-%m-%d").date()
+            #default date.
+            default_date = datetime.strptime("2010-08-09", "%Y-%m-%d").date()
             if pd.isna(date_of_purchase) or date_of_purchase == "":
                 purchase_date = default_date
             else:
                 try:
                     if isinstance(date_of_purchase, pd.Timestamp):
-                        if pd.isna(date_of_purchase):
-                            purchase_date = None
-                        else:
-                            date_of_purchase = date_of_purchase.strftime("%Y-%m-%d")
-                            purchase_date = datetime.strptime(date_of_purchase, "%Y-%m-%d").date()
+                        purchase_date = date_of_purchase.date() if not pd.isna(date_of_purchase) else None
                     else:
-                        purchase_date = datetime.strptime(date_of_purchase, "%Y-%m-%d").date()
+                        purchase_date = datetime.strptime(date_of_purchase, "%m/%d/%Y").date()
                 except ValueError:
                     purchase_date = None
 
             asset_type, _ = AssetType.objects.get_or_create(
-                asset_type_name=row.get("Asset Category", "").strip()
+                asset_type_name=clean_field(row.get("Asset Category")) or ""
             )
             business_unit, _ = BusinessUnit.objects.get_or_create(
-                business_unit_name=str(
-                    row.get("BU", "")
-                ).strip()  # Ensure business_unit_name is handled as string
+                business_unit_name=clean_field(row.get("BU")) or ""
             )
             custodian, _ = Employee.objects.get_or_create(
-                employee_name=row.get("Custodian", "").strip()
+                employee_name=clean_field(row.get("Custodian")) or ""
             )
             location, _ = Location.objects.get_or_create(
-                location_name=str(row.get("Location", "")).strip()
+                location_name=clean_field(row.get("Location")) or ""
             )
             invoice_location, _ = Location.objects.get_or_create(
-                location_name=str(row.get("Invoice Location", "")).strip()
+                location_name=clean_field(row.get("Invoice Location")) or ""
             )
 
-            memory_space = row.get("Memory", "")
-            if isinstance(memory_space, float) and pd.isna(memory_space):
+            memory_space = row.get("Memory")
+            if pd.isna(memory_space) or memory_space == "" or memory_space == "nan":
                 memory = None
             else:
-                memory_space = str(
-                    memory_space
-                ).strip()  # Convert to string and strip whitespace
+                try:
+                    memory_space = int(float(str(memory_space).strip()))
+                    memory, _ = Memory.objects.get_or_create(memory_space=memory_space)
+                except ValueError:
+                    row["Error"] = "Invalid memory value"
+                    missing_fields_assets.append(row)
+                    continue
 
-                if '.' in memory_space:
-                # Convert float-like strings to float first, then to int
-                    memory_space = int(float(memory_space))
-                else:
-                # Convert integer-like strings directly to int
-                    memory_space = int(memory_space)
-
-                if memory_space == "nan" or memory_space == "":
-                    memory = None
-                else:
-                    try:
-                        
-                        
-                        memory, _ = Memory.objects.get_or_create(
-                            memory_space=memory_space
-                        )
-                    except ValueError:
-                        print("memory type =" ,type(memory_space))
-                        row["Error"] = "Invalid memory value"
-                        missing_fields_assets.append(row)
-                        continue
-
-            warranty = row.get("Warranty", "")
-            if isinstance(warranty, (int, float)):
-                if pd.isna(warranty):
-                    warranty = None
-                else:
-                    warranty = int(warranty)
-            else:
-                warranty = str(warranty).strip()
-                if warranty == "Expired":
+                                    
+            try:
+                warranty = row.get("Warranty")
+                if pd.isna(warranty) or warranty == "":
                     warranty = -1
-                elif warranty == "":
-                    warranty = None
+                elif isinstance(warranty, (int, float)):
+                                warranty = int(warranty)
                 else:
-                    try:
-                        warranty = int(warranty)
-                    except ValueError:
-                        row["Error"] = "Invalid warranty value"
-                        missing_fields_assets.append(row)
-                        continue
+                    warranty = str(warranty).strip()
+                    if warranty == "1 Year Warranty":
+                       warranty = 12
+                    elif warranty == "3 Year Warranty":
+                        warranty = 36
+                    elif warranty == "Under Warranty":
+                        warranty = 48
+                    elif warranty == "under warranty":
+                        warranty = 48
+                    elif warranty == "Expired":
+                        warranty = -1
+                    else:
+                        raise ValueError(f"Unexpected warranty value: {warranty}")
 
-            status = row.get("Status", "").strip()
-            if status == "No Service":
-                status = "UNREPAIRABLE"
-            elif status == "In Service" and row.get("Custodian"):
-                status = "IN USE"
-            elif status == "In Service" and not row.get("Custodian"):
-                status = "IN STORE"
-            elif status == "Damaged":
-                status = "DAMAGED"
-            elif status == "Expired":
-                status = "OUTDATED"
-            else:
-                status = "UNKNOWN"
+            except ValueError as e:
+                print(e)
+                missing_fields_assets.append(row)
+                continue        
 
-            approval_status = row.get("Approval Status", "").strip()
+            
+
+            approval_status = clean_field(row.get("Approval Status"))
             if approval_status == "Approved":
                 asset_detail_status = "CREATED"
             elif approval_status == "Pending":
@@ -156,37 +128,52 @@ class AssetImportService:
             else:
                 asset_detail_status = "UNKNOWN"
 
-            assign_status = "ASSIGNED" if row.get("Custodian") else "UNASSIGNED"
+            assign_status = (
+                                "UNASSIGNED" 
+                                if not row.get("Custodian") or (row.get("Custodian") == "Experion SFM" and row.get("Asset Category") == "Laptop") 
+                                else "ASSIGNED")
+
+            status = clean_field(row.get("Status"))
+            if status == "No Service":
+                status = " SCRAP"
+            elif status == "In Service" and assign_status=="ASSIGNED":
+                status = "USE"
+            elif status == "In Service" and assign_status=="UNASSIGNED":
+                status = "STOCK"
+            elif status == "Damaged":
+                status = "DAMAGED"
+            elif status == "Expired":
+                status = "OUTDATED"
+            elif status == "Repair":
+                status = "REPAIR"
+            else:
+                status = "UNKNOWN"
+                
 
             asset = Asset(
                 asset_id=asset_id,
-                # version=str(row.get("Version", "")).strip(),  # Handle version as string
-                asset_category=str(row.get("Category", "")).strip(),
-                product_name=str(row.get("Product Name", "")).strip(),
-                model_number=str(
-                    row.get("Model Number", "")
-                ).strip(),  # Ensure model_number is handled as string
-                serial_number=str(row.get("Serial Number", "")).strip(),
-                owner=str(row.get("Owner", "")).strip(),
+                asset_category=clean_field(row.get("Category")),
+                product_name=clean_field(row.get("Product Name")),
+                model_number=clean_field(row.get("Model Number")),
+                serial_number=clean_field(row.get("Serial Number")),
+                owner=clean_field(row.get("Owner")),
                 date_of_purchase=purchase_date,
                 status=status,
                 warranty_period=warranty,
-                os=str(row.get("OS", "")).strip(),
-                os_version=str(row.get("OS Version", "")).strip(),
-                mobile_os=str(row.get("Mobile OS", "")).strip(),
-                processor=str(row.get("Processor", "")).strip(),
-                processor_gen=str(row.get("Generation", "")).strip(),
-                storage=str(row.get("Storage", "")).strip(),
-                configuration=str(row.get("Configuration", "")).strip(),
-                accessories=str(row.get("Accessories", "")).strip(),
-                notes=str(row.get("Notes", "")).strip(),
+                os=clean_field(row.get("OS")),
+                os_version=clean_field(row.get("OS Version")),
+                mobile_os=clean_field(row.get("Mobile OS")),
+                processor=clean_field(row.get("Processor")),
+                processor_gen=clean_field(row.get("Generation")),
+                storage=clean_field(row.get("Storage")),
+                configuration=clean_field(row.get("Configuration")),
+                accessories=clean_field(row.get("Accessories")),
+                notes=clean_field(row.get("Notes")),
                 asset_detail_status=asset_detail_status,
                 assign_status=assign_status,
-                approval_status_message=str(
-                    row.get("approval_status_message", "")
-                ).strip(),
-                created_at=str(row.get("created_at", "")).strip(),
-                updated_at=str(row.get("updated_at", "")).strip(),
+                approval_status_message=clean_field(row.get("approval_status_message")),
+                created_at=clean_field(row.get("created_at")),
+                updated_at=clean_field(row.get("updated_at")),
                 is_deleted=False,
                 requester_id=user.id,
                 asset_type_id=asset_type.id if asset_type else None,
@@ -276,4 +263,3 @@ class AssetImportService:
 
         zip_content.seek(0)
         return zip_content
-
