@@ -787,6 +787,7 @@ const DashboardAssetHandler = ({
       requester: { username: any };
       created_at: any;
       updated_at: any;
+      notes: any;
       approval_status_message: any;
     }) => ({
       key: result.asset_uuid,
@@ -822,6 +823,7 @@ const DashboardAssetHandler = ({
       AssignAsset: "assign",
       created_at: result.created_at,
       updated_at: result.updated_at,
+      notes: result.notes,
       approval_status_message: result.approval_status_message,
     })
   );

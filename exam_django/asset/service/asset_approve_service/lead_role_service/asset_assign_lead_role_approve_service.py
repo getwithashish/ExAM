@@ -22,13 +22,13 @@ class AssetAssignLeadRoleApproveService(AssetUserRoleApproveAbstract):
             if asset.assign_status == "ASSIGN_PENDING":
                 if asset.custodian:
                     asset.assign_status = "ASSIGNED"
-                    asset.status = "IN USE"
+                    asset.status = "USE"
                     message = ASSET_SUCCESSFULLY_ASSIGNED
                     email_subject = "APPROVED: ASSET ALLOCATION SUCCESSFUL"
 
                 else:
                     asset.assign_status = "UNASSIGNED"
-                    asset.status = "IN STORE"
+                    asset.status = "STOCK"
                     message = ASSET_SUCCESSFULLY_UNASSIGNED
                     email_subject = "APPROVED: ASSET DEALLOCATION SUCCESSFUL"
 
