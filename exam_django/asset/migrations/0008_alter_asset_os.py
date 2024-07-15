@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('asset', '0007_alter_asset_owner'),
+        ("asset", "0007_alter_asset_owner"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='asset',
-            name='os',
+            model_name="asset",
+            name="os",
             field=models.CharField(max_length=50, null=True),
         ),
     ]
