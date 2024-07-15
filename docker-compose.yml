@@ -8,6 +8,8 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=experion@123
       - MYSQL_DATABASE=asset_management_db
+    volumes:
+      - asset_data:/var/lib/mysql
     ports:
       - 3307:3306
       - 33070:33060
@@ -74,3 +76,6 @@ services:
       - stage-asset-management-backend-service
     profiles:
       - stage
+
+volumes:
+  asset_data:
