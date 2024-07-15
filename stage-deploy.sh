@@ -40,6 +40,16 @@ then
 fi
 
 echo "================="
+echo "Bring docker containers down"
+echo "================="
+sudo docker compose --profile stage down
+
+echo "================="
+echo "Restart docker service"
+echo "================="
+sudo systemctl restart docker
+
+echo "================="
 echo "Docker compose up by building in detached mode"
 echo "================="
 sudo docker compose --profile stage up --build --detach
