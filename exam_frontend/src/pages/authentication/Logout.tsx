@@ -9,18 +9,13 @@ export default function Logout() {
   useEffect(() => {
     const handleLogout = async () => {
       try {
-        // Clear the local storage
         localStorage.removeItem("jwt");
         localStorage.removeItem("refresh_token");
-
-        // Redirect to the login page
         navigate("/");
       } catch (error) {
         console.error("Error logging out:", error);
       }
     };
-
-    // Call the logout function when the component mounts
     handleLogout();
   }, [navigate]);
 

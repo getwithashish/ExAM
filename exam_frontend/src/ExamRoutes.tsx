@@ -48,7 +48,7 @@ const ExamRoutes = () => {
           <Route
             path="/exam/*"
             element={
-              <SidebarComponentNew>
+              <SidebarComponentNew >
                 <Routes>
                   <Route path="/dashboard" element={<DashboardPage />} />
                   <Route
