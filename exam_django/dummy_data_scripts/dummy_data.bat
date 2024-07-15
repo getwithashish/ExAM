@@ -11,7 +11,7 @@ set "hostname=%~1"
 set "target_filename=jq.exe"
 
 :: Download jq
-curl -L -o "%target_filename%" "https://github.com/jqlang/jq/releases/download/jq-1.7.1/jq-win64.exe"
+curl -L -o "%target_filename%" "https://github.com/jqlang/jq/releases/download/jq-1.7.1/jq-win64.exe" --ssl-no-revoke
 
 :: Check if jq is available
 where /q jq.exe
