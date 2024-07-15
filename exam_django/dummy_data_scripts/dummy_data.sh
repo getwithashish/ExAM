@@ -10,7 +10,7 @@ hostname=$1
 
 target_filename="jq"
 
-curl -L -o "$target_filename" "https://github.com/jqlang/jq/releases/download/jq-1.7.1/jq-linux64"
+curl -L -o "$target_filename" "https://github.com/jqlang/jq/releases/download/jq-1.7.1/jq-linux64" --ssl-no-revoke
 
 chmod +x "$target_filename"
 
@@ -44,7 +44,7 @@ make_curl_request "asima.sysadmin" "asima@sysadmin" "94460209995" "asima@sysadmi
 make_curl_request "asima.lead" "asima@lead" "94460209996" "asima@lead.in" "LEAD"
 make_curl_request "pavithra.sysadmin" "pavithra@sysadmin" "94460209997" "pavithra@sysadmin.in" "SYSTEM_ADMIN"
 make_curl_request "pavithra.lead" "pavithra@lead" "94460209998" "pavithra@lead.in" "LEAD"
-make_curl_request "getwirhashish.sysadmin" "getwithashish@sysadmin" "94460209999" "getwithashish@sysadmin.in" "SYSTEM_ADMIN"
+make_curl_request "getwithashish.sysadmin" "getwithashish@sysadmin" "94460209999" "getwithashish@sysadmin.in" "SYSTEM_ADMIN"
 make_curl_request "getwithashish.lead" "getwithashish@lead" "94460209990" "getwithashish@lead.in" "LEAD"
 
 # Sign in
