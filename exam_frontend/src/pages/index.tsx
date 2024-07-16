@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import { FC, useState, useRef } from "react";
 import { Statistics } from "../components/charts/Statistics";
 import DashboardAssetHandler from "../components/DashboardAssetTable/DashboardAssetHandler";
@@ -15,12 +14,12 @@ const DashboardPage: FC = function () {
     const scrollHeight = document.documentElement.scrollHeight;
     const targetScrollPosition =
       (scrollHeight - windowHeight) * (percentage / 100);
-
     window.scrollTo({
       top: targetScrollPosition,
       behavior: "smooth",
     });
   };
+
   return (
     <div className="bg-custom-500 lg:ml-60 mt-20">
      <Statistics
@@ -34,6 +33,7 @@ const DashboardPage: FC = function () {
         setAssignState={setAssignState}
         onClick={() => handleScroll(95)}
       />
+      
       <div ref={dashboardAssetRef}>
         <DashboardAssetHandler
           selectedTypeId={selectedTypeId}

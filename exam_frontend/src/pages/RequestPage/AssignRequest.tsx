@@ -176,11 +176,11 @@ const AssignPage: FC = function () {
 
   return (
     <React.Fragment>
-      <div className="bg-white py-20">
-        <div className="block items-center justify-between border-b border-gray-200 bg-white px-2 dark:border-gray-700 dark:bg-gray-800 sm:flex mx-2 my-2">
+      <div className="bg-custom-500 lg:ml-64 py-24">
+        <div className="block items-center justify-between bg-custom-400 px-2 dark:border-gray-700 dark:bg-gray-800 sm:flex mx-2 my-2">
           <div className="mb-1 w-full">
-            <div className="mb-4">
-              <h1 className="font-medium font-display mx-3 leading-none text-gray-900 dark:text-white text-3xl">
+            <div className="m-2">
+              <h1 className="font-medium font-display mx-3 leading-none text-white text-xl">
                 Allocation Requests
               </h1>
             </div>
@@ -197,7 +197,7 @@ const AssignPage: FC = function () {
               </div>
             ) : (
               <div className="inline-block w-full align-middle">
-                <div className="overflow-hidden shadow-2xl">
+                <div className="overflow-hidden shadow-2xl mx-2 rounded-lg bg-custom-400">
                   <AssignRequestTable
                     assignRequests={filteredAssigns}
                     setSelectedAssignRequest={setSelectedAssignRequest}
@@ -214,6 +214,7 @@ const AssignPage: FC = function () {
           current={currentPage}
           total={totalPages * pageSize}
           onChange={setCurrentPage}
+          className="text-white bg-custom-400 p-4"
         />
         {selectedAssignRequest && (
           <ViewRequestModal
@@ -286,7 +287,7 @@ const AssignRequestTable: FC<{
   setSelectedAssignRequest: (assignRequest: any | null) => void;
 }> = function ({ assignRequests, setSelectedAssignRequest }) {
   return (
-    <Table className="min-w-full divide-y font-display divide-gray-200 dark:divide-gray-600 mx-2 my-2 rounded-lg">
+    <Table className="min-w-full divide-y font-display divide-gray-200 dark:divide-gray-600 rounded-xl">
       <Table.Head className="bg-gray-100 dark:bg-gray-700">
         <Table.HeadCell>Asset</Table.HeadCell>
         <Table.HeadCell>Requester</Table.HeadCell>

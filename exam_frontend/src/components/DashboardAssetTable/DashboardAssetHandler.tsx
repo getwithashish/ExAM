@@ -90,7 +90,7 @@ const DashboardAssetHandler = ({
 
   const businessUnitOptions =
     assetData?.results?.map(
-      (item: AssetResult) => item.business_unit.business_unit_name
+      (item: AssetResult) => item.business_unit?.business_unit_name
     ) || [];
 
   const { data: locationResults } = useQuery({
@@ -825,7 +825,7 @@ const DashboardAssetHandler = ({
       status: result.status,
       location: result.location?.location_name,
       invoice_location: result.invoice_location?.location_name,
-      business_unit: result.business_unit.business_unit_name,
+      business_unit: result.business_unit?.business_unit_name,
       os: result.os,
       os_version: result.os_version,
       mobile_os: result.mobile_os,

@@ -40,6 +40,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
   const [detailFilteredChartData, setDetailFilteredChartData] = useState<
     ChartData[]
   >([]);
+  // const [assetCountData, setAssetCountData] = useState<any>(null);
   const {
     data: _assetData,
     isLoading: assetLoading,
@@ -48,6 +49,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
     queryKey: ["assetData"],
     queryFn: fetchAssetData,
   });
+  
 
   useEffect(() => {
     fetchAssetTypeData()
@@ -124,9 +126,12 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
       setChartState("CREATE_REJECTED|UPDATE_REJECTED");
     } else if (chartLabel === "PENDING") {
       setChartState("ASSIGN_PENDING");
+    } else if (chartLabel === "ALLOCATED") {
+      setChartState("IN USE");
     } else {
       setChartState(chartLabel ?? null);
     }
+
     onClick();
   };
 

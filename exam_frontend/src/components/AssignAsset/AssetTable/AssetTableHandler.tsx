@@ -62,7 +62,7 @@ const AssetTableHandler = ({
 
   const businessUnitOptions =
     assetData?.results?.map(
-      (item: AssetResult) => item.business_unit.business_unit_name
+      (item: AssetResult) => item.business_unit?.business_unit_name
     ) || [];
 
   const { data: locationResults } = useQuery({

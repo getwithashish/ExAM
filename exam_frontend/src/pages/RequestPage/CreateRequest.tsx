@@ -146,15 +146,15 @@ const CreateRequestPage: FC = function () {
 
   return (
     <React.Fragment>
-      <div className="bg-white py-20">
-        <div className="block items-center justify-between border-b border-gray-200 bg-white px-2 dark:border-gray-700 dark:bg-gray-800 sm:flex mx-2 my-2">
+      <div className="bg-custom-500 lg:ml-64 py-24">
+        <div className="block items-center justify-between bg-custom-400 px-2 dark:border-gray-700 dark:bg-gray-800 sm:flex mx-2 my-2">
           <div className="mb-1 w-full">
-            <div className="mb-4">
-              <h1 className="font-medium font-display mx-3 leading-none text-gray-900 dark:text-white text-3xl">
+            <div className="m-2">
+              <h1 className="font-medium font-display mx-3 leading-none text-gray-900 text-white text-xl">
                 Asset creation requests
               </h1>
             </div>
-            <div className="block items-center sm:flex">
+            <div className="block items-center text-sm sm:flex">
               <SearchRequests setSearchQuery={setSearchQuery} />
             </div>
           </div>
@@ -167,7 +167,7 @@ const CreateRequestPage: FC = function () {
               </div>
             ) : (
               <div className="inline-block w-full align-middle">
-                <div className="overflow-hidden">
+                <div className="overflow-hidden shadow-2xl mx-2 rounded-lg bg-custom-400">
                   <RequestTable
                     assets={filteredAssets}
                     setSelectedAsset={setSelectedAsset}
@@ -256,8 +256,8 @@ const RequestTable: FC<{
   setSelectedAsset: (asset: any | null) => void;
 }> = function ({ assets, setSelectedAsset }) {
   return (
-    <Table className="min-w-full divide-y font-display divide-gray-200 dark:divide-gray-600 mx-2 my-2 rounded-lg">
-      <Table.Head className="bg-gray-100 dark:bg-gray-700">
+    <Table className="min-w-full divide-y font-display divide-gray-200 dark:divide-gray-600 rounded-xl">
+      <Table.Head className="bg-gray-700">
         <Table.HeadCell>Asset Type</Table.HeadCell>
         <Table.HeadCell>Product Name</Table.HeadCell>
         <Table.HeadCell>Requester</Table.HeadCell>
@@ -271,7 +271,7 @@ const RequestTable: FC<{
           ) => (
             <Table.Row
               key={asset.asset_uuid}
-              className="hover:bg-gray-100 dark:hover:bg-gray-700"
+              className="hover:bg-gray-100 hover:text-black dark:hover:bg-gray-700"
             >
               <Table.Cell className="whitespace-nowrap p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
                 <div className="text-base font-normal text-gray-900 dark:text-white">

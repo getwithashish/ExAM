@@ -10,7 +10,7 @@ import { UserDeleteOutlined } from "@ant-design/icons";
 import "./AssetTable.css";
 import { useQuery } from "@tanstack/react-query";
 import { DataType } from "../AssetTable/types";
-import { AssetResult } from "../AssetTable/types";
+import { AssetResult, Location , AssetType} from "../AssetTable/types";
 import AssetTable from "./AssetTable";
 import {
   getAssetDetails,
@@ -20,7 +20,7 @@ import {
 } from "../../AssetTable/api/getAssetDetails";
 import moment from "moment";
 interface AssetTableHandlerProps {
-  unassign: (record: DataType) => void;
+  unassign?:any;
   queryParamProp: any;
 }
 
@@ -28,7 +28,7 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
   queryParamProp,
   unassign,
 }) => {
-  const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null); // State to store the selected asset ID
+  const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null); 
   const [sortedColumn, setSortedColumn] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<string>("asc");
   const [sortOrders, setSortOrders] = useState<{ [key: string]: string }>({});
@@ -36,8 +36,8 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [queryParam, setQueryParam] = useState("");
-  const [confirmModalVisible, setConfirmModalVisible] = useState(false); // State for confirmation modal visibility
-  const [selectedRecord, setSelectedRecord] = useState<DataType | null>(null); // State to store the selected record for deallocation
+  const [confirmModalVisible, setConfirmModalVisible] = useState(false); 
+  const [selectedRecord, setSelectedRecord] = useState<DataType | null>(null);
   const { data: assetData, refetch: assetDataRefetch } = useQuery({
     queryKey: ["assetList", queryParam],
     queryFn: () => getAssetDetails(`${queryParamProp + queryParam}`),
@@ -64,16 +64,15 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
       editedQueryParam = offsetString + queryParamArg;
     }
 
-    // setQueryParam(queryParam);
     setQueryParam(editedQueryParam);
-    assetDataRefetch({ force: true });
+    assetDataRefetch();
   };
 
   const statusOptions =
     assetData?.results?.map((item: AssetResult) => item.status) || [];
   const businessUnitOptions =
     assetData?.results?.map(
-      (item: AssetResult) => item.business_unit.business_unit_name
+      (item: AssetResult) => item.business_unit?.business_unit_name
     ) || [];
 
   const { data: locationResults } = useQuery({
@@ -83,7 +82,7 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
 
   const locations = locationResults ? locationResults : [];
 
-  const locationFilters = locations.map((location) => ({
+  const locationFilters = locations.map((location: Location) => ({
     text: location.location_name,
     value: location.location_name,
   }));
@@ -98,12 +97,12 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
     queryFn: () => getAssetTypeOptions(),
   });
   const assetTypeFilters =
-    assetTypeData?.map((assetType) => ({
+    assetTypeData?.map((assetType: AssetType) => ({
+
       text: assetType.asset_type_name,
       value: assetType.asset_type_name,
     })) ?? [];
 
-  const assetDataList = assetData;
   const handleRowClick = useCallback((record: React.SetStateAction<null>) => {
     setSelectedRow(record);
     setDrawerVisible(true);
@@ -119,29 +118,29 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
     setDrawerVisible(false);
   }, []);
 
-  const [tableData, setTableData] = useState<DataType[]>([]);
-  const handleUpdateData = (updatedData: { key: any }) => {
-    setTableData((prevData: any[]) =>
-      prevData.map((item) =>
-        item.key === updatedData.key ? { ...item, ...updatedData } : item
-      )
-    );
-  };
+  // const [tableData, setTableData] = useState<DataType[]>([]);
+  // // const handleUpdateData = (updatedData: { key: any }) => {
+  // //   setTableData((prevData: any[]) =>
+  // //     prevData.map((item) =>
+  // //       item.key === updatedData.key ? { ...item, ...updatedData } : item
+  // //     )
+  // //   );
+  // // };
 
   const handleSort = (column: string) => {
     const isCurrentColumn = column === sortedColumn;
-    let newSortOrders = { ...sortOrders };
-
+    let newSortOrders: { [key: string]: string } = { ...sortOrders };
+  
     if (!isCurrentColumn) {
       newSortOrders = { [column]: "asc" };
     } else {
       newSortOrders[column] = sortOrders[column] === "asc" ? "desc" : "asc";
     }
-
+  
     setSortedColumn(column);
     setSortOrder(newSortOrders[column]);
     setSortOrders(newSortOrders);
-
+  
     const queryParams = Object.keys(newSortOrders)
       .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
       .join("");
@@ -151,8 +150,9 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
     }
     refetchAssetData(queryParams + additionalQueryParams);
   };
+  
 
-  const renderDeallocateButton = (_, record) => (
+  const renderDeallocateButton = (_:any, record: any) => (
     <Button
       className="ml-6"
       ghost
@@ -160,25 +160,26 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
       shape="circle"
       icon={<UserDeleteOutlined />}
       onClick={() => {
-        setConfirmModalVisible(true); // Show confirmation modal
-        setSelectedRecord(record); // Store the selected record for deallocation
+        setConfirmModalVisible(true);
+        setSelectedRecord(record); 
       }}
     />
   );
+  
   const handleConfirmDeallocate = async () => {
     setConfirmModalVisible(false);
     if (selectedRecord) {
       await unassign(selectedRecord);
       assetDataRefetch();
     }
-
-    setSelectedRecord(null); // Clear the selected record
+    setSelectedRecord(null);
   };
+
   <div>
     <h1>Asset Overview</h1>
   </div>;
 
-const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
+const renderClickableColumn = (columnName: any, dataIndex: string) => (_:any , record: any) => {
   if (dataIndex === 'created_at' || dataIndex === 'updated_at') {
     const formattedDate = moment(record[dataIndex]).format('DD-MM-YYYY'); 
     return (
@@ -191,6 +192,7 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
       </div>
     );
   }
+
   return (
     <div
       data-column-name={columnName}
@@ -229,7 +231,7 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
       width: 120,
       filters: locationFilters,
       onFilter: (
-        value: string | number | boolean | React.ReactText[] | Key,
+        value: string | number | boolean | Key,
         record: DataType
       ) => {
         if (Array.isArray(value)) {
@@ -251,7 +253,7 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
       width: 120,
       filters: locationFilters,
       onFilter: (
-        value: string | number | boolean | React.ReactText[] | Key,
+        value: string | number | boolean |  Key,
         record: DataType
       ) => {
         if (Array.isArray(value)) {
@@ -273,7 +275,7 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
       width: 120,
       filters: assetTypeFilters,
       onFilter: (
-        value: string | number | boolean | React.ReactText[] | Key,
+        value: string | number | boolean |  Key,
         record: DataType
       ) => {
         if (Array.isArray(value)) {
@@ -422,44 +424,33 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
       dataIndex: "expiry_date",
       responsive: ["md"],
       width: 120,
-      render: (_, record) => {
-        const dateOfPurchase = record.date_of_purchase
-          ? new Date(record.date_of_purchase)
-          : null;
-        const warrantyPeriod = parseInt(record.warranty_period) || 0; // Defaulting to 0 if warranty_period is not provided or invalid
-        if (dateOfPurchase instanceof Date && !isNaN(dateOfPurchase)) {
-          const expiryDate = new Date(
-            dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000
-          ); // Calculating expiry date in milliseconds
-          const formattedExpiryDate = expiryDate.toISOString().split("T")[0];
-          const currentDate = new Date();
-          const isExpired = expiryDate < currentDate;
-
-          // Apply renderClickableColumn logic here
-          return (
-            <div
-              data-column-name="Expiry Date"
-              onClick={() => handleColumnClick(record, "Expiry Date")}
-              style={{
-                cursor: "pointer",
-                color: isExpired ? "red" : "green",
-                fontWeight: isExpired ? "bold" : "bold",
-              }}
-            >
-              {formattedExpiryDate}
-            </div>
-          );
-        } else {
+      render: (_: any, record: any) => {
+        const dateOfPurchase = record.date_of_purchase ? new Date(record.date_of_purchase) : null;
+        const warrantyPeriod = parseInt(record.warranty_period) || 0;
+    
+        if (!(dateOfPurchase instanceof Date) || isNaN(dateOfPurchase.getTime())) {
           return "Invalid Date";
         }
+    
+        const expiryDate = new Date(dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000);
+        const formattedExpiryDate = expiryDate.toISOString().split("T")[0];
+        const currentDate = new Date();
+        const isExpired = expiryDate < currentDate;
+    
+        const fontWeight = isExpired ? "bold" : "normal";
+        const color = isExpired ? "red" : "green";
+    
+        return (
+          <div
+            data-column-name="Expiry Date"
+            onClick={() => handleColumnClick(record, "Expiry Date")}
+            style={{ cursor: "pointer", color, fontWeight }}
+          >
+            {formattedExpiryDate}
+          </div>
+        );
       },
-    },
-
-    ,
-   
-   
-
-   
+    },    
     {
       title: "Owner",
       dataIndex: "owner",
@@ -566,7 +557,7 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
     },
   ];
 
-  const handleColumnClick = (record: string[], columnName: string) => {
+  const handleColumnClick = (record: any, columnName: any) => {
     if (columnName !== "Assign Asset") {
       handleOtherColumnClick(record);
     }
@@ -577,7 +568,7 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
     setDrawerVisible(true);
   };
 
-  const data = assetData?.results?.map((result) => ({
+  const data = assetData?.results?.map((result: any) => ({
     key: result.asset_uuid,
     asset_id: result.asset_id,
     asset_category: result.asset_category,
@@ -616,17 +607,8 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
 
   const drawerTitle = "Asset Details";
 
-  const button = <Button type="primary"></Button>;
-
-  useEffect(() => {
-    if (selectedAssetId) {
-      refetch();
-    }
-  }, [selectedAssetId]);
-
   return (
     <>
-      {/* Confirmation Modal */}
       <Modal
         title="Confirm Deallocation"
         open={confirmModalVisible}
@@ -637,8 +619,6 @@ const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
       >
         <p>Are you sure you want to deallocate the asset?</p>
       </Modal>
-
-      {/* Existing JSX code for AssetTable component */}
       <AssetTable
         totalItemCount={assetData?.count}
         drawerTitle={drawerTitle}

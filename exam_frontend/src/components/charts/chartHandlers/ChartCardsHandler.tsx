@@ -48,11 +48,12 @@ const AssetCountComponent = () => {
   }, [totalAssetTypes]);
 
   const handleRefreshOnClick = () => {
-    setLoading(true);
-    setTimeout(() => {
-      fetchData();
-    }, 2000);
-  };
+    setLoading(true)
+    setTimeout(()=>
+      {
+        fetchData()
+      }, 2000);
+  }
 
   if (loading) {
     return (

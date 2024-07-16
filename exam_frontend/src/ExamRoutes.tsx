@@ -27,7 +27,7 @@ import PendingRequestPage from "./pages/PendingRequest/PendingRequestPage";
 const ExamRoutes = () => {
   const { setAuthenticated } = useAuth();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const storedValue = localStorage.getItem("jwt");
     if (storedValue) {
       setAuthenticated(true);

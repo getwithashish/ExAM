@@ -162,6 +162,6 @@ export interface AssetTableProps {
   assetPageDataFetch: any;
   isAssetDataLoading: any;
   totalItemCount: any;
-  userRole: any;
+  userRole?: string;
   isMyApprovalPage: any;
 }
