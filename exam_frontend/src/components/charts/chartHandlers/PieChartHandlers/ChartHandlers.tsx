@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { PieChart, pieArcLabelClasses } from '@mui/x-charts/PieChart';
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import Stack from "@mui/material/Stack";
 import { fetchAssetData, fetchAssetTypeData } from "../../api/ChartApi";
 import {
@@ -17,7 +17,6 @@ import { NoData } from "../../../NoData/NoData";
 import { statusColors } from "./StatusColors";
 import { statusMapping } from "./statusMapping";
 import { RefreshTwoTone } from "@mui/icons-material";
-
 
 const ChartHandlers: React.FC<PieChartGraphProps> = ({
   selectedTypeId,
@@ -65,10 +64,9 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
   useEffect(() => {
     fetchAssetData()
       .then((assetCountData) => {
-
         const statusCounts = assetCountData?.status_counts ?? {};
-        const inUseCount = statusCounts["IN USE"] ?? 0;
-        const inStoreCount = statusCounts["IN STORE"] ?? 0;
+        const inUseCount = statusCounts["USE"] ?? 0;
+        const inStoreCount = statusCounts["STOCK"] ?? 0;
         const inServiceCount = inUseCount + inStoreCount;
 
         const inServiceData = {
@@ -77,10 +75,17 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
           color: statusColors["ACTIVE"],
         };
 
-        const statusOrder = ["IN USE", "STOCK", "ACTIVE", "EXPIRED"];
-        console.log(assetCountData)
+        const statusOrder = [
+          "USE",
+          "STOCK",
+          "ACTIVE",
+          "OUTDATED",
+          "REPAIR",
+          "DAMAGED",
+        ];
+        console.log(assetCountData);
         const filteredAssetCountData = Object.entries(statusCounts)
-          .filter(([label]) => label !== "DISPOSED")
+          .filter(([label]) => label !== "SCRAP")
           .map(([label, value]) => ({
             label: statusMapping[label] ?? label,
             value: value as number,
@@ -100,7 +105,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
         setAssetFilteredChartData([]);
       });
 
-    return () => { };
+    return () => {};
   }, []);
 
   const handleChartItemClick = (
@@ -112,9 +117,9 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
     const chartLabel = filteredChartData[dataIndex]?.label;
 
     if (chartLabel === "STOCK") {
-      setChartState("IN STORE");
+      setChartState("STOCK");
     } else if (chartLabel === "ACTIVE") {
-      setChartState("IN STORE|IN USE");
+      setChartState("STOCK|USE");
     } else if (chartLabel === "PENDING") {
       setChartState("UPDATE_PENDING|CREATE_PENDING");
     } else if (chartLabel === "REJECTED") {
@@ -131,15 +136,30 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
   };
 
   const handleAssetItemClick = (_event: React.MouseEvent, params: any) => {
-    handleChartItemClick(assetFilteredChartData, setAssetState, params.dataIndex, onClick);
+    handleChartItemClick(
+      assetFilteredChartData,
+      setAssetState,
+      params.dataIndex,
+      onClick
+    );
   };
 
   const handleDetailItemClick = (_event: React.MouseEvent, params: any) => {
-    handleChartItemClick(detailFilteredChartData, setDetailState, params.dataIndex, onClick);
+    handleChartItemClick(
+      detailFilteredChartData,
+      setDetailState,
+      params.dataIndex,
+      onClick
+    );
   };
 
   const handleAssignItemClick = (_event: React.MouseEvent, params: any) => {
-    handleChartItemClick(assignFilteredChartData, setAssignState, params.dataIndex, onClick);
+    handleChartItemClick(
+      assignFilteredChartData,
+      setAssignState,
+      params.dataIndex,
+      onClick
+    );
   };
 
   useEffect(() => {
@@ -200,10 +220,10 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
           delete mergedStatusData["CREATE_PENDING"];
         }
 
-        const statusOrder = ["CREATED", "UPDATED", "PENDING", "REJECTED"]
+        const statusOrder = ["CREATED", "UPDATED", "PENDING", "REJECTED"];
 
         const mergedStatusArray: ChartData[] = statusOrder
-          .map(label => mergedStatusData[label])
+          .map((label) => mergedStatusData[label])
           .filter((entry): entry is ChartData => entry !== undefined);
 
         setDetailChartData(mergedStatusArray);
@@ -218,16 +238,20 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
   useEffect(() => {
     fetchAssetData()
       .then((assetAssignData) => {
-        const assetAssignStatusData = Object.entries(assetAssignData?.assign_status ?? {}).map(([label, value]) => ({
+        const assetAssignStatusData = Object.entries(
+          assetAssignData?.assign_status ?? {}
+        ).map(([label, value]) => ({
           label: statusMapping[label] ?? label,
           value: value as number,
           color: statusColors[label] ?? "", // Ensure color is always present
         }));
 
         const statusOrder = ["ASSIGNED", "UNASSIGNED", "PENDING", "REJECTED"];
-        const sortedAssignStatusData = statusOrder.map((label) =>
-          assetAssignStatusData.find((data) => data.label === label)
-        ).filter((entry): entry is ChartData => entry !== undefined);
+        const sortedAssignStatusData = statusOrder
+          .map((label) =>
+            assetAssignStatusData.find((data) => data.label === label)
+          )
+          .filter((entry): entry is ChartData => entry !== undefined);
 
         setAssignChartData(sortedAssignStatusData);
         setAssignFilteredChartData(sortedAssignStatusData);
@@ -238,8 +262,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
       });
   }, []);
 
-  useEffect(() => {
-  }, [selectedTypeId]);
+  useEffect(() => {}, [selectedTypeId]);
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const assetTypeValue = parseInt(e.target.value);
@@ -262,21 +285,26 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
         .get(`/asset/asset_count`)
         .then((assetRes) => {
           const assetCountData = assetRes.data.data;
-          const assetFilteredData = Object.entries(assetCountData?.status_counts ?? {})
-            .filter(([label, _]) => label !== "DISPOSED")
+          const assetFilteredData = Object.entries(
+            assetCountData?.status_counts ?? {}
+          )
+            .filter(([label, _]) => label !== "SCRAP")
             .map(([label, value]) => ({
               label,
               value: value as number,
               color: statusColors[label],
             }));
-          const inUseCount = assetFilteredData.find(item => item.label === 'IN USE')?.value ?? 0;
-          const inStoreCount = assetFilteredData.find(item => item.label === 'IN STORE')?.value ?? 0;
+          const inUseCount =
+            assetFilteredData.find((item) => item.label === "USE")?.value ?? 0;
+          const inStoreCount =
+            assetFilteredData.find((item) => item.label === "STOCK")?.value ??
+            0;
           const inServiceCount = inUseCount + inStoreCount;
           if (inServiceCount > 0) {
             assetFilteredData.push({
-              label: 'ACTIVE',
+              label: "ACTIVE",
               value: inServiceCount,
-              color: statusColors['ACTIVE'],
+              color: statusColors["ACTIVE"],
             });
           }
           setAssetFilteredChartData(assetFilteredData);
@@ -326,21 +354,26 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
         .get(`/asset/asset_count?asset_type=${assetTypeValue}`)
         .then((assetRes) => {
           const assetCountData = assetRes.data.data;
-          const assetFilteredData = Object.entries(assetCountData?.status_counts ?? {})
-            .filter(([label, _]) => label !== "DISPOSED")
+          const assetFilteredData = Object.entries(
+            assetCountData?.status_counts ?? {}
+          )
+            .filter(([label, _]) => label !== "SCRAP")
             .map(([label, value]) => ({
               label,
               value: value as number,
               color: statusColors[label],
             }));
-          const inUseCount = assetFilteredData.find(item => item.label === 'IN USE')?.value ?? 0;
-          const inStoreCount = assetFilteredData.find(item => item.label === 'IN STORE')?.value ?? 0;
+          const inUseCount =
+            assetFilteredData.find((item) => item.label === "USE")?.value ?? 0;
+          const inStoreCount =
+            assetFilteredData.find((item) => item.label === "STOCK")?.value ??
+            0;
           const inServiceCount = inUseCount + inStoreCount;
           if (inServiceCount > 0) {
             assetFilteredData.push({
-              label: 'ACTIVE',
+              label: "ACTIVE",
               value: inServiceCount,
-              color: statusColors['ACTIVE'],
+              color: statusColors["ACTIVE"],
             });
           }
           setAssetFilteredChartData(assetFilteredData);
@@ -409,33 +442,33 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                 fill="currentFill"
               />
             </svg>
-            <span className="ml-2 text-gray-200">Please wait. Data is loading...</span>
+            <span className="ml-2 text-gray-200">
+              Please wait. Data is loading...
+            </span>
           </div>
         </div>
-
       </div>
-
     );
 
   if (assetError) return <div>Error fetching data</div>;
 
   const darkTheme = createTheme({
     palette: {
-      mode: 'dark',
+      mode: "dark",
     },
   });
 
   const handleRefreshOnClick = () => {
     setTimeout(() => {
-      assetLoading
+      assetLoading;
     }, 2000);
-    handleSelectChange({ target: { value: selectedTypeId.toString() } } as React.ChangeEvent<HTMLSelectElement>);
+    handleSelectChange({
+      target: { value: selectedTypeId.toString() },
+    } as React.ChangeEvent<HTMLSelectElement>);
     setAssetFilteredChartData(assetChartData);
     setDetailFilteredChartData(detailChartData);
     setAssignFilteredChartData(assignChartData);
-
-
-  }
+  };
 
   return (
     <Stack>
@@ -443,13 +476,13 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
         <div className="flex-1 justify-end">
           <RefreshTwoTone
             onClick={() => {
-              handleRefreshOnClick()
+              handleRefreshOnClick();
             }}
             style={{
               cursor: "pointer",
               width: "30px",
               height: "40px",
-              color: '#ffffff'
+              color: "#ffffff",
             }}
           />
         </div>
@@ -476,21 +509,15 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
       </div>
 
       <>
-        <Stack
-          direction="row"
-        >
+        <Stack direction="row">
           {assetFilteredChartData.length === 0 &&
-            detailFilteredChartData.length === 0 &&
-            assignFilteredChartData.length === 0 ? (
+          detailFilteredChartData.length === 0 &&
+          assignFilteredChartData.length === 0 ? (
             <div className="flex justify-center items-center h-full w-full">
               <NoData />
             </div>
           ) : (
-            < Stack
-              direction="row"
-              sx={{ flexWrap: "wrap" }}
-              className="m-auto"
-            >
+            <Stack direction="row" sx={{ flexWrap: "wrap" }} className="m-auto">
               <ThemeProvider theme={darkTheme}>
                 <div className=" pt-6 mt-4 text-center items-center justify-center">
                   <span className="font-semibold font-display leading-none text-white dark:text-white text-lg">
@@ -510,7 +537,10 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                         endAngle: 360,
                         cx: 200,
                         cy: 200,
-                        highlightScope: { faded: "global", highlighted: "item" },
+                        highlightScope: {
+                          faded: "global",
+                          highlighted: "item",
+                        },
                         arcLabel: (item) => `${item.value}`,
                         arcLabelMinAngle: 10,
                         faded: {
@@ -530,7 +560,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                     onItemClick={handleAssetItemClick}
                     width={400}
                     height={400}
-                    tooltip={{ trigger: 'item' }}
+                    tooltip={{ trigger: "item" }}
                     slotProps={{
                       legend: {
                         direction: "row",
@@ -538,7 +568,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                         hidden: false,
                         labelStyle: {
                           fontSize: 11,
-                          fill: "#ffffff"
+                          fill: "#ffffff",
                         },
                         itemMarkWidth: 8,
                         itemMarkHeight: 12,
@@ -565,7 +595,10 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                         endAngle: 360,
                         cx: 200,
                         cy: 200,
-                        highlightScope: { faded: "global", highlighted: "item" },
+                        highlightScope: {
+                          faded: "global",
+                          highlighted: "item",
+                        },
                         arcLabel: (item) => `${item.value}`,
                         arcLabelMinAngle: 10,
                         faded: {
@@ -592,7 +625,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                         hidden: false,
                         labelStyle: {
                           fontSize: 11,
-                          fill: "#ffffff"
+                          fill: "#ffffff",
                         },
                         itemMarkWidth: 8,
                         itemMarkHeight: 12,
@@ -622,7 +655,10 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                         endAngle: 360,
                         cx: 200,
                         cy: 200,
-                        highlightScope: { faded: "global", highlighted: "item" },
+                        highlightScope: {
+                          faded: "global",
+                          highlighted: "item",
+                        },
                         arcLabel: (item) => `${item.value}`,
                         arcLabelMinAngle: 10,
                         faded: {
@@ -649,7 +685,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                         hidden: false,
                         labelStyle: {
                           fontSize: 11,
-                          fill: "#ffffff"
+                          fill: "#ffffff",
                         },
                         itemMarkWidth: 8,
                         itemMarkHeight: 12,
@@ -658,7 +694,6 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                       },
                     }}
                   />
-
                 </div>
               </ThemeProvider>
             </Stack>

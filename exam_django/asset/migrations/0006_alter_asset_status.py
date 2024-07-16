@@ -6,13 +6,25 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('asset', '0005_alter_asset_accessories'),
+        ("asset", "0005_alter_asset_accessories"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='asset',
-            name='status',
-            field=models.CharField(choices=[('IN USE', 'IN USE'), ('IN STORE', 'IN STORE'), ('IN REPAIR', 'IN REPAIR'), ('OUTDATED', 'OUTDATED'), ('DISPOSED', 'DISPOSED'), ('DAMAGED', 'DAMAGED'), ('UNREPAIRABLE', 'UNREPAIRABLE')], default='IN STORE', max_length=50),
+            model_name="asset",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("IN USE", "IN USE"),
+                    ("IN STORE", "IN STORE"),
+                    ("IN REPAIR", "IN REPAIR"),
+                    ("OUTDATED", "OUTDATED"),
+                    ("DISPOSED", "DISPOSED"),
+                    ("DAMAGED", "DAMAGED"),
+                    ("UNREPAIRABLE", "UNREPAIRABLE"),
+                ],
+                default="IN STORE",
+                max_length=50,
+            ),
         ),
     ]
