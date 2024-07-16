@@ -147,7 +147,7 @@ const AssetCountComponent = () => {
             <div className="text-white text-sm sm:text-sm md:text-sm lg:text-sm xl:text-base font-display font-light text-left">
               Inventory
             </div>
-            <div className="text-white text-lg sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-display font-semibold text-right m-4">
+            <div className="text-white text-lg sm:text-lg md:text-xl lg:text-xl xl:text-xl font-display font-semibold text-right m-4">
               {assetTypes[currentAssetIndex]}
             </div>
           </div>
