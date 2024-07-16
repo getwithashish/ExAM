@@ -6,18 +6,23 @@ import { AssignmentHandler } from "../../components/AssignAsset/Assign/Assignmen
 import { useQuery } from "@tanstack/react-query";
 import { getAssetDetails } from "../../components/AssetTable/api/getAssetDetails";
 
-const Assignableasset = () => {
+const AssignableAsset = () => {
   const [record, setRecord] = useState<DataType | null>(null);
   const [open, setOpen] = useState<boolean>(false);
-
   const [queryParam, setQueryParam] = useState("");
+
+  const queryParamProp = "&assign_status=UNASSIGNED|REJECTED&status=IN STORE";
+
   const {
     data: assetData,
     isLoading: isAssetDataLoading,
     refetch: assetDataRefetch,
   } = useQuery({
     queryKey: ["assetList", queryParam],
-    queryFn: () => getAssetDetails(`${queryParamProp + queryParam}`),
+    queryFn: () => getAssetDetails(`${queryParamProp}${queryParam}`),
+    onError: (error) => {
+      console.error("Error fetching asset data:", error);
+    },
   });
 
   const showAssignDrawer = (record: DataType | null) => {
@@ -29,7 +34,6 @@ const Assignableasset = () => {
     setOpen(false);
   };
 
-  let queryParamProp = "&assign_status=UNASSIGNED|REJECTED&status=IN STORE";
   return (
     <div className="pt-8">
       <AssetTableHandler
@@ -41,10 +45,8 @@ const Assignableasset = () => {
         showAssignDrawer={showAssignDrawer}
         queryParamProp={queryParamProp}
       />
-      <DrawerViewRequest
-        title="assign"
-        onClose={closeAssignDrawer}
-        open={open}>
+
+      <DrawerViewRequest title="assign" onClose={closeAssignDrawer} open={open}>
         {record && (
           <AssignmentHandler
             record={record}
@@ -57,4 +59,4 @@ const Assignableasset = () => {
   );
 };
 
-export default Assignableasset;
+export default AssignableAsset;

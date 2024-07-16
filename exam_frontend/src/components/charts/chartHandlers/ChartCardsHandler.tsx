@@ -53,7 +53,6 @@ const AssetCountComponent = () => {
       {
         fetchData()
       }, 2000);
-
   }
 
   if (loading) {
@@ -81,11 +80,8 @@ const AssetCountComponent = () => {
             <span className="ml-2 text-gray-200">Please wait. Data is loading...</span>
           </div>
         </div>
-
       </div>
-
     );
-
   }
 
   if (error) {

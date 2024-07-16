@@ -42,10 +42,13 @@ export interface DataType {
   value: string | number | boolean;
 }
 export interface AssetResult {
-  status: string; 
-  business_unit:string;
-  location:string;
-
+  status: string;
+  business_unit: {
+    business_unit_name: string;
+  };
+  location: {
+    location_name: string;
+  };
 }
 
 export interface FilterDropdownProps {
@@ -55,7 +58,7 @@ export interface FilterDropdownProps {
   clearFilters: () => void;
 }
 
-interface Location {
+export interface Location {
   id: number;
   location_name: string;
 }
@@ -65,7 +68,7 @@ interface BusinessUnit {
   business_unit_name: string;
 }
 
-interface AssetType {
+export interface AssetType {
   id: number;
   asset_type_name: string;
 }

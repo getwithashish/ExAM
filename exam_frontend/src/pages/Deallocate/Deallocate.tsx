@@ -27,7 +27,9 @@ const Deallocate = () => {
     
     <div className="bg-custom-400 pt-8">
       <Spin spinning={loading} >
-      <AssetTableHandler unassign={unassign} queryParamProp={queryParamProp}/>
+      <AssetTableHandler 
+        unassign={unassign}
+        queryParamProp={queryParamProp}/>
       </Spin>
     </div>
   );

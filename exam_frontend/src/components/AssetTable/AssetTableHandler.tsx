@@ -13,6 +13,14 @@ import {
 } from "./api/getAssetDetails";
 import moment from "moment";
 
+interface Props{
+  userRole?:string;
+  isRejectedPage?:boolean;
+  queryParamProp?:string;
+  heading?:string;
+  isMyApprovalPage?:boolean;
+}
+
 
 const AssetTableHandler = ({
   userRole,
@@ -20,9 +28,8 @@ const AssetTableHandler = ({
   queryParamProp,
   heading,
   isMyApprovalPage,
-  assets,
 
-}) => {
+}:Props) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [sortedColumn, setSortedColumn] = useState<string>('');
@@ -71,7 +78,7 @@ const AssetTableHandler = ({
     ) || [];
   const businessUnitOptions =
     assetData?.results?.map(
-      (item: AssetResult) => item.business_unit.business_unit_name
+      (item: AssetResult) => item.business_unit?.business_unit_name
     ) || [];
 
   const { data: locationResults } = useQuery({
@@ -732,7 +739,7 @@ const AssetTableHandler = ({
     status: result.status === "IN STORE" ? "IN STOCK" : result.status,
     location: result.location?.location_name,
     invoice_location: result.invoice_location?.location_name,
-    business_unit: result.business_unit.business_unit_name,
+    business_unit: result.business_unit?.business_unit_name,
     os: result.os,
     os_version: result.os_version,
     mobile_os: result.mobile_os,

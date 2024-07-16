@@ -1,5 +1,5 @@
 import { ChangeEvent, FC, useEffect, useState } from "react";
-import { Button, Label, Table, Textarea, TextInput } from "flowbite-react";
+import { Button, Label, Table, Textarea,  DarkThemeToggle, TextInput } from "flowbite-react";
 import { HiPencilAlt } from "react-icons/hi";
 import axiosInstance from "../../config/AxiosConfig";
 import React from "react";
@@ -19,6 +19,16 @@ const ModificationRequests: FC = function () {
   const [totalPages, setTotalPages] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [modalOpen, setModalOpen] = useState(false);
+
+  // type ThemeMode = "dark";
+  
+  // declare const useThemeMode: () => {
+  //   mode: ThemeMode;
+  //   computedMode: ThemeMode;
+  //   setMode: (mode: ThemeMode) => void;
+  //   toggleMode: () => void;
+  //   clearMode: () => void;
+  // };
 
   useEffect(() => {
     fetchAssets();
@@ -153,11 +163,11 @@ const ModificationRequests: FC = function () {
 
   return (
     <React.Fragment>
-      <div className="bg-white py-20">
-        <div className="block items-center justify-between border-b border-gray-200 bg-white px-2 dark:border-gray-700 dark:bg-gray-800 sm:flex mx-2 my-2">
+     <div className="bg-custom-500 lg:ml-64 py-24">
+        <div className="block items-center justify-between bg-custom-400 px-2 dark:border-gray-700 dark:bg-gray-800 sm:flex mx-2 my-2">
           <div className="mb-1 w-full">
-            <div className="mb-4">
-              <h1 className="font-medium font-display mx-3 leading-none text-gray-900 dark:text-white text-3xl">
+            <div className="m-2">
+              <h1 className="font-medium font-display mx-3 leading-none text-gray-900 text-white text-xl">
                 Asset modification requests
               </h1>
             </div>
@@ -174,7 +184,7 @@ const ModificationRequests: FC = function () {
               </div>
             ) : (
               <div className="inline-block w-full align-middle">
-                <div className="overflow-hidden">
+                <div className="overflow-hidden shadow-2xl mx-2 rounded-lg bg-custom-400">
                   <RequestTable
                     assets={filteredAssets}
                     setSelectedAsset={setSelectedAsset}
@@ -233,7 +243,7 @@ const SearchRequests: FC<{
         />
         <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
           {showInfo && (
-            <div className="absolute top-0 right-full w-max bg-gray-700 p-2 rounded-lg shadow-lg">
+            <div className="absolute top-0 right-full w-max bg-gray-700 rounded-lg shadow-lg">
               <p className="text-white text-xs">
                 Works with a few fields only,
                 <br />
