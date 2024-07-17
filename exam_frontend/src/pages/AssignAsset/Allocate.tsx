@@ -34,7 +34,6 @@ const AssignableAsset = () => {
     setOpen(false);
   };
 
-
   return (
     <div className="pt-8">
       <AssetTableHandler

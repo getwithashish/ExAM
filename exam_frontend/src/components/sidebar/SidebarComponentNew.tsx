@@ -79,7 +79,7 @@ const SidebarComponentNew = ({ children }: any) => {
       try {
         const base64Url = token.split(".")[1];
         if (!base64Url) {
-          throw new Error("Invalid Jwt token: Missing base URL segment")
+          throw new Error("Invalid Jwt token: Missing base URL segment");
         }
         const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
         const jsonPayload = decodeURIComponent(
@@ -127,13 +127,13 @@ const SidebarComponentNew = ({ children }: any) => {
   ];
 
   return (
-    <Layout style={{ marginLeft: 0, minHeight: '100vh' }}>
+    <Layout style={{ marginLeft: 0, minHeight: "100vh" }}>
       <Sider
         style={{
-          position: 'fixed',
-          height: '100%',
+          position: "fixed",
+          height: "100%",
           zIndex: 110,
-          backgroundColor: '#161B21'
+          backgroundColor: "#161B21",
         }}
         width={265}
         breakpoint="lg"
@@ -141,12 +141,18 @@ const SidebarComponentNew = ({ children }: any) => {
       >
         <div className="bg-custom-400 rounded-lg h-screen m-2">
           <div className="justify-center p-2items-center pt-6 mx-8">
-          <img className="h-8" src="../../public/images/experion technologies.png" alt="Company Logo" />
-        </div>
-          <Menu theme="dark" mode="vertical" className="text-base font-display items-center justify-between bg-transparent pt-10 mx-2 ">
-            <Menu.Item
-              icon={<PieChartOutlined />}
-            >
+            <img
+              className="h-8"
+              src="../../public/images/experion technologies.png"
+              alt="Company Logo"
+            />
+          </div>
+          <Menu
+            theme="dark"
+            mode="vertical"
+            className="text-base font-display items-center justify-between bg-transparent pt-10 mx-2 "
+          >
+            <Menu.Item icon={<PieChartOutlined />}>
               <Tooltip title="Dashboard">
                 <Link to="/exam/dashboard">Dashboard</Link>
               </Tooltip>
@@ -160,23 +166,17 @@ const SidebarComponentNew = ({ children }: any) => {
                 >
                   <Tooltip title="To Create an Asset">Create Assets</Tooltip>
                 </Menu.Item>
-                <Menu.Item
-                  icon={<EditOutlined />}
-                >
+                <Menu.Item icon={<EditOutlined />}>
                   <Tooltip title="To modify an Asset">
                     <Link to="/exam/updatable_assets">Modify Assets</Link>
                   </Tooltip>
                 </Menu.Item>
-                <Menu.Item
-                  icon={<UserSwitchOutlined />}
-                >
+                <Menu.Item icon={<UserSwitchOutlined />}>
                   <Tooltip title="To allocate an Asset to an employee">
                     <Link to="/exam/assignable_asset">Allocate Assets</Link>
                   </Tooltip>
                 </Menu.Item>
-                <Menu.Item
-                  icon={<UserSwitchOutlined />}
-                >
+                <Menu.Item icon={<UserSwitchOutlined />}>
                   <Tooltip title="To deallocate an Asset from an employee">
                     <Link to="/exam/deallocate">Deallocate Assets</Link>
                   </Tooltip>
@@ -185,9 +185,7 @@ const SidebarComponentNew = ({ children }: any) => {
             )}
 
             {userRole === "LEAD" && (
-              <Menu.Item
-                icon={<EditOutlined />}
-              >
+              <Menu.Item icon={<EditOutlined />}>
                 <Tooltip title="To delete an Asset">
                   <Link to="/exam/updatable_assets">Delete Assets</Link>
                 </Tooltip>
@@ -195,9 +193,7 @@ const SidebarComponentNew = ({ children }: any) => {
             )}
 
             {userRole === "MANAGER" && (
-              <Menu.Item
-                icon={<EditOutlined />}
-              >
+              <Menu.Item icon={<EditOutlined />}>
                 <Tooltip title="View Deleted Assets">
                   <Link to="/exam/updatable_assets">Deleted Assets</Link>
                 </Tooltip>
@@ -211,34 +207,34 @@ const SidebarComponentNew = ({ children }: any) => {
                 title="Approve Assets"
                 className="bg-custom-400"
               >
-                <Menu.Item
-                  icon={<CarryOutOutlined />}
-                >
-                  <Tooltip title="Approve Assets that are pending to be created">
-                    <Link to="/exam/creation_requests">In Creation</Link>
-                  </Tooltip>
+                <Menu.Item icon={<CarryOutOutlined />}>
+                  <Link to="/exam/creation_requests">
+                    <Tooltip title="Approve Assets that are pending to be created">
+                      In Creation
+                    </Tooltip>
+                  </Link>
                 </Menu.Item>
-                <Menu.Item
-                  icon={<CarryOutOutlined />}
-                >
-                  <Tooltip title="Approve Assets that are pending to be updated">
-                    <Link to="/exam/updation_requests">In Modification</Link>
-                  </Tooltip>
+
+                <Menu.Item icon={<CarryOutOutlined />}>
+                  <Link to="/exam/updation_requests">
+                    <Tooltip title="Approve Assets that are pending to be updated">
+                      In Modification
+                    </Tooltip>
+                  </Link>
                 </Menu.Item>
-                <Menu.Item
-                  icon={<CarryOutOutlined />}
-                >
-                  <Tooltip title="Approve Assets that are pending to be allocated">
-                    <Link to="/exam/assign_requests">In Allocation</Link>
-                  </Tooltip>
+
+                <Menu.Item icon={<CarryOutOutlined />}>
+                  <Link to="/exam/assign_requests">
+                    <Tooltip title="Approve Assets that are pending to be allocated">
+                      In Allocation
+                    </Tooltip>
+                  </Link>
                 </Menu.Item>
               </Menu.SubMenu>
             )}
 
             {userRole === "LEAD" && (
-              <Menu.Item
-                icon={<MailOutlined />}
-              >
+              <Menu.Item icon={<MailOutlined />}>
                 <Tooltip title="Show Assets that I have approved">
                   <Link to="/exam/my_approvals">My Approval History</Link>
                 </Tooltip>
@@ -250,79 +246,67 @@ const SidebarComponentNew = ({ children }: any) => {
                 key="sub1"
                 icon={<MailOutlined />}
                 title="My Requests"
-                style={{ backgroundColor: '#1D232C' }} // Adjust background color here
+                style={{ backgroundColor: "#1D232C" }} // Adjust background color here
               >
-                <Menu.Item
-                  icon={<CheckCircleOutlined />}
-                >
+                <Menu.Item icon={<CheckCircleOutlined />}>
                   <Tooltip title="Show my Asset Requests which have been approved">
                     <Link to="/exam/approved_requests">Approved</Link>
                   </Tooltip>
                 </Menu.Item>
-                <Menu.Item
-                  icon={<CheckCircleOutlined />}
-                >
+                <Menu.Item icon={<CheckCircleOutlined />}>
                   <Tooltip title="Show the requests which are in pending status">
                     <Link to="/exam/pending_requests">Pending Requests</Link>
                   </Tooltip>
                 </Menu.Item>
-                <Menu.Item
-                  icon={<CloseCircleOutlined />}
-                >
+                <Menu.Item icon={<CloseCircleOutlined />}>
                   <Tooltip title="Show my Asset creation and updation Requests which have been rejected">
                     <Link to="/exam/rejected_assets">Rejected Asset</Link>
                   </Tooltip>
                 </Menu.Item>
-                <Menu.Item
-                  icon={<CloseCircleOutlined />}
-                >
+                <Menu.Item icon={<CloseCircleOutlined />}>
                   <Tooltip title="Show my Asset allocation Requests which have been rejected">
-                    <Link to="/exam/rejected_allocation">Rejected Allocation</Link>
+                    <Link to="/exam/rejected_allocation">
+                      Rejected Allocation
+                    </Link>
                   </Tooltip>
                 </Menu.Item>
               </Menu.SubMenu>
             )}
 
-            <Menu.Item
-              icon={<UserSwitchOutlined />}
-            >
+            <Menu.Item icon={<UserSwitchOutlined />}>
               <Tooltip title="To view the expisky assets">
                 <Link to="/exam/expired_assets">Expired Assets</Link>
               </Tooltip>
             </Menu.Item>
 
-            <Menu.Item
-              icon={<CarryOutOutlined />}
-            >
+            <Menu.Item icon={<CarryOutOutlined />}>
               <Tooltip title="Download user agent">
-                <Link to="#" onClick={handleDownload}>Download</Link>
+                <Link to="#" onClick={handleDownload}>
+                  Download
+                </Link>
               </Tooltip>
             </Menu.Item>
 
-            <Menu.Item
-              icon={<RobotOutlined />}
-            >
+            <Menu.Item icon={<RobotOutlined />}>
               <Tooltip title="AI Assistant">
                 <Link to="/exam/chat">AssetSense Ai</Link>
               </Tooltip>
             </Menu.Item>
           </Menu>
-
         </div>
-
       </Sider>
-      <Layout style={{ marginLeft: 0, minHeight: '100vh' }}>
+      <Layout style={{ marginLeft: 0, minHeight: "100vh" }}>
         <Header
           style={{
-            position: 'fixed',
+            position: "fixed",
             zIndex: 100,
-            width: '100vw',
-            backgroundColor: '#161B21',
-            padding: '0 28px',
-            height:'97px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
+            width: "100vw",
+            backgroundColor: "#161B21",
+            padding: "0 28px",
+            height: "97px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
           <div className="flex w-screen lg:ml-60 sm:px-2 mx-2 bg-custom-400 rounded-lg items-center">
@@ -358,7 +342,7 @@ const SidebarComponentNew = ({ children }: any) => {
             </div>
           </div>
         </Header>
-        <Content style={{ overflow: 'initial' }}>
+        <Content style={{ overflow: "initial" }}>
           <Spin spinning={loading}>
             {children}
             <SideDrawerComponent
@@ -388,8 +372,10 @@ const SidebarComponentNew = ({ children }: any) => {
                       Privacy Policy
                     </FlowbiteFooter.Link>
 
-                    <FlowbiteFooter.Link href="https://experionglobal.com/"
-                    className="mr-3 mb-3 lg:mb-0 text-gray-400">
+                    <FlowbiteFooter.Link
+                      href="https://experionglobal.com/"
+                      className="mr-3 mb-3 lg:mb-0 text-gray-400"
+                    >
                       Contact
                     </FlowbiteFooter.Link>
                   </FlowbiteFooter.LinkGroup>
