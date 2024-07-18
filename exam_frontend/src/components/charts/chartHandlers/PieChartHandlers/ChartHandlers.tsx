@@ -49,7 +49,6 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
     queryKey: ["assetData"],
     queryFn: fetchAssetData,
   });
-  
 
   useEffect(() => {
     fetchAssetTypeData()
