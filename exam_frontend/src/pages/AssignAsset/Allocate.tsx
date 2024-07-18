@@ -11,7 +11,7 @@ const AssignableAsset = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [queryParam, setQueryParam] = useState("");
 
-  let queryParamProp = "&assign_status=UNASSIGNED|REJECTED&status=STORE";
+  const queryParamProp = "&assign_status=UNASSIGNED|REJECTED&status=STOCK";
 
   const {
     data: assetData,
