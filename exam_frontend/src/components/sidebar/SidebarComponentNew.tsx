@@ -143,7 +143,7 @@ const SidebarComponentNew = ({ children }: any) => {
           <div className="justify-center p-2items-center pt-6 mx-8">
             <img
               className="h-8"
-              src="images/experion technologies.png"
+              src="experion technologies.png"
               alt="Company Logo"
             />
           </div>
