@@ -13,7 +13,7 @@ const ExampleNavbar: FC = function () {
              
               <span className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white">
              
-              <img src="../../public/images/logo.png" alt="Logo" className="mr-3 h-6 sm:h-8" />
+              <img src="images/logo.png" alt="Logo" className="mr-3 h-6 sm:h-8" />
               
               </span>
             {/* </Navbar.Brand> */}
