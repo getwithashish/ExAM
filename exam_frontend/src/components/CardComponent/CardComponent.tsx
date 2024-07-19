@@ -276,7 +276,6 @@ const CardComponent: React.FC<CardType> = ({
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const value = e.target.value;
-    console.log("Warranty Value: ", value);
     var currentWarrantyPeriod = data?.warranty_period?.toString();
     if (data?.warranty_period === null) {
       currentWarrantyPeriod = "";

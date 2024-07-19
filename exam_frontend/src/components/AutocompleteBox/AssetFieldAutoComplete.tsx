@@ -26,12 +26,19 @@ import { getUserOptions } from "./api/getUserDetails";
 
 const filter = createFilterOptions();
 
+interface Props{
+  assetField?:any;
+  value?:any;
+  setValue?:any;
+  defaultValue?:any;
+}
+
 const AssetFieldAutoComplete = ({
   assetField,
   value,
   setValue,
   defaultValue,
-}) => {
+}: Props) => {
   const [open, toggleOpen] = React.useState(false);
 
   const [dialogValue, setDialogValue] = React.useState({

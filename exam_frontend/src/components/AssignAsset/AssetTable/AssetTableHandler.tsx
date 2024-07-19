@@ -13,6 +13,14 @@ import {
   getMemoryOptions,
 } from "../../AssetTable/api/getAssetDetails";
 import moment from "moment";
+interface Props{
+  queryParam?:any;
+  setQueryParam?:any;
+  assetData?:any;
+  isAssetDataLoading?:any;
+  assetDataRefetch?:any;
+  showAssignDrawer?:any;
+}
 
 const AssetTableHandler = ({
   queryParam,
@@ -21,8 +29,7 @@ const AssetTableHandler = ({
   isAssetDataLoading,
   assetDataRefetch,
   showAssignDrawer,
-  queryParamProp,
-}) => {
+}:Props) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [sortedColumn, setSortedColumn] = useState<string>("");
@@ -51,8 +58,6 @@ const AssetTableHandler = ({
       var offsetString = offsetMatch ? offsetMatch[0] : "";
       editedQueryParam = offsetString + queryParamArg;
     }
-
-    // setQueryParam(queryParam);
     setQueryParam(editedQueryParam);
     assetDataRefetch({ force: true });
   };
@@ -72,7 +77,7 @@ const AssetTableHandler = ({
 
   const locations = locationResults ? locationResults : [];
 
-  const locationFilters = locations.map((location) => ({
+  const locationFilters = locations.map((location:any) => ({
     text: location.location_name,
     value: location.location_name,
   }));
@@ -87,7 +92,7 @@ const AssetTableHandler = ({
     queryFn: () => getAssetTypeOptions(),
   });
   const assetTypeFilters =
-    assetTypeData?.map((assetType) => ({
+    assetTypeData?.map((assetType:any ) => ({
       text: assetType.asset_type_name,
       value: assetType.asset_type_name,
     })) ?? [];
@@ -144,7 +149,7 @@ const AssetTableHandler = ({
     <h1>Asset Overview</h1>
   </div>;
 
-  const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
+  const renderClickableColumn = (columnName:any, dataIndex: any) => (_:any, record:any) => {
     if (dataIndex === "created_at" || dataIndex === "updated_at") {
       const formattedDate = moment(record[dataIndex]).format("DD-MM-YYYY");
       return (
@@ -179,14 +184,12 @@ const AssetTableHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("product_name"),
       }),
-      // render: renderClickableColumn("Product Name", "product_name"),
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("Product Name", "product_name")(text, record)}
         </div>
       ),
     },
-
     {
       title: "Serial Number",
       dataIndex: "serial_number",
@@ -244,7 +247,6 @@ const AssetTableHandler = ({
       sorter: (a: { serial_number: string }, b: { serial_number: any }) =>
         a.serial_number.localeCompare(b.serial_number),
       sortDirections: ["ascend", "descend"],
-      // render: renderClickableColumn("Serial Number", "serial_number"),
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("Serial Number", "serial_number")(
@@ -261,7 +263,7 @@ const AssetTableHandler = ({
       width: 120,
       filters: locationFilters,
       onFilter: (
-        value: string | number | boolean | React.ReactText[] | Key,
+        value: string | number | boolean | Key,
         record: DataType
       ) => {
         if (Array.isArray(value)) {
@@ -274,7 +276,6 @@ const AssetTableHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("location"),
       }),
-      // render: renderClickableColumn("Location", "location"),
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("Location", "location")(text, record)}
@@ -302,7 +303,6 @@ const AssetTableHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("invoice_location"),
       }),
-      // render: renderClickableColumn("Invoice Location", "invoice_location"),
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("Invoice Location", "invoice_location")(
@@ -322,7 +322,6 @@ const AssetTableHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("custodian"),
       }),
-      // render: renderClickableColumn("Custodian", "custodian"),
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("Custodian", "custodian")(text, record)}
@@ -349,7 +348,6 @@ const AssetTableHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("asset_type"),
       }),
-      // render: renderClickableColumn("Asset Type", "asset_type"),
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("Asset Type", "asset_type")(text, record)}
@@ -361,7 +359,6 @@ const AssetTableHandler = ({
       dataIndex: "asset_category",
       responsive: ["md"],
       width: 140,
-      // render: renderClickableColumn("Asset Category", "asset_category"),
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("Asset Category", "asset_category")(
@@ -381,7 +378,6 @@ const AssetTableHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("version"),
       }),
-      // render: renderClickableColumn("Version", "version"),
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("Version", "version")(text, record)}
@@ -393,7 +389,6 @@ const AssetTableHandler = ({
       dataIndex: "Status",
       responsive: ["md"],
       width: 140,
-      // render: renderClickableColumn("Asset Status", "status"),
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("processor_gen", "processor_gen")(
@@ -408,7 +403,6 @@ const AssetTableHandler = ({
       dataIndex: "BusinessUnit",
       responsive: ["md"],
       width: 120,
-      // render: renderClickableColumn("Business Unit", "business_unit"),
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("Business_Unit", "business_unit")(
@@ -423,7 +417,6 @@ const AssetTableHandler = ({
       dataIndex: "os",
       responsive: ["md"],
       width: 120,
-      // render: renderClickableColumn("Os", "os"),
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("Os", "os")(text, record)}
@@ -435,7 +428,6 @@ const AssetTableHandler = ({
       dataIndex: "os_version",
       responsive: ["md"],
       width: 120,
-      // render: renderClickableColumn("Os Version", "os_version"),
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("Os Version", "os_version")(text, record)}
@@ -447,7 +439,6 @@ const AssetTableHandler = ({
       dataIndex: "processor",
       responsive: ["md"],
       width: 120,
-      // render: renderClickableColumn("Processor", "processor"),
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("Processor", "processor")(text, record)}
@@ -459,7 +450,6 @@ const AssetTableHandler = ({
       dataIndex: "processor_gen",
       responsive: ["md"],
       width: 120,
-      // render: renderClickableColumn("Asset Status", "processor_gen"),
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("processor_gen", "processor_gen")(
@@ -479,7 +469,6 @@ const AssetTableHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("date_of_purchase"),
       }),
-      // render: renderClickableColumn("Date of Purchase", "date_of_purchase"),
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("Date of Purchase", "date_of_purchase")(
@@ -499,7 +488,6 @@ const AssetTableHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("warranty_period"),
       }),
-      // render: renderClickableColumn("Warranty Period", "warranty_period"),
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("warranty_period", "warranty_period")(
@@ -514,7 +502,7 @@ const AssetTableHandler = ({
       dataIndex: "expiry_date",
       responsive: ["md"],
       width: 120,
-      render: (_, record) => {
+      render: (_: any, record: any) => {
         const dateOfPurchase = record.date_of_purchase
           ? new Date(record.date_of_purchase)
           : null;
@@ -522,12 +510,10 @@ const AssetTableHandler = ({
         if (dateOfPurchase instanceof Date && !isNaN(dateOfPurchase)) {
           const expiryDate = new Date(
             dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000
-          ); // Calculating expiry date in milliseconds
+          );
           const formattedExpiryDate = expiryDate.toISOString().split("T")[0];
           const currentDate = new Date();
           const isExpired = expiryDate < currentDate;
-
-          // Apply renderClickableColumn logic here
           return (
             <div
               data-column-name="Expiry Date"
@@ -558,16 +544,13 @@ const AssetTableHandler = ({
           {renderClickableColumn("license_type", "license_type")(text, record)}
         </div>
       ),
-
-      // render: renderClickableColumn("license_type", "license_type"),
     },
 
     {
       title: "Model Number",
-      dataIndex: "ModelNumber", // Corrected dataIndex
+      dataIndex: "ModelNumber",
       responsive: ["md"],
       width: 120,
-      // render: renderClickableColumn("Asset Status", "model_number"),
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("Model Number", "model_number")(text, record)}

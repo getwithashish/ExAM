@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-import type { Field } from "react-querybuilder";
 import { message } from "antd";
 import MuiAutocomplete from "./MuiAutocomplete";
 import type { FieldValues } from "./types/types";
 import { Button, IconButton, Stack, createSvgIcon } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { Delete, DeleteOutlined } from "@mui/icons-material";
-import { blue, green, pink } from "@mui/material/colors";
+import { Delete } from "@mui/icons-material";
+import { blue, pink } from "@mui/material/colors";
 
 interface QueryBuilderComponentProps {
   assetDataRefetch: (queryParam: string) => void;

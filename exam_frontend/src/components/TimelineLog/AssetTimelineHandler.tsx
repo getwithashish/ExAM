@@ -1,12 +1,14 @@
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import axiosInstance from "../../config/AxiosConfig";
-import { useState, useEffect } from "react";
 import { Timeline } from "flowbite-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamation, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { Log, Props } from "./types/types";
 
-export const AssetTimelineHandler = ({ assetUuid }: { assetUuid: string }) => {
-  const [assetLogs, setAssetLogs] = useState<any>(null);
-  const [updatedFields, setUpdatedFields] = useState<string[]>([]);
+const FILTERED_KEYS = ['updated_at', 'asset_detail_status'];
+
+const useAssetLogs = (assetUuid: string) => {
+  const [assetLogs, setAssetLogs] = useState<Log[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -14,47 +16,9 @@ export const AssetTimelineHandler = ({ assetUuid }: { assetUuid: string }) => {
 
     const fetchData = async () => {
       try {
-        const response = await axiosInstance.get(
-          `/asset/asset_lifecycle/${assetUuid}`
-        );
-        console.log(response.data.data.logs)
-        if (
-          response.data &&
-          response.data.data &&
-          Array.isArray(response.data.data.logs)
-        ) {
-          const filteredLogs = response.data.data.logs.map((log: any) => {
-            const filteredChanges = Object.entries(log.changes).filter(
-              ([key, _]: [string, any]) =>
-                key !== "updated_at" && key !== "asset_detail_status"
-            );
-            return { ...log, changes: Object.fromEntries(filteredChanges) };
-          });
-
-          const fields = filteredLogs.flatMap((log: any) =>
-            Object.entries(log.changes)
-              .filter(
-                ([_, value]: [string, any]) =>
-                  value.old_value !== "None" &&
-                  value.old_value !== value.new_value
-              )
-              .map(([key, _]: [string, any]) => key)
-          );
-
-          setUpdatedFields(fields);
-          filteredLogs.forEach((log: any) => {
-            Object.entries(log.changes).forEach(
-              ([key, value]: [string, any]) => {
-                if (fields.includes(key)) {
-                  console.log(
-                    `Field: ${key}, Old Value: ${value.old_value}, New Value: ${value.new_value}`
-                  );
-                }
-              }
-            );
-          });
-
-          setAssetLogs(filteredLogs);
+        const response = await axiosInstance.get(`/asset/asset_lifecycle/${assetUuid}`);
+        if (response.data && response.data.data && Array.isArray(response.data.data.logs)) {
+          setAssetLogs(response.data.data.logs);
         } else {
           console.error("Invalid response data format");
         }
@@ -68,76 +32,93 @@ export const AssetTimelineHandler = ({ assetUuid }: { assetUuid: string }) => {
     fetchData();
   }, [assetUuid]);
 
-  return (
-    <>
-      {isLoading ? (
-        <FontAwesomeIcon icon={faSpinner} spin size="3x" />
-      ) : assetLogs && assetLogs.length > 0 ? (
-        <Timeline>
-          {assetLogs.map(
-            (log: any) =>
-              Object.keys(log.changes).length > 0 && (
-                <Timeline.Item key={log.id}>
-                  <Timeline.Point />
-                  <Timeline.Content>
-                    <Timeline.Time>{log.timestamp}</Timeline.Time>
-                    <Timeline.Title>{log.operation}</Timeline.Title>
-                    <Timeline.Body>
-                      <ul>
-                        {Object.entries(log.changes).map(([key, value]: [string, any]) => (
-                          <li key={key}>
-                            {key === "requester_id" ? (
-                              <span>Requester: {value.old_value}</span> // Display only the old value for requester
-                            ) : key === "custodian" ? (
-                              <>
-                                {value.old_value !== "None" && (
-                                  <span>Prev custodian: {value.old_value}</span>
-                                )}
-                                {value.new_value && (
-                                  <p>New custodian: {value.new_value}</p>
-                                )}
-                              </>
-                            ) : (
-                              <>
-                                {value.old_value !== "None" && value.new_value !== "None" ? (
-                                  <>
-                                    {key}: {value.old_value} to {value.new_value}
-                                  </>
-                                ) : value.old_value !== "None" ? (
-                                  <>
-                                    {key}: {value.old_value} (removed)
-                                  </>
-                                ) : (
-                                  <>
-                                    {key}: {value.new_value} (added)
-                                  </>
-                                )}
-                              </>
-                            )}
-                          </li>
-                        ))}
+  return { assetLogs, isLoading };
+};
 
-                      </ul>
-                    </Timeline.Body>
-                  </Timeline.Content>
-                </Timeline.Item>
-              )
-          )}
-        </Timeline>
-      ) : (
-        <div className="flex">
-          <FontAwesomeIcon className="mt-3" icon={faExclamation} size="2x" />
-          <span className="m-3 text-lg font-display font-semibold">
-            NO LOGS AVAILABLE
-          </span>
-        </div>
+export const AssetTimelineHandler = ({ assetUuid }: Props) => {
+  const { assetLogs, isLoading } = useAssetLogs(assetUuid);
+
+  const filteredLogs = useMemo(() => {
+    if (!assetLogs) return [];
+    return assetLogs.map((log: Log) => {
+      const filteredChanges = Object.entries(log.changes).filter(
+        ([key, _]) => !FILTERED_KEYS.includes(key)
+      );
+      return { ...log, changes: Object.fromEntries(filteredChanges) };
+    });
+  }, [assetLogs]);
+
+  const updatedFields = useMemo(() => {
+    return filteredLogs.flatMap((log: Log) =>
+      Object.entries(log.changes)
+        .filter(
+          ([_, value]) =>
+            value.old_value !== "None" &&
+            value.old_value !== value.new_value
+        )
+        .map(([key, _]) => key)
+    );
+  }, [filteredLogs]);
+
+  const renderChangeValue = useCallback((key: string, value: any) => {
+    if (key === "requester_id") {
+      return <span>Requester: {value.old_value}</span>;
+    }
+    if (key === "custodian") {
+      return (
+        <>
+          {value.old_value !== "None" && <span>Prev custodian: {value.old_value}</span>}
+          {value.new_value && <p>New custodian: {value.new_value}</p>}
+        </>
+      );
+    }
+    if (value.old_value !== "None" && value.new_value !== "None") {
+      return <>{key}: {value.old_value} to {value.new_value}</>;
+    }
+    if (value.old_value !== "None") {
+      return <>{key}: {value.old_value} (removed)</>;
+    }
+    return <>{key}: {value.new_value} (added)</>;
+  }, []);
+
+  if (isLoading) {
+    return <FontAwesomeIcon icon={faSpinner} spin size="3x" />;
+  }
+
+  if (!filteredLogs || filteredLogs.length === 0) {
+    return (
+      <div className="flex">
+        <FontAwesomeIcon className="mt-3" icon={faExclamation} size="2x" />
+        <span className="m-3 text-lg font-display text-white font-semibold">
+          NO LOGS AVAILABLE
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <Timeline>
+      {filteredLogs.map(
+        (log: Log) =>
+          Object.keys(log.changes).length > 0 && (
+            <Timeline.Item key={log.id}>
+              <Timeline.Point />
+              <Timeline.Content>
+                <Timeline.Time>{log.timestamp}</Timeline.Time>
+                <Timeline.Title><span className="text-white">{log.operation}</span></Timeline.Title>
+                <Timeline.Body>
+                  <ul>
+                    {Object.entries(log.changes).map(([key, value]) => (
+                      <li key={key}>{renderChangeValue(key, value)}</li>
+                    ))}
+                  </ul>
+                </Timeline.Body>
+              </Timeline.Content>
+            </Timeline.Item>
+          )
       )}
-    </>
+    </Timeline>
   );
 };
 
 export default AssetTimelineHandler;
-
-
-
-
