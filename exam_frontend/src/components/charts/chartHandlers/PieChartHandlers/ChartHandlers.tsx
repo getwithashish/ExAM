@@ -82,7 +82,6 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
           "REPAIR",
           "DAMAGED",
         ];
-        console.log(assetCountData);
         const filteredAssetCountData = Object.entries(statusCounts)
           .filter(([label]) => label !== "SCRAP")
           .map(([label, value]) => ({

@@ -9,11 +9,11 @@ import GlobalSearch from "../GlobalSearch/GlobalSearch";
 import { RefreshTwoTone } from "@mui/icons-material";
 
 const AssetTable: React.FC<AssetTableProps> = ({
-  userRole,
+  // userRole,
   asset_uuid,
   isAssetDataLoading,
   selectedAssetId,
-  handleRowClick,
+  // handleRowClick,
   onCloseDrawer,
   selectedRow,
   drawerVisible,
@@ -39,9 +39,7 @@ const AssetTable: React.FC<AssetTableProps> = ({
   setSearchTerm,
 }: AssetTableProps) => {
   const [currentPage, setCurrentPage] = useState(1);
-
   const { darkAlgorithm } = theme;
-
   const handleRefreshClick = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
     event.preventDefault();
     const queryParams = `&global_search=${searchTerm}`;
@@ -59,18 +57,11 @@ const AssetTable: React.FC<AssetTableProps> = ({
   };
 
   let pageHeading = heading;
-  if (userRole === "SYSTEM_ADMIN") {
-    pageHeading = "Modify Asset";
-  } else if (userRole === "LEAD") {
-    pageHeading = "Delete Assets";
-  } else if (userRole === "MANAGER") {
-    pageHeading = "Deleted Assets";
-  }
-
+  
   return (
     <div className="bg-custom-400 lg:ml-60 mt-10 lg:pl-10">
       <div className="mainHeading pt-4">
-        <div className=" font-display text-white ml-4">{heading}</div>
+        <div className=" font-display text-white ml-4">{pageHeading}</div>
       </div>
       <div className="flex" style={{ marginLeft: "55px", marginBottom: "30px" }}>
         <GlobalSearch
@@ -101,7 +92,7 @@ const AssetTable: React.FC<AssetTableProps> = ({
             className="mainTable"
             pagination={false}
             bordered={false}
-            handleRowClick={handleRowClick}
+            // handleRowClick={handleRowClick}
             style={{
               fontSize: "50px",
               borderColor: "white",
@@ -164,9 +155,6 @@ const AssetTable: React.FC<AssetTableProps> = ({
             asset_uuid={asset_uuid}
             setDrawerVisible={setDrawerVisible}
             assetDataRefetch={assetDataRefetch}
-            onUpdate={function (): void {
-              throw new Error("Function not implemented.");
-            }}
           />
         )}
       </DrawerViewRequest>

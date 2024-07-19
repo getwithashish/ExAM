@@ -54,7 +54,6 @@ const ModificationRequests: FC = function () {
         const updatePendingAssets = response.data.data.results;
         const totalAssets = response.data.data.count;
         setAssets(updatePendingAssets);
-        console.log("modification", response.data.data.results);
         setTotalPages(Math.ceil(totalAssets / 10));
       })
       .catch((error) => {
@@ -285,7 +284,6 @@ const RequestTable: FC<{
         `/asset/asset_logs/${asset.asset_uuid}?recency=latest`
       );
       setLatestLogData(response.data.data);
-      console.log("latestLogData", response.data.data);
     } catch (error) {
       console.error("Error fetching asset details:", error);
     }
@@ -400,7 +398,7 @@ const ViewRequestModal: FC<{
       id: "asset_type",
       label: "ASSET TYPE",
       name: "assetType",
-      value: asset.asset_type.asset_type_name,
+      value: asset.asset_type?.asset_type_name,
       disabled: true,
     },
     {
@@ -526,21 +524,21 @@ const ViewRequestModal: FC<{
       id: "invoice_location",
       label: "INV.LOCATION",
       name: "invoiceLocation",
-      value: asset.invoice_location.location_name,
+      value: asset.invoice_location?.location_name,
       disabled: true,
     },
     {
       id: "location",
       label: "LOCATION",
       name: "location",
-      value: asset.location.location_name,
+      value: asset.location?.location_name,
       disabled: true,
     },
     {
       id: "business_unit",
       label: "BUSINESS UNIT",
       name: "businessUnit",
-      value: asset.business_unit.business_unit_name,
+      value: asset.business_unit?.business_unit_name,
       disabled: true,
     },
   ];
@@ -553,7 +551,6 @@ const ViewRequestModal: FC<{
             <div className="grid font-display grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">
               {formFields.map((field, index) => {
                 const latestLog = latestLogData.logs[0]?.asset_log;
-                console.log("latestLog", latestLog);
                 let changed = false;
                 if (latestLog && latestLog.hasOwnProperty(field.id)) {
                   changed = field.value != latestLog[field.id];

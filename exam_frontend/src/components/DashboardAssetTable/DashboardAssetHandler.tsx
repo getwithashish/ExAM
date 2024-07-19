@@ -13,24 +13,13 @@ import {
   getMemoryOptions,
 } from "../AssetTable/api/getAssetDetails";
 import moment from "moment";
-
-interface DashboardAssetHandlerProps {
-  selectedTypeId: number;
-  assetState: string | null;
-  detailState: string | null;
-  assignState: string | null;
-  setSelectedTypeId: (id: number) => void;
-  setAssetState: (state: string | null) => void;
-  setAssignState: (state: string | null) => void;
-  setDetailState: (state: string | null) => void;
-}
+import { DashboardAssetHandlerProps } from "./types";
 
 const DashboardAssetHandler = ({
   selectedTypeId,
   assetState,
   detailState,
   assignState,
-  setSelectedTypeId,
   setAssetState,
   setAssignState,
   setDetailState,
@@ -129,17 +118,17 @@ const DashboardAssetHandler = ({
     setDrawerVisible(false);
   }, []);
 
-  const [tableData, setTableData] = useState<DataType[]>([]);
+  // const [tableData, setTableData] = useState<DataType[]>([]);
 
-  const handleUpdateData = (updatedData: { key: any }) => {
-    setTableData((prevData: any[]) =>
-      prevData.map((item) =>
-        item.key === updatedData.key ? { ...item, ...updatedData } : item
-      )
-    );
-  };
+  // const handleUpdateData = (updatedData: { key: any }) => {
+  //   setTableData((prevData: any[]) =>
+  //     prevData.map((item) =>
+  //       item.key === updatedData.key ? { ...item, ...updatedData } : item
+  //     )
+  //   );
+  // };
 
-  const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
+  const renderClickableColumn = (columnName: string, dataIndex: any) => (_: any, record: string[]) => {
     if (dataIndex === "created_at" || dataIndex === "updated_at") {
       const formattedDate = moment(record[dataIndex]).format("DD-MM-YYYY");
       return (

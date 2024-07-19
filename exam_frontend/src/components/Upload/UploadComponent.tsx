@@ -3,6 +3,8 @@ import { InboxOutlined } from "@ant-design/icons";
 import { message, Upload as AntUpload, Button } from "antd";
 import { UploadProps, UploadFile } from "antd/lib/upload";
 import axiosInstance from "../../config/AxiosConfig";
+import axios, { AxiosError } from "axios";
+import { ErrorResponse } from "./types/types";
 
 const { Dragger } = AntUpload;
 
@@ -22,15 +24,11 @@ const UploadComponent: React.FC = () => {
     name: "file",
     multiple: true,
     fileList,
-    beforeUpload: (file) => {
-      // Prevent default upload behavior
-      return false;
-    },
-    onChange(info) {
+    beforeUpload: () => false,
+    onChange: (info) => {
       setFileList(info.fileList);
     },
-    onDrop(e) {
-      console.log("Dropped files", e.dataTransfer.files);
+    onDrop: (e) => {
     },
   };
 
@@ -42,30 +40,25 @@ const UploadComponent: React.FC = () => {
 
     setUploading(true);
     const formData = new FormData();
-    let fileExtension = "";
 
     fileList.forEach((file) => {
       if (file.originFileObj) {
-        const fileName = file.originFileObj.name;
-        fileExtension = fileName.split(".").pop() || "";
         formData.append("file", file.originFileObj);
       }
     });
 
-    if (!token) {
-      message.error("Authentication token not available. Please log in again.");
-      setUploading(false);
-      return;
-    }
-
     try {
+      if (!token) {
+        throw new Error("Authentication token not available. Please log in again.");
+      }
+
       const response = await axiosInstance.post("/asset/import-csv/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
         },
         params: {
-          file_type: fileExtension,
+          file_type: getFileExtension(),
         },
       });
 
@@ -77,20 +70,35 @@ const UploadComponent: React.FC = () => {
         throw new Error("Unexpected response status");
       }
     } catch (error) {
-      console.error("Error submitting files:", error);
-      if (axios.isAxiosError(error)) {
-        if (error.response) {
-          message.error(`Error: ${error.response.data.message || 'Failed to submit files. Please try again.'}`);
-        } else if (error.request) {
-          message.error("Network error. Please check your connection and try again.");
-        } else {
-          message.error("An unexpected error occurred. Please try again.");
-        }
+      handleUploadError(error);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const getFileExtension = () => {
+    const firstFile = fileList[0];
+    if (!firstFile || !firstFile.originFileObj) {
+      return "";
+    }
+    const fileName = firstFile.originFileObj.name;
+    return fileName.split(".").pop() || "";
+  };
+
+  const handleUploadError = (error: any) => {
+    console.error("Error submitting files:", error);
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response) {
+        const responseData = axiosError.response.data as ErrorResponse;
+        message.error(`Error: ${responseData.message || 'Failed to submit files. Please try again.'}`);
+      } else if (axiosError.request) {
+        message.error("Network error. Please check your connection and try again.");
       } else {
         message.error("An unexpected error occurred. Please try again.");
       }
-    } finally {
-      setUploading(false);
+    } else {
+      message.error("An unexpected error occurred. Please try again.");
     }
   };
 
@@ -103,12 +111,7 @@ const UploadComponent: React.FC = () => {
     const byteArray = new Uint8Array(byteNumbers);
     const blob = new Blob([byteArray], { type: "application/zip" });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", "import_status.zip");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    window.open(url, "_blank");
   };
 
   return (
@@ -117,8 +120,8 @@ const UploadComponent: React.FC = () => {
         <p className="ant-upload-drag-icon">
           <InboxOutlined />
         </p>
-        <p className="ant-upload-text">Click here to upload a csv file</p>
-        <p className="ant-upload-hint">Support for a single or bulk upload.</p>
+        <p className="ant-upload-text">Click here to upload a CSV file</p>
+        <p className="ant-upload-hint">Support for single or bulk upload.</p>
       </Dragger>
       <Button
         style={{ marginTop: 20 }}

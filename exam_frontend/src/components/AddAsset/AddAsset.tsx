@@ -3,41 +3,48 @@ import { useQuery } from "@tanstack/react-query";
 import { message, Spin, Tooltip } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import axiosInstance from "../../config/AxiosConfig";
-import { Button, DatePicker, Input, Form } from "antd";
+import { Button, Form } from "antd";
 import styles from "./AddAsset.module.css";
 import AssetFieldAutoComplete from "../AutocompleteBox/AssetFieldAutoComplete";
-import {
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from "@mui/material";
+import { MenuItem, Select, TextField } from "@mui/material";
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { hardwareSpecificFields, softwareSpecificFields } from "./constants/constants";
 
 const { Option } = Select;
 type SizeType = Parameters<typeof Form>[0]["size"];
+interface Props {
+  loading?: any;
+  setLoading?: any;
+  setDisplayDrawer?: any;
+}
 
-const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
+const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }: Props) => {
   const [formData, setFormData] = useState<any>({});
   const [_requiredFields, setRequiredFields] = useState<string[]>([]);
-  const [resetForm, setResetForm] = useState(false); // state to trigger form reset
-
-  const hardwareSpecificFields = [
-    "asset_type",
-    "serial_number",
-    "location",
-    "invoice_location",
-    "date_of_purchase",
-  ];
-
-  const softwareSpecificFields = [
-    "product_name",
-    "location",
-    "date_of_purchase",
-  ];
+  const [_formSubmitted, setFormSubmitted] = useState(false);
+  const [componentSize, setComponentSize] = useState<SizeType | "default">("default");
+  const [assetCategoryValue, setAssetCategoryValue] = React.useState("");
+  const [value, setValue] = React.useState("");
+  const [licenseValue, setLicenseValue] = React.useState("");
+  const [ownerValue, setOwnerValue] = React.useState("");
+  const [assettypeValue, setassettypeValue] = React.useState("");
+  const [assetLocation, setAssetLocation] = React.useState("");
+  const [assetInLocation, setAssetInLocation] = React.useState("");
+  const [assetBu, setAssetBu] = React.useState("");
+  const [modelNumber, setModelNumber] = React.useState("");
+  const [processor, setProcessor] = React.useState("");
+  const [processorGen, setProcessorGen] = React.useState("");
+  const [memory, setMemory] = React.useState("");
+  const [os, setOs] = React.useState("");
+  const [osVersion, setOsVersion] = React.useState("");
+  const [mobileOs, setMobileOs] = React.useState("");
+  const [storage, setStorage] = React.useState("");
+  const [accessoryValue, setAccessoryValue] = useState("");  
+  const [maxLengthWarningShown, setMaxLengthWarningShown] = useState(false);
+  const [touched, setTouched] = useState(false);
+  const [resetForm, setResetForm] = useState(false);
 
   const setRequiredFieldsByCategory = (category: string) => {
     let requiredFieldsArray: string[] = [
@@ -61,29 +68,6 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
   useEffect(() => {
     setRequiredFieldsByCategory(formData.asset_category);
   }, [formData.asset_category]);
-
-  const [_formSubmitted, setFormSubmitted] = useState(false);
-  const [componentSize, setComponentSize] = useState<SizeType | "default">(
-    "default"
-  );
-
-  const [assetCategoryValue, setAssetCategoryValue] = React.useState("");
-  const [value, setValue] = React.useState("");
-  const [licenseValue, setLicenseValue] = React.useState("");
-  const [ownerValue, setOwnerValue] = React.useState("");
-  const [assettypeValue, setassettypeValue] = React.useState("");
-  const [assetLocation, setAssetLocation] = React.useState("");
-  const [assetInLocation, setAssetInLocation] = React.useState("");
-  const [assetBu, setAssetBu] = React.useState("");
-  const [modelNumber, setModelNumber] = React.useState("");
-  const [processor, setProcessor] = React.useState("");
-  const [processorGen, setProcessorGen] = React.useState("");
-  const [memory, setMemory] = React.useState("");
-  const [os, setOs] = React.useState("");
-  const [osVersion, setOsVersion] = React.useState("");
-  const [mobileOs, setMobileOs] = React.useState("");
-  const [storage, setStorage] = React.useState("");
-  const [accessoryValue, setAccessoryValue] = useState("");
 
   useEffect(() => {
     handleInputChange("asset_type", assettypeValue["id"]);
@@ -247,9 +231,6 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
     }, 100);
   };
 
-  const [maxLengthWarningShown, setMaxLengthWarningShown] = useState(false);
-  const [touched, setTouched] = useState(false);
-
   const validateStorage = (value: string) => {
     if (!value.trim()) {
       setTouched(false);
@@ -411,18 +392,13 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
             params: { query: "Software" },
           }
         );
-
-        console.log("Asset type response:", response.data);
-
         // Assuming response.data contains an array with asset type objects
         if (
           response.data &&
           response.data.data &&
           response.data.data.length > 0
         ) {
-          // Set the asset type to the first matching asset type (adjust as needed)
           formData.asset_type = response.data.data[0].id;
-          console.log("Asset Data after setting asset_type:", formData);
         } else {
           throw new Error("No asset type found for Software");
         }
@@ -433,11 +409,8 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
             import.meta.env["VITE_ADD_ASSET_URL"],
             formData
           );
-          console.log("Asset data Posted:", submitResponse.data);
-
-          // Display success message and reload page
           message.success("Asset creation done successfully");
-          return; // Exit the function after successful submission
+          return; 
         } else {
           message.error("Please fill in all mandatory fields.");
         }
@@ -446,7 +419,7 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
         message.error(
           "Failed to fetch asset type or submit form data. Please try again later."
         );
-        return; // Exit the function after encountering an error
+        return;
       } finally {
         setLoading(false);
         setDisplayDrawer(false);
@@ -456,19 +429,16 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
     if (formData.asset_category === "HARDWARE" && isAllHardwareFieldsFilled) {
       try {
         setLoading(true);
-        // If hardware-specific validation passes, submit the form
         const response = await axiosInstance.post(
           import.meta.env["VITE_ADD_ASSET_URL"],
           formData
         );
-        console.log("Asset Data Posted:", response.data);
-
         message.success("Asset created successfully");
-        return; // Exit the function after successful submission
+        return; 
       } catch (error) {
         console.error("Error in asset creation :", error);
         message.error("Failed to create an asset. Please try again later.");
-        return; // Exit the function after encountering an error
+        return; 
       } finally {
         setLoading(false);
         setDisplayDrawer(false);
@@ -953,7 +923,7 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }) => {
                   width: "120px",
                   height: "40px",
                 }}
-                onClick={() => handleResetForm()} // Example: Log form data on submit
+                onClick={() => handleResetForm()}
               >
                 Reset
               </Button>

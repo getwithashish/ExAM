@@ -146,10 +146,10 @@ export interface AssetTableProps {
   locations: string[];
   memoryData: string[];
   assetTypeData: string[];
-  handleUpdateData: (updatedData: { key: any }) => void;
+  handleUpdateData?: (updatedData: { key: any }) => void;
   drawerTitle: string;
   asset_uuid: string;
-  heading: string;
+  heading: any;
   assetDataRefetch: (queryParam: string) => void;
   setTableData: any;
   handleDelete: any;
@@ -157,11 +157,20 @@ export interface AssetTableProps {
   reset: () => void;
   sortOrder: string;
   sortedColumn: any;
-  setSearchTerm: any;
-  searchTerm: any;
+  setSearchTerm?: any;
+  searchTerm?: any;
   assetPageDataFetch: any;
   isAssetDataLoading: any;
   totalItemCount: any;
   userRole?: string;
   isMyApprovalPage: any;
+  setDrawerVisible?: any;
+}
+
+export interface Props{
+  userRole?:string;
+  isRejectedPage?:boolean;
+  queryParamProp?:string;
+  heading?:string;
+  isMyApprovalPage?:boolean;
 }

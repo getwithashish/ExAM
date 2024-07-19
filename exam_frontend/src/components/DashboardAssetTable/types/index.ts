@@ -164,5 +164,16 @@ export interface DataType {
     setJson_query:any;
     selectedTypeId:number;
   }
+
+  export interface DashboardAssetHandlerProps {
+    selectedTypeId: number;
+    assetState: string | null;
+    detailState: string | null;
+    assignState: string | null;
+    setSelectedTypeId: (id: number) => void;
+    setAssetState: (state: string | null) => void;
+    setAssignState: (state: string | null) => void;
+    setDetailState: (state: string | null) => void;
+  }
   
   

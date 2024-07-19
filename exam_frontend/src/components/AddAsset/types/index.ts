@@ -1,4 +1,5 @@
 export interface AssetData {
+    id: number | string;
     category: string;
     assetID: string;
     version: number;

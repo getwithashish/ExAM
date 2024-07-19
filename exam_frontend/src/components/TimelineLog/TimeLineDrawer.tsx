@@ -2,12 +2,9 @@ import { FC, useState } from "react";
 import { Button, Drawer } from "antd";
 import { HiPencilAlt } from "react-icons/hi";
 import AssetTimelineHandler from "./AssetTimelineHandler";
+import { Props } from "./types/types";
 
-const TimelineDrawer: FC<{
-  assetUuid: string;
-  onClose: () => void;
-  open: boolean;
-}> = ({ assetUuid, onClose, open }) => {
+const TimelineDrawer = ({ assetUuid, onClose, open }:Props) => {
   return (
     <Drawer
       title="View Asset Log"

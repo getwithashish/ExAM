@@ -43,7 +43,9 @@ export interface DataType {
 }
 export interface AssetResult {
   status: string; 
-  business_unit:string;
+  business_unit:{
+business_unit_name: string
+  };
   location:string;
 
 }

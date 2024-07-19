@@ -13,7 +13,6 @@ import { QueryBuilderComponent } from "../QueryBuilder/QueryBuilder";
 import { TableNavbarProps } from "./types";
 
 const TableNavbar: React.FC<TableNavbarProps> = ({
-  showUpload,
   setShowUpload,
   assetDataRefetch,
   reset,
@@ -63,7 +62,7 @@ const TableNavbar: React.FC<TableNavbarProps> = ({
       .get(
         `/asset/export?export_format=${exportFormat}&json_logic=${json_query}`,
         {
-          responseType: "blob", // Set responseType to 'blob' to handle binary data
+          responseType: "blob",
         }
       )
       .then((response) => {
