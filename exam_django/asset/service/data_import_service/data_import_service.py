@@ -4,9 +4,8 @@ import pandas as pd
 import zipfile
 from datetime import datetime
 from django.forms import ValidationError
-from asset.models import Asset, AssetType, BusinessUnit, Employee, Location, Memory, AssetLog
-from django.forms import model_to_dict
-import json
+from asset.models import Asset, AssetType, BusinessUnit, Employee, Location, Memory
+
 
 
 class AssetImportService:
