@@ -4,6 +4,18 @@
 
 This project is a Django-based web application with a MySQL database, utilizing Celery for asynchronous task processing and Gunicorn for serving the application in a production environment. The project is containerized using Docker and has a frontend built with React and TypeScript using Vite and Yarn for production builds.
 
+## Table of Contents
+
+- [Project Structure](#project-structure)
+- [Prerequisites](#prerequisites)
+- [Run using Docker](#run-using-docker)
+- [Setup Local Development](#backend-setup-for-development)
+  - [Setup Backend Development](#backend-setup-for-development)
+  - [Setup Frontend Development](#frontend-setup-for-development)
+  - [Populate Dummy Data](#populate-dummy-data)
+- [Screenshots](#screenshots)
+- [Contribution](#contribution)
+
 ## Project Structure
 
 ```
