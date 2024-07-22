@@ -797,6 +797,14 @@ const AddAsset: React.FC = ({
                   />
                 </Form.Item>
 
+                <Form.Item label="Owner" className={styles["formItem"]}>
+                  <AssetFieldAutoComplete
+                    assetField="owner"
+                    value={ownerValue}
+                    setValue={setOwnerValue}
+                  />
+                </Form.Item>
+
                 <Form.Item label="Business Unit" className={styles["formItem"]}>
                   <AssetFieldAutoComplete
                     assetField="business_unit"
