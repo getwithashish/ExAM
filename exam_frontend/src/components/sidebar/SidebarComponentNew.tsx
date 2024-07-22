@@ -118,10 +118,15 @@ const SidebarComponentNew = ({ children }: any) => {
     {
       key: "logout",
       label: (
-        <Button color="primary" onClick={handleLogout}>
-          Logout &nbsp;
-          <LogoutOutlined />
-        </Button>
+        <div>
+          <Button className="w-4" color="primary" onClick={handleLogout}>
+            <span className="text-xs">
+              Logout
+            </span>
+            <LogoutOutlined style={{ width: "10px", height: "10px" }} />
+          </Button>
+        </div>
+
       ),
     },
   ];
@@ -319,7 +324,7 @@ const SidebarComponentNew = ({ children }: any) => {
               {jwtPayload && jwtPayload.username && (
                 <div>
                   <div className={styles["username"]}>
-                    <span className="font-display text-base">
+                    <span className="font-display">
                       {jwtPayload.username}
                     </span>
                   </div>
@@ -333,7 +338,7 @@ const SidebarComponentNew = ({ children }: any) => {
                 </div>
               )}
             </div>
-            <div className="mx-2">
+            <div className="mx-4">
               <Dropdown menu={{ items: menuItems }} placement="bottom" arrow>
                 <div className="cursor-pointer">
                   <Avatar />

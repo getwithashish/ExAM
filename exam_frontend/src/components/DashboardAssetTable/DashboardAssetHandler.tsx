@@ -89,10 +89,6 @@ const DashboardAssetHandler = ({
 
   const locations = locationResults ? locationResults : [];
 
-  const locationFilters = locations.map((location: any) => ({
-    text: location.location_name,
-    value: location.location_name,
-  }));
 
   const { data: memoryData } = useQuery({
     queryKey: ["memorySpace"],
@@ -103,11 +99,7 @@ const DashboardAssetHandler = ({
     queryKey: ["assetDrawerassetType"],
     queryFn: () => getAssetTypeOptions(),
   });
-  const assetTypeFilters =
-    assetTypeData?.map((assetType: AssetType) => ({
-      text: assetType.asset_type_name,
-      value: assetType.asset_type_name,
-    })) ?? [];
+
 
   const handleRowClick = useCallback((record: React.SetStateAction<null>) => {
     setSelectedRow(record);
@@ -193,16 +185,7 @@ const DashboardAssetHandler = ({
 
     refetchAssetData(queryParams + additionalQueryParams);
   };
-  const detailStatusStyleCondition = (record: any): React.CSSProperties => {
-    return record.asset_detail_status === "CREATE_REJECTED" ||
-      record.asset_detail_status === "UPDATE_REJECTED"
-      ? { color: "red" }
-      : {};
-  };
 
-  const assignStatusStyleCondition = (record: any): React.CSSProperties => {
-    return record.assign_status === "REJECTED" ? { color: "red" } : {};
-  };
   const columns = [
     {
       title: "Product Name",
@@ -241,16 +224,6 @@ const DashboardAssetHandler = ({
       dataIndex: "location",
       responsive: ["md"],
       width: 120,
-      filters: locationFilters,
-      onFilter: (
-        value: string | number | boolean | React.ReactText[] | Key,
-        record: DataType
-      ) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.location);
-        }
-        return record.location.indexOf(value.toString()) === 0;
-      },
       sorter: true,
       sortOrder: sortedColumn === "location" ? sortOrder : undefined,
       onHeaderCell: () => ({
@@ -267,16 +240,6 @@ const DashboardAssetHandler = ({
       dataIndex: "invoice_location",
       responsive: ["md"],
       width: 120,
-      filters: locationFilters,
-      onFilter: (
-        value: string | number | boolean | React.ReactText[] | Key,
-        record: DataType
-      ) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.location);
-        }
-        return record.location.indexOf(value.toString()) === 0;
-      },
       sorter: true,
       sortOrder: sortedColumn === "invoice_location" ? sortOrder : undefined,
       onHeaderCell: () => ({
@@ -296,16 +259,6 @@ const DashboardAssetHandler = ({
       dataIndex: "asset_type",
       responsive: ["md"],
       width: 120,
-      filters: assetTypeFilters,
-      onFilter: (
-        value: string | number | boolean | React.ReactText[] | Key,
-        record: DataType
-      ) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.asset_type);
-        }
-        return record.asset_type.indexOf(value.toString()) === 0;
-      },
       sorter: true,
       sortOrder: sortedColumn === "asset_type" ? sortOrder : undefined,
       onHeaderCell: () => ({
@@ -625,7 +578,6 @@ const DashboardAssetHandler = ({
       dataIndex: "asset_detail_status",
       responsive: ["md"],
       width: 140,
-  
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("Asset Detail Status", "asset_detail_status")(
@@ -640,7 +592,6 @@ const DashboardAssetHandler = ({
       dataIndex: "assign_status",
       responsive: ["md"],
       width: 140,
-
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("Asset Assign Status", "assign_status")(
@@ -832,9 +783,9 @@ const DashboardAssetHandler = ({
         bordered={false}
         businessUnitOptions={businessUnitOptions}
         assetDataRefetch={refetchAssetData}
-        handleUpdateData={function (updatedData: { key: any }): void {
+        handleUpdateData={function (updatedData: { key: any; }): void {
           throw new Error("Function not implemented.");
-        }}
+        } }
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
         setJson_query={setJson_query}
@@ -843,7 +794,7 @@ const DashboardAssetHandler = ({
         assignState={assignState}
         detailState={detailState}
         selectedTypeId={selectedTypeId}
-      />
+          />
     </div>
   );
 };

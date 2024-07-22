@@ -240,16 +240,6 @@ const renderClickableColumn = (columnName: any, dataIndex: string) => (_:any , r
       dataIndex: "location",
       responsive: ["md"],
       width: 120,
-      filters: locationFilters,
-      onFilter: (
-        value: string | number | boolean | Key,
-        record: DataType
-      ) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.location);
-        }
-        return record.location.indexOf(value.toString()) === 0;
-      },
       sorter: true,
       sortOrder: sortedColumn === "location" ? sortOrder : undefined,
       onHeaderCell: () => ({
@@ -266,16 +256,6 @@ const renderClickableColumn = (columnName: any, dataIndex: string) => (_:any , r
       dataIndex: "invoice_location",
       responsive: ["md"],
       width: 120,
-      filters: locationFilters,
-      onFilter: (
-        value: string | number | boolean |  Key,
-        record: DataType
-      ) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.location);
-        }
-        return record.location.indexOf(value.toString()) === 0;
-      },
       sorter: true,
       sortOrder: sortedColumn === "invoice_location" ? sortOrder : undefined,
       onHeaderCell: () => ({
@@ -295,16 +275,6 @@ const renderClickableColumn = (columnName: any, dataIndex: string) => (_:any , r
       dataIndex: "asset_type",
       responsive: ["md"],
       width: 120,
-      filters: assetTypeFilters,
-      onFilter: (
-        value: string | number | boolean |  Key,
-        record: DataType
-      ) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.asset_type);
-        }
-        return record.asset_type.indexOf(value.toString()) === 0;
-      },
       sorter: true,
       sortOrder: sortedColumn === "asset_type" ? sortOrder : undefined,
       onHeaderCell: () => ({
