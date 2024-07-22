@@ -394,24 +394,6 @@ const AddAsset: React.FC = ({
 
     if (formData.asset_category === "SOFTWARE") {
       try {
-        // Fetch the asset type for software
-        // const response = await axiosInstance.get(
-        //   import.meta.env["VITE_GET_ASSET_TYPE"],
-        //   {
-        //     params: { query: "Software" },
-        //   }
-        // );
-        // // Assuming response.data contains an array with asset type objects
-        // if (
-        //   response.data &&
-        //   response.data.data &&
-        //   response.data.data.length > 0
-        // ) {
-        //   formData.asset_type = response.data.data[0].id;
-        // } else {
-        //   throw new Error("No asset type found for Software");
-        // }
-
         if (isAllSoftwareFieldsFilled) {
           setLoading(true);
           const submitResponse = await axiosInstance.post(
