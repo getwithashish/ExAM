@@ -9,19 +9,6 @@ from django.forms import model_to_dict
 import json
 
 
-def create_asset_logs(assets):
-    for asset in assets:
-        changes = {
-            field: getattr(asset, field)
-            for field in model_to_dict(asset)
-            if field != "asset_uuid"
-        }
-        asset_log_data = json.dumps(changes, indent=4, sort_keys=True, default=str)
-        AssetLog.objects.create(
-            asset_uuid=asset,
-            asset_log=asset_log_data,
-        )
-
 class AssetImportService:
     @staticmethod
     def parse_and_add_assets(file_content, user, file_type):
@@ -146,8 +133,8 @@ class AssetImportService:
             new_assets.append(asset)
             added_assets_count += 1
 
-        created_assets = Asset.objects.bulk_create(new_assets)
-        create_asset_logs(created_assets)
+        Asset.objects.bulk_create(new_assets)
+        
 
         return AssetImportService._prepare_import_summary(
             added_assets_count,
