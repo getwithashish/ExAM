@@ -233,10 +233,25 @@ const AddAsset: React.FC = ({
     }
   };
   const handleResetForm = () => {
-    setFormData({}); // Clear the form data
-    setResetForm(true); // Trigger reset
+    setFormData({});
+    setResetForm(true);
+    setassettypeValue("");
+    setValue("");
+    setLicenseValue("");
+    setOwnerValue("");
+    setAssetLocation("");
+    setAssetBu("");
+    setModelNumber("");
+    setOs("");
+    setOsVersion("");
+    setMobileOs("");
+    setProcessor("");
+    setProcessorGen("");
+    setMemory("");
+    setStorage("");
+
     setTimeout(() => {
-      setResetForm(false); // Reset the trigger after a short delay
+      setResetForm(false);
     }, 100);
   };
 
@@ -472,6 +487,7 @@ const AddAsset: React.FC = ({
                 displayEmpty
                 onChange={(event) => {
                   setAssetCategoryValue(event.target.value as string);
+                  handleResetForm();
                   setFormData({
                     ...formData,
                     asset_category: event.target.value as string,
