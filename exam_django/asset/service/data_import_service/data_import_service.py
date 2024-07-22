@@ -7,7 +7,6 @@ from django.forms import ValidationError
 from asset.models import Asset, AssetType, BusinessUnit, Employee, Location, Memory
 
 
-
 class AssetImportService:
     @staticmethod
     def parse_and_add_assets(file_content, user, file_type):
@@ -133,7 +132,6 @@ class AssetImportService:
             added_assets_count += 1
 
         Asset.objects.bulk_create(new_assets)
-        
 
         return AssetImportService._prepare_import_summary(
             added_assets_count,
