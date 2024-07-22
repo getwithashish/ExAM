@@ -1,4 +1,3 @@
-import React from "react";
 import AssetTableHandler from "../../components/AssetTable/AssetTableHandler";
 import { useAuth } from "../authentication/AuthContext";
 

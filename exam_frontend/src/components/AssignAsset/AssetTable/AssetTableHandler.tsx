@@ -1,13 +1,11 @@
-import React, { Key, SetStateAction, useCallback, useState } from "react";
-import { Button, Input, Space } from "antd";
-import { SearchOutlined, UserAddOutlined } from "@ant-design/icons";
+import React, { SetStateAction, useCallback, useState } from "react";
+import { Button } from "antd";
+import { UserAddOutlined } from "@ant-design/icons";
 import "./AssetTable.css";
 import { useQuery } from "@tanstack/react-query";
-import { DataType } from "../AssetTable/types";
 import { AssetResult } from "../AssetTable/types";
 import AssetTable from "./AssetTable";
 import {
-  getAssetDetails,
   getAssetTypeOptions,
   getLocationOptions,
   getMemoryOptions,
@@ -77,11 +75,6 @@ const AssetTableHandler = ({
 
   const locations = locationResults ? locationResults : [];
 
-  const locationFilters = locations.map((location:any) => ({
-    text: location.location_name,
-    value: location.location_name,
-  }));
-
   const { data: memoryData } = useQuery({
     queryKey: ["memorySpace"],
     queryFn: () => getMemoryOptions(),
@@ -91,11 +84,6 @@ const AssetTableHandler = ({
     queryKey: ["assetDrawerassetType"],
     queryFn: () => getAssetTypeOptions(),
   });
-  const assetTypeFilters =
-    assetTypeData?.map((assetType:any ) => ({
-      text: assetType.asset_type_name,
-      value: assetType.asset_type_name,
-    })) ?? [];
 
   const reset = () => {
     setQueryParam("");
@@ -112,14 +100,14 @@ const AssetTableHandler = ({
     setDrawerVisible(false);
   }, []);
 
-  const [tableData, setTableData] = useState<DataType[]>([]);
-  const handleUpdateData = (updatedData: { key: any }) => {
-    setTableData((prevData: any[]) =>
-      prevData.map((item) =>
-        item.key === updatedData.key ? { ...item, ...updatedData } : item
-      )
-    );
-  };
+  // const [tableData, setTableData] = useState<DataType[]>([]);
+  // const handleUpdateData = (updatedData: { key: any }) => {
+  //   setTableData((prevData: any[]) =>
+  //     prevData.map((item) =>
+  //       item.key === updatedData.key ? { ...item, ...updatedData } : item
+  //     )
+  //   );
+  // };
 
   const handleSort = (column: string) => {
     const isCurrentColumn = column === sortedColumn;
@@ -195,55 +183,6 @@ const AssetTableHandler = ({
       dataIndex: "serial_number",
       responsive: ["md"],
       width: 120,
-      filterIcon: <SearchOutlined />,
-      filterDropdown: ({
-        setSelectedKeys,
-        selectedKeys,
-        confirm,
-        clearFilters,
-      }: {
-        setSelectedKeys: (keys: React.ReactText[]) => void;
-        selectedKeys: React.ReactText[];
-        confirm: () => void;
-        clearFilters: () => void;
-      }) => (
-        <div style={{ padding: 8 }}>
-          <Input
-            placeholder="Search Serial Number"
-            value={selectedKeys[0]}
-            onChange={(e) =>
-              setSelectedKeys(e.target.value ? [e.target.value] : [])
-            }
-            onPressEnter={() => confirm()}
-            style={{ marginBottom: 8, display: "block" }}
-          />
-          <Space>
-            <button
-              type="button"
-              onClick={confirm}
-              style={{ width: 90, fontSize: "16px" }}
-            >
-              Search
-            </button>
-            <button
-              type="button"
-              onClick={clearFilters}
-              style={{ width: 90, fontSize: "16px" }}
-            >
-              Reset
-            </button>
-          </Space>
-        </div>
-      ),
-      onFilter: (
-        value: string | any[],
-        record: { serial_number: string | any[] }
-      ) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.serial_number);
-        }
-        return record.serial_number.indexOf(value.toString()) === 0;
-      },
       sorter: (a: { serial_number: string }, b: { serial_number: any }) =>
         a.serial_number.localeCompare(b.serial_number),
       sortDirections: ["ascend", "descend"],
@@ -261,16 +200,6 @@ const AssetTableHandler = ({
       dataIndex: "location",
       responsive: ["md"],
       width: 120,
-      filters: locationFilters,
-      onFilter: (
-        value: string | number | boolean | Key,
-        record: DataType
-      ) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.location);
-        }
-        return record.location.indexOf(value.toString()) === 0;
-      },
       sorter: true,
       sortOrder: sortedColumn === "location" ? sortOrder : undefined,
       onHeaderCell: () => ({
@@ -288,16 +217,6 @@ const AssetTableHandler = ({
       dataIndex: "invoice_location",
       responsive: ["md"],
       width: 120,
-      filters: locationFilters,
-      onFilter: (
-        value: string | number | boolean | React.ReactText[] | Key,
-        record: DataType
-      ) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.location);
-        }
-        return record.location.indexOf(value.toString()) === 0;
-      },
       sorter: true,
       sortOrder: sortedColumn === "invoice_location" ? sortOrder : undefined,
       onHeaderCell: () => ({
@@ -333,16 +252,6 @@ const AssetTableHandler = ({
       dataIndex: "asset_type",
       responsive: ["md"],
       width: 120,
-      filters: assetTypeFilters,
-      onFilter: (
-        value: string | number | boolean | React.ReactText[] | Key,
-        record: DataType
-      ) => {
-        if (Array.isArray(value)) {
-          return value.includes(record.asset_type);
-        }
-        return record.asset_type.indexOf(value.toString()) === 0;
-      },
       sorter: true,
       sortOrder: sortedColumn === "asset_type" ? sortOrder : undefined,
       onHeaderCell: () => ({
@@ -567,7 +476,6 @@ const AssetTableHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("memory"),
       }),
-      // render: renderClickableColumn("Memory", "memory"),
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("Memory", "memory")(text, record)}
@@ -579,7 +487,6 @@ const AssetTableHandler = ({
       dataIndex: "storage",
       responsive: ["md"],
       width: 120,
-      // render: renderClickableColumn("Storage", "storage"),
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("Storage", "storage")(text, record)}
@@ -591,7 +498,6 @@ const AssetTableHandler = ({
       dataIndex: "owner",
       responsive: ["md"],
       width: 120,
-      // render: renderClickableColumn("Owner", "owner"),
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("Owner", "owner")(text, record)}
@@ -608,7 +514,6 @@ const AssetTableHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("approved_by"),
       }),
-      // render: renderClickableColumn("Approved By", "approved_by"),
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("Approved By", "approved_by")(text, record)}
@@ -625,7 +530,6 @@ const AssetTableHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("requester"),
       }),
-      // render: renderClickableColumn("Requester", "requester"),
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("Requester", "requester")(text, record)}
@@ -637,10 +541,6 @@ const AssetTableHandler = ({
       dataIndex: "asset_detail_status",
       responsive: ["md"],
       width: 140,
-      // render: renderClickableColumn(
-      //   "Asset Detail Status",
-      //   "asset_detail_status"
-      // ),
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("Asset Detail Status", "asset_detail_status")(
@@ -655,7 +555,6 @@ const AssetTableHandler = ({
       dataIndex: "assign_status",
       responsive: ["md"],
       width: 140,
-      // render: renderClickableColumn("Asset Assign Status", "assign_status"),
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("Asset Assign Status", "assign_status")(
@@ -675,7 +574,6 @@ const AssetTableHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("created_at"),
       }),
-      // render: renderClickableColumn("Created At", "created_at"),
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("Created At", "created_at")(text, record)}
@@ -692,7 +590,6 @@ const AssetTableHandler = ({
       onHeaderCell: () => ({
         onClick: () => handleSort("updated_at"),
       }),
-      // render: renderClickableColumn("Updated At", "updated_at"),
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("Updated At", "updated_at")(text, record)}
@@ -704,7 +601,6 @@ const AssetTableHandler = ({
       dataIndex: "Accessories",
       responsive: ["md"],
       width: 120,
-      // render: renderClickableColumn("Accessories", "accessories"),
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("Accessories", "accessories")(text, record)}
@@ -716,10 +612,6 @@ const AssetTableHandler = ({
       dataIndex: "approval_status_message",
       responsive: ["md"],
       width: 120,
-      // render: renderClickableColumn(
-      //   "approval_status_message",
-      //   "approval_status_message"
-      // ),
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn(
@@ -734,7 +626,7 @@ const AssetTableHandler = ({
       dataIndex: "AssignAsset",
       fixed: "right",
       width: 120,
-      render: (_data, record) => (
+      render: (_data: any, record: any) => (
         <Button
           className="ml-6"
           type="default"
@@ -759,7 +651,7 @@ const AssetTableHandler = ({
     setDrawerVisible(true);
   };
 
-  const data = assetData?.results?.map((result) => ({
+  const data = assetData?.results?.map((result: any) => ({
     key: result.asset_uuid,
     asset_id: result.asset_id,
     asset_category: result.asset_category,
@@ -795,10 +687,6 @@ const AssetTableHandler = ({
     updated_at: result.updated_at,
     approval_status_message: result.approval_status_message,
   }));
-
-  const drawerTitle = "Asset Details";
-
-  const button = <Button type="primary"></Button>;
 
   return (
     <AssetTable

@@ -264,8 +264,8 @@ const SearchRequests: FC<{
           <InfoIcon
             className="h-5 w-5 text-gray-400 cursor-pointer"
             aria-hidden="true"
-            onMouseEnter={() => setShowInfo(true)} // Show info on mouse enter
-            onMouseLeave={() => setShowInfo(false)} // Hide info on mouse leave
+            onMouseEnter={() => setShowInfo(true)}
+            onMouseLeave={() => setShowInfo(false)} 
           />
         </div>
       </div>
@@ -276,7 +276,7 @@ const SearchRequests: FC<{
 const RequestTable: FC<{
   assets: any[];
   setSelectedAsset: (asset: any | null) => void;
-  setLatestLogData: (data: any | null) => void; // Define setLatestLogData prop
+  setLatestLogData: (data: any | null) => void; 
 }> = function ({ assets, setSelectedAsset, setLatestLogData }) {
   const handleViewAsset = async (asset: any) => {
     try {
