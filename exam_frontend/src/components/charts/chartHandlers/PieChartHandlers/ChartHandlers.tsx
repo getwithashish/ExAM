@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import Stack from "@mui/material/Stack";

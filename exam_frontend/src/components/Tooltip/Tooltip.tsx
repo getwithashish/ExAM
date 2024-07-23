@@ -9,6 +9,7 @@ const ToolTip: React.FC<TooltipProps> = ({ title, children }) => (
     title={title}
     placement="top"
     TransitionComponent={Zoom}
+    disableInteractive
   >
     {children}
   </Tooltip>

@@ -15,6 +15,7 @@ import { styled } from "@mui/material/styles";
 import Tooltip, { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
 import InfoIcon from "@mui/icons-material/Info";
 import { Pagination, Spin, message } from "antd";
+import { RefreshTwoTone } from "@mui/icons-material";
 
 const ModificationRequests: FC = function () {
   const [assets, setAssets] = useState<any[]>([]);
@@ -167,15 +168,33 @@ const ModificationRequests: FC = function () {
     setCurrentPage(1);
   };
 
+  const handleRefreshClick = () => {
+    fetchAssets();
+  }
+
   return (
     <React.Fragment>
-      <div className="bg-custom-500 lg:ml-64 py-24">
+      <div className="bg-custom-500 lg:ml-64 pt-24">
         <div className="block items-center justify-between bg-custom-400 px-2 dark:border-gray-700 dark:bg-gray-800 sm:flex mx-2 my-2">
           <div className="mb-1 w-full">
-            <div className="m-2">
-              <h1 className="font-medium font-display mx-3 leading-none text-gray-900 text-white text-xl">
-                Asset modification requests
-              </h1>
+          <div className="m-2 flex">
+              <div className="flex-1">
+                <h1 className="font-medium font-display m-3 leading-none text-white text-xl">
+                  Modification Requests
+                </h1>
+              </div>
+              <div className="flex-2">
+                <RefreshTwoTone
+                  style={{
+                    cursor: "pointer",
+                    marginLeft: "10px",
+                    width: "30px",
+                    height: "40px",
+                    color: '#ffffff'
+                  }}
+                  onClick={handleRefreshClick}
+                />
+              </div>
             </div>
             <div className="block items-center sm:flex">
               <SearchRequests setSearchQuery={setSearchQuery} />
@@ -191,7 +210,6 @@ const ModificationRequests: FC = function () {
             ) : (
               <div
                 className="inline-block w-full align-middle"
-                style={{ height: "100vh" }}
               >
                 <div className="overflow-hidden shadow-2xl mx-2 rounded-lg bg-custom-400">
                   <RequestTable
@@ -211,6 +229,7 @@ const ModificationRequests: FC = function () {
           current={currentPage}
           total={totalPages * pageSize}
           onChange={setCurrentPage}
+          className="text-black bg-white rounded-xl p-4 ml-2 mt-2"
         />
         {selectedAsset && (
           <ViewRequestModal
@@ -264,8 +283,8 @@ const SearchRequests: FC<{
           <InfoIcon
             className="h-5 w-5 text-gray-400 cursor-pointer"
             aria-hidden="true"
-            onMouseEnter={() => setShowInfo(true)} // Show info on mouse enter
-            onMouseLeave={() => setShowInfo(false)} // Hide info on mouse leave
+            onMouseEnter={() => setShowInfo(true)}
+            onMouseLeave={() => setShowInfo(false)} 
           />
         </div>
       </div>
@@ -276,7 +295,7 @@ const SearchRequests: FC<{
 const RequestTable: FC<{
   assets: any[];
   setSelectedAsset: (asset: any | null) => void;
-  setLatestLogData: (data: any | null) => void; // Define setLatestLogData prop
+  setLatestLogData: (data: any | null) => void; 
 }> = function ({ assets, setSelectedAsset, setLatestLogData }) {
   const handleViewAsset = async (asset: any) => {
     try {
@@ -321,7 +340,7 @@ const RequestTable: FC<{
             </Table.Cell>
             <Table.Cell className="space-x-2 whitespace-nowrap p-4">
               <div className="flex items-center gap-x-3">
-                <Button color="primary" onClick={() => handleViewAsset(asset)}>
+                <Button className="bg-blue-600" onClick={() => handleViewAsset(asset)}>
                   <HiPencilAlt className="mr-2 text-lg font-display" />
                   View
                 </Button>

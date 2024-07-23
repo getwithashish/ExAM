@@ -10,7 +10,10 @@ import { MenuItem, Select, TextField } from "@mui/material";
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { hardwareSpecificFields, softwareSpecificFields } from "./constants/constants";
+import {
+  hardwareSpecificFields,
+  softwareSpecificFields,
+} from "./constants/constants";
 
 const { Option } = Select;
 type SizeType = Parameters<typeof Form>[0]["size"];
@@ -20,11 +23,17 @@ interface Props {
   setDisplayDrawer?: any;
 }
 
-const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }: Props) => {
+const AddAsset: React.FC = ({
+  loading,
+  setLoading,
+  setDisplayDrawer,
+}: Props) => {
   const [formData, setFormData] = useState<any>({});
   const [_requiredFields, setRequiredFields] = useState<string[]>([]);
   const [_formSubmitted, setFormSubmitted] = useState(false);
-  const [componentSize, setComponentSize] = useState<SizeType | "default">("default");
+  const [componentSize, setComponentSize] = useState<SizeType | "default">(
+    "default"
+  );
   const [assetCategoryValue, setAssetCategoryValue] = React.useState("");
   const [value, setValue] = React.useState("");
   const [licenseValue, setLicenseValue] = React.useState("");
@@ -41,7 +50,7 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }: Props) =>
   const [osVersion, setOsVersion] = React.useState("");
   const [mobileOs, setMobileOs] = React.useState("");
   const [storage, setStorage] = React.useState("");
-  const [accessoryValue, setAccessoryValue] = useState("");  
+  const [accessoryValue, setAccessoryValue] = useState("");
   const [maxLengthWarningShown, setMaxLengthWarningShown] = useState(false);
   const [touched, setTouched] = useState(false);
   const [resetForm, setResetForm] = useState(false);
@@ -224,10 +233,25 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }: Props) =>
     }
   };
   const handleResetForm = () => {
-    setFormData({}); // Clear the form data
-    setResetForm(true); // Trigger reset
+    setFormData({});
+    setResetForm(true);
+    setassettypeValue("");
+    setValue("");
+    setLicenseValue("");
+    setOwnerValue("");
+    setAssetLocation("");
+    setAssetBu("");
+    setModelNumber("");
+    setOs("");
+    setOsVersion("");
+    setMobileOs("");
+    setProcessor("");
+    setProcessorGen("");
+    setMemory("");
+    setStorage("");
+
     setTimeout(() => {
-      setResetForm(false); // Reset the trigger after a short delay
+      setResetForm(false);
     }, 100);
   };
 
@@ -385,24 +409,6 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }: Props) =>
 
     if (formData.asset_category === "SOFTWARE") {
       try {
-        // Fetch the asset type for software
-        const response = await axiosInstance.get(
-          import.meta.env["VITE_GET_ASSET_TYPE"],
-          {
-            params: { query: "Software" },
-          }
-        );
-        // Assuming response.data contains an array with asset type objects
-        if (
-          response.data &&
-          response.data.data &&
-          response.data.data.length > 0
-        ) {
-          formData.asset_type = response.data.data[0].id;
-        } else {
-          throw new Error("No asset type found for Software");
-        }
-
         if (isAllSoftwareFieldsFilled) {
           setLoading(true);
           const submitResponse = await axiosInstance.post(
@@ -410,7 +416,7 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }: Props) =>
             formData
           );
           message.success("Asset creation done successfully");
-          return; 
+          return;
         } else {
           message.error("Please fill in all mandatory fields.");
         }
@@ -434,11 +440,11 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }: Props) =>
           formData
         );
         message.success("Asset created successfully");
-        return; 
+        return;
       } catch (error) {
         console.error("Error in asset creation :", error);
         message.error("Failed to create an asset. Please try again later.");
-        return; 
+        return;
       } finally {
         setLoading(false);
         setDisplayDrawer(false);
@@ -481,6 +487,7 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }: Props) =>
                 displayEmpty
                 onChange={(event) => {
                   setAssetCategoryValue(event.target.value as string);
+                  handleResetForm();
                   setFormData({
                     ...formData,
                     asset_category: event.target.value as string,
@@ -515,6 +522,21 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }: Props) =>
                       ),
                     }}
                     sx={{ width: "100%" }}
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  label={
+                    <span>
+                      Asset Type<span className={styles["star"]}>*</span>
+                    </span>
+                  }
+                  className={styles["formItem"]}
+                >
+                  <AssetFieldAutoComplete
+                    assetField="asset_type"
+                    value={assettypeValue}
+                    setValue={setassettypeValue}
                   />
                 </Form.Item>
 
@@ -788,6 +810,14 @@ const AddAsset: React.FC = ({ loading, setLoading, setDisplayDrawer }: Props) =>
                     assetField="invoice_location"
                     value={assetInLocation}
                     setValue={setAssetInLocation}
+                  />
+                </Form.Item>
+
+                <Form.Item label="Owner" className={styles["formItem"]}>
+                  <AssetFieldAutoComplete
+                    assetField="owner"
+                    value={ownerValue}
+                    setValue={setOwnerValue}
                   />
                 </Form.Item>
 
