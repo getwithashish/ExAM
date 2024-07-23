@@ -70,14 +70,14 @@
   
   .username {
     text-transform: capitalize;
-    font-size: 10px;
+    font-size: 15px;
     padding: 0;
     height: 10px;
     margin: 0;
   }
   
   .userscope {
-    font-size: 8px;
+    font-size: 12px;
     text-transform: capitalize;
     padding: 0;
     padding-top: 7px;  
