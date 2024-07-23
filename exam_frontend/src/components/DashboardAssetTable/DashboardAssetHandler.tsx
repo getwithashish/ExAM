@@ -186,6 +186,17 @@ const DashboardAssetHandler = ({
     refetchAssetData(queryParams + additionalQueryParams);
   };
 
+  const detailStatusStyleCondition = (record: any): React.CSSProperties => {
+    return record.asset_detail_status === "CREATE_REJECTED" ||
+      record.asset_detail_status === "UPDATE_REJECTED"
+      ? { color: "red" }
+      : {color: "white"};
+  };
+
+  const assignStatusStyleCondition = (record: any): React.CSSProperties => {
+    return record.assign_status === "REJECTED" ? { color: "red" } : {color: "white"};
+  };
+
   const columns = [
     {
       title: "Product Name",
@@ -572,14 +583,13 @@ const DashboardAssetHandler = ({
         </div>
       ),
     },
-
     {
       title: "Asset Detail Status",
       dataIndex: "asset_detail_status",
       responsive: ["md"],
       width: 140,
       render: (text: string, record: any) => (
-        <div style={{ color: "#ffffff" }}>
+        <div style={{ ...detailStatusStyleCondition(record)}}>
           {renderClickableColumn("Asset Detail Status", "asset_detail_status")(
             text,
             record
@@ -593,7 +603,7 @@ const DashboardAssetHandler = ({
       responsive: ["md"],
       width: 140,
       render: (text: string, record: any) => (
-        <div style={{ color: "#ffffff" }}>
+        <div style={{...assignStatusStyleCondition(record)}}>
           {renderClickableColumn("Asset Assign Status", "assign_status")(
             text,
             record
