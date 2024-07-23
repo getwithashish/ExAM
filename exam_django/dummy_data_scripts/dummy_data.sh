@@ -46,6 +46,8 @@ make_curl_request "pavithra.sysadmin" "pavithra@sysadmin" "94460209997" "pavithr
 make_curl_request "pavithra.lead" "pavithra@lead" "94460209998" "pavithra@lead.in" "LEAD"
 make_curl_request "getwithashish.sysadmin" "getwithashish@sysadmin" "94460209999" "getwithashish@sysadmin.in" "SYSTEM_ADMIN"
 make_curl_request "getwithashish.lead" "getwithashish@lead" "94460209990" "getwithashish@lead.in" "LEAD"
+make_curl_request "sukesh.sysadmin" "sukesh@sysadmin" "9446020992" "sukesh@sysadmin.in" "SYSTEM_ADMIN"
+make_curl_request "sukesh.lead" "sukesh@lead" "9446020993" "sukesh@lead.in" "LEAD"
 
 # Sign in
 response=$(curl --request POST \
