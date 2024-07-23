@@ -206,7 +206,7 @@ DATABASES = {
         "PASSWORD": config("DB_PASSWORD"),
         "HOST": config("DB_HOST"),
         "PORT": config("DB_PORT"),
-        'CONN_MAX_AGE': 600,  # 10 minutes
+        
     }
 }
 
