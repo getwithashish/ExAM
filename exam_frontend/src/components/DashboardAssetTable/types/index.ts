@@ -127,11 +127,11 @@ export interface DataType {
   }
   export interface AssetTableProps {
     sortOrder:string;
-    logsData: LogData[] | undefined;
-    isLoading: boolean;
-    isSuccess: boolean;
-    selectedAssetId: number;
-    setSelectedAssetId: React.Dispatch<React.SetStateAction<string | null>>;
+    logsData?: LogData[] | undefined;
+    isLoading?: boolean;
+    isSuccess?: boolean;
+    selectedAssetId?: number;
+    setSelectedAssetId?: React.Dispatch<React.SetStateAction<string | null>>;
     handleRowClick: (record: any) => void;
     onCloseDrawer: () => void;
     selectedRow: any;
@@ -148,7 +148,7 @@ export interface DataType {
       key: any;
   }) => void,
     drawerTitle:string
-    asset_uuid: string;
+    asset_uuid?: string;
     assetPageDataFetch: (params: string) => void;    
     searchTerm: string;
     json_query: string;
@@ -163,6 +163,7 @@ export interface DataType {
     setSearchTerm:any;
     setJson_query:any;
     selectedTypeId:number;
+    bordered?:any;
   }
 
   export interface DashboardAssetHandlerProps {
