@@ -38,9 +38,9 @@ ALLOWED_HOSTS = config(
 )
 
 
-CORS_ORIGIN_WHITELIST = config(
-    "CORS_ORIGIN_WHITELIST", cast=lambda v: [item.strip() for item in v.split(",")]
-)
+# CORS_ORIGIN_WHITELIST = config(
+#     "CORS_ORIGIN_WHITELIST", cast=lambda v: [item.strip() for item in v.split(",")]
+# )
 
 CORS_ALLOW_CREDENTIALS = True
 
