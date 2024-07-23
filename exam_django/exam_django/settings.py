@@ -49,9 +49,6 @@ CORS_ALLOW_CREDENTIALS = True
 # )
 CORS_ALLOW_ALL_ORIGINS = True  # Allow all origins
 
-# CORS_ALLOW_HEADERS: List[str] = (
-#     list(default_headers) + ["Content-Type"] + get_all_cors_headers()
-# )
 
 # Redis Configuration
 REDIS_URL = config("CELERY_BROKER_URL")
