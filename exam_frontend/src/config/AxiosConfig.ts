@@ -3,6 +3,7 @@ import axiosRetry from 'axios-retry';
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env["VITE_CONFIG_URL"],
+  timeout: 100000,
 });
 
 // Configure axios-retry
