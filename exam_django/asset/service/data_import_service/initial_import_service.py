@@ -7,6 +7,10 @@ from django.forms import ValidationError
 from asset.models import Asset, AssetType, BusinessUnit, Employee, Location, Memory, AssetLog
 from django.forms import model_to_dict
 import json
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+import base64
 
 def clean_field(value):
     if pd.isna(value) or value == "nan" or value == "":
@@ -198,10 +202,10 @@ class AssetImportService:
                 memory_id=memory.id if memory else None,
             )
 
+
             new_assets.append(asset)
             added_assets_count += 1
 
-        
         created_assets = Asset.objects.bulk_create(new_assets)
         create_asset_logs(created_assets)
 
@@ -250,17 +254,6 @@ class AssetImportService:
         return output
 
     @staticmethod
-    def generate_missing_fields_xlsx(missing_fields_assets):
-        if missing_fields_assets:
-            df = pd.DataFrame(missing_fields_assets)
-            output = io.BytesIO()
-            df.to_excel(output, index=False)
-            output.seek(0)
-            return output
-        else:
-            return io.BytesIO()
-
-    @staticmethod
     def generate_zip_file_csv(csv_file_one, csv_file_two):
         zip_content = io.BytesIO()
         with zipfile.ZipFile(zip_content, "w") as zf:
@@ -270,12 +263,35 @@ class AssetImportService:
         zip_content.seek(0)
         return zip_content
 
-    @staticmethod
-    def generate_zip_file_xlsx(xlsx_file_one, xlsx_file_two):
-        zip_content = io.BytesIO()
-        with zipfile.ZipFile(zip_content, "w", zipfile.ZIP_DEFLATED, allowZip64=True) as zf:
-            zf.writestr("skipped_fields.xlsx", xlsx_file_one.getvalue())
-            zf.writestr("missing_fields.xlsx", xlsx_file_two.getvalue())
+class AssetImportView(APIView):
+    def post(self, request, *args, **kwargs):
+        file_obj = request.FILES.get('file')
+        file_type = request.GET.get('file_type')
+        
+        if not file_obj:
+            return Response({'error': 'No file uploaded'}, status=status.HTTP_400_BAD_REQUEST)
 
-        zip_content.seek(0)
-        return zip_content
+        try:
+            file_content = file_obj.read()
+            result = AssetImportService.parse_and_add_assets(file_content, request.user, file_type)
+
+            # Generate CSV files
+            skipped_fields_csv = AssetImportService.generate_missing_fields_csv(result['skipped_fields_assets'])
+            missing_fields_csv = AssetImportService.generate_missing_fields_csv(result['missing_fields_assets'])
+
+            # Generate zip file
+            zip_content = AssetImportService.generate_zip_file_csv(skipped_fields_csv, missing_fields_csv)
+
+            # Encode zip content to base64
+            zip_base64 = base64.b64encode(zip_content.getvalue()).decode('utf-8')
+
+            response_data = {
+                'message': result['message'],
+                'added_assets_count': result['added_assets_count'],
+                'skipped_assets_count': result['skipped_assets_count'],
+                'zip_file': zip_base64
+            }
+
+            return Response(response_data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
