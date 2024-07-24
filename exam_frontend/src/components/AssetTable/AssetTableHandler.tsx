@@ -2,7 +2,7 @@ import React, { Key, SetStateAction, useCallback, useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import "./AssetTable.css";
 import { useQuery } from "@tanstack/react-query";
-import { DataType, Props } from "../AssetTable/types";
+import { DataType } from "../AssetTable/types";
 import { AssetResult } from "../AssetTable/types";
 import AssetTable from "./AssetTable";
 import {
@@ -12,6 +12,15 @@ import {
   getMemoryOptions,
 } from "./api/getAssetDetails";
 import moment from "moment";
+
+interface Props{
+  userRole?:string;
+  isRejectedPage?:boolean;
+  queryParamProp?:string;
+  heading?:string;
+  isMyApprovalPage?:boolean;
+}
+
 
 const AssetTableHandler = ({
   userRole,
@@ -60,7 +69,7 @@ const AssetTableHandler = ({
     }
 
     setQueryParam(editedQueryParam);
-    assetDataRefetch({});
+    assetDataRefetch({ force: true });
   };
 
   const statusOptions =
@@ -102,19 +111,19 @@ const AssetTableHandler = ({
     setDrawerVisible(false);
   }, []);
 
-  // const [tableData, setTableData] = useState<DataType[]>([]);
-  // const handleUpdateData = (updatedData: { key: any }) => {
-  //   setTableData((prevData: any[]) =>
-  //     prevData.map((item) =>
-  //       item.key === updatedData.key ? { ...item, ...updatedData } : item
-  //     )
-  //   );
-  // };
+  const [tableData, setTableData] = useState<DataType[]>([]);
+  const handleUpdateData = (updatedData: { key: any }) => {
+    setTableData((prevData: any[]) =>
+      prevData.map((item) =>
+        item.key === updatedData.key ? { ...item, ...updatedData } : item
+      )
+    );
+  };
 
   <div>
     <h1>Asset Overview</h1>
   </div>;
-  const renderClickableColumn = (columnName: string, dataIndex: any) => (_: any, record:any) => {
+  const renderClickableColumn = (columnName, dataIndex) => (_, record) => {
     if (dataIndex === "created_at" || dataIndex === "updated_at") {
       const formattedDate = moment(record[dataIndex]).format("DD-MM-YYYY");
       return (
@@ -138,7 +147,7 @@ const AssetTableHandler = ({
     );
   };
 
-  const handleSort = (column: any) => {
+  const handleSort = (column: string) => {
     const isCurrentColumn = column === sortedColumn;
     let newSortOrders = { ...sortOrders };
 
@@ -371,7 +380,7 @@ const AssetTableHandler = ({
     },
     {
       title: "Model Number",
-      dataIndex: "model_number",
+      dataIndex: "model_number", // Corrected dataIndex
       responsive: ["md"],
       width: 120,
       render: (text: string, record: any) => (
@@ -412,6 +421,7 @@ const AssetTableHandler = ({
       dataIndex: "license_type",
       responsive: ["md"],
       width: 120,
+
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("License_type", "license_type")(text, record)}
@@ -461,7 +471,7 @@ const AssetTableHandler = ({
       dataIndex: "expiry_date",
       responsive: ["md"],
       width: 120,
-      render: (_: any, record:any) => {
+      render: (_, record) => {
         const dateOfPurchase = record.date_of_purchase
           ? new Date(record.date_of_purchase)
           : null;
@@ -469,10 +479,11 @@ const AssetTableHandler = ({
         if (dateOfPurchase instanceof Date && !isNaN(dateOfPurchase)) {
           const expiryDate = new Date(
             dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000
-          ); 
+          ); // Calculating expiry date in milliseconds
           const formattedExpiryDate = expiryDate.toISOString().split("T")[0];
           const currentDate = new Date();
           const isExpired = expiryDate < currentDate;
+
           return (
             <div
               data-column-name="Expiry Date"
@@ -677,7 +688,7 @@ const AssetTableHandler = ({
     setDrawerVisible(true);
   };
 
-  const data = assetData?.results?.map((result: { asset_uuid: any; asset_id: any; asset_category: any; asset_type: { asset_type_name: any; }; version: any; status: any; location: { location_name: any; }; invoice_location: { location_name: any; }; business_unit: { business_unit_name: any; }; os: any; os_version: any; mobile_os: any; processor: any; processor_gen: any; accessories: any; date_of_purchase: any; warranty_period: any; asset_detail_status: any; assign_status: any; approved_by: { username: any; }; model_number: any; serial_number: any; memory: { memory_space: any; }; storage: any; configuration: any; custodian: { employee_name: any; }; product_name: any; license_type: any; owner: any; requester: { username: any; }; created_at: any; updated_at: any; approval_status_message: any; }) => ({
+  const data = assetData?.results?.map((result) => ({
     key: result.asset_uuid,
     asset_id: result.asset_id,
     asset_category: result.asset_category,
@@ -740,7 +751,12 @@ const AssetTableHandler = ({
       statusOptions={statusOptions}
       assetDataRefetch={refetchAssetData}
       // dataSource={assets}
-      businessUnitOptions={businessUnitOptions}   
+      businessUnitOptions={businessUnitOptions}
+      handleUpdateData={function (updatedData: { key: any }): void {
+        throw new Error("Function not implemented.");
+      }}
+      searchTerm={searchTerm}
+      setSearchTerm={setSearchTerm}
     />
   );
 };
