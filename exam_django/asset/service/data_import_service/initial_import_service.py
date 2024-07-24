@@ -11,6 +11,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 import base64
+from django.db import transaction
 
 def clean_field(value):
     if pd.isna(value) or value == "nan" or value == "":
@@ -206,8 +207,12 @@ class AssetImportService:
             new_assets.append(asset)
             added_assets_count += 1
 
-        created_assets = Asset.objects.bulk_create(new_assets)
-        create_asset_logs(created_assets)
+        BATCH_SIZE = 500
+        for i in range(0, len(new_assets), BATCH_SIZE):
+            batch = new_assets[i:i+BATCH_SIZE]
+            with transaction.atomic():
+                created_assets = Asset.objects.bulk_create(batch)
+                create_asset_logs(created_assets)
 
         return AssetImportService._prepare_import_summary(
             added_assets_count,
