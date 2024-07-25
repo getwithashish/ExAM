@@ -49,7 +49,7 @@ const DropDown: React.FC<DropDownProps> = ({
           alignItems: 'center',
           justifyContent: 'center',
         }}
-        loading={loading}
+        
         disabled={disabled}
       >
         <span style={{ marginRight: '8px' }}>{buttonLabel}</span>
