@@ -12,9 +12,9 @@ const Deallocate = () => {
       setLoading(true);
       const data = { asset_uuid: record?.key };
       const res = await axiosInstance.post("/asset/unassign_asset", data);
-      message.success("Asset Successfully Deallocated");
+      message.success(res.data.message);
     } catch (error) {
-      message.error("Asset Deallocation Failed");
+      message.error(error.data.message);
     } finally {
       setLoading(false);
     }

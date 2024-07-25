@@ -49,14 +49,14 @@ export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({
     (requestData: any) =>
       axiosInstance.post("/asset/assign_asset", requestData),
     {
-      onSuccess: () => {
-        message.success("Successfully Assigned");
+      onSuccess: (response) => {
+        message.success(response.data.message);
         setLoading(false);
         assetDataRefetch();
         closeAssignDrawer();
       },
       onError: (error) => {
-        message.error("Unsuccessful, the asset may be already assigned");
+        message.error(error.data.message);
         setLoading(false);
         closeAssignDrawer();
       },
