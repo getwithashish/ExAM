@@ -73,7 +73,7 @@ const UploadComponent: React.FC = () => {
       console.log("Submission response:", response);
 
       if (response.status >= 200 && response.status < 300) {
-        message.success(response.data.message);
+        message.success(response.data?.message);
         console.log("Response data:", response.data);
         
         if (response.data.zip_file) {
@@ -114,7 +114,7 @@ const UploadComponent: React.FC = () => {
         console.error("Response data:", axiosError.response.data);
         console.error("Response status:", axiosError.response.status);
         const responseData = axiosError.response.data;
-        message.error(`Error: ${responseData.message || 'Failed to submit files. Please try again.'}`);
+        message.error(`Error: ${responseData?.message || 'Failed to submit files. Please try again.'}`);
       } else if (axiosError.request) {
         console.error("Request error:", axiosError.request);
         message.error("Network error. Please check your connection and try again.");
