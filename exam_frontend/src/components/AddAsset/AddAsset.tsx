@@ -416,6 +416,7 @@ const AddAsset: React.FC = ({
             formData
           );
           message.success("Asset creation done successfully");
+          handleResetForm();
           return;
         } else {
           message.error("Please fill in all mandatory fields.");
