@@ -50,13 +50,13 @@ export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({
       axiosInstance.post("/asset/assign_asset", requestData),
     {
       onSuccess: (response) => {
-        message.success(response.data.message);
+        message.success(response.data?.message);
         setLoading(false);
         assetDataRefetch();
         closeAssignDrawer();
       },
       onError: (error) => {
-        message.error(error.data.message);
+        message.error(error.data?.message);
         setLoading(false);
         closeAssignDrawer();
       },

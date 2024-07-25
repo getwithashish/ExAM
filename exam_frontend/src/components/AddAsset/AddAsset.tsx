@@ -424,7 +424,7 @@ const AddAsset: React.FC = ({
       } catch (error) {
         console.error("Error fetching asset type or asset creation :", error);
         message.error(
-          error.data.message
+          error.data?.message
         );
         return;
       } finally {

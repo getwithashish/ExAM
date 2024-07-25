@@ -417,7 +417,7 @@ const CardComponent: React.FC<CardType> = ({
           "Content-Type": "application/json",
         },
       });
-      message.success(response.data.message);
+      message.success(response.data?.message);
     } catch (error) {
       console.error("Error updating data:", error);
       message.error(er);
