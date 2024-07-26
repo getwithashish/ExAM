@@ -72,6 +72,11 @@ const AssetTable: React.FC<AssetTableProps> = ({
       <div className="mainHeading pt-4">
         <div className=" font-display text-white ml-4">{heading}</div>
       </div>
+      {heading === "My approved Request" && (
+          <div className="mb-4 px-4 py-2 bg-yellow-100 text-yellow-800 rounded " style={{ width: '640px'  ,marginLeft: '55px'}}>
+            Note: Assets in allocation_pending status will not be visible even if their modification is approved.
+          </div>
+        )}
       <div className="flex" style={{ marginLeft: "55px", marginBottom: "30px" }}>
         <GlobalSearch
           assetDataRefetch={assetDataRefetch}
