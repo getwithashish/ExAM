@@ -249,7 +249,6 @@ const AddAsset: React.FC = ({
     setProcessorGen("");
     setMemory("");
     setStorage("");
-
     setTimeout(() => {
       setResetForm(false);
     }, 100);
@@ -423,9 +422,7 @@ const AddAsset: React.FC = ({
         }
       } catch (error) {
         console.error("Error fetching asset type or asset creation :", error);
-        message.error(
-          error.data?.message
-        );
+        message.error(error.data?.message);
         return;
       } finally {
         setLoading(false);
@@ -954,7 +951,10 @@ const AddAsset: React.FC = ({
                   width: "120px",
                   height: "40px",
                 }}
-                onClick={() => handleResetForm()}
+                onClick={() => {
+                  handleResetForm();
+                  setAssetCategoryValue("");
+                }}
               >
                 Reset
               </Button>
