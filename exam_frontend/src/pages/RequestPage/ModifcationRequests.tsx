@@ -570,7 +570,6 @@ const ViewRequestModal: FC<{
             <div className="grid font-display grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">
               {formFields.map((field, index) => {
                 const latestLog = latestLogData.logs[0]?.asset_log;
-                console.log(latestLogData);
                 let changed = false;
                 if (latestLog && latestLog.hasOwnProperty(field.id)) {
                   changed = field.value != latestLog[field.id];
