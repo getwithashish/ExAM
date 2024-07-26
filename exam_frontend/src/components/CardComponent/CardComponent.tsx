@@ -451,8 +451,13 @@ const CardComponent: React.FC<CardType> = ({
       label: "Product Name",
       name: "productName",
       value: (
-        <Form.Item name="product name" rules={[{ required: true, message: 'Product Name is required' }]}>
-          <b>Product Name: <span style={{ color: 'red' }}>*</span></b>
+        <Form.Item
+          name="product name"
+          rules={[{ required: true, message: "Product Name is required" }]}
+        >
+          <b>
+            Product Name: <span style={{ color: "red" }}>*</span>
+          </b>
           <br></br>
           <br></br>
           <AssetFieldAutoComplete
@@ -467,8 +472,14 @@ const CardComponent: React.FC<CardType> = ({
     {
       label: "Asset Category",
       value: (
-        <Form.Item name="assetCategory" rules={[{ required: true, message: 'Asset Category is required' }]}>
-          <b style={{ display: "block" }}>Asset Category: <span style={{ color: 'red' }}>*</span></b> <br></br>
+        <Form.Item
+          name="assetCategory"
+          rules={[{ required: true, message: "Asset Category is required" }]}
+        >
+          <b style={{ display: "block" }}>
+            Asset Category: <span style={{ color: "red" }}>*</span>
+          </b>{" "}
+          <br></br>
           <Select
             id="simple-select-modify-category"
             label="Asset Category"
@@ -559,8 +570,14 @@ const CardComponent: React.FC<CardType> = ({
       label: "Serial Number",
       name: "serialNumber",
       value: (
-        <Form.Item name="serial number" rules={[{ required: true, message: 'Serial Number is required' }]}>
-          <b>Serial Number: <span style={{ color: 'red' }}>*</span></b> <br></br>
+        <Form.Item
+          name="serial number"
+          rules={[{ required: true, message: "Serial Number is required" }]}
+        >
+          <b>
+            Serial Number: <span style={{ color: "red" }}>*</span>
+          </b>{" "}
+          <br></br>
           <br></br>
           <TextField
             id="outlined-textarea-serial-hardware-modify"
@@ -640,8 +657,15 @@ const CardComponent: React.FC<CardType> = ({
       label: "Location",
       name: "location",
       value: (
-        <Form.Item name="location" className="formItem" rules={[{ required: true, message: 'Location is required' }]}>
-          <b> Asset Location: <span style={{ color: 'red' }}>*</span></b>
+        <Form.Item
+          name="location"
+          className="formItem"
+          rules={[{ required: true, message: "Location is required" }]}
+        >
+          <b>
+            {" "}
+            Asset Location: <span style={{ color: "red" }}>*</span>
+          </b>
           <br></br>
           <br></br>
           <AssetFieldAutoComplete
@@ -657,8 +681,13 @@ const CardComponent: React.FC<CardType> = ({
       label: "Invoice Location",
       name: "invoice location",
       value: (
-        <Form.Item name="location" rules={[{ required: true, message: 'Invoice Location is required' }]}>
-          <b>Invoice Location: <span style={{ color: 'red' }}>*</span></b>
+        <Form.Item
+          name="location"
+          rules={[{ required: true, message: "Invoice Location is required" }]}
+        >
+          <b>
+            Invoice Location: <span style={{ color: "red" }}>*</span>
+          </b>
           <br></br>
           <br></br>
           <AssetFieldAutoComplete
@@ -674,8 +703,14 @@ const CardComponent: React.FC<CardType> = ({
       label: "Date of Purchase",
       name: "dateOfPurchase",
       value: (
-        <Form.Item name="date of purchase" rules={[{ required: true, message: 'Date of Purchase is required' }]}>
-          <b>Date of Purchase: <span style={{ color: 'red' }}>*</span></b> <br></br>
+        <Form.Item
+          name="date of purchase"
+          rules={[{ required: true, message: "Date of Purchase is required" }]}
+        >
+          <b>
+            Date of Purchase: <span style={{ color: "red" }}>*</span>
+          </b>{" "}
+          <br></br>
           <br></br>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker

@@ -26,11 +26,12 @@ import { getUserOptions } from "./api/getUserDetails";
 
 const filter = createFilterOptions();
 
-interface Props{
-  assetField?:any;
-  value?:any;
-  setValue?:any;
-  defaultValue?:any;
+interface Props {
+  assetField?: any;
+  value?: any;
+  setValue?: any;
+  defaultValue?: any;
+  isDisabled?: boolean;
 }
 
 const AssetFieldAutoComplete = ({
@@ -38,6 +39,7 @@ const AssetFieldAutoComplete = ({
   value,
   setValue,
   defaultValue,
+  isDisabled = false,
 }: Props) => {
   const [open, toggleOpen] = React.useState(false);
 
@@ -170,6 +172,7 @@ const AssetFieldAutoComplete = ({
       {foreignFieldValueNames.includes(assetField) && (
         <React.Fragment>
           <Autocomplete
+            disabled={isDisabled}
             value={value}
             loading={isAssetDataLoading}
             onChange={(event, newValue, reason) => {
@@ -282,6 +285,7 @@ const AssetFieldAutoComplete = ({
 
       {!foreignFieldValueNames.includes(assetField) && (
         <Autocomplete
+          disabled={isDisabled}
           value={value}
           loading={isAssetDataLoading}
           freeSolo={!["product_name", "owner"].includes(assetFieldKeyName())}
