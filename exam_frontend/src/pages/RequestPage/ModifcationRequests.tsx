@@ -512,7 +512,7 @@ const ViewRequestModal: FC<{
       disabled: true,
     },
     {
-      id: "p_gen",
+      id: "processor_gen",
       label: "PROCESSOR GEN",
       name: "p_gen",
       value: asset?.processor_gen,
