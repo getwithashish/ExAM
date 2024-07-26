@@ -417,10 +417,10 @@ const CardComponent: React.FC<CardType> = ({
           "Content-Type": "application/json",
         },
       });
-      message.success("Asset Details Successfully Updated");
+      message.success(response.data?.message);
     } catch (error) {
       console.error("Error updating data:", error);
-      message.error("Error Updating Asset Details. Please try again.");
+      message.error(er);
     }
     setIsLoading(false); // Set loading to false when update completes
     assetDataRefetch();

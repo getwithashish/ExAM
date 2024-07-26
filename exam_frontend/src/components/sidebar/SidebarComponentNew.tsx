@@ -120,13 +120,10 @@ const SidebarComponentNew = ({ children }: any) => {
       label: (
         <div>
           <Button className="w-4" color="primary" onClick={handleLogout}>
-            <span className="text-xs">
-              Logout
-            </span>
+            <span className="text-xs">Logout</span>
             <LogoutOutlined style={{ width: "10px", height: "10px" }} />
           </Button>
         </div>
-
       ),
     },
   ];
@@ -324,9 +321,7 @@ const SidebarComponentNew = ({ children }: any) => {
               {jwtPayload && jwtPayload.username && (
                 <div>
                   <div className={styles["username"]}>
-                    <span className="font-display">
-                      {jwtPayload.username}
-                    </span>
+                    <span className="font-display">{jwtPayload.username}</span>
                   </div>
                   {jwtPayload.user_scope && (
                     <div className={styles["userscope"]}>
@@ -347,7 +342,7 @@ const SidebarComponentNew = ({ children }: any) => {
             </div>
           </div>
         </Header>
-        <Content style={{ overflow: "initial" }}>
+        <Content style={{ overflow: "initial", backgroundColor: "#161b21" }}>
           <Spin spinning={loading}>
             {children}
             <SideDrawerComponent

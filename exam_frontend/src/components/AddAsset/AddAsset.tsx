@@ -415,7 +415,8 @@ const AddAsset: React.FC = ({
             import.meta.env["VITE_ADD_ASSET_URL"],
             formData
           );
-          message.success("Asset creation done successfully");
+          message.success(submitResponse.data?.message);
+          handleResetForm();
           return;
         } else {
           message.error("Please fill in all mandatory fields.");
@@ -423,7 +424,7 @@ const AddAsset: React.FC = ({
       } catch (error) {
         console.error("Error fetching asset type or asset creation :", error);
         message.error(
-          "Failed to fetch asset type or submit form data. Please try again later."
+          error.data?.message
         );
         return;
       } finally {
@@ -439,11 +440,11 @@ const AddAsset: React.FC = ({
           import.meta.env["VITE_ADD_ASSET_URL"],
           formData
         );
-        message.success("Asset created successfully");
+        message.success(response.data?.message);
         return;
       } catch (error) {
         console.error("Error in asset creation :", error);
-        message.error("Failed to create an asset. Please try again later.");
+        message.error(error.data?.message);
         return;
       } finally {
         setLoading(false);

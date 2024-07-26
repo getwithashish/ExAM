@@ -7,6 +7,10 @@ from django.forms import ValidationError
 from asset.models import Asset, AssetType, BusinessUnit, Employee, Location, Memory, AssetLog
 from django.forms import model_to_dict
 import json
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+import base64
 
 def clean_field(value):
     if pd.isna(value) or value == "nan" or value == "":
@@ -198,10 +202,10 @@ class AssetImportService:
                 memory_id=memory.id if memory else None,
             )
 
+
             new_assets.append(asset)
             added_assets_count += 1
 
-        
         created_assets = Asset.objects.bulk_create(new_assets)
         create_asset_logs(created_assets)
 
@@ -248,7 +252,7 @@ class AssetImportService:
                 csv_writer.writerow(asset.values())
 
         return output
-
+    
     @staticmethod
     def generate_missing_fields_xlsx(missing_fields_assets):
         if missing_fields_assets:
@@ -256,8 +260,10 @@ class AssetImportService:
             output = io.BytesIO()
             df.to_excel(output, index=False)
             output.seek(0)
+            # return output.getvalue()
             return output
         else:
+            # return None
             return io.BytesIO()
 
     @staticmethod
@@ -273,7 +279,7 @@ class AssetImportService:
     @staticmethod
     def generate_zip_file_xlsx(xlsx_file_one, xlsx_file_two):
         zip_content = io.BytesIO()
-        with zipfile.ZipFile(zip_content, "w", zipfile.ZIP_DEFLATED, allowZip64=True) as zf:
+        with zipfile.ZipFile(zip_content, "w") as zf:
             zf.writestr("skipped_fields.xlsx", xlsx_file_one.getvalue())
             zf.writestr("missing_fields.xlsx", xlsx_file_two.getvalue())
 

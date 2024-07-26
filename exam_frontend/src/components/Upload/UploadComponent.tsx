@@ -17,6 +17,9 @@ const UploadComponent: React.FC = () => {
     const storedToken = localStorage.getItem("jwt");
     if (storedToken) {
       setToken(storedToken);
+      console.log("Token retrieved from localStorage");
+    } else {
+      console.warn("No token found in localStorage");
     }
   }, []);
 
@@ -29,12 +32,18 @@ const UploadComponent: React.FC = () => {
       setFileList(info.fileList);
     },
     onDrop: (e) => {
+      console.log("Dropped files", e.dataTransfer.files);
     },
   };
 
   const handleSubmit = async () => {
     if (fileList.length === 0) {
       message.warning("Please select at least one file to upload.");
+      return;
+    }
+
+    if (!token || token.trim() === "") {
+      message.error("Invalid authentication token. Please log in again.");
       return;
     }
 
@@ -47,11 +56,10 @@ const UploadComponent: React.FC = () => {
       }
     });
 
-    try {
-      if (!token) {
-        throw new Error("Authentication token not available. Please log in again.");
-      }
+    console.log("Submitting files:", fileList);
+    console.log("File type:", getFileExtension());
 
+    try {
       const response = await axiosInstance.post("/asset/import-csv/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -62,12 +70,22 @@ const UploadComponent: React.FC = () => {
         },
       });
 
-      if (response.status === 200) {
-        message.success("Files successfully submitted.");
-        downloadZipFile(response.data);
+      console.log("Submission response:", response);
+
+      if (response.status >= 200 && response.status < 300) {
+        message.success(response.data?.message);
+        console.log("Response data:", response.data);
+        
+        if (response.data.zip_file) {
+          downloadZipFile(response.data.zip_file);
+        } else {
+          console.warn("No zip file data received");
+        }
+        
         setFileList([]);
       } else {
-        throw new Error("Unexpected response status");
+        console.warn("Unexpected response status:", response.status);
+        throw new Error(`Unexpected response status: ${response.status}`);
       }
     } catch (error) {
       handleUploadError(error);
@@ -79,39 +97,63 @@ const UploadComponent: React.FC = () => {
   const getFileExtension = () => {
     const firstFile = fileList[0];
     if (!firstFile || !firstFile.originFileObj) {
+      console.warn("No file selected or file object missing");
       return "";
     }
     const fileName = firstFile.originFileObj.name;
-    return fileName.split(".").pop() || "";
+    const extension = fileName.split(".").pop() || "";
+    console.log("File extension:", extension);
+    return extension;
   };
 
   const handleUploadError = (error: any) => {
     console.error("Error submitting files:", error);
     if (axios.isAxiosError(error)) {
-      const axiosError = error as AxiosError;
+      const axiosError = error as AxiosError<ErrorResponse>;
       if (axiosError.response) {
-        const responseData = axiosError.response.data as ErrorResponse;
-        message.error(`Error: ${responseData.message || 'Failed to submit files. Please try again.'}`);
+        console.error("Response data:", axiosError.response.data);
+        console.error("Response status:", axiosError.response.status);
+        const responseData = axiosError.response.data;
+        message.error(`Error: ${responseData?.message || 'Failed to submit files. Please try again.'}`);
       } else if (axiosError.request) {
+        console.error("Request error:", axiosError.request);
         message.error("Network error. Please check your connection and try again.");
       } else {
+        console.error("Error message:", axiosError.message);
         message.error("An unexpected error occurred. Please try again.");
       }
     } else {
+      console.error("Non-Axios error:", error);
       message.error("An unexpected error occurred. Please try again.");
     }
   };
 
   const downloadZipFile = (data: string) => {
-    const byteCharacters = atob(data);
-    const byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    if (!data) {
+      console.error("No data received for zip file download");
+      message.error("Failed to generate download file. Please try again.");
+      return;
     }
-    const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: "application/zip" });
-    const url = URL.createObjectURL(blob);
-    window.open(url, "_blank");
+
+    try {
+      const binaryData = atob(data);
+      const byteNumbers = new Array(binaryData.length);
+      for (let i = 0; i < binaryData.length; i++) {
+        byteNumbers[i] = binaryData.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: "application/zip" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'import_results.zip';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Error processing zip file data:", error);
+      message.error("Failed to process download file. Please try again.");
+    }
   };
 
   return (
