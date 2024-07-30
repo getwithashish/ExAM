@@ -416,6 +416,7 @@ const AddAsset: React.FC = ({
           );
           message.success(submitResponse.data?.message);
           handleResetForm();
+          setAssetCategoryValue("");
           return;
         } else {
           message.error("Please fill in all mandatory fields.");
@@ -438,6 +439,8 @@ const AddAsset: React.FC = ({
           formData
         );
         message.success(response.data?.message);
+        handleResetForm();
+        setAssetCategoryValue("");
         return;
       } catch (error) {
         console.error("Error in asset creation :", error);
