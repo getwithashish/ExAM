@@ -1,12 +1,5 @@
 import { ChangeEvent, FC, useEffect, useState } from "react";
-import {
-  Button,
-  Label,
-  Table,
-  Textarea,
-  DarkThemeToggle,
-  TextInput,
-} from "flowbite-react";
+import { Button, Label, Table, Textarea, TextInput } from "flowbite-react";
 import { HiPencilAlt } from "react-icons/hi";
 import axiosInstance from "../../config/AxiosConfig";
 import React from "react";
@@ -14,7 +7,7 @@ import DrawerViewRequest from "./DrawerViewRequest";
 import { styled } from "@mui/material/styles";
 import Tooltip, { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
 import InfoIcon from "@mui/icons-material/Info";
-import { Pagination, Spin, message } from "antd";
+import { ConfigProvider, Pagination, Spin, message, theme } from "antd";
 import { RefreshTwoTone } from "@mui/icons-material";
 
 const ModificationRequests: FC = function () {
@@ -27,16 +20,6 @@ const ModificationRequests: FC = function () {
   const [totalPages, setTotalPages] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [modalOpen, setModalOpen] = useState(false);
-
-  // type ThemeMode = "dark";
-
-  // declare const useThemeMode: () => {
-  //   mode: ThemeMode;
-  //   computedMode: ThemeMode;
-  //   setMode: (mode: ThemeMode) => void;
-  //   toggleMode: () => void;
-  //   clearMode: () => void;
-  // };
 
   useEffect(() => {
     fetchAssets();
@@ -170,14 +153,24 @@ const ModificationRequests: FC = function () {
 
   const handleRefreshClick = () => {
     fetchAssets();
-  }
+  };
+
+  const { darkAlgorithm } = theme;
+  const customTheme = {
+    algorithm: darkAlgorithm,
+    components: {
+      Table: {
+        colorBgContainer: "#161B21",
+      },
+    },
+  };
 
   return (
     <React.Fragment>
       <div className="bg-custom-500 lg:ml-64 pt-24">
         <div className="block items-center justify-between bg-custom-400 px-2 dark:border-gray-700 dark:bg-gray-800 sm:flex mx-2 my-2">
           <div className="mb-1 w-full">
-          <div className="m-2 flex">
+            <div className="m-2 flex">
               <div className="flex-1">
                 <h1 className="font-medium font-display m-3 leading-none text-white text-xl">
                   Modification Requests
@@ -190,7 +183,7 @@ const ModificationRequests: FC = function () {
                     marginLeft: "10px",
                     width: "30px",
                     height: "40px",
-                    color: '#ffffff'
+                    color: "#ffffff",
                   }}
                   onClick={handleRefreshClick}
                 />
@@ -208,9 +201,7 @@ const ModificationRequests: FC = function () {
                 <p>Loading...</p>
               </div>
             ) : (
-              <div
-                className="inline-block w-full align-middle"
-              >
+              <div className="inline-block w-full align-middle">
                 <div className="overflow-hidden shadow-2xl mx-2 rounded-lg bg-custom-400">
                   <RequestTable
                     assets={filteredAssets}
@@ -222,15 +213,17 @@ const ModificationRequests: FC = function () {
             )}
           </div>
         </div>
-        <Pagination
-          showSizeChanger
-          onShowSizeChange={onShowSizeChange}
-          pageSize={pageSize}
-          current={currentPage}
-          total={totalPages * pageSize}
-          onChange={setCurrentPage}
-          className="text-black bg-white rounded-xl p-4 ml-2 mt-2"
-        />
+        <ConfigProvider theme={customTheme}>
+          <Pagination
+            showSizeChanger
+            onShowSizeChange={onShowSizeChange}
+            pageSize={pageSize}
+            current={currentPage}
+            total={totalPages * pageSize}
+            onChange={setCurrentPage}
+            className="rounded-xl p-4 ml-2 mt-2"
+          />
+        </ConfigProvider>
         {selectedAsset && (
           <ViewRequestModal
             loading={loading}
@@ -284,7 +277,7 @@ const SearchRequests: FC<{
             className="h-5 w-5 text-gray-400 cursor-pointer"
             aria-hidden="true"
             onMouseEnter={() => setShowInfo(true)}
-            onMouseLeave={() => setShowInfo(false)} 
+            onMouseLeave={() => setShowInfo(false)}
           />
         </div>
       </div>
@@ -295,7 +288,7 @@ const SearchRequests: FC<{
 const RequestTable: FC<{
   assets: any[];
   setSelectedAsset: (asset: any | null) => void;
-  setLatestLogData: (data: any | null) => void; 
+  setLatestLogData: (data: any | null) => void;
 }> = function ({ assets, setSelectedAsset, setLatestLogData }) {
   const handleViewAsset = async (asset: any) => {
     try {
@@ -340,7 +333,10 @@ const RequestTable: FC<{
             </Table.Cell>
             <Table.Cell className="space-x-2 whitespace-nowrap p-4">
               <div className="flex items-center gap-x-3">
-                <Button className="bg-blue-600" onClick={() => handleViewAsset(asset)}>
+                <Button
+                  className="bg-blue-600"
+                  onClick={() => handleViewAsset(asset)}
+                >
                   <HiPencilAlt className="mr-2 text-lg font-display" />
                   View
                 </Button>
