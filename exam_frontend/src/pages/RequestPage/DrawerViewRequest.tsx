@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { Drawer } from "antd";
-import type { DrawerProps} from "antd";
+import type { DrawerProps } from "antd";
 
 interface DrawerViewRequestProps extends DrawerProps {
   title?: string;
@@ -19,13 +19,7 @@ const DrawerViewRequest: FC<DrawerViewRequestProps> = ({
 }) => {
   return (
     <>
-      <Drawer
-        destroyOnClose={true}
-        title={title}
-        onClose={onClose}
-        open={open}
-        width={1200}
-      >
+      <Drawer title={title} onClose={onClose} open={open} width={1200}>
         {children}
       </Drawer>
     </>

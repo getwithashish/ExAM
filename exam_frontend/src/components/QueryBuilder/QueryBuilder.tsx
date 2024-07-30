@@ -23,20 +23,24 @@ export const QueryBuilderComponent: React.FC<
   const [selectedFields, setSelectedFields] = useState<
     { field: string; value: string; id: number }[]
   >([]);
-  const [newFields, setNewFields] = useState<number[]>([]);
+  const [newFields, setNewFields] = useState<string[]>([]);
   const initialState = { selectedFields: [], newFields: [] };
   const [filterValue, setFilterValue] = useState<number | string>();
   const [suggestion, setSuggestion] = useState<string[]>([]);
 
   const handleAddField = () => {
-    setNewFields((prev) => [...prev, prev.length]);
+    setNewFields((prev) => [
+      ...prev,
+      `id-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    ]);
     setSelectedFields((prev) => [...prev, { field: "", value: "" }]);
     setSuggestion([]);
   };
 
-  const handleRemoveField = (index: number) => {
-    setNewFields((prev) => prev.filter((_, i) => i !== index));
+  const handleRemoveField = (currentEle, index: number) => {
+    setNewFields((prev) => prev.filter((ele) => ele !== currentEle));
     setSelectedFields((prev) => prev.filter((_, i) => i !== index));
+    setAllFieldValues((prev) => prev.filter((_, i) => i !== index));
   };
 
   const [allFieldValues, setAllFieldValues] = React.useState<
@@ -105,9 +109,9 @@ export const QueryBuilderComponent: React.FC<
     <div>
       <div>
         <div style={{ display: "flex", flexDirection: "column" }}>
-          {newFields.map((_, index) => (
+          {newFields.map((currentEle, index) => (
             <div
-              key={index}
+              key={currentEle}
               style={{
                 marginBottom: "10px",
                 display: "flex",
@@ -115,12 +119,12 @@ export const QueryBuilderComponent: React.FC<
               }}
             >
               <MuiAutocomplete
-                key={index}
+                key={currentEle}
                 allFieldValues={allFieldValues}
                 setAllFieldValues={setAllFieldValues}
               />
               <IconButton
-                onClick={() => handleRemoveField(index)}
+                onClick={() => handleRemoveField(currentEle, index)}
                 aria-label="remove"
                 size="large"
               >
