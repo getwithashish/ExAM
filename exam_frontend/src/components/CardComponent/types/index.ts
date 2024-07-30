@@ -1,6 +1,7 @@
 import { DataType } from "../../AssetTable/types/index";
 
 export interface CardType {
+  readOnly?:boolean;
   data?: DataType;
   statusOptions?: string[];
   businessUnitOptions?: string[];
