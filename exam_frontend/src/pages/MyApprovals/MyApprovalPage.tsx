@@ -28,7 +28,7 @@ const MyApprovalPage = () => {
   };
 
   let queryParamProp = `&asset_detail_status=CREATED|UPDATED&assign_status=ASSIGNED|UNASSIGNED&approved_by_id=${getUserId()}`;
-  let heading = "My approved Request";
+  let heading = "My Approved Request";
 
   return (
     <div className="pt-8 h-full bg-custom-500" style={{ height: "100vh" }}>
