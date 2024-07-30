@@ -31,6 +31,7 @@ interface UpdateData {
   isMyApprovalPage: boolean;
 }
 const CardComponent: React.FC<CardType> = ({
+  readOnly,
   asset_uuid,
   data,
   onUpdate,
@@ -45,6 +46,7 @@ const CardComponent: React.FC<CardType> = ({
   assetDataRefetch,
   onClose,
   onDelete,
+  
 }) => {
   const uniqueStatusOptions = Array.from(new Set(statusOptions));
   const uniqueBusinessOptions = Array.from(new Set(businessUnitOptions));
@@ -465,6 +467,7 @@ const CardComponent: React.FC<CardType> = ({
             value={assetName}
             setValue={setAssetName}
             defaultValue={data.product_name}
+            isDisabled={readOnly}
           />
         </Form.Item>
       ),
@@ -485,6 +488,7 @@ const CardComponent: React.FC<CardType> = ({
             label="Asset Category"
             sx={{ width: "100%" }}
             displayEmpty
+            disabled={readOnly}
             onChange={(event) => {
               var categoryValue = (event.target.value as string).toUpperCase();
               if (categoryValue === data?.asset_category?.toUpperCase()) {
@@ -523,6 +527,7 @@ const CardComponent: React.FC<CardType> = ({
             value={assetType}
             setValue={setAssetType}
             defaultValue={data.asset_type}
+            isDisabled={readOnly}
           />
         </Form.Item>
       ),
@@ -540,6 +545,7 @@ const CardComponent: React.FC<CardType> = ({
             sx={{ width: "100%" }}
             label="Asset Status"
             displayEmpty
+            disabled={readOnly}
             onChange={(event) => {
               var statusValue = (event.target.value as string).toUpperCase();
               if (statusValue === data?.status?.toUpperCase()) {
@@ -596,6 +602,7 @@ const CardComponent: React.FC<CardType> = ({
                 }
               }
             }}
+            disabled={readOnly}
           />
         </Form.Item>
       ),
@@ -612,6 +619,7 @@ const CardComponent: React.FC<CardType> = ({
             value={assetModelNumber}
             setValue={setAssetModelNumber}
             defaultValue={data.model_number}
+            isDisabled={readOnly}
           />
         </Form.Item>
       ),
@@ -632,6 +640,7 @@ const CardComponent: React.FC<CardType> = ({
             value={assetBusinessUnit}
             setValue={setAssetBusinessUnit}
             defaultValue={data.business_unit}
+            isDisabled={readOnly}
           />
         </Form.Item>
       ),
@@ -649,6 +658,7 @@ const CardComponent: React.FC<CardType> = ({
             value={assetOwner}
             setValue={setAssetOwner}
             defaultValue={data.owner}
+            isDisabled={readOnly}
           />
         </Form.Item>
       ),
@@ -673,6 +683,7 @@ const CardComponent: React.FC<CardType> = ({
             value={assetLocation}
             setValue={setAssetLocation}
             defaultValue={data.location}
+            isDisabled={readOnly}
           />
         </Form.Item>
       ),
@@ -695,6 +706,7 @@ const CardComponent: React.FC<CardType> = ({
             value={assetInLocation}
             setValue={setAssetInLocation}
             defaultValue={data.invoice_location}
+            isDisabled={readOnly}
           />
         </Form.Item>
       ),
@@ -727,6 +739,7 @@ const CardComponent: React.FC<CardType> = ({
                   setAssetPurchaseDate(value.format("YYYY-MM-DD"));
                 }
               }}
+              disabled={readOnly}
             />
           </LocalizationProvider>
         </Form.Item>
@@ -755,6 +768,7 @@ const CardComponent: React.FC<CardType> = ({
             onChange={(e) => {
               handleWarrantyPeriodChange(e);
             }}
+            disabled={readOnly}
           />
         </Form.Item>
       ),
@@ -774,6 +788,7 @@ const CardComponent: React.FC<CardType> = ({
             value={assetOs}
             setValue={setAssetOs}
             defaultValue={data.os}
+            isDisabled={readOnly}
           />
         </Form.Item>
       ),
@@ -791,6 +806,7 @@ const CardComponent: React.FC<CardType> = ({
             value={assetOsVersion}
             setValue={setAssetOsVersion}
             defaultValue={data.os_version}
+            isDisabled={readOnly}
           />
         </Form.Item>
       ),
@@ -808,6 +824,7 @@ const CardComponent: React.FC<CardType> = ({
             value={assetMobileOs}
             setValue={setAssetMobileOs}
             defaultValue={data.mobile_os}
+            isDisabled={readOnly}
           />
         </Form.Item>
       ),
@@ -825,6 +842,7 @@ const CardComponent: React.FC<CardType> = ({
             value={assetLicenseType}
             setValue={setAssetLicenseType}
             defaultValue={data.license_type ?? null}
+            isDisabled={readOnly}
           />
         </Form.Item>
       ),
@@ -842,6 +860,7 @@ const CardComponent: React.FC<CardType> = ({
             value={assetProcessor}
             setValue={setAssetProcessor}
             defaultValue={data.processor}
+            isDisabled={readOnly}
           />
         </Form.Item>
       ),
@@ -859,6 +878,7 @@ const CardComponent: React.FC<CardType> = ({
             value={assetProcessorGen}
             setValue={setAssetProcessorGen}
             defaultValue={data.Generation}
+            isDisabled={readOnly}
           />
         </Form.Item>
       ),
@@ -876,6 +896,7 @@ const CardComponent: React.FC<CardType> = ({
             value={assetMemory}
             setValue={setAssetMemory}
             defaultValue={data?.memory?.toString()}
+            isDisabled={readOnly}
           />
         </Form.Item>
       ),
@@ -893,6 +914,7 @@ const CardComponent: React.FC<CardType> = ({
             value={assetStorage}
             setValue={setAssetStorage}
             defaultValue={data.storage}
+            isDisabled={readOnly}
           />
         </Form.Item>
       ),
@@ -921,6 +943,7 @@ const CardComponent: React.FC<CardType> = ({
                 }
               }
             }}
+            disabled={readOnly}
           />
         </Form.Item>
       ),
@@ -937,7 +960,7 @@ const CardComponent: React.FC<CardType> = ({
             id="outlined-textarea-configuration-hardware-modify"
             label="Configuration"
             multiline
-            disabled
+            disabled={readOnly}
             defaultValue={data.configuration}
             sx={{ width: "100%" }}
             // onChange={(e) => {
@@ -973,6 +996,7 @@ const CardComponent: React.FC<CardType> = ({
                 }
               }
             }}
+            disabled={readOnly}
           />
         </Form.Item>
       ),
@@ -989,7 +1013,7 @@ const CardComponent: React.FC<CardType> = ({
             id="outlined-textarea-approver-notes-modify"
             label="Approver Notes"
             multiline
-            disabled
+            disabled={readOnly}
             defaultValue={data.approval_status_message}
             sx={{ width: "100%" }}
           />
@@ -1147,44 +1171,6 @@ const CardComponent: React.FC<CardType> = ({
               padding: "20px",
             }}
           />
-
-          {/* {isMyApprovalPage && (
-            <>
-              {isLoading ? (
-                <Spin size="large" />
-              ) : (
-                <>
-                  <Button
-                    style={{
-                      marginBottom: "0px",
-                      marginTop: "0px",
-                      color: "white",
-                      border: "none",
-                      background: "blue",
-                      marginLeft: "200px",
-                    }}
-                    onClick={handleUpdate}
-                    disabled={isLoading} // Disable button while updating
-                  >
-                    Update
-                  </Button>
-                  {getUserScope() === "LEAD" && (
-                    <Button
-                      type="primary"
-                      danger
-                      onClick={handleDeleteClick}
-                      style={{
-                        marginLeft: "290px",
-                        marginTop: "0px",
-                      }}
-                    >
-                      Delete Asset
-                    </Button>
-                  )}
-                </>
-              )}
-            </>
-          )} */}
 
           {isMyApprovalPage && (
             <>

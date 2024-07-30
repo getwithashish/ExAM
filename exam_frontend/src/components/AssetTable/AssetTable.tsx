@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import { Pagination, Table, ConfigProvider, theme } from "antd";
 import "./AssetTable.css";
 import CardComponent from "../CardComponent/CardComponent";
@@ -38,6 +38,7 @@ const AssetTable: React.FC<AssetTableProps> = ({
   searchTerm,
   setSearchTerm,
 }: AssetTableProps) => {
+  const [readOnly, setReadOnly] = useState<boolean>(true)
   const [currentPage, setCurrentPage] = useState(1);
 
   const { darkAlgorithm } = theme;
@@ -57,6 +58,11 @@ const AssetTable: React.FC<AssetTableProps> = ({
       },
     },
   };
+
+  useEffect(() => {
+    if (userRole === "SYSTEM_ADMIN") {
+      setReadOnly(false);}
+  }, [userRole, heading]);
 
   let pageHeading = heading;
   if (userRole === "SYSTEM_ADMIN") {
@@ -158,6 +164,7 @@ const AssetTable: React.FC<AssetTableProps> = ({
 
         {selectedRow && (
           <CardComponent
+            readOnly = {readOnly}
             selectedAssetId={selectedAssetId}
             isMyApprovalPage={isMyApprovalPage}
             data={selectedRow}
