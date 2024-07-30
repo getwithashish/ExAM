@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Pagination, Table,  ConfigProvider, theme, } from "antd";
+import { Pagination, Table, ConfigProvider, theme } from "antd";
 import "./DasboardAssetTable.css";
 import { CloseOutlined } from "@ant-design/icons";
 import { AssetTableProps } from "./types";
@@ -47,7 +47,6 @@ const DashboardAssetTable = ({
     assetDataRefetch(queryParams);
   };
   const { darkAlgorithm } = theme;
-  const [isDarkMode, setIsDarkMode] = useState(true);
 
   const [showUpload, setShowUpload] = useState(false);
   const closeImportDrawer = () => {
@@ -58,7 +57,7 @@ const DashboardAssetTable = ({
     algorithm: darkAlgorithm,
     components: {
       Table: {
-        colorBgContainer: '#161B21',
+        colorBgContainer: "#161B21",
       },
     },
   };
@@ -95,69 +94,67 @@ const DashboardAssetTable = ({
         <br></br>
         <br></br>
         <ConfigProvider theme={customTheme}>
-        <Table
-          columns={columns.map((column: { dataIndex: string }) => ({
-            ...column,
-            sortOrder:
-              column.dataIndex === sortedColumn ? sortOrder : undefined,
-          }))}
-          dataSource={assetData}
-          className="mainTable"
-          loading={isAssetDataLoading}
-          pagination={false}
-          bordered={false}
-          scroll={{ x: 1300, y: 600 }}
-          handleRowClick={handleRowClick}
-          style={{
-            fontSize: "100px",
-            borderColor: "white",
-            borderRadius:"10px",
-            marginLeft: "3.5%",
-            boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-            fontFamily:"Inter"
-          }}
-          footer={() => (
-            <Pagination
-              pageSize={20}
-              showTotal={(total, range) =>
-                `${range[0]}-${range[1]} of ${total} assets`
-              }
-              total={totalItemCount}
-              onChange={(page, pageSize) => {
-                const offset = (page - 1) * pageSize;
-                let additionalQueryParams = `&offset=${offset}`;
-              
-                if (searchTerm !== "" && searchTerm !== null) {
-                  additionalQueryParams += `&global_search=${searchTerm}`;
+          <Table
+            columns={columns.map((column: { dataIndex: string }) => ({
+              ...column,
+              sortOrder:
+                column.dataIndex === sortedColumn ? sortOrder : undefined,
+            }))}
+            dataSource={assetData}
+            className="mainTable"
+            loading={isAssetDataLoading}
+            pagination={false}
+            bordered={false}
+            scroll={{ x: 1300, y: 600 }}
+            handleRowClick={handleRowClick}
+            style={{
+              fontSize: "100px",
+              borderColor: "white",
+              borderRadius: "10px",
+              marginLeft: "3.5%",
+              boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+              fontFamily: "Inter",
+            }}
+            footer={() => (
+              <Pagination
+                pageSize={20}
+                showTotal={(total, range) =>
+                  `${range[0]}-${range[1]} of ${total} assets`
                 }
-                if (json_query !== "" && json_query !== null) {
-                  additionalQueryParams += `&json_logic=${json_query}`;
-                }
-                if (assetState !== "" && assetState !== null) {
-                  additionalQueryParams += `&status=${assetState}`;
-                }
-                if (detailState !== "" && detailState !== null) {
-                  additionalQueryParams += `&asset_detail_status=${detailState}`;
-                }
-                if (assignState !== "" && assignState !== null) {
-                  additionalQueryParams += `&assign_status=${assignState}`;
-                }
-                if (selectedTypeId !== 0) {
-                  additionalQueryParams += `&asset_type=${selectedTypeId}`;
-                }
-                let sortParams = "";
-                if (sortedColumn && sortOrder) {
-                  sortParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
-                }
-                const queryParams = `${sortParams}${additionalQueryParams}`;
-                assetPageDataFetch(queryParams);
-              }}
-              
-              hideOnSinglePage={true}
-            />
-            
-          )}
-        />
+                total={totalItemCount}
+                onChange={(page, pageSize) => {
+                  const offset = (page - 1) * pageSize;
+                  let additionalQueryParams = `&offset=${offset}`;
+
+                  if (searchTerm !== "" && searchTerm !== null) {
+                    additionalQueryParams += `&global_search=${searchTerm}`;
+                  }
+                  if (json_query !== "" && json_query !== null) {
+                    additionalQueryParams += `&json_logic=${json_query}`;
+                  }
+                  if (assetState !== "" && assetState !== null) {
+                    additionalQueryParams += `&status=${assetState}`;
+                  }
+                  if (detailState !== "" && detailState !== null) {
+                    additionalQueryParams += `&asset_detail_status=${detailState}`;
+                  }
+                  if (assignState !== "" && assignState !== null) {
+                    additionalQueryParams += `&assign_status=${assignState}`;
+                  }
+                  if (selectedTypeId !== 0) {
+                    additionalQueryParams += `&asset_type=${selectedTypeId}`;
+                  }
+                  let sortParams = "";
+                  if (sortedColumn && sortOrder) {
+                    sortParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
+                  }
+                  const queryParams = `${sortParams}${additionalQueryParams}`;
+                  assetPageDataFetch(queryParams);
+                }}
+                hideOnSinglePage={true}
+              />
+            )}
+          />
         </ConfigProvider>
       </div>
       <DrawerViewRequest

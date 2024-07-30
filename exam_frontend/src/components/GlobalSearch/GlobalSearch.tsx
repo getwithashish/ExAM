@@ -1,15 +1,16 @@
 import React from "react";
 import styles from "./GlobalSearch.module.css";
-import { GlobalSearchProps } from "./types/types"; 
+import { GlobalSearchProps } from "./types/types";
 import { useLocation } from "react-router";
+import { ConfigProvider, Input, theme } from "antd";
+import { TextInput } from "flowbite-react";
 
 const GlobalSearch: React.FC<GlobalSearchProps> = ({
   assetDataRefetch,
   searchTerm,
   reset,
-  setSearchTerm
+  setSearchTerm,
 }) => {
-  
   const location = useLocation();
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
@@ -26,23 +27,35 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({
     event.preventDefault();
   };
 
+  const { darkAlgorithm } = theme;
+  const customTheme = {
+    algorithm: darkAlgorithm,
+    components: {
+      Table: {
+        colorBgContainer: "#161B21",
+      },
+    },
+  };
+
   return (
     <div className="flex">
-    <form className={styles["global-search-form"]} onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Search..."
-        value={searchTerm}
-        onChange={handleChange}
-        className={styles["global-search-input"]}
-      />
-    </form>
-    {location.pathname !=='/exam/dashboard' && (
+      <form onSubmit={handleSubmit}>
+        <ConfigProvider theme={customTheme}>
+          <TextInput
+            type="text"
+            placeholder="Search..."
+            value={searchTerm}
+            onChange={handleChange}
+            className={styles["global-search-input"]}
+          />
+        </ConfigProvider>
+      </form>
+      {location.pathname !== "/exam/dashboard" && (
         <button className="rounded-lg text-white w-20" onClick={reset}>
-        Reset
-      </button>
-    )}
-    </div>   
+          Reset
+        </button>
+      )}
+    </div>
   );
 };
 

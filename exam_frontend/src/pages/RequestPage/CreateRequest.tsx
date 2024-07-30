@@ -5,7 +5,7 @@ import axiosInstance from "../../config/AxiosConfig";
 import React from "react";
 import DrawerViewRequest from "./DrawerViewRequest";
 import InfoIcon from "@mui/icons-material/Info";
-import { Pagination, Spin, message } from "antd";
+import { ConfigProvider, Pagination, Spin, message, theme } from "antd";
 import { RefreshTwoTone } from "@mui/icons-material";
 
 const CreateRequestPage: FC = function () {
@@ -18,6 +18,16 @@ const CreateRequestPage: FC = function () {
   const [pageSize, setPageSize] = useState<number>(10);
   const [approverNotes, setApproverNotes] = useState<string>("");
   const [modalOpen, setModalOpen] = useState(false);
+
+  const { darkAlgorithm } = theme;
+  const customTheme = {
+    algorithm: darkAlgorithm,
+    components: {
+      Table: {
+        colorBgContainer: "#161B21",
+      },
+    },
+  };
 
   useEffect(() => {
     fetchAssets();
@@ -147,14 +157,14 @@ const CreateRequestPage: FC = function () {
 
   const handleRefreshClick = () => {
     fetchAssets();
-  }
+  };
 
   return (
     <React.Fragment>
       <div className="bg-custom-500 lg:ml-64 pt-24">
         <div className="block items-center justify-between bg-custom-400 px-2 dark:border-gray-700 dark:bg-gray-800 sm:flex mx-2 my-2">
           <div className="mb-1 w-full">
-          <div className="m-2 flex">
+            <div className="m-2 flex">
               <div className="flex-1">
                 <h1 className="font-medium font-display m-3 leading-none text-white text-xl">
                   Creation Requests
@@ -167,7 +177,7 @@ const CreateRequestPage: FC = function () {
                     marginLeft: "10px",
                     width: "30px",
                     height: "40px",
-                    color: '#ffffff'
+                    color: "#ffffff",
                   }}
                   onClick={handleRefreshClick}
                 />
@@ -185,9 +195,7 @@ const CreateRequestPage: FC = function () {
                 <p>Loading...</p>
               </div>
             ) : (
-              <div
-                className="inline-block w-full align-middle"
-              >
+              <div className="inline-block w-full align-middle">
                 <div className="overflow-hidden shadow-2xl mx-2 rounded-lg bg-custom-400">
                   <RequestTable
                     assets={filteredAssets}
@@ -198,15 +206,17 @@ const CreateRequestPage: FC = function () {
             )}
           </div>
         </div>
-        <Pagination
-          showSizeChanger
-          onShowSizeChange={onShowSizeChange}
-          pageSize={pageSize}
-          current={currentPage}
-          total={totalPages * pageSize}
-          onChange={setCurrentPage}
-          className="text-black bg-white rounded-xl p-4 ml-2 mt-2"
-        />
+        <ConfigProvider theme={customTheme}>
+          <Pagination
+            showSizeChanger
+            onShowSizeChange={onShowSizeChange}
+            pageSize={pageSize}
+            current={currentPage}
+            total={totalPages * pageSize}
+            onChange={setCurrentPage}
+            className="rounded-xl p-4 ml-2 mt-2"
+          />
+        </ConfigProvider>
         {selectedAsset && (
           <ViewRequestModal
             loading={loading}

@@ -1,9 +1,5 @@
 import { useEffect, useLayoutEffect } from "react";
-import {
-  BrowserRouter,
-  Route,
-  Routes,
-} from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SidebarComponentNew from "./components/sidebar/SidebarComponentNew";
 import DashboardPage from "./pages";
 import Login from "./pages/authentication/Login";
@@ -21,7 +17,7 @@ import MyApprovalPage from "./pages/MyApprovals/MyApprovalPage";
 import Deallocate from "./pages/Deallocate/Deallocate";
 import RejectedAllocationAsset from "./pages/RejectedAssetPage/RejectedAllocation";
 import AssetSense from "./components/ChatBot/assetSense";
-import ExpiredAssets from "./pages/ExpiredAssets/ExpiredAssets"
+import ExpiredAssets from "./pages/ExpiredAssets/ExpiredAssets";
 import PendingRequestPage from "./pages/PendingRequest/PendingRequestPage";
 
 const ExamRoutes = () => {
@@ -48,35 +44,49 @@ const ExamRoutes = () => {
           <Route
             path="/exam/*"
             element={
-              <SidebarComponentNew >
-                <Routes>
-                  <Route path="/dashboard" element={<DashboardPage />} />
-                  <Route
-                    path="/updatable_assets"
-                    element={<UpdatableAsset />}
-                  />
-                  <Route
-                    path="/assignable_asset"
-                    element={<Assignableasset />}
-                  />
-                  <Route path="/deallocate" element={<Deallocate />} />
-                  <Route
-                    path="/creation_requests"
-                    element={<CreateRequestPage />}
-                  />
-                  <Route
-                    path="/updation_requests"
-                    element={<ModificationRequests />}
-                  />
-                  <Route path="/assign_requests" element={<AssignPage />} />
-                  <Route path="/rejected_assets" element={<RejectedAsset />} />
-                  <Route path="/rejected_allocation" element={<RejectedAllocationAsset />} />
-                  <Route path="/approved_requests" element={<ApprovedRequestPage />} />
-                  <Route path="/pending_requests" element={<PendingRequestPage />} />
-                  <Route path="/my_approvals" element={<MyApprovalPage />} />
-                  <Route path="/chat" element={<AssetSense />} />
-                  <Route path="/expired_assets" element={<ExpiredAssets />} />
-                </Routes>
+              <SidebarComponentNew>
+                <div className="dark">
+                  <Routes>
+                    <Route path="/dashboard" element={<DashboardPage />} />
+                    <Route
+                      path="/updatable_assets"
+                      element={<UpdatableAsset />}
+                    />
+                    <Route
+                      path="/assignable_asset"
+                      element={<Assignableasset />}
+                    />
+                    <Route path="/deallocate" element={<Deallocate />} />
+                    <Route
+                      path="/creation_requests"
+                      element={<CreateRequestPage />}
+                    />
+                    <Route
+                      path="/updation_requests"
+                      element={<ModificationRequests />}
+                    />
+                    <Route path="/assign_requests" element={<AssignPage />} />
+                    <Route
+                      path="/rejected_assets"
+                      element={<RejectedAsset />}
+                    />
+                    <Route
+                      path="/rejected_allocation"
+                      element={<RejectedAllocationAsset />}
+                    />
+                    <Route
+                      path="/approved_requests"
+                      element={<ApprovedRequestPage />}
+                    />
+                    <Route
+                      path="/pending_requests"
+                      element={<PendingRequestPage />}
+                    />
+                    <Route path="/my_approvals" element={<MyApprovalPage />} />
+                    <Route path="/chat" element={<AssetSense />} />
+                    <Route path="/expired_assets" element={<ExpiredAssets />} />
+                  </Routes>
+                </div>
               </SidebarComponentNew>
             }
           />
