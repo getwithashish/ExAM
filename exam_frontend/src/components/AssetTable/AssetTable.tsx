@@ -1,4 +1,4 @@
-import React, { useState , useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Pagination, Table, ConfigProvider, theme } from "antd";
 import "./AssetTable.css";
 import CardComponent from "../CardComponent/CardComponent";
@@ -38,30 +38,33 @@ const AssetTable: React.FC<AssetTableProps> = ({
   searchTerm,
   setSearchTerm,
 }: AssetTableProps) => {
-  const [readOnly, setReadOnly] = useState<boolean>(true)
+  const [readOnly, setReadOnly] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState(1);
 
   const { darkAlgorithm } = theme;
 
-  const handleRefreshClick = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+  const handleRefreshClick = (
+    event: React.MouseEvent<SVGSVGElement, MouseEvent>
+  ) => {
     event.preventDefault();
     const queryParams = `&global_search=${searchTerm}`;
     assetDataRefetch(queryParams);
-    setCurrentPage(1)
+    setCurrentPage(1);
   };
 
   const customTheme = {
     algorithm: darkAlgorithm,
     components: {
       Table: {
-        colorBgContainer: '#161B21',
+        colorBgContainer: "#161B21",
       },
     },
   };
 
   useEffect(() => {
     if (userRole === "SYSTEM_ADMIN") {
-      setReadOnly(false);}
+      setReadOnly(false);
+    }
   }, [userRole, heading]);
 
   let pageHeading = heading;
@@ -78,12 +81,20 @@ const AssetTable: React.FC<AssetTableProps> = ({
       <div className="mainHeading pt-4">
         <div className=" font-display text-white ml-4">{heading}</div>
       </div>
-      {heading === "My approved Request" && (
-          <div className="mb-4 px-4 py-2 bg-yellow-100 text-yellow-800 rounded " style={{ width: '370px'  ,marginLeft: '55px'}}>
-            Note: Assets in pending status will not be visible here.
-          </div>
-        )}
-      <div className="flex" style={{ marginLeft: "55px", marginBottom: "30px" }}>
+      {(heading === "My Approved Request" ||
+        pageHeading == "Modify Asset" ||
+        pageHeading == "Delete Assets") && (
+        <div
+          className="mb-4 px-4 py-2 bg-yellow-100 text-yellow-800 rounded "
+          style={{ width: "370px", marginLeft: "55px" }}
+        >
+          Note: Assets in pending status will not be visible here.
+        </div>
+      )}
+      <div
+        className="flex"
+        style={{ marginLeft: "55px", marginBottom: "30px" }}
+      >
         <GlobalSearch
           assetDataRefetch={assetDataRefetch}
           searchTerm={searchTerm}
@@ -96,13 +107,15 @@ const AssetTable: React.FC<AssetTableProps> = ({
             marginLeft: "10px",
             width: "30px",
             height: "40px",
-            color: '#ffffff'
+            color: "#ffffff",
           }}
           onClick={handleRefreshClick}
         />
       </div>
 
-      <div style={{ position: "relative", display: "inline-block", width: "80vw" }}>
+      <div
+        style={{ position: "relative", display: "inline-block", width: "80vw" }}
+      >
         <ConfigProvider theme={customTheme}>
           <Table
             columns={columns}
@@ -123,7 +136,9 @@ const AssetTable: React.FC<AssetTableProps> = ({
               <Pagination
                 pageSize={20}
                 current={currentPage}
-                showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} assets`}
+                showTotal={(total, range) =>
+                  `${range[0]}-${range[1]} of ${total} assets`
+                }
                 total={totalItemCount}
                 onChange={(page, pageSize) => {
                   setCurrentPage(page);
@@ -135,7 +150,7 @@ const AssetTable: React.FC<AssetTableProps> = ({
                   let sortParams = "";
                   const queryParams = `${sortParams}${additionalQueryParams}`;
                   if (sortedColumn && sortOrder) {
-                    if (queryParams.indexOf('sort_by') === -1) {
+                    if (queryParams.indexOf("sort_by") === -1) {
                       sortParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
                     }
                   }
@@ -164,7 +179,7 @@ const AssetTable: React.FC<AssetTableProps> = ({
 
         {selectedRow && (
           <CardComponent
-            readOnly = {readOnly}
+            readOnly={readOnly}
             selectedAssetId={selectedAssetId}
             isMyApprovalPage={isMyApprovalPage}
             data={selectedRow}
