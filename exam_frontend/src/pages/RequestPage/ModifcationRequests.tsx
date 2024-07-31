@@ -333,13 +333,12 @@ const RequestTable: FC<{
             </Table.Cell>
             <Table.Cell className="space-x-2 whitespace-nowrap p-4">
               <div className="flex items-center gap-x-3">
-                <Button
-                  className="bg-blue-600"
+              <button
+                  className="rounded-lg text-white w-20 h-10 ml-2 "
                   onClick={() => handleViewAsset(asset)}
                 >
-                  <HiPencilAlt className="mr-2 text-lg font-display" />
                   View
-                </Button>
+                </button>
               </div>
             </Table.Cell>
           </Table.Row>

@@ -484,7 +484,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
         </div>
         <div className="flex-2">
           <select
-            className="block bg-custom-400 text-white font-display text-xs dark:text-gray-400 dark:border-gray-200 focus:outline-none rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            className=" font-display text-xs dark:text-gray-400 dark:border-gray-200 focus:outline-none rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             onChange={handleSelectChange}
             value={selectedTypeId}
           >
