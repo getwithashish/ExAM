@@ -38,24 +38,24 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({
   };
 
   return (
-    <div className="flex">
-      <form onSubmit={handleSubmit}>
-        <ConfigProvider theme={customTheme}>
-          <TextInput
-            type="text"
-            placeholder="Search..."
-            value={searchTerm}
-            onChange={handleChange}
-            className={styles["global-search-input"]}
-          />
-        </ConfigProvider>
-      </form>
-      {location.pathname !== "/exam/dashboard" && (
-        <button className="rounded-lg text-white w-20" onClick={reset}>
-          Reset
-        </button>
-      )}
-    </div>
+    <div className=" flex items-center">
+    <form onSubmit={handleSubmit}>
+      <ConfigProvider theme={customTheme}>
+        <TextInput
+          type="text"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={handleChange}
+          className={styles["global-search-input"]}
+        />
+      </ConfigProvider>
+    </form>
+    {location.pathname !== "/exam/dashboard" && (
+      <button className="rounded-lg text-white w-20 h-10 ml-2 " onClick={reset}>
+        Reset
+      </button>
+    )}
+  </div>
   );
 };
 
