@@ -495,7 +495,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
               <option
                 key={assetType.id}
                 value={assetType.id}
-                className="text-xs text-black border-0 border-b-2 bg-grey-400 font-display"
+                className="text-xs text-white border-0 border-b-2 bg-grey-400 font-display"
               >
                 {assetType.asset_type_name}
               </option>
