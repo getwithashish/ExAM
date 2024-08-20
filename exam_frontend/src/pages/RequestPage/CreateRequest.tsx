@@ -1,6 +1,5 @@
 import { ChangeEvent, FC, useEffect, useState } from "react";
-import { Button, Label, Table, Textarea, TextInput } from "flowbite-react";
-import { HiPencilAlt } from "react-icons/hi";
+import { Label, Table, Textarea, TextInput } from "flowbite-react";
 import axiosInstance from "../../config/AxiosConfig";
 import React from "react";
 import DrawerViewRequest from "./DrawerViewRequest";
@@ -370,17 +369,59 @@ const ViewRequestModal: FC<{
 
   const formFields = [
     {
-      id: "assetId",
+      id: "asset_id",
       label: "ASSET ID",
       name: "assetId",
       value: asset.asset_id,
       disabled: true,
     },
     {
-      id: "assetType",
+      id: "product_name",
+      label: "PRODUCT NAME",
+      name: "productName",
+      value: asset.product_name,
+      disabled: true,
+    },
+    {
+      id: "serial_number",
+      label: "SERIAL NUMBER",
+      name: "serialNumber",
+      value: asset?.serial_number,
+      disabled: true,
+    },
+    {
+      id: "location",
+      label: "LOCATION",
+      name: "location",
+      value: asset.location?.location_name,
+      disabled: true,
+    },
+    {
+      id: "invoice_location",
+      label: "INV.LOCATION",
+      name: "invoiceLocation",
+      value: asset.invoice_location?.location_name,
+      disabled: true,
+    },
+    {
+      id: "asset_type",
       label: "ASSET TYPE",
       name: "assetType",
-      value: asset.asset_type.asset_type_name,
+      value: asset.asset_type?.asset_type_name,
+      disabled: true,
+    },
+    {
+      id: "asset_category",
+      label: "CATEGORY",
+      name: "assetCategory",
+      value: asset.asset_category,
+      disabled: true,
+    },
+    {
+      id: "business_unit",
+      label: "BUSINESS UNIT",
+      name: "businessUnit",
+      value: asset.business_unit?.business_unit_name,
       disabled: true,
     },
     {
@@ -388,55 +429,6 @@ const ViewRequestModal: FC<{
       label: "VERSION",
       name: "version",
       value: asset.version,
-      disabled: true,
-    },
-    {
-      id: "assetCategory",
-      label: "CATEGORY",
-      name: "assetCategory",
-      value: asset.asset_category,
-      disabled: true,
-    },
-    {
-      id: "productName",
-      label: "PRODUCT NAME",
-      name: "productName",
-      value: asset.product_name,
-      disabled: true,
-    },
-    {
-      id: "modelNumber",
-      label: "MODEL NUMBER",
-      name: "modelNumber",
-      value: asset?.model_number,
-      disabled: true,
-    },
-    {
-      id: "serialNumber",
-      label: "SERIAL NUMBER",
-      name: "serialNumber",
-      value: asset?.serial_number,
-      disabled: true,
-    },
-    {
-      id: "owner",
-      label: "OWNER",
-      name: "owner",
-      value: asset?.owner,
-      disabled: true,
-    },
-    {
-      id: "dop",
-      label: "D.O.P",
-      name: "dop",
-      value: asset?.date_of_purchase,
-      disabled: true,
-    },
-    {
-      id: "warranty_period",
-      label: "WARRANTY",
-      name: "warranty_period",
-      value: asset?.warranty_period,
       disabled: true,
     },
     {
@@ -461,13 +453,6 @@ const ViewRequestModal: FC<{
       disabled: true,
     },
     {
-      id: "memory",
-      label: "MEMORY",
-      name: "memory",
-      value: asset.memory?.memory_space,
-      disabled: true,
-    },
-    {
       id: "processor",
       label: "PROCESSOR",
       name: "processor",
@@ -475,10 +460,24 @@ const ViewRequestModal: FC<{
       disabled: true,
     },
     {
-      id: "p_gen",
+      id: "processor_gen",
       label: "PROCESSOR GEN",
       name: "p_gen",
       value: asset?.processor_gen,
+      disabled: true,
+    },
+    {
+      id: "model_number",
+      label: "MODEL NUMBER",
+      name: "modelNumber",
+      value: asset?.model_number,
+      disabled: true,
+    },
+    {
+      id: "memory",
+      label: "MEMORY",
+      name: "memory",
+      value: asset.memory?.memory_space,
       disabled: true,
     },
     {
@@ -489,40 +488,61 @@ const ViewRequestModal: FC<{
       disabled: true,
     },
     {
-      id: "configuration",
-      label: "CONFIGURATION",
-      name: "configuration",
-      value: asset?.configuration,
+      id: "license_type",
+      label: "LICENSE TYPE",
+      name: "license_type",
+      value: asset?.license_type,
       disabled: true,
     },
+    {
+      id: "date_of_purchase",
+      label: "D.O.P",
+      name: "dop",
+      value: asset?.date_of_purchase,
+      disabled: true,
+    },
+    {
+      id: "warranty_period",
+      label: "WARRANTY",
+      name: "warranty_period",
+      value: asset?.warranty_period,
+      disabled: true,
+    },
+    {
+      id: "owner",
+      label: "OWNER",
+      name: "owner",
+      value: asset?.owner,
+      disabled: true,
+    },
+    {
+      id: "requester",
+      label: "REQUESTER",
+      name: "requester_username",
+      value: asset?.requester.username,
+      disabled: true,
+    },
+    {
+      id: "status",
+      label: "STATUS",
+      name: "status",
+      value: asset?.status,
+      disabled: true,
+    },  
     {
       id: "accessories",
       label: "ACCESSORIES",
       name: "accessories",
       value: asset?.accessories,
       disabled: true,
-    },
+    },    
     {
-      id: "location",
-      label: "LOCATION",
-      name: "location",
-      value: asset.location?.location_name,
+      id: "configuration",
+      label: "CONFIGURATION",
+      name: "configuration",
+      value: asset?.configuration,
       disabled: true,
-    },
-    {
-      id: "invoice_location",
-      label: "INV.LOCATION",
-      name: "invoice_location",
-      value: asset.invoice_location?.location_name,
-      disabled: true,
-    },
-    {
-      id: "business_unit",
-      label: "BUSINESS UNIT",
-      name: "business_unit",
-      value: asset.business_unit?.business_unit_name,
-      disabled: true,
-    },
+    }, 
   ];
 
   return (
