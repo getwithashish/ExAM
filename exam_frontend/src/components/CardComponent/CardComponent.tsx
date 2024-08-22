@@ -48,11 +48,6 @@ const CardComponent: React.FC<CardType> = ({
   onDelete,
   
 }) => {
-  const uniqueStatusOptions = Array.from(new Set(statusOptions));
-  const uniqueBusinessOptions = Array.from(new Set(businessUnitOptions));
-  const uniqueLocationoptions = Array.from(new Set(locations));
-  const uniqueMemoryOptions = Array.from(new Set(memoryData));
-  const uniqueAssetTypeOptions = Array.from(new Set(assetTypeData));
 
   const [_assetCategoryOption, setAssetCategoryOption] = React.useState();
   const [assetName, setAssetName] = React.useState("");
@@ -1157,7 +1152,7 @@ const CardComponent: React.FC<CardType> = ({
       <div style={{ display: "flex", alignItems: "center" }}>
         <div className="fixed-header">
           <Input
-            placeholder="Search fields"
+            placeholder="Search....."
             onChange={handleChange}
             style={{
               border: "0.5px solid #d3d3d3",
@@ -1166,7 +1161,7 @@ const CardComponent: React.FC<CardType> = ({
               width: "300px",
               height: "30px",
               borderRadius: "5px",
-              background: "#f0f0f0",
+              background: "#1D232C",
               marginLeft: "58px",
               padding: "20px",
             }}

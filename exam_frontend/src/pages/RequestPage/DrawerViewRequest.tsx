@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { Drawer } from "antd";
 import type { DrawerProps } from "antd";
-
+import { ConfigProvider, theme } from "antd";
 interface DrawerViewRequestProps extends DrawerProps {
   title?: string;
   onClose?: () => void;
@@ -11,6 +11,18 @@ interface DrawerViewRequestProps extends DrawerProps {
   closeIcon?: JSX.Element;
 }
 
+const { darkAlgorithm } = theme;
+
+const customTheme = {
+  algorithm: darkAlgorithm,
+  components: {
+    Drawer: {
+      colorBgElevated: "#161B21",
+      colorText: "#FFFFFF",
+    },
+  },
+};
+
 const DrawerViewRequest: FC<DrawerViewRequestProps> = ({
   open,
   title,
@@ -18,11 +30,13 @@ const DrawerViewRequest: FC<DrawerViewRequestProps> = ({
   children,
 }) => {
   return (
-    <>
-      <Drawer title={title} onClose={onClose} open={open} width={1200}>
-        {children}
-      </Drawer>
-    </>
+    <ConfigProvider theme={customTheme}>
+      <div>
+        <Drawer title={title} onClose={onClose} open={open} width={1200}>
+          {children}
+        </Drawer>
+      </div>
+    </ConfigProvider>
   );
 };
 

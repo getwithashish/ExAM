@@ -636,7 +636,7 @@ const ViewRequestModal: FC<{
         </ol>
       </nav>
       <DrawerViewRequest
-        title="Assign Details"
+        title="ASSIGN DETAILS"
         onClose={onClose}
         open={true}
         selectedRow={undefined}
@@ -644,6 +644,7 @@ const ViewRequestModal: FC<{
         onUpdateData={function (_updatedData: { key: any }): void {
           throw new Error("Function not implemented.");
         }}
+        // className="bg-custom-400"
       >
         <Spin spinning={loading}>
           <div>
@@ -651,13 +652,13 @@ const ViewRequestModal: FC<{
               <div className="grid font-display grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">
                 {assignRequestFields.map((field, index) => (
                   <div key={index}>
-                    <Label htmlFor={field.id}>{field.label}</Label>
+                    <Label htmlFor={field.id} className="text-white">{field.label}:</Label>
                     <TextInput
                       id={field.id}
                       name={field.name}
                       value={field.value}
                       disabled={field.disabled}
-                      className="mt-1 font-display"
+                      className="mt-1 text-white font-display"
                     />
                   </div>
                 ))}
@@ -669,7 +670,7 @@ const ViewRequestModal: FC<{
                     rows={1}
                     value={notes}
                     onChange={handleNotesChange}
-                    className="mt-1"
+                    className="mt-1 text-white bg-custom-400"
                   />
                 </div>
                 <div className="lg:col-span-5">
@@ -680,7 +681,7 @@ const ViewRequestModal: FC<{
                     rows={1}
                     value={approverNotes}
                     onChange={handleApproverNotesChange}
-                    className="mt-1"
+                    className="mt-1 text-white bg-custom-400"
                   />
                 </div>
               </div>
@@ -705,7 +706,7 @@ const ViewRequestModal: FC<{
                 id="popup-modal"
                 className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen bg-black bg-opacity-50"
               >
-                <div className="bg-white rounded-lg p-4 md:p-5 text-center">
+                <div className="bg-custom-500 rounded-lg p-4 md:p-5 text-center">
                   <svg
                     className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
                     aria-hidden="true"
@@ -741,7 +742,7 @@ const ViewRequestModal: FC<{
                   )}
                   <button
                     onClick={() => setModalOpen(false)}
-                    className="py-2.5 px-5 ms-3 text-sm font-display font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                    className="py-2.5 px-5 ms-3 text-sm font-display font-medium text-white focus:outline-none bg-red-700 rounded-lg hover:bg-red-900 hover:text-white focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                   >
                     Cancel
                   </button>

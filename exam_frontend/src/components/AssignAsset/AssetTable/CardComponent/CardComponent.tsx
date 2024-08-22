@@ -781,7 +781,7 @@ const CardComponent: React.FC<CardType> = ({
     width: "90%",
     display: "flex",
     flexWrap: "wrap",
-    background: "white",
+    background: "#1D232C",
     marginLeft: "6%",
     alignItems: "flex-start",
     rowGap: "-10px",
