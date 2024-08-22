@@ -315,22 +315,22 @@ const AssetTableHandler = ({
         </div>
       ),
     },
-    {
-      title: "Version",
-      dataIndex: "version",
-      responsive: ["md"],
-      width: 120,
-      sorter: true,
-      sortOrder: sortedColumn === "version" ? sortOrder : undefined,
-      onHeaderCell: () => ({
-        onClick: () => handleSort("version"),
-      }),
-      render: (text: string, record: any) => (
-        <div style={{ color: "#ffffff" }}>
-          {renderClickableColumn("Version", "version")(text, record)}
-        </div>
-      ),
-    },
+    // {
+    //   title: "Version",
+    //   dataIndex: "version",
+    //   responsive: ["md"],
+    //   width: 120,
+    //   sorter: true,
+    //   sortOrder: sortedColumn === "version" ? sortOrder : undefined,
+    //   onHeaderCell: () => ({
+    //     onClick: () => handleSort("version"),
+    //   }),
+    //   render: (text: string, record: any) => (
+    //     <div style={{ color: "#ffffff" }}>
+    //       {renderClickableColumn("Version", "version")(text, record)}
+    //     </div>
+    //   ),
+    // },
     {
       title: "Os",
       dataIndex: "os",

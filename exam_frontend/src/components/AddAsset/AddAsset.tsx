@@ -888,7 +888,7 @@ const AddAsset: React.FC = ({
                   />
                 </Form.Item>
 
-                <Form.Item
+                {/* <Form.Item
                   label="Configuration:"
                   className={styles["formItem"]}
                 >
@@ -901,7 +901,7 @@ const AddAsset: React.FC = ({
                       handleInputChange("configuration", e.target.value);
                     }}
                   />
-                </Form.Item>
+                </Form.Item> */}
 
                 <Form.Item label="Accessories:" className={styles["formItem"]}>
                   <TextField
