@@ -71,26 +71,26 @@ const DashBoardCardComponent: React.FC<CardType> = ({
         </Form.Item>
       ),
     },
-    {
-      label: "Version",
-      value: (
-        <Form.Item
-          name="version"
-          style={{ flex: "1", marginLeft: "8px" }}
-          className="formItem  font-display"
-        >
-          <b>Version: </b>
-          <br></br>
-          <br></br>{" "}
-          <Input
-            defaultValue={data.version}
-            onChange={(e) => handleUpdateChange("version", e.target.value)}
-            style={inputStyle}
-            disabled
-          />{" "}
-        </Form.Item>
-      ),
-    },
+    // {
+    //   label: "Version",
+    //   value: (
+    //     <Form.Item
+    //       name="version"
+    //       style={{ flex: "1", marginLeft: "8px" }}
+    //       className="formItem  font-display"
+    //     >
+    //       <b>Version: </b>
+    //       <br></br>
+    //       <br></br>{" "}
+    //       <Input
+    //         defaultValue={data.version}
+    //         onChange={(e) => handleUpdateChange("version", e.target.value)}
+    //         style={inputStyle}
+    //         disabled
+    //       />{" "}
+    //     </Form.Item>
+    //   ),
+    // },
 
     {
       label: "Asset Status",
@@ -527,25 +527,25 @@ const DashBoardCardComponent: React.FC<CardType> = ({
         </Form.Item>
       ),
     },
-    {
-      label: "Configuration",
-      name: "configuration",
-      value: (
-        <Form.Item name="configuration">
-          <b>Configuration: </b>
-          <br></br>
-          <br></br>{" "}
-          <Input
-            defaultValue={data.configuration}
-            onChange={(e) =>
-              handleUpdateChange("configuration", e.target.value)
-            }
-            readOnly
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      ),
-    },
+    // {
+    //   label: "Configuration",
+    //   name: "configuration",
+    //   value: (
+    //     <Form.Item name="configuration">
+    //       <b>Configuration: </b>
+    //       <br></br>
+    //       <br></br>{" "}
+    //       <Input
+    //         defaultValue={data.configuration}
+    //         onChange={(e) =>
+    //           handleUpdateChange("configuration", e.target.value)
+    //         }
+    //         readOnly
+    //         style={inputStyle}
+    //       />{" "}
+    //     </Form.Item>
+    //   ),
+    // },
     {
       label: "Created At",
       name: "createdAt",

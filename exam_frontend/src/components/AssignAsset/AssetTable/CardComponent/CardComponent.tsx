@@ -143,26 +143,26 @@ const CardComponent: React.FC<CardType> = ({
         </Form.Item>
       ),
     },
-    {
-      label: "Version",
-      value: (
-        <Form.Item
-          name="version"
-          style={{ flex: "1", marginLeft: "8px", width: "180px" }}
-          className="formItem"
-        >
-          <b>Version: </b>
-          <br></br>
-          <br></br>{" "}
-          <Input
-          disabled
-            defaultValue={data.version}
-            onChange={(e) => handleUpdateChange("version", e.target.value)}
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      ),
-    },
+    // {
+    //   label: "Version",
+    //   value: (
+    //     <Form.Item
+    //       name="version"
+    //       style={{ flex: "1", marginLeft: "8px", width: "180px" }}
+    //       className="formItem"
+    //     >
+    //       <b>Version: </b>
+    //       <br></br>
+    //       <br></br>{" "}
+    //       <Input
+    //       disabled
+    //         defaultValue={data.version}
+    //         onChange={(e) => handleUpdateChange("version", e.target.value)}
+    //         style={inputStyle}
+    //       />{" "}
+    //     </Form.Item>
+    //   ),
+    // },
 
     {
       label: "Asset Status",
@@ -680,26 +680,26 @@ const CardComponent: React.FC<CardType> = ({
         </Form.Item>
       ),
     },
-    {
-      label: "Configuration",
-      name: "configuration",
-      value: (
-        <Form.Item name="configuration">
-          <b>Configuration: </b>
-          <br></br>
-          <br></br>{" "}
-          <Input
-          disabled
+    // {
+    //   label: "Configuration",
+    //   name: "configuration",
+    //   value: (
+    //     <Form.Item name="configuration">
+    //       <b>Configuration: </b>
+    //       <br></br>
+    //       <br></br>{" "}
+    //       <Input
+    //       disabled
 
-            defaultValue={data.configuration}
-            onChange={(e) =>
-              handleUpdateChange("configuration", e.target.value)
-            }
-            style={inputStyle}
-          />{" "}
-        </Form.Item>
-      ),
-    },
+    //         defaultValue={data.configuration}
+    //         onChange={(e) =>
+    //           handleUpdateChange("configuration", e.target.value)
+    //         }
+    //         style={inputStyle}
+    //       />{" "}
+    //     </Form.Item>
+    //   ),
+    // },
     {
       label: "Created At",
       name: "createdAt",

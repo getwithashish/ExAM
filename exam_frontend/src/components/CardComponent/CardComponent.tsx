@@ -788,24 +788,24 @@ const CardComponent: React.FC<CardType> = ({
         </Form.Item>
       ),
     },
-    {
-      label: "OS Version",
-      name: "osVersion",
-      value: (
-        <Form.Item name="os version">
-          <b>OS Version:</b>
-          <br></br>
-          <br></br>
-          <AssetFieldAutoComplete
-            assetField="os_version"
-            value={assetOsVersion}
-            setValue={setAssetOsVersion}
-            defaultValue={data.os_version}
-            isDisabled={readOnly}
-          />
-        </Form.Item>
-      ),
-    },
+    // {
+    //   label: "OS Version",
+    //   name: "osVersion",
+    //   value: (
+    //     <Form.Item name="os version">
+    //       <b>OS Version:</b>
+    //       <br></br>
+    //       <br></br>
+    //       <AssetFieldAutoComplete
+    //         assetField="os_version"
+    //         value={assetOsVersion}
+    //         setValue={setAssetOsVersion}
+    //         defaultValue={data.os_version}
+    //         isDisabled={readOnly}
+    //       />
+    //     </Form.Item>
+    //   ),
+    // },
     {
       label: "Mobile OS",
       name: "mobileOs",
@@ -943,28 +943,28 @@ const CardComponent: React.FC<CardType> = ({
         </Form.Item>
       ),
     },
-    {
-      label: "Configuration",
-      name: "configuration",
-      value: (
-        <Form.Item name="configuration">
-          <b>Configuration: </b>
-          <br></br>
-          <br></br>
-          <TextField
-            id="outlined-textarea-configuration-hardware-modify"
-            label="Configuration"
-            multiline
-            disabled={readOnly}
-            defaultValue={data.configuration}
-            sx={{ width: "100%" }}
-            // onChange={(e) => {
-            //   handleAccessoryChange(e);
-            // }}
-          />
-        </Form.Item>
-      ),
-    },
+    // {
+    //   label: "Configuration",
+    //   name: "configuration",
+    //   value: (
+    //     <Form.Item name="configuration">
+    //       <b>Configuration: </b>
+    //       <br></br>
+    //       <br></br>
+    //       <TextField
+    //         id="outlined-textarea-configuration-hardware-modify"
+    //         label="Configuration"
+    //         multiline
+    //         disabled={readOnly}
+    //         defaultValue={data.configuration}
+    //         sx={{ width: "100%" }}
+    //         // onChange={(e) => {
+    //         //   handleAccessoryChange(e);
+    //         // }}
+    //       />
+    //     </Form.Item>
+    //   ),
+    // },
     {
       label: "Comments",
       name: "comments",
