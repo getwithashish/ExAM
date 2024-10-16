@@ -6,10 +6,12 @@ import { useQuery } from "@tanstack/react-query";
 import {
   Box,
   Chip,
+  createTheme,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
+  ThemeProvider,
 } from "@mui/material";
 import {
   getAssetDetails,
@@ -28,6 +30,20 @@ import type {
 } from "./types/types";
 
 const filter = createFilterOptions();
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+    background: {
+      default: '#121212',
+      paper: '#1e1e1e',
+    },
+    text: {
+      primary: '#ffffff',
+      secondary: '#b0b0b0',
+    },
+  },
+});
 
 const MuiAutocomplete = ({
   allFieldValues,
@@ -153,14 +169,15 @@ const MuiAutocomplete = ({
 
   return (
     <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
+      <ThemeProvider theme={darkTheme}>
       <FormControl>
-        <InputLabel id="demo-simple-select-label">Field Name</InputLabel>
+        <InputLabel id="demo-simple-select-label" sx={{ color: 'white' }}>Field Name</InputLabel>
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
           value={fieldName}
           label="Select Field Name"
-          sx={{ minWidth: 300 }}
+          sx={{ minWidth: 300, color: 'white', '& .MuiSelect-icon': { color: 'white' } }}
           onChange={(event) => {
             setFieldName(event.target.value as string);
             let newFieldValues = [];
@@ -239,7 +256,7 @@ const MuiAutocomplete = ({
             )}
             sx={{ width: 300, marginLeft: 5, marginRight: 5 }}
             freeSolo
-            renderInput={(params) => <TextField {...params} label="Search" />}
+            renderInput={(params) => <TextField {...params} label="Search" sx={{ input: { color: 'white' } }} />}
           />
         )}
 
@@ -303,7 +320,7 @@ const MuiAutocomplete = ({
               </li>
             )}
             sx={{ width: 300, marginLeft: 5, marginRight: 5 }}
-            renderInput={(params) => <TextField {...params} label="Search" />}
+            renderInput={(params) => <TextField {...params} label="Search" sx={{ input: { color: 'white' } }} />}
           />
         )}
 
@@ -311,7 +328,7 @@ const MuiAutocomplete = ({
         !foreignFieldValueNames.includes(fieldName) &&
         DropDownFieldValueNames.includes(fieldName) && (
           <FormControl sx={{ marginLeft: 5, marginRight: 5 }}>
-            <InputLabel id="simple-status-select">Select Status</InputLabel>
+            <InputLabel id="simple-status-select" sx={{ color: 'white' }}>Select Status</InputLabel>
             <Select
               labelId="simple-status-select"
               id="demo-simple-select"
@@ -364,7 +381,7 @@ const MuiAutocomplete = ({
                   ))}
                 </Box>
               )}
-              sx={{ width: 300, paddingY: 0 }}
+              sx={{ width: 300, paddingY: 0, color: 'white', '& .MuiSelect-icon': { color: 'white' } }}
             >
               {DropDownFieldValue[fieldName].map(
                 (field: string, index: number) => (
@@ -376,6 +393,7 @@ const MuiAutocomplete = ({
             </Select>
           </FormControl>
         )}
+        </ThemeProvider>
     </div>
   );
 };

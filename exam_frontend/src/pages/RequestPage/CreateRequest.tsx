@@ -593,29 +593,30 @@ const ViewRequestModal: FC<{
                       name={field.name}
                       value={field.value}
                       disabled={field.disabled}
-                      className="mt-1 text-white font-display"
+                      className={`mt-1 text-white font-display`}
                     />
                   </div>
                 ))}
                 <div className="lg:col-span-5">
-                  <Label htmlFor="notes">NOTES</Label>
+                  <Label className="text-white" htmlFor="notes">NOTES</Label>
                   <Textarea
                     id="notes"
                     name="notes"
                     rows={1}
                     value={notes}
-                    className="mt-1 text-white bg-custom-400"
+                    disabled={true}
+                    className="mt-1 text-white bg-custom-400 h-24"
                   />
                 </div>
                 <div className="lg:col-span-5">
-                  <Label htmlFor="approverNotes">APPROVER NOTES</Label>
+                  <Label className="text-white" htmlFor="approverNotes">APPROVER NOTES</Label>
                   <Textarea
                     id="approval_status_message"
                     name="approval_status_message"
                     rows={1}
                     value={approverNotes}
                     onChange={handleApproverNotesChange}
-                    className="mt-1 text-white bg-custom-400"
+                    className="mt-1 text-white bg-custom-400 h-24"
                   />
                 </div>
               </div>
@@ -641,7 +642,7 @@ const ViewRequestModal: FC<{
                 id="popup-modal"
                 className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen bg-black bg-opacity-50"
               >
-                <div className="bg-white rounded-lg p-4 md:p-5 text-center">
+                <div className="bg-custom-500 rounded-lg p-4 md:p-5 text-center">
                   <svg
                     className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
                     aria-hidden="true"
@@ -657,7 +658,7 @@ const ViewRequestModal: FC<{
                       d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                     />
                   </svg>
-                  <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                  <h3 className="mb-5 text-lg font-normal text-white dark:text-white">
                     Are you sure you want to {actionType}?
                   </h3>
                   {actionType === "approve" ? (
