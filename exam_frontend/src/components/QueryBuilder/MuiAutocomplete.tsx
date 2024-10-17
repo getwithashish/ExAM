@@ -170,230 +170,230 @@ const MuiAutocomplete = ({
   return (
     <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
       <ThemeProvider theme={darkTheme}>
-      <FormControl>
-        <InputLabel id="demo-simple-select-label" sx={{ color: 'white' }}>Field Name</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={fieldName}
-          label="Select Field Name"
-          sx={{ minWidth: 300, color: 'white', '& .MuiSelect-icon': { color: 'white' } }}
-          onChange={(event) => {
-            setFieldName(event.target.value as string);
-            let newFieldValues = [];
-            if (!foreignFieldValueNames.includes(fieldName)) {
-              newFieldValues = allFieldValues.filter(
-                (item: FieldValues) =>
-                  !Object.prototype.hasOwnProperty.call(item, fieldName)
-              );
-            } else {
-              const itemElement = fieldNames.find(
-                (item) => item.value == fieldName
-              );
-              newFieldValues = allFieldValues.filter(
-                (item) =>
-                  !Object.prototype.hasOwnProperty.call(
-                    item,
-                    itemElement?.queryFieldName!
-                  )
-              );
-            }
-
-            setAllFieldValues(newFieldValues);
-            setValue([]);
-          }}
-        >
-          {fieldNames.map((field, index) => (
-            <MenuItem key={index} value={field.value}>
-              {field.label}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-
-      {fieldName !== "" &&
-        !foreignFieldValueNames.includes(fieldName) &&
-        !DropDownFieldValueNames.includes(fieldName) && (
-          <Autocomplete
-            multiple
-            value={value}
-            loading={isAssetDataLoading}
-            onChange={(_event, newValue) => {
-              if (typeof newValue === "string") {
-                return;
-              } else {
-                const newFieldValues = allFieldValues.filter(
-                  (item) =>
+        <FormControl>
+          <InputLabel id="demo-simple-select-label" sx={{ color: 'white' }}>Field Name</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={fieldName}
+            label="Select Field Name"
+            sx={{ minWidth: 300, color: 'white', '& .MuiSelect-icon': { color: 'white' } }}
+            onChange={(event) => {
+              setFieldName(event.target.value as string);
+              let newFieldValues = [];
+              if (!foreignFieldValueNames.includes(fieldName)) {
+                newFieldValues = allFieldValues.filter(
+                  (item: FieldValues) =>
                     !Object.prototype.hasOwnProperty.call(item, fieldName)
                 );
-                setAllFieldValues([...newFieldValues, ...newValue]);
-                setValue(newValue);
-              }
-            }}
-            onOpen={() => {
-              setIsQueryEnabled(true);
-            }}
-            filterOptions={(options, params) => {
-              const filtered = filter(options, params);
-              return filtered;
-            }}
-            id="free-solo-dialog-demo"
-            options={assetData}
-            getOptionLabel={(option) => {
-              if (typeof option === "string") {
-                return option;
-              }
-              if (option.inputValue) {
-                return option.inputValue;
-              }
-              return option[fieldName] as string;
-            }}
-            selectOnFocus
-            clearOnBlur
-            handleHomeEndKeys
-            renderOption={(props, option) => (
-              <li {...props}>{option[fieldName]}</li>
-            )}
-            sx={{ width: 300, marginLeft: 5, marginRight: 5 }}
-            freeSolo
-            renderInput={(params) => <TextField {...params} label="Search" sx={{ input: { color: 'white' } }} />}
-          />
-        )}
-
-      {fieldName !== "" &&
-        foreignFieldValueNames.includes(fieldName) &&
-        !DropDownFieldValueNames.includes(fieldName) && (
-          <Autocomplete
-            multiple
-            value={value}
-            loading={isAssetDataLoading}
-            onChange={(_event, newValue) => {
-              if (typeof newValue === "string") {
-                return;
               } else {
-                const itemElement:
-                  | ItemElementTypeWithString
-                  | ItemElementTypeWithUndefined
-                  | undefined = fieldNames.find(
+                const itemElement = fieldNames.find(
                   (item) => item.value == fieldName
                 );
-                const newFieldValues = allFieldValues.filter(
+                newFieldValues = allFieldValues.filter(
                   (item) =>
                     !Object.prototype.hasOwnProperty.call(
                       item,
                       itemElement?.queryFieldName!
                     )
                 );
-                setAllFieldValues([
-                  ...newFieldValues,
-                  ...newValue.map<FieldValues>((obj) => ({
-                    [itemElement.queryFieldName]: obj.id,
-                  })),
-                ]);
-                setValue(newValue);
               }
-            }}
-            onOpen={() => {
-              setIsQueryEnabled(true);
-            }}
-            filterOptions={(options, params) => {
-              const filtered = filter(options, params);
-              return filtered;
-            }}
-            id="advanced-query-autcomplete-foreign-fields"
-            options={assetData}
-            getOptionLabel={(option) => {
-              if (typeof option === "string") {
-                return option;
-              }
-              if (option.inputValue) {
-                return option.inputValue;
-              }
-              return option[getFieldName()].toString();
-            }}
-            selectOnFocus
-            clearOnBlur
-            handleHomeEndKeys
-            renderOption={(props, option) => (
-              <li {...props} key={option.id}>
-                {option[getFieldName()]}
-              </li>
-            )}
-            sx={{ width: 300, marginLeft: 5, marginRight: 5 }}
-            renderInput={(params) => <TextField {...params} label="Search" sx={{ input: { color: 'white' } }} />}
-          />
-        )}
 
-      {fieldName !== "" &&
-        !foreignFieldValueNames.includes(fieldName) &&
-        DropDownFieldValueNames.includes(fieldName) && (
-          <FormControl sx={{ marginLeft: 5, marginRight: 5 }}>
-            <InputLabel id="simple-status-select" sx={{ color: 'white' }}>Select Status</InputLabel>
-            <Select
-              labelId="simple-status-select"
-              id="demo-simple-select"
+              setAllFieldValues(newFieldValues);
+              setValue([]);
+            }}
+          >
+            {fieldNames.map((field, index) => (
+              <MenuItem key={index} value={field.value}>
+                {field.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        {fieldName !== "" &&
+          !foreignFieldValueNames.includes(fieldName) &&
+          !DropDownFieldValueNames.includes(fieldName) && (
+            <Autocomplete
               multiple
               value={value}
-              label="Select Status"
-              onChange={(event) => {
-                const newValue = event.target.value;
-                const newFieldValues = allFieldValues.filter(
-                  (item) =>
-                    !Object.prototype.hasOwnProperty.call(item, fieldName)
-                );
-                setAllFieldValues([
-                  ...newFieldValues,
-                  // Using flatMap() here is very important, since we are returning an array for "PENDING" and "REJECTED"
-                  ...newValue.flatMap((obj: string) => {
-                    if (fieldName == "status") {
-                      return {
-                        [fieldName]: obj,
-                      };
-                    } else if (fieldName == "asset_detail_status") {
-                      if (obj == "PENDING") {
-                        return [
-                          { [fieldName]: "CREATE_PENDING" },
-                          { [fieldName]: "UPDATE_PENDING" },
-                        ];
-                      } else if (obj == "REJECTED") {
-                        return [
-                          { [fieldName]: "CREATE_REJECTED" },
-                          { [fieldName]: "UPDATE_REJECTED" },
-                        ];
-                      }
-                      return { [fieldName]: obj };
-                    } else if (fieldName == "assign_status") {
-                      if (obj == "PENDING") {
-                        return [{ [fieldName]: "ASSIGN_PENDING" }];
-                      }
-                      return { [fieldName]: obj };
-                    } else {
-                      return;
-                    }
-                  }),
-                ]);
-                setValue(newValue);
+              loading={isAssetDataLoading}
+              onChange={(_event, newValue) => {
+                if (typeof newValue === "string") {
+                  return;
+                } else {
+                  const newFieldValues = allFieldValues.filter(
+                    (item) =>
+                      !Object.prototype.hasOwnProperty.call(item, fieldName)
+                  );
+                  setAllFieldValues([...newFieldValues, ...newValue]);
+                  setValue(newValue);
+                }
               }}
-              renderValue={(selected) => (
-                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                  {selected.map((value) => (
-                    <Chip key={value} label={value} />
-                  ))}
-                </Box>
+              onOpen={() => {
+                setIsQueryEnabled(true);
+              }}
+              filterOptions={(options, params) => {
+                const filtered = filter(options, params);
+                return filtered;
+              }}
+              id="free-solo-dialog-demo"
+              options={assetData}
+              getOptionLabel={(option) => {
+                if (typeof option === "string") {
+                  return option;
+                }
+                if (option.inputValue) {
+                  return option.inputValue;
+                }
+                return option[fieldName] as string;
+              }}
+              selectOnFocus
+              clearOnBlur
+              handleHomeEndKeys
+              renderOption={(props, option) => (
+                <li {...props}>{option[fieldName]}</li>
               )}
-              sx={{ width: 300, paddingY: 0, color: 'white', '& .MuiSelect-icon': { color: 'white' } }}
-            >
-              {DropDownFieldValue[fieldName].map(
-                (field: string, index: number) => (
-                  <MenuItem key={index} value={field}>
-                    {field}
-                  </MenuItem>
-                )
+              sx={{ width: 300, marginLeft: 5, marginRight: 5 }}
+              freeSolo
+              renderInput={(params) => <TextField {...params} label="Search" sx={{ input: { color: 'white' } }} />}
+            />
+          )}
+
+        {fieldName !== "" &&
+          foreignFieldValueNames.includes(fieldName) &&
+          !DropDownFieldValueNames.includes(fieldName) && (
+            <Autocomplete
+              multiple
+              value={value}
+              loading={isAssetDataLoading}
+              onChange={(_event, newValue) => {
+                if (typeof newValue === "string") {
+                  return;
+                } else {
+                  const itemElement:
+                    | ItemElementTypeWithString
+                    | ItemElementTypeWithUndefined
+                    | undefined = fieldNames.find(
+                      (item) => item.value == fieldName
+                    );
+                  const newFieldValues = allFieldValues.filter(
+                    (item) =>
+                      !Object.prototype.hasOwnProperty.call(
+                        item,
+                        itemElement?.queryFieldName!
+                      )
+                  );
+                  setAllFieldValues([
+                    ...newFieldValues,
+                    ...newValue.map<FieldValues>((obj) => ({
+                      [itemElement.queryFieldName]: obj.id,
+                    })),
+                  ]);
+                  setValue(newValue);
+                }
+              }}
+              onOpen={() => {
+                setIsQueryEnabled(true);
+              }}
+              filterOptions={(options, params) => {
+                const filtered = filter(options, params);
+                return filtered;
+              }}
+              id="advanced-query-autcomplete-foreign-fields"
+              options={assetData}
+              getOptionLabel={(option) => {
+                if (typeof option === "string") {
+                  return option;
+                }
+                if (option.inputValue) {
+                  return option.inputValue;
+                }
+                return option[getFieldName()].toString();
+              }}
+              selectOnFocus
+              clearOnBlur
+              handleHomeEndKeys
+              renderOption={(props, option) => (
+                <li {...props} key={option.id}>
+                  {option[getFieldName()]}
+                </li>
               )}
-            </Select>
-          </FormControl>
-        )}
-        </ThemeProvider>
+              sx={{ width: 300, marginLeft: 5, marginRight: 5 }}
+              renderInput={(params) => <TextField {...params} label="Search" sx={{ input: { color: 'white' } }} />}
+            />
+          )}
+
+        {fieldName !== "" &&
+          !foreignFieldValueNames.includes(fieldName) &&
+          DropDownFieldValueNames.includes(fieldName) && (
+            <FormControl sx={{ marginLeft: 5, marginRight: 5 }}>
+              <InputLabel id="simple-status-select" sx={{ color: 'white' }}>Select Status</InputLabel>
+              <Select
+                labelId="simple-status-select"
+                id="demo-simple-select"
+                multiple
+                value={value}
+                label="Select Status"
+                onChange={(event) => {
+                  const newValue = event.target.value;
+                  const newFieldValues = allFieldValues.filter(
+                    (item) =>
+                      !Object.prototype.hasOwnProperty.call(item, fieldName)
+                  );
+                  setAllFieldValues([
+                    ...newFieldValues,
+                    // Using flatMap() here is very important, since we are returning an array for "PENDING" and "REJECTED"
+                    ...newValue.flatMap((obj: string) => {
+                      if (fieldName == "status") {
+                        return {
+                          [fieldName]: obj,
+                        };
+                      } else if (fieldName == "asset_detail_status") {
+                        if (obj == "PENDING") {
+                          return [
+                            { [fieldName]: "CREATE_PENDING" },
+                            { [fieldName]: "UPDATE_PENDING" },
+                          ];
+                        } else if (obj == "REJECTED") {
+                          return [
+                            { [fieldName]: "CREATE_REJECTED" },
+                            { [fieldName]: "UPDATE_REJECTED" },
+                          ];
+                        }
+                        return { [fieldName]: obj };
+                      } else if (fieldName == "assign_status") {
+                        if (obj == "PENDING") {
+                          return [{ [fieldName]: "ASSIGN_PENDING" }];
+                        }
+                        return { [fieldName]: obj };
+                      } else {
+                        return;
+                      }
+                    }),
+                  ]);
+                  setValue(newValue);
+                }}
+                renderValue={(selected) => (
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                    {selected.map((value) => (
+                      <Chip key={value} label={value} />
+                    ))}
+                  </Box>
+                )}
+                sx={{ width: 300, paddingY: 0, color: 'white', '& .MuiSelect-icon': { color: 'white' } }}
+              >
+                {DropDownFieldValue[fieldName].map(
+                  (field: string, index: number) => (
+                    <MenuItem key={index} value={field}>
+                      {field}
+                    </MenuItem>
+                  )
+                )}
+              </Select>
+            </FormControl>
+          )}
+      </ThemeProvider>
     </div>
   );
 };
