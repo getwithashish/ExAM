@@ -1173,7 +1173,7 @@ const CardComponent: React.FC<CardType> = ({
                 <Spin size="large" />
               ) : (
                 <>
-                  {getUserScope() === "SYSTEM_ADMIN" && (
+                  {!readOnly && getUserScope() === "SYSTEM_ADMIN" && (
                     <Button
                       style={{
                         marginBottom: "0px",
@@ -1189,7 +1189,7 @@ const CardComponent: React.FC<CardType> = ({
                       Update
                     </Button>
                   )}
-                  {getUserScope() === "LEAD" && (
+                  {!readOnly && getUserScope() === "LEAD" && (
                     <Button
                       type="primary"
                       danger
@@ -1202,7 +1202,7 @@ const CardComponent: React.FC<CardType> = ({
                       Delete Asset
                     </Button>
                   )}
-                  {getUserScope() === "MANAGER" && (
+                  {!readOnly && getUserScope() === "MANAGER" && (
                     <Button
                       type="primary"
                       danger

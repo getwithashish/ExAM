@@ -175,11 +175,6 @@ const AssetTable = ({
         onUpdateData={handleUpdateData}
         closeIcon={<CloseOutlined rev={undefined} />}
       >
-        {selectedRow && (
-          <div>
-            <h2 className="drawerHeading">{selectedRow.ProductName}</h2>
-          </div>
-        )}
 
         {selectedRow && (
           <CardComponent
