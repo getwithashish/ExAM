@@ -38,7 +38,7 @@ export const Assignment: React.FC<AssignmentProps> = ({
     <div>
       <div>
         <form>
-          <div className="grid font-display grid-cols-2 gap-2 lg:grid-cols-4 my-3 text-sm">
+          <div className="grid font-display grid-cols-2 gap-2 lg:grid-cols-4 my-3 text-sm text-white">
             <div>
               <label htmlFor="productName">ASSET NAME:</label>
               <input
@@ -142,8 +142,8 @@ export const Assignment: React.FC<AssignmentProps> = ({
           </div>
         </form>
       </div>
-      <div className="grid font-display grid-cols-3 items-center justify-center gap-2 mt-20 lg:grid-cols-3 my-3 text-sm">
-        <div className="text-xl  text-right">
+      <div className="grid font-display grid-cols-3 items-center justify-center gap-2 mt-20 lg:grid-cols-3 my-3 text-sm text-white">
+        <div className="text-lg  text-right">
           <span>
             Search for employee:
           </span>
@@ -171,7 +171,7 @@ export const Assignment: React.FC<AssignmentProps> = ({
             {data?.data.length ? (
               data.data.map((employee: EmployeeDetails) => (
                 <div
-                  className='text-lg my-10 shadow-lg bg-custom-400 border border-gray-300 rounded-lg p-4 w-80 transition-transform transform hover:scale-105 hover:shadow-xl cursor-pointer'
+                  className='text-lg text-white shadow-lg bg-custom-400 border border-gray-300 rounded-lg p-2 w-64 transition-transform transform hover:scale-105 hover:shadow-xl cursor-pointer'
                   key={employee.id}
                   onClick={() =>
                     handleNameClick(
@@ -185,16 +185,18 @@ export const Assignment: React.FC<AssignmentProps> = ({
                   {employee
                     ? (
                       <div>
-                        <h2 className='text-xl font-semibold'>{employee.employee_name}</h2>
-                        <p>{employee.employee_department}</p>
-                        <p>{employee.employee_designation}</p>
+                        <h2 className='text-xl font-semibold'>{employee.employee_name} <span className="text-sm">({employee.id})</span></h2>
+                        {/* <p>{employee.employee_department}</p>
+                        <p>{employee.employee_designation}</p> */}
+                        <p className='text-sm font-semibold'>Software Engineer</p>
+                        <p className='text-sm font-semibold'>DU6</p>
                       </div>
                     )
-                    : "sorry no employee not found"}
+                    : "Sorry!!! Employee with this name does not exist"}
                 </div>
               ))
             ) : (
-              <div className="text-center text-lg text-red-500 p-5 my-10"> {"No employee available"}</div>
+              <div className="text-center text-lg text-red-500 p-5 my-10"> {"Sorry!!! Employee with this name does not exist"}</div>
             )}
           </div>
         </div>

@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Pagination, Table, ConfigProvider, theme } from "antd";
 import "./AssetTable.css";
-import CardComponent from "./CardComponent/CardComponent";
+import CardComponent from "../../CardComponent/CardComponent"
 import { CloseOutlined } from "@ant-design/icons";
 import { AssetTableProps } from "../AssetTable/types";
 import SideDrawerComponent from "../../SideDrawerComponent/SideDrawerComponent";
@@ -165,7 +165,9 @@ const AssetTable = ({
         )}
         {selectedRow && (
           <CardComponent
+            readOnly={true}
             selectedAssetId={selectedAssetId}
+            isMyApprovalPage={true}
             data={selectedRow}
             statusOptions={statusOptions}
             businessUnitOptions={businessUnitOptions}
@@ -173,6 +175,7 @@ const AssetTable = ({
             memoryData={memoryData}
             assetTypeData={assetTypeData}
             asset_uuid={asset_uuid}
+            assetDataRefetch={assetDataRefetch}
             onUpdate={function (): void {
               throw new Error("Function not implemented.");
             }}
