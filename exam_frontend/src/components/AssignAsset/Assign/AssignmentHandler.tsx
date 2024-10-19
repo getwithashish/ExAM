@@ -10,7 +10,7 @@ import { Assignment } from "./Assignment";
 interface AssignmentHandlerProps {
   record?: DataType | null;
   closeAssignDrawer?: () => void;
-  assetDataRefetch?:any;
+  assetDataRefetch?: any;
 }
 
 export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({
@@ -67,7 +67,7 @@ export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({
     if (value == "") {
       setEmployeeId(undefined);
     }
-    return () => {};
+    return () => { };
   }, [value]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -113,21 +113,35 @@ export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({
 
   return (
     <>
-      <Spin spinning={loading}>
-        <Assignment
-          value={value}
-          employeeId={employeeId}
-          divVisible={divVisible}
-          employeeDepartment={employeeDepartment}
-          employeeDesignation={employeeDesignation}
-          employeeName={employeeName}
-          data={data}
-          handleInputChange={handleInputChange}
-          handleNameClick={handleNameClick}
-          handleAssign={handleAssign}
-          record={record}
-        />
-      </Spin>
+      {loading && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1000
+        }}>
+          <Spin size="large" />
+        </div>
+      )}
+      <Assignment
+        value={value}
+        employeeId={employeeId}
+        divVisible={divVisible}
+        employeeDepartment={employeeDepartment}
+        employeeDesignation={employeeDesignation}
+        employeeName={employeeName}
+        data={data}
+        handleInputChange={handleInputChange}
+        handleNameClick={handleNameClick}
+        handleAssign={handleAssign}
+        record={record}
+      />
     </>
   );
 };

@@ -46,7 +46,7 @@ const CardComponent: React.FC<CardType> = ({
   assetDataRefetch,
   onClose,
   onDelete,
-  
+
 }) => {
 
   const [_assetCategoryOption, setAssetCategoryOption] = React.useState();
@@ -1169,54 +1169,68 @@ const CardComponent: React.FC<CardType> = ({
 
           {isMyApprovalPage && (
             <>
-              {isLoading ? (
-                <Spin size="large" />
-              ) : (
-                <>
-                  {!readOnly && getUserScope() === "SYSTEM_ADMIN" && (
-                    <Button
-                      style={{
-                        marginBottom: "0px",
-                        marginTop: "0px",
-                        color: "white",
-                        border: "none",
-                        background: "blue",
-                        marginLeft: "600px",
-                      }}
-                      onClick={handleUpdate}
-                      disabled={isLoading} // Disable button while updating
-                    >
-                      Update
-                    </Button>
-                  )}
-                  {!readOnly && getUserScope() === "LEAD" && (
-                    <Button
-                      type="primary"
-                      danger
-                      onClick={handleDeleteClick}
-                      style={{
-                        marginLeft: "570px",
-                        marginTop: "0px",
-                      }}
-                    >
-                      Delete Asset
-                    </Button>
-                  )}
-                  {!readOnly && getUserScope() === "MANAGER" && (
-                    <Button
-                      type="primary"
-                      danger
-                      onClick={handleDeleteClick}
-                      style={{
-                        marginLeft: "570px",
-                        marginTop: "0px",
-                      }}
-                    >
-                      Restore Asset
-                    </Button>
-                  )}
-                </>
+              {isLoading && (
+                <div style={{
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)', // Semi-transparent background
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  zIndex: 1000 // Ensure it is above other content
+                }}>
+                  <Spin size="large" />
+                </div>
               )}
+              (
+              <>
+                {!readOnly && getUserScope() === "SYSTEM_ADMIN" && (
+                  <Button
+                    style={{
+                      marginBottom: "0px",
+                      marginTop: "0px",
+                      color: "white",
+                      border: "none",
+                      background: "blue",
+                      marginLeft: "600px",
+                    }}
+                    onClick={handleUpdate}
+                    disabled={isLoading} // Disable button while updating
+                  >
+                    Update
+                  </Button>
+                )}
+                {!readOnly && getUserScope() === "LEAD" && (
+                  <Button
+                    type="primary"
+                    danger
+                    onClick={handleDeleteClick}
+                    style={{
+                      marginLeft: "570px",
+                      marginTop: "0px",
+                    }}
+                  >
+                    Delete Asset
+                  </Button>
+                )}
+                {!readOnly && getUserScope() === "MANAGER" && (
+                  <Button
+                    type="primary"
+                    danger
+                    onClick={handleDeleteClick}
+                    style={{
+                      marginLeft: "570px",
+                      marginTop: "0px",
+                    }}
+                  >
+                    Restore Asset
+                  </Button>
+                )}
+              </>
+              )
             </>
           )}
         </div>
@@ -1271,6 +1285,7 @@ const CardComponent: React.FC<CardType> = ({
         </Form>
       </div>
     </div>
+    // </Spin>
   );
 };
 export default CardComponent;

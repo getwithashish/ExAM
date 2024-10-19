@@ -333,6 +333,7 @@ const RequestTable: FC<{
         <Table.HeadCell>Asset Type</Table.HeadCell>
         <Table.HeadCell>Product Name</Table.HeadCell>
         <Table.HeadCell>Requester</Table.HeadCell>
+        <Table.HeadCell>Custodian</Table.HeadCell>
         <Table.HeadCell>Modified at</Table.HeadCell>
         <Table.HeadCell>Actions</Table.HeadCell>
       </Table.Head>
@@ -352,6 +353,9 @@ const RequestTable: FC<{
             </Table.Cell>
             <Table.Cell className="whitespace-nowrap p-4 text-base font-display font-md text-left text-gray-900 dark:text-white">
               {asset.requester.username}
+            </Table.Cell>
+            <Table.Cell className="whitespace-nowrap p-4 text-base font-display font-md text-left text-gray-900 dark:text-white">
+              {asset.custodian?.employee_name}
             </Table.Cell>
             <Table.Cell className="whitespace-nowrap p-4 text-base font-display font-xs text-gray-900 dark:text-white">
               {new Date(asset.updated_at).toLocaleDateString()}
@@ -610,16 +614,19 @@ const ViewRequestModal: FC<{
             <form>
               <div className="grid font-display grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">
                 {formFields.map((field, index) => {
-                  const latestLog = latestLogData.logs[0]?.asset_log;
+                  // const latestLog = latestLogData?.logs[0]?.asset_log;
+                  const latestLog = (latestLogData?.logs && latestLogData.logs.length > 0)
+                    ? latestLogData.logs[0].asset_log
+                    : null;
                   console.log(latestLogData)
                   let changed = false;
                   if (latestLog && latestLog.hasOwnProperty(field.id)) {
                     changed = field.value != latestLog[field.id];
                   } else {
-                    changed =
-                      field.value !== undefined &&
-                      field.value !== null &&
-                      field.value !== "";
+                    // changed =
+                    //   field.value !== undefined &&
+                    //   field.value !== null &&
+                    //   field.value !== "";
                   }
                   return (
                     <div key={index}>
@@ -639,7 +646,11 @@ const ViewRequestModal: FC<{
                             name={field.name}
                             value={field.value}
                             disabled={field.disabled}
-                            className="mt-1 font-display border-blue-600 border-2 rounded-lg bg-blue-200"
+                            style={{
+                              background: "transparent",
+                              color: "white"
+                            }}
+                            className="mt-1 font-display border-blue-600 border-2 rounded-lg"
                           />
                         </CustomTooltip>
                       )}
@@ -649,6 +660,10 @@ const ViewRequestModal: FC<{
                           name={field.name}
                           value={field.value}
                           disabled={field.disabled}
+                          style={{
+                            background: "transparent",
+                            color: "white"
+                          }}
                           className="mt-1 text-white font-display"
                         />
                       )}
@@ -662,8 +677,9 @@ const ViewRequestModal: FC<{
                     name="notes"
                     rows={1}
                     value={notes}
+                    disabled={true}
                     onChange={handleNotesChange}
-                    className="mt-1 text-white bg-custom-400"
+                    className="mt-1 text-white bg-custom-400 h-24"
                   />
                 </div>
                 <div className="lg:col-span-5">
@@ -674,7 +690,7 @@ const ViewRequestModal: FC<{
                     rows={1}
                     value={approverNotes}
                     onChange={handleApproverNotesChange}
-                    className="mt-1 text-white bg-custom-400"
+                    className="mt-1 text-white bg-custom-400 h-24"
                   />
                 </div>
               </div>

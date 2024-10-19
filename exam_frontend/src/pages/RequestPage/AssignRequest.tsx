@@ -677,36 +677,43 @@ const ViewRequestModal: FC<{
                 <div className="grid font-display grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">
                   {assignRequestFields.map((field, index) => (
                     <div key={index}>
-                      <Label htmlFor={field.id} className="text-white">{field.label}:</Label>
+                      <Label htmlFor={field.id} className={`text-white ${field.name === "assignee" ? "border-blue-600 rounded-lg": ""}`}>{field.label}:</Label>
                       <TextInput
                         id={field.id}
                         name={field.name}
                         value={field.value}
                         disabled={field.disabled}
-                        className="mt-1 text-white font-display"
+                        style={{
+                          background: "transparent",
+                          color: "white"
+                        }}
+                        // className={`mt-1 text-white font-display ${field.id === "location" ? "border-blue-600 rounded-lg": ""}`}
+                        className={`mt-1 text-white font-di+splay border-blue-600 rounded-lg`}
+
                       />
                     </div>
                   ))}
                   <div className="lg:col-span-5">
-                    <Label htmlFor="notes">NOTES</Label>
+                    <Label className="text-white" htmlFor="notes">NOTES</Label>
                     <Textarea
                       id="notes"
                       name="notes"
                       rows={1}
                       value={notes}
+                      disabled={true}
                       onChange={handleNotesChange}
-                      className="mt-1 text-white bg-custom-400"
+                      className="mt-1 text-white bg-custom-400 h-24"
                     />
                   </div>
                   <div className="lg:col-span-5">
-                    <Label htmlFor="approverNotes">APPROVER NOTES</Label>
+                    <Label className="text-white" htmlFor="approverNotes">APPROVER NOTES</Label>
                     <Textarea
                       id="approval_status_message"
-                      name="approval_status_message"
+                      name="approval_status_message h-24"
                       rows={1}
                       value={approverNotes}
                       onChange={handleApproverNotesChange}
-                      className="mt-1 text-white bg-custom-400"
+                      className="mt-1 text-white bg-custom-400 h-24"
                     />
                   </div>
                 </div>

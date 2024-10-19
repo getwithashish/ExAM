@@ -593,6 +593,10 @@ const ViewRequestModal: FC<{
                       name={field.name}
                       value={field.value}
                       disabled={field.disabled}
+                      style={{
+                        background: "transparent",
+                        color: "white"
+                      }}
                       className={`mt-1 text-white font-display`}
                     />
                   </div>
