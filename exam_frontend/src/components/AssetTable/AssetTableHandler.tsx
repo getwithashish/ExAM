@@ -13,12 +13,13 @@ import {
 } from "./api/getAssetDetails";
 import moment from "moment";
 
-interface Props{
-  userRole?:string;
-  isRejectedPage?:boolean;
-  queryParamProp?:string;
-  heading?:string;
-  isMyApprovalPage?:boolean;
+interface Props {
+  userRole?: string;
+  isRejectedPage?: boolean;
+  queryParamProp?: string;
+  heading?: string;
+  isMyApprovalPage?: boolean;
+  destroyOnClose?: boolean
 }
 
 
@@ -28,8 +29,8 @@ const AssetTableHandler = ({
   queryParamProp,
   heading,
   isMyApprovalPage,
-
-}:Props) => {
+  destroyOnClose = false
+}: Props) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [sortedColumn, setSortedColumn] = useState<string>("");
@@ -170,16 +171,16 @@ const AssetTableHandler = ({
     }
     refetchAssetData(queryParams + additionalQueryParams);
   };
-  
+
   const detailStatusStyleCondition = (record: any): React.CSSProperties => {
     return record.asset_detail_status === "CREATE_REJECTED" ||
       record.asset_detail_status === "UPDATE_REJECTED"
       ? { color: "red" }
-      : {color: "white"};
+      : { color: "white" };
   };
 
   const assignStatusStyleCondition = (record: any): React.CSSProperties => {
-    return record.assign_status === "REJECTED" ? { color: "red" } : {color: "white"};
+    return record.assign_status === "REJECTED" ? { color: "red" } : { color: "white" };
   };
 
 
@@ -563,12 +564,12 @@ const AssetTableHandler = ({
       responsive: ["md"],
       width: 140,
       render: (text: string, record: any) => (
-        <div style={{ ...detailStatusStyleCondition(record)}}>
-        {renderClickableColumn("Asset Detail Status", "asset_detail_status")(
-          text,
-          record
-        )}
-      </div>
+        <div style={{ ...detailStatusStyleCondition(record) }}>
+          {renderClickableColumn("Asset Detail Status", "asset_detail_status")(
+            text,
+            record
+          )}
+        </div>
       ),
     },
     {
@@ -577,7 +578,7 @@ const AssetTableHandler = ({
       responsive: ["md"],
       width: 140,
       render: (text: string, record: any) => (
-        <div style={{...assignStatusStyleCondition(record)}}>
+        <div style={{ ...assignStatusStyleCondition(record) }}>
           {renderClickableColumn("Asset Assign Status", "assign_status")(
             text,
             record
@@ -657,23 +658,23 @@ const AssetTableHandler = ({
 
     ...(isRejectedPage
       ? [
-          {
-            title: "Reject Type",
-            dataIndex: "asset_type",
-            responsive: ["md"],
-            fixed: "right",
-            width: 160,
-            render: (_: any, record: string[]) => (
-              <div
-                data-column-name="Asset Type"
-                onClick={() => handleColumnClick(record, "Asset Type")}
-                style={{ cursor: "pointer", color: "#ffffff" }}
-              >
-                {record.asset_detail_status}
-              </div>
-            ),
-          },
-        ]
+        {
+          title: "Reject Type",
+          dataIndex: "asset_type",
+          responsive: ["md"],
+          fixed: "right",
+          width: 160,
+          render: (_: any, record: string[]) => (
+            <div
+              data-column-name="Asset Type"
+              onClick={() => handleColumnClick(record, "Asset Type")}
+              style={{ cursor: "pointer", color: "#ffffff" }}
+            >
+              {record.asset_detail_status}
+            </div>
+          ),
+        },
+      ]
       : []),
   ];
 
@@ -757,6 +758,7 @@ const AssetTableHandler = ({
       }}
       searchTerm={searchTerm}
       setSearchTerm={setSearchTerm}
+      destroyOnClose={destroyOnClose}
     />
   );
 };

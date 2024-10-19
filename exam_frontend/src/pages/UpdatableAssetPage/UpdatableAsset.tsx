@@ -23,6 +23,7 @@ const UpdatableAsset = () => {
         heading={heading}
         isMyApprovalPage={true}
         userRole={userRole}
+        destroyOnClose={true}
       />
     </div>
   );

@@ -52,6 +52,7 @@ const AssetTable: React.FC<AssetTableProps> = ({
   sortedColumn,
   searchTerm,
   setSearchTerm,
+  destroyOnClose = false
 }: AssetTableProps) => {
   const [readOnly, setReadOnly] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -189,6 +190,7 @@ const AssetTable: React.FC<AssetTableProps> = ({
         onUpdateData={handleUpdateData}
         closeIcon={<CloseOutlined rev={undefined} />}
         title={""}
+        destroyOnClose={destroyOnClose}
       >
         {selectedRow && (
           <div>
