@@ -677,7 +677,7 @@ const ViewRequestModal: FC<{
                 <div className="grid font-display grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">
                   {assignRequestFields.map((field, index) => (
                     <div key={index}>
-                      <Label htmlFor={field.id} className={`text-white ${field.name === "assignee" ? "border-blue-600 rounded-lg": ""}`}>{field.label}:</Label>
+                      <Label htmlFor={field.id} style={{ color: `${field.name === "assignee" ? "#2563eb" : "none"}` }} className={`text-white`}>{field.label}:</Label>
                       <TextInput
                         id={field.id}
                         name={field.name}
@@ -685,11 +685,12 @@ const ViewRequestModal: FC<{
                         disabled={field.disabled}
                         style={{
                           background: "transparent",
-                          color: "white"
-                        }}
-                        // className={`mt-1 text-white font-display ${field.id === "location" ? "border-blue-600 rounded-lg": ""}`}
-                        className={`mt-1 text-white font-di+splay border-blue-600 rounded-lg`}
+                          color: "white",
+                          borderColor: `${field.name === "assignee" ? "#2563eb" : "none"}`,
+                          borderWidth: `${field.name === "assignee" ? "3px" : "none"}`,
 
+                        }}
+                        className={`mt-1 text-white font-di+splay rounded-lg`}
                       />
                     </div>
                   ))}
