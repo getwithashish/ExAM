@@ -788,24 +788,24 @@ const CardComponent: React.FC<CardType> = ({
         </Form.Item>
       ),
     },
-    // {
-    //   label: "OS Version",
-    //   name: "osVersion",
-    //   value: (
-    //     <Form.Item name="os version">
-    //       <b>OS Version:</b>
-    //       <br></br>
-    //       <br></br>
-    //       <AssetFieldAutoComplete
-    //         assetField="os_version"
-    //         value={assetOsVersion}
-    //         setValue={setAssetOsVersion}
-    //         defaultValue={data.os_version}
-    //         isDisabled={readOnly}
-    //       />
-    //     </Form.Item>
-    //   ),
-    // },
+    {
+      label: "OS Version",
+      name: "osVersion",
+      value: (
+        <Form.Item name="os version">
+          <b>OS Version:</b>
+          <br></br>
+          <br></br>
+          <AssetFieldAutoComplete
+            assetField="os_version"
+            value={assetOsVersion}
+            setValue={setAssetOsVersion}
+            defaultValue={data.os_version}
+            isDisabled={readOnly}
+          />
+        </Form.Item>
+      ),
+    },
     {
       label: "Mobile OS",
       name: "mobileOs",
@@ -1008,7 +1008,7 @@ const CardComponent: React.FC<CardType> = ({
             id="outlined-textarea-approver-notes-modify"
             label="Approver Notes"
             multiline
-            disabled={readOnly}
+            disabled={true}
             defaultValue={data.approval_status_message}
             sx={{ width: "100%" }}
           />

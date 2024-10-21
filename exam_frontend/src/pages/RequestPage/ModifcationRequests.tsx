@@ -638,8 +638,13 @@ const ViewRequestModal: FC<{
                       </Label>
                       {changed && (
                         <CustomTooltip
-                          title={`Previous value: ${latestLog ? latestLog[field.id] : "N/A"
-                            }, New value: ${field.value}`}
+                          title={
+                            <>
+                              Previous value: {latestLog ? latestLog[field.id] : "N/A"}
+                              <br />
+                              New value: {field.value}
+                            </>
+                          }
                         >
                           <TextInput
                             id={field.id}
@@ -648,7 +653,8 @@ const ViewRequestModal: FC<{
                             disabled={field.disabled}
                             style={{
                               background: "transparent",
-                              color: "white"
+                              color: "white",
+                              cursor: "default"
                             }}
                             className="mt-1 font-display border-blue-600 border-2 rounded-lg"
                           />
@@ -662,7 +668,8 @@ const ViewRequestModal: FC<{
                           disabled={field.disabled}
                           style={{
                             background: "transparent",
-                            color: "white"
+                            color: "white",
+                            cursor: "default"
                           }}
                           className="mt-1 text-white font-display"
                         />
@@ -671,7 +678,7 @@ const ViewRequestModal: FC<{
                   );
                 })}
                 <div className="lg:col-span-5">
-                  <Label htmlFor="notes">NOTES</Label>
+                  <Label className="text-white" htmlFor="notes">NOTES</Label>
                   <Textarea
                     id="notes"
                     name="notes"
@@ -679,11 +686,14 @@ const ViewRequestModal: FC<{
                     value={notes}
                     disabled={true}
                     onChange={handleNotesChange}
+                    style={{
+                      cursor: "default"
+                    }}
                     className="mt-1 text-white bg-custom-400 h-24"
                   />
                 </div>
                 <div className="lg:col-span-5">
-                  <Label htmlFor="approverNotes">APPROVER NOTES</Label>
+                  <Label className="text-white" htmlFor="approverNotes">APPROVER NOTES</Label>
                   <Textarea
                     id="approverNotes"
                     name="approverNotes"
@@ -691,6 +701,7 @@ const ViewRequestModal: FC<{
                     value={approverNotes}
                     onChange={handleApproverNotesChange}
                     className="mt-1 text-white bg-custom-400 h-24"
+                    autoFocus
                   />
                 </div>
               </div>

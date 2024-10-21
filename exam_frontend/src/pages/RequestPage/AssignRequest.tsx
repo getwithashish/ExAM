@@ -446,7 +446,7 @@ const ViewRequestModal: FC<{
         id: "assignee",
         label: "CUSTODIAN",
         name: "assignee",
-        value: assignRequest.custodian?.employee_name,
+        value: `${assignRequest.custodian?.employee_name} (${assignRequest.custodian?.id})`,
         disabled: true,
       },
       {
@@ -688,7 +688,7 @@ const ViewRequestModal: FC<{
                           color: "white",
                           borderColor: `${field.name === "assignee" ? "#2563eb" : "none"}`,
                           borderWidth: `${field.name === "assignee" ? "3px" : "none"}`,
-
+                          cursor: "default"
                         }}
                         className={`mt-1 text-white font-di+splay rounded-lg`}
                       />
@@ -703,6 +703,9 @@ const ViewRequestModal: FC<{
                       value={notes}
                       disabled={true}
                       onChange={handleNotesChange}
+                      style={{
+                        cursor: "default"
+                      }}
                       className="mt-1 text-white bg-custom-400 h-24"
                     />
                   </div>
