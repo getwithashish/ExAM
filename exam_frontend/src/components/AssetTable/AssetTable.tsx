@@ -84,13 +84,13 @@ const AssetTable: React.FC<AssetTableProps> = ({
       {(heading === "My Approved Request" ||
         pageHeading == "Modify Asset" ||
         pageHeading == "Delete Assets") && (
-        <div
-          className="mb-4 px-4 py-2 bg-yellow-100 text-yellow-800 rounded "
-          style={{ width: "370px", marginLeft: "55px" }}
-        >
-          Note: Assets in pending status will not be visible here.
-        </div>
-      )}
+          <div
+            className="mb-4 px-4 py-2 bg-yellow-100 text-yellow-800 rounded "
+            style={{ width: "370px", marginLeft: "55px" }}
+          >
+            Note: Assets in pending status will not be visible here.
+          </div>
+        )}
       <div
         className="flex"
         style={{ marginLeft: "55px", marginBottom: "30px" }}
@@ -101,16 +101,19 @@ const AssetTable: React.FC<AssetTableProps> = ({
           reset={reset}
           setSearchTerm={setSearchTerm}
         />
-        <RefreshTwoTone
-          style={{
-            cursor: "pointer",
-            marginLeft: "10px",
-            width: "30px",
-            height: "40px",
-            color: "#ffffff",
-          }}
-          onClick={handleRefreshClick}
-        />
+        <div className="flex items-center justify-center">
+          <RefreshTwoTone
+            style={{
+              cursor: "pointer",
+              marginLeft: "10px",
+              width: "30px",
+              height: "40px",
+              color: "#ffffff",
+            }}
+            onClick={handleRefreshClick}
+          />
+        </div>
+
       </div>
 
       <div

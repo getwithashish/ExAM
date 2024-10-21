@@ -76,16 +76,18 @@ const AssetTable = ({
           reset={reset}
           setSearchTerm={setSearchTerm}
         />
-        <RefreshTwoTone
-          style={{
-            cursor: "pointer",
-            marginLeft: "10px",
-            width: "30px",
-            height: "40px",
-            color: '#ffffff'
-          }}
-          onClick={handleRefreshClick}
-        />
+        <div className="flex items-center justify-center">
+          <RefreshTwoTone
+            style={{
+              cursor: "pointer",
+              marginLeft: "10px",
+              width: "30px",
+              height: "40px",
+              color: "#ffffff",
+            }}
+            onClick={handleRefreshClick}
+          />
+        </div>
       </div>
 
       <div

@@ -28,7 +28,7 @@ const DrawerComponent: React.FC<DrawerProps> = ({
         marginBottom: "0px",
       }}
     >
-      <div className="fixed-header  font-display">
+      <div className="fixed-header font-display">
         <h1
           style={{ fontSize: "24px", textAlign: "center", marginBottom: "0px" }}
         >

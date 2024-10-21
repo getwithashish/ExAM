@@ -49,7 +49,7 @@ const AssetTable = ({
   searchTerm,
   setSearchTerm,
 }: AssetTableProps) => {
-  const [ currentPage, setCurrentPage ] = useState (1);
+  const [currentPage, setCurrentPage] = useState(1);
   const { darkAlgorithm } = theme;
 
   const customTheme = {
@@ -95,16 +95,18 @@ const AssetTable = ({
           reset={reset}
           setSearchTerm={setSearchTerm}
         />
-        <RefreshTwoTone
-          style={{
-            cursor: "pointer",
-            marginLeft : "10px",
-            width: "30px",
-            height: "40px",
-            color: '#ffffff'
-          }}
-          onClick={handleRefreshClick}
-        />
+        <div className="flex items-center justify-center">
+          <RefreshTwoTone
+            style={{
+              cursor: "pointer",
+              marginLeft: "10px",
+              width: "30px",
+              height: "40px",
+              color: "#ffffff",
+            }}
+            onClick={handleRefreshClick}
+          />
+        </div>
       </div>
       <div
         style={{
@@ -121,49 +123,47 @@ const AssetTable = ({
         </SideDrawerComponent>
 
         <ConfigProvider theme={customTheme}>
-        <Table
-          columns={columns}
-          dataSource={assetData}
-          loading={isAssetDataLoading}
-          scroll={{ y: 600 }}
-          className="mainTable"
-          pagination={false}
-          bordered={false}
-          handleRowClick={handleRowClick}
-          style={{
-            fontSize: "50px",
-            borderColor: "white",
-            // width: "29%",
-            marginLeft: "3.5%",
-            boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-            // marginRight: "120px",
-          }}
-          footer={() => (
-            <Pagination
-              pageSize={20}
-              current={currentPage}
-              showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} assets`}
-              total={totalItemCount}
-              onChange={(page, pageSize) => {
-                setCurrentPage(page);
-                const offset = (page - 1) * pageSize;
-                let additionalQueryParams = `&offset=${offset}`;
-                if (searchTerm !== "" && searchTerm !== null) {
-                    additionalQueryParams += `&global_search=${searchTerm}`;
-                }
-                let sortParams = "";
-                const queryParams = `${sortParams}${additionalQueryParams}`;
-                if (sortedColumn && sortOrder) {
-                    if (queryParams.indexOf('sort_by') === -1) {
-                        sortParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
-                    }
-                }                  
-                assetPageDataFetch(queryParams);
+          <Table
+            columns={columns}
+            dataSource={assetData}
+            loading={isAssetDataLoading}
+            scroll={{ y: 600 }}
+            className="mainTable"
+            pagination={false}
+            bordered={false}
+            handleRowClick={handleRowClick}
+            style={{
+              fontSize: "50px",
+              borderColor: "white",
+              marginLeft: "3.5%",
+              boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
             }}
-              hideOnSinglePage={true}
-            />
-          )}
-        />
+            footer={() => (
+              <Pagination
+                pageSize={20}
+                current={currentPage}
+                showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} assets`}
+                total={totalItemCount}
+                onChange={(page, pageSize) => {
+                  setCurrentPage(page);
+                  const offset = (page - 1) * pageSize;
+                  let additionalQueryParams = `&offset=${offset}`;
+                  if (searchTerm !== "" && searchTerm !== null) {
+                    additionalQueryParams += `&global_search=${searchTerm}`;
+                  }
+                  let sortParams = "";
+                  const queryParams = `${sortParams}${additionalQueryParams}`;
+                  if (sortedColumn && sortOrder) {
+                    if (queryParams.indexOf('sort_by') === -1) {
+                      sortParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
+                    }
+                  }
+                  assetPageDataFetch(queryParams);
+                }}
+                hideOnSinglePage={true}
+              />
+            )}
+          />
         </ConfigProvider>
       </div>
       <DrawerViewRequest

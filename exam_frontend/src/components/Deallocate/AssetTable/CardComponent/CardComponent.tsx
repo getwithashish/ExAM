@@ -782,7 +782,7 @@ const CardComponent: React.FC<CardType> = ({
     width: "90%",
     display: "flex",
     flexWrap: "wrap",
-    background: "white",
+    background: "#1D232C",
     marginLeft: "6%",
     alignItems: "flex-start",
     rowGap: "-10px",
@@ -818,7 +818,7 @@ const CardComponent: React.FC<CardType> = ({
     <div>
       <div className="fixed-header">
         <Input
-          placeholder="Search fields"
+          placeholder="Search..."
           onChange={handleChange}
           style={{
             border: "0.5px solid #d3d3d3",
@@ -827,14 +827,14 @@ const CardComponent: React.FC<CardType> = ({
             width: "300px",
             height: "30px",
             borderRadius: "5px",
-            background: "#f0f0f0",
+            background: "#1D232C",
             marginLeft: "64px",
             padding: "20px",
           }}
         />
         
       </div>
-      <div className="scrollable-content">
+      <div className="scrollable-content font-display">
         <Form
           key={data.asset_id}
           className="mainCard"

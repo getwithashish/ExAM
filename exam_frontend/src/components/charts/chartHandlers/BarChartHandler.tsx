@@ -101,7 +101,7 @@ export default function BarChartHandler() {
             xAxis={xAxis}
             series={series}
             height={350}
-            width={2000}
+            width={2500}
           />
         </ThemeProvider>
       </div>
