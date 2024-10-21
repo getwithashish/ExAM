@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Input, ConfigProvider} from "antd";
+import { Form, Input, ConfigProvider } from "antd";
 import "./DashBoardCardComponent.css";
 import { DataType } from "../AssetTable/types/index";
 import { CardType } from "./types/index";
@@ -16,6 +16,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     borderRadius: "5px",
     color: "white",
     textAlign: "center",
+    cursor: "default"
   };
 
   const [_updatedData, setUpdatedData] = useState<Partial<DataType>>({});
@@ -71,27 +72,6 @@ const DashBoardCardComponent: React.FC<CardType> = ({
         </Form.Item>
       ),
     },
-    // {
-    //   label: "Version",
-    //   value: (
-    //     <Form.Item
-    //       name="version"
-    //       style={{ flex: "1", marginLeft: "8px" }}
-    //       className="formItem  font-display"
-    //     >
-    //       <b>Version: </b>
-    //       <br></br>
-    //       <br></br>{" "}
-    //       <Input
-    //         defaultValue={data.version}
-    //         onChange={(e) => handleUpdateChange("version", e.target.value)}
-    //         style={inputStyle}
-    //         disabled
-    //       />{" "}
-    //     </Form.Item>
-    //   ),
-    // },
-
     {
       label: "Asset Status",
       name: "assetStatus",
@@ -108,6 +88,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
               handleUpdateChange("status", e.target.value)
             }
             style={inputStyle}
+            disabled
           />
         </Form.Item>
       ),
@@ -127,7 +108,8 @@ const DashBoardCardComponent: React.FC<CardType> = ({
             variant="filled"
             defaultValue={data.location}
             style={inputStyle}
-            onChange={(e) => handleUpdateChange("location",e.target.value)}
+            onChange={(e) => handleUpdateChange("location", e.target.value)}
+            disabled
           >
           </Input>
         </Form.Item>
@@ -138,20 +120,21 @@ const DashBoardCardComponent: React.FC<CardType> = ({
       name: "location",
       value: (
         <Form.Item
-        name="location"
-        style={{ boxShadow: "none", border: "none" }}
-      >
-        <b> Asset Location:</b>
-        <br></br>
-        <br></br>
-        <Input
-          variant="filled"
-          defaultValue={data.invoice_location}
-          style={inputStyle}
-          onChange={(e) => handleUpdateChange("location",e.target.value)}
+          name="location"
+          style={{ boxShadow: "none", border: "none" }}
         >
-        </Input>
-      </Form.Item>
+          <b> Asset Invoice Location:</b>
+          <br></br>
+          <br></br>
+          <Input
+            variant="filled"
+            defaultValue={data.invoice_location}
+            style={inputStyle}
+            onChange={(e) => handleUpdateChange("location", e.target.value)}
+            disabled
+          >
+          </Input>
+        </Form.Item>
       ),
     },
     {
@@ -375,7 +358,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
             onChange={(e) =>
               handleUpdateChange("serail number", e.target.value)
             }
-            readOnly
+            disabled
             style={inputStyle}
           />{" "}
         </Form.Item>
@@ -483,6 +466,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
             defaultValue={data.business_unit}
             style={inputStyle}
             onChange={(value) => handleUpdateChange("business_unit", value)}
+            disabled
           >
           </Input>
         </Form.Item>
@@ -505,6 +489,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
             defaultValue={data.memory}
             style={inputStyle}
             onChange={(value) => handleUpdateChange("memory", value)}
+            disabled
           >
           </Input>
         </Form.Item>
@@ -586,18 +571,17 @@ const DashBoardCardComponent: React.FC<CardType> = ({
           <b>Comments: </b>
           <br></br>
           <br></br>{" "}
-          <Input
+          <textarea
             defaultValue={data.notes}
             onChange={(e) => handleUpdateChange("notes", e.target.value)}
             style={{
               width: "387px",
               height: "100px",
               background: "#1D232C",
-              borderRadius: "5px",
-              textAlign: "center",
+              borderRadius: "5px"
             }}
             disabled
-          />{" "}
+          />
         </Form.Item>
       ),
     },
@@ -609,7 +593,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
           <b>Approver Message: </b>
           <br></br>
           <br></br>{" "}
-          <Input
+          <textarea
             defaultValue={data["approval_status_message"]}
             onChange={(e) =>
               handleUpdateChange("approval_status_message", e.target.value)
@@ -619,10 +603,10 @@ const DashBoardCardComponent: React.FC<CardType> = ({
               height: "100px",
               background: "#1D232C",
               borderRadius: "5px",
-              textAlign: "center",
             }}
-            readOnly
-          />{" "}
+            disabled
+          />
+
         </Form.Item>
       ),
     },

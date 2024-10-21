@@ -283,7 +283,7 @@ const AssignPage: FC = function () {
             setModalOpen={setModalOpen}
             onClose={() => setSelectedAssignRequest(null)}
             handleApproverNotesChange={handleApproverNotesChange}
-            approverNotes={""}
+            approverNotes={approverNotes}
             setApproverNotes={function (
               _approval_status_message: string
             ): void {

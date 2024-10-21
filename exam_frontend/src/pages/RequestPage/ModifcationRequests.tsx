@@ -716,7 +716,7 @@ const ViewRequestModal: FC<{
                 id="popup-modal"
                 className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen bg-black bg-opacity-50"
               >
-                <div className="bg-white rounded-lg p-4 md:p-5 text-center">
+                <div className="bg-custom-500 rounded-lg p-4 md:p-5 text-center">
                   <svg
                     className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
                     aria-hidden="true"
