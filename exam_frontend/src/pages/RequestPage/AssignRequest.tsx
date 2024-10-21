@@ -20,10 +20,12 @@ const AssignPage: FC = function () {
   const [pageSize, setPageSize] = useState<number>(10);
   const [approverNotes, setApproverNotes] = useState<string>("");
   const [modalOpen, setModalOpen] = useState(false);
+  const [sortBy, setSortBy] = useState<string>("updated_at");
+  const [sortOrder, setSortOrder] = useState<string>("asc");
 
   useEffect(() => {
     fetchAssignRequests();
-  }, [currentPage, pageSize, searchQuery]);
+  }, [currentPage, pageSize, searchQuery, sortBy, sortOrder]);
 
   const handleApproverNotesChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setApproverNotes(e.target.value);
@@ -33,9 +35,10 @@ const AssignPage: FC = function () {
     setLoading(true);
     const offset = (currentPage - 1) * pageSize;
     const searchQueryParam = searchQuery ? `&global_search=${searchQuery}` : "";
+    const sortQueryParam = `&sort_by=${sortBy}&sort_order=${sortOrder}`;
     axiosInstance
       .get(
-        `/asset/?limit=${pageSize}&offset=${offset}&assign_status=ASSIGN_PENDING${searchQueryParam}`
+        `/asset/?limit=${pageSize}&offset=${offset}&assign_status=ASSIGN_PENDING${searchQueryParam}${sortQueryParam}`
       )
       .then((response) => {
         const assignPendingAssets = response.data.data.results;
@@ -198,24 +201,20 @@ const AssignPage: FC = function () {
       <div className="bg-custom-500 lg:ml-64 pt-24">
         <div className="block items-center justify-between bg-custom-400 px-2 dark:border-gray-700 dark:bg-gray-800 sm:flex mx-2 my-2">
           <div className="mb-1 w-full">
-            <div className="m-2 flex">
-              <div className="flex-1">
-                <h1 className="font-medium font-display m-3 leading-none text-white text-xl">
-                  Allocation Requests
-                </h1>
-              </div>
-              <div className="flex-2">
-                <RefreshTwoTone
-                  style={{
-                    cursor: "pointer",
-                    marginLeft: "10px",
-                    width: "30px",
-                    height: "40px",
-                    color: "#ffffff",
-                  }}
-                  onClick={handleRefreshClick}
-                />
-              </div>
+            <div className="m-2 flex items-center">
+              <h1 className="font-medium font-display m-0 leading-none text-white text-xl">
+                Allocation Requests
+              </h1>
+              <RefreshTwoTone
+                style={{
+                  cursor: "pointer",
+                  marginLeft: "10px",
+                  width: "30px",
+                  height: "40px",
+                  color: "#ffffff",
+                }}
+                onClick={handleRefreshClick}
+              />
             </div>
             <div className="block items-center sm:flex">
               <SearchRequests setSearchQuery={setSearchQuery} />
@@ -256,6 +255,10 @@ const AssignPage: FC = function () {
                   <AssignRequestTable
                     assignRequests={filteredAssigns}
                     setSelectedAssignRequest={setSelectedAssignRequest}
+                    sortBy={sortBy}
+                    setSortBy={setSortBy}
+                    sortOrder={sortOrder}
+                    setSortOrder={setSortOrder}
                   />
                 </div>
               </div>
@@ -343,14 +346,27 @@ const SearchRequests: FC<{
 const AssignRequestTable: FC<{
   assignRequests: any[];
   setSelectedAssignRequest: (assignRequest: any | null) => void;
-}> = function ({ assignRequests, setSelectedAssignRequest }) {
+  sortBy: string;
+  setSortBy: (data: any | null) => void;
+  sortOrder: string;
+  setSortOrder: (data: any | null) => void;
+}> = function ({ assignRequests, setSelectedAssignRequest, sortBy, setSortBy, sortOrder, setSortOrder }) {
   return (
     <Table className="min-w-full divide-y font-display divide-gray-200 dark:divide-gray-600 rounded-xl">
       <Table.Head className="bg-gray-100 dark:bg-gray-700">
         <Table.HeadCell>Asset</Table.HeadCell>
         <Table.HeadCell>Requester</Table.HeadCell>
         <Table.HeadCell>Custodian</Table.HeadCell>
-        <Table.HeadCell>Request Date</Table.HeadCell>
+        <Table.HeadCell>
+          <span
+            onClick={() => {
+              setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+            }}
+            className="ml-2 bg-transparent cursor-pointer"
+          >
+            Request Date {sortOrder === "asc" ? "↓" : "↑"}
+          </span>
+        </Table.HeadCell>
         <Table.HeadCell>Actions</Table.HeadCell>
       </Table.Head>
       <Table.Body className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">

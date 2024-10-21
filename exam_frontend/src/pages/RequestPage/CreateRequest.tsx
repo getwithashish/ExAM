@@ -17,6 +17,8 @@ const CreateRequestPage: FC = function () {
   const [pageSize, setPageSize] = useState<number>(10);
   const [approverNotes, setApproverNotes] = useState<string>("");
   const [modalOpen, setModalOpen] = useState(false);
+  const [sortBy, setSortBy] = useState<string>("updated_at");
+  const [sortOrder, setSortOrder] = useState<string>("asc");
 
   const { darkAlgorithm } = theme;
   const customTheme = {
@@ -30,7 +32,7 @@ const CreateRequestPage: FC = function () {
 
   useEffect(() => {
     fetchAssets();
-  }, [currentPage, pageSize, searchQuery]);
+  }, [currentPage, pageSize, searchQuery, sortBy, sortOrder]);
 
   const handleApproverNotesChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setApproverNotes(e.target.value);
@@ -40,9 +42,10 @@ const CreateRequestPage: FC = function () {
     setLoading(true);
     const offset = (currentPage - 1) * pageSize;
     const searchQueryParam = searchQuery ? `&global_search=${searchQuery}` : "";
+    const sortQueryParam = `&sort_by=${sortBy}&sort_order=${sortOrder}`;
     axiosInstance
       .get(
-        `/asset/?limit=${pageSize}&offset=${offset}&asset_detail_status=CREATE_PENDING${searchQueryParam}`
+        `/asset/?limit=${pageSize}&offset=${offset}&asset_detail_status=CREATE_PENDING${searchQueryParam}${sortQueryParam}`
       )
       .then((response) => {
         const createPendingAssets = response.data.data.results;
@@ -166,24 +169,20 @@ const CreateRequestPage: FC = function () {
       <div className="bg-custom-500 lg:ml-64 pt-24">
         <div className="block items-center justify-between bg-custom-400 px-2 dark:border-gray-700 dark:bg-gray-800 sm:flex mx-2 my-2">
           <div className="mb-1 w-full">
-            <div className="m-2 flex">
-              <div className="flex-1">
-                <h1 className="font-medium font-display m-3 leading-none text-white text-xl">
-                  Creation Requests
-                </h1>
-              </div>
-              <div className="flex-2">
-                <RefreshTwoTone
-                  style={{
-                    cursor: "pointer",
-                    marginLeft: "10px",
-                    width: "30px",
-                    height: "40px",
-                    color: "#ffffff",
-                  }}
-                  onClick={handleRefreshClick}
-                />
-              </div>
+            <div className="m-2 flex items-center">
+              <h1 className="font-medium font-display m-0 leading-none text-white text-xl">
+                Creation Requests
+              </h1>
+              <RefreshTwoTone
+                style={{
+                  cursor: "pointer",
+                  marginLeft: "10px",
+                  width: "30px",
+                  height: "40px",
+                  color: "#ffffff",
+                }}
+                onClick={handleRefreshClick}
+              />
             </div>
             <div className="block items-center text-sm sm:flex">
               <SearchRequests setSearchQuery={setSearchQuery} />
@@ -224,6 +223,10 @@ const CreateRequestPage: FC = function () {
                   <RequestTable
                     assets={filteredAssets}
                     setSelectedAsset={setSelectedAsset}
+                    sortBy={sortBy}
+                    setSortBy={setSortBy}
+                    sortOrder={sortOrder}
+                    setSortOrder={setSortOrder}
                   />
                 </div>
               </div>
@@ -311,14 +314,27 @@ const SearchRequests: FC<{
 const RequestTable: FC<{
   assets: any[];
   setSelectedAsset: (asset: any | null) => void;
-}> = function ({ assets, setSelectedAsset }) {
+  sortBy: string;
+  setSortBy: (data: any | null) => void;
+  sortOrder: string;
+  setSortOrder: (data: any | null) => void;
+}> = function ({ assets, setSelectedAsset, sortBy, setSortBy, sortOrder, setSortOrder }) {
   return (
     <Table className="min-w-full divide-y font-display divide-gray-200 dark:divide-gray-600 rounded-xl">
       <Table.Head className="bg-gray-700">
         <Table.HeadCell>Asset Type</Table.HeadCell>
         <Table.HeadCell>Product Name</Table.HeadCell>
         <Table.HeadCell>Requester</Table.HeadCell>
-        <Table.HeadCell>Created at</Table.HeadCell>
+        <Table.HeadCell>
+          <span
+            onClick={() => {
+              setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+            }}
+            className="ml-2 bg-transparent cursor-pointer"
+          >
+            Created at {sortOrder === "asc" ? "↓" : "↑"}
+          </span>
+        </Table.HeadCell>
         <Table.HeadCell>Actions</Table.HeadCell>
       </Table.Head>
       <Table.Body className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
