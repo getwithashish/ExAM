@@ -9,6 +9,7 @@ interface DrawerViewRequestProps extends DrawerProps {
   drawerTitle?: string;
   onUpdateData?: (updatedData: { key: any }) => void;
   closeIcon?: JSX.Element;
+  destroyOnClose?: boolean;
 }
 
 const { darkAlgorithm } = theme;
@@ -28,11 +29,12 @@ const DrawerViewRequest: FC<DrawerViewRequestProps> = ({
   title,
   onClose,
   children,
+  destroyOnClose = false
 }) => {
   return (
     <ConfigProvider theme={customTheme}>
       <div>
-        <Drawer title={title} onClose={onClose} open={open} width={1200}>
+        <Drawer destroyOnClose={destroyOnClose} title={title} onClose={onClose} open={open} width={1200}>
           {children}
         </Drawer>
       </div>

@@ -165,6 +165,7 @@ export interface AssetTableProps {
   userRole?: string;
   isMyApprovalPage: any;
   setDrawerVisible?: any;
+  destroyOnClose?: boolean;
 }
 
 export interface Props{

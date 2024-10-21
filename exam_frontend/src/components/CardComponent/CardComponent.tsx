@@ -46,7 +46,7 @@ const CardComponent: React.FC<CardType> = ({
   assetDataRefetch,
   onClose,
   onDelete,
-  
+
 }) => {
 
   const [_assetCategoryOption, setAssetCategoryOption] = React.useState();
@@ -788,24 +788,24 @@ const CardComponent: React.FC<CardType> = ({
         </Form.Item>
       ),
     },
-    // {
-    //   label: "OS Version",
-    //   name: "osVersion",
-    //   value: (
-    //     <Form.Item name="os version">
-    //       <b>OS Version:</b>
-    //       <br></br>
-    //       <br></br>
-    //       <AssetFieldAutoComplete
-    //         assetField="os_version"
-    //         value={assetOsVersion}
-    //         setValue={setAssetOsVersion}
-    //         defaultValue={data.os_version}
-    //         isDisabled={readOnly}
-    //       />
-    //     </Form.Item>
-    //   ),
-    // },
+    {
+      label: "OS Version",
+      name: "osVersion",
+      value: (
+        <Form.Item name="os version">
+          <b>OS Version:</b>
+          <br></br>
+          <br></br>
+          <AssetFieldAutoComplete
+            assetField="os_version"
+            value={assetOsVersion}
+            setValue={setAssetOsVersion}
+            defaultValue={data.os_version}
+            isDisabled={readOnly}
+          />
+        </Form.Item>
+      ),
+    },
     {
       label: "Mobile OS",
       name: "mobileOs",
@@ -1008,7 +1008,7 @@ const CardComponent: React.FC<CardType> = ({
             id="outlined-textarea-approver-notes-modify"
             label="Approver Notes"
             multiline
-            disabled={readOnly}
+            disabled={true}
             defaultValue={data.approval_status_message}
             sx={{ width: "100%" }}
           />
@@ -1169,54 +1169,68 @@ const CardComponent: React.FC<CardType> = ({
 
           {isMyApprovalPage && (
             <>
-              {isLoading ? (
-                <Spin size="large" />
-              ) : (
-                <>
-                  {getUserScope() === "SYSTEM_ADMIN" && (
-                    <Button
-                      style={{
-                        marginBottom: "0px",
-                        marginTop: "0px",
-                        color: "white",
-                        border: "none",
-                        background: "blue",
-                        marginLeft: "600px",
-                      }}
-                      onClick={handleUpdate}
-                      disabled={isLoading} // Disable button while updating
-                    >
-                      Update
-                    </Button>
-                  )}
-                  {getUserScope() === "LEAD" && (
-                    <Button
-                      type="primary"
-                      danger
-                      onClick={handleDeleteClick}
-                      style={{
-                        marginLeft: "570px",
-                        marginTop: "0px",
-                      }}
-                    >
-                      Delete Asset
-                    </Button>
-                  )}
-                  {getUserScope() === "MANAGER" && (
-                    <Button
-                      type="primary"
-                      danger
-                      onClick={handleDeleteClick}
-                      style={{
-                        marginLeft: "570px",
-                        marginTop: "0px",
-                      }}
-                    >
-                      Restore Asset
-                    </Button>
-                  )}
-                </>
+              {isLoading && (
+                <div style={{
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)', // Semi-transparent background
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  zIndex: 1000 // Ensure it is above other content
+                }}>
+                  <Spin size="large" />
+                </div>
               )}
+              (
+              <>
+                {!readOnly && getUserScope() === "SYSTEM_ADMIN" && (
+                  <Button
+                    style={{
+                      marginBottom: "0px",
+                      marginTop: "0px",
+                      color: "white",
+                      border: "none",
+                      background: "blue",
+                      marginLeft: "600px",
+                    }}
+                    onClick={handleUpdate}
+                    disabled={isLoading} // Disable button while updating
+                  >
+                    Update
+                  </Button>
+                )}
+                {!readOnly && getUserScope() === "LEAD" && (
+                  <Button
+                    type="primary"
+                    danger
+                    onClick={handleDeleteClick}
+                    style={{
+                      marginLeft: "570px",
+                      marginTop: "0px",
+                    }}
+                  >
+                    Delete Asset
+                  </Button>
+                )}
+                {!readOnly && getUserScope() === "MANAGER" && (
+                  <Button
+                    type="primary"
+                    danger
+                    onClick={handleDeleteClick}
+                    style={{
+                      marginLeft: "570px",
+                      marginTop: "0px",
+                    }}
+                  >
+                    Restore Asset
+                  </Button>
+                )}
+              </>
+              )
             </>
           )}
         </div>
@@ -1271,6 +1285,7 @@ const CardComponent: React.FC<CardType> = ({
         </Form>
       </div>
     </div>
+    // </Spin>
   );
 };
 export default CardComponent;

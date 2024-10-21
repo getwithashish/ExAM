@@ -7,6 +7,21 @@ import { AssetTableProps } from "../AssetTable/types";
 import DrawerViewRequest from "../../pages/RequestPage/DrawerViewRequest";
 import GlobalSearch from "../GlobalSearch/GlobalSearch";
 import { RefreshTwoTone } from "@mui/icons-material";
+import { createTheme, ThemeProvider } from "@mui/material";
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+    background: {
+      default: '#121212',
+      paper: '#1e1e1e',
+    },
+    text: {
+      primary: '#ffffff',
+      secondary: '#b0b0b0',
+    },
+  },
+});
 
 const AssetTable: React.FC<AssetTableProps> = ({
   userRole,
@@ -37,6 +52,7 @@ const AssetTable: React.FC<AssetTableProps> = ({
   sortedColumn,
   searchTerm,
   setSearchTerm,
+  destroyOnClose = false
 }: AssetTableProps) => {
   const [readOnly, setReadOnly] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -77,6 +93,7 @@ const AssetTable: React.FC<AssetTableProps> = ({
   }
 
   return (
+    <ThemeProvider theme={darkTheme}>
     <div className="bg-custom-400 lg:ml-60 mt-10 lg:pl-10">
       <div className="mainHeading pt-4">
         <div className=" font-display text-white ml-4">{heading}</div>
@@ -173,6 +190,7 @@ const AssetTable: React.FC<AssetTableProps> = ({
         onUpdateData={handleUpdateData}
         closeIcon={<CloseOutlined rev={undefined} />}
         title={""}
+        destroyOnClose={destroyOnClose}
       >
         {selectedRow && (
           <div>
@@ -201,6 +219,7 @@ const AssetTable: React.FC<AssetTableProps> = ({
         )}
       </DrawerViewRequest>
     </div>
+    </ThemeProvider>
   );
 };
 

@@ -565,6 +565,9 @@ const AddAsset: React.FC = ({
                 >
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <StaticDatePicker
+                      sx={{
+                        backgroundColor: 'transparent',
+                      }}
                       slotProps={{
                         toolbar: {
                           toolbarFormat: "ddd DD MMMM",
@@ -706,6 +709,9 @@ const AddAsset: React.FC = ({
                 >
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <StaticDatePicker
+                      sx={{
+                        backgroundColor: 'transparent',
+                      }}
                       slotProps={{
                         toolbar: {
                           toolbarFormat: "ddd DD MMMM",
@@ -939,6 +945,7 @@ const AddAsset: React.FC = ({
                   marginTop: "30px",
                   width: "120px",
                   height: "40px",
+                  color: "white",
                 }}
                 onClick={() => handleSubmit()} // Example: Log form data on submit
               >
@@ -953,6 +960,7 @@ const AddAsset: React.FC = ({
                   marginLeft: "30px",
                   width: "120px",
                   height: "40px",
+                  color: "white"
                 }}
                 onClick={() => {
                   handleResetForm();
