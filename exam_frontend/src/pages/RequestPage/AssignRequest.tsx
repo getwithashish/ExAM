@@ -113,9 +113,6 @@ const AssignPage: FC = function () {
       assignRequest.asset_type?.asset_type_name
         .toLowerCase()
         .includes(searchQuery.toLowerCase()) ||
-      String(assignRequest.version)
-        ?.toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
       assignRequest.asset_category
         ?.toLowerCase()
         .includes(searchQuery.toLowerCase()) ||
@@ -505,13 +502,6 @@ const ViewRequestModal: FC<{
         label: "BUSINESS UNIT",
         name: "businessUnit",
         value: assignRequest.business_unit?.business_unit_name,
-        disabled: true,
-      },
-      {
-        id: "version",
-        label: "VERSION",
-        name: "version",
-        value: assignRequest.version,
         disabled: true,
       },
       {

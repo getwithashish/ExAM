@@ -109,9 +109,6 @@ const ModificationRequests: FC = function () {
       asset.asset_type?.asset_type_name
         .toLowerCase()
         .includes(searchQuery.toLowerCase()) ||
-      String(asset.version)
-        ?.toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
       asset.asset_category?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       asset.product_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       asset.model_number?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -500,13 +497,6 @@ const ViewRequestModal: FC<{
         label: "BUSINESS UNIT",
         name: "businessUnit",
         value: asset.business_unit?.business_unit_name,
-        disabled: true,
-      },
-      {
-        id: "version",
-        label: "VERSION",
-        name: "version",
-        value: asset.version,
         disabled: true,
       },
       {
