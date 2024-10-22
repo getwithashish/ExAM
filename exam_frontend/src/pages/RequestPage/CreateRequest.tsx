@@ -72,13 +72,13 @@ const CreateRequestPage: FC = function () {
       };
       axiosInstance
         .post("/asset/approve_asset", approvalData)
-        .then(() => {
+        .then((res) => {
           fetchAssets();
           setSelectedAsset(null);
-          message.success("Successfully Approved New Asset")
+          message.success(res.data?.message)
         })
         .catch((error) => {
-          message.error("Error Approving Request");
+          message.error(`Error Approving an Asset: ${error.response.data?.message}`);
           console.error("Error approving asset:", error);
         })
         .finally(() => {
@@ -101,12 +101,13 @@ const CreateRequestPage: FC = function () {
 
       axiosInstance
         .delete("/asset/approve_asset", rejectedData)
-        .then(() => {
+        .then((res) => {
           fetchAssets();
           setSelectedAsset(null);
+          message.success(res.data?.message)
         })
         .catch((error) => {
-          message.error("Error Rejecting Request");
+          message.error(`Error Rejecting an Asset: ${error.response.data?.message}`);
           console.error("Error rejecting asset:", error);
         })
         .finally(() => {
