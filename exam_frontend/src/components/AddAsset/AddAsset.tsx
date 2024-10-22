@@ -240,6 +240,7 @@ const AddAsset: React.FC = ({
     setLicenseValue("");
     setOwnerValue("");
     setAssetLocation("");
+    setAssetInLocation("");
     setAssetBu("");
     setModelNumber("");
     setOs("");

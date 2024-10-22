@@ -1176,11 +1176,11 @@ const CardComponent: React.FC<CardType> = ({
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)', // Semi-transparent background
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  zIndex: 1000 // Ensure it is above other content
+                  zIndex: 1000
                 }}>
                   <Spin size="large" />
                 </div>
@@ -1203,7 +1203,7 @@ const CardComponent: React.FC<CardType> = ({
                     Update
                   </Button>
                 )}
-                {!readOnly && getUserScope() === "LEAD" && (
+                {getUserScope() === "LEAD" && (
                   <Button
                     type="primary"
                     danger
@@ -1216,7 +1216,7 @@ const CardComponent: React.FC<CardType> = ({
                     Delete Asset
                   </Button>
                 )}
-                {!readOnly && getUserScope() === "MANAGER" && (
+                {getUserScope() === "MANAGER" && (
                   <Button
                     type="primary"
                     danger

@@ -45,7 +45,7 @@ const AssignableAsset = () => {
         showAssignDrawer={showAssignDrawer}
         queryParamProp={queryParamProp}
       />
-      <DrawerViewRequest title="Allocate this Asset" onClose={closeAssignDrawer} open={open}>
+      <DrawerViewRequest title="Allocate Asset" onClose={closeAssignDrawer} open={open}>
         {record && (
           <AssignmentHandler
             record={record}
