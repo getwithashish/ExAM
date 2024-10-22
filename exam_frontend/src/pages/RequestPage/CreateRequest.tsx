@@ -18,7 +18,7 @@ const CreateRequestPage: FC = function () {
   const [approverNotes, setApproverNotes] = useState<string>("");
   const [modalOpen, setModalOpen] = useState(false);
   const [sortBy, setSortBy] = useState<string>("updated_at");
-  const [sortOrder, setSortOrder] = useState<string>("asc");
+  const [sortOrder, setSortOrder] = useState<string>("desc");
 
   const { darkAlgorithm } = theme;
   const customTheme = {
@@ -331,7 +331,7 @@ const RequestTable: FC<{
             }}
             className="ml-2 bg-transparent cursor-pointer"
           >
-            Created at {sortOrder === "asc" ? "↓" : "↑"}
+            Request Date {sortOrder === "asc" ? "↓" : "↑"}
           </span>
         </Table.HeadCell>
         <Table.HeadCell>Actions</Table.HeadCell>

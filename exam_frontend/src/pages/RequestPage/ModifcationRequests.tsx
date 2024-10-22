@@ -20,7 +20,7 @@ const ModificationRequests: FC = function () {
   const [pageSize, setPageSize] = useState<number>(10);
   const [modalOpen, setModalOpen] = useState(false);
   const [sortBy, setSortBy] = useState<string>("updated_at");
-  const [sortOrder, setSortOrder] = useState<string>("asc");
+  const [sortOrder, setSortOrder] = useState<string>("desc");
 
   useEffect(() => {
     fetchAssets();
@@ -347,7 +347,7 @@ const RequestTable: FC<{
             }}
             className="ml-2 bg-transparent cursor-pointer"
           >
-            Modified at {sortOrder === "asc" ? "↓" : "↑"}
+            Request Date {sortOrder === "asc" ? "↓" : "↑"}
           </span>
         </Table.HeadCell>
         <Table.HeadCell>Actions</Table.HeadCell>

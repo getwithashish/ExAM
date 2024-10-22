@@ -394,7 +394,7 @@ const AssignRequestTable: FC<{
               {assignRequest.custodian?.employee_name}
             </Table.Cell>
             <Table.Cell className="whitespace-nowrap p-4 text-base font-sm text-gray-900 dark:text-white">
-              {new Date(assignRequest.created_at).toLocaleDateString()}
+              {new Date(assignRequest.updated_at).toLocaleDateString()}
             </Table.Cell>
             <Table.Cell className="space-x-2 whitespace-nowrap p-4">
               <div className="flex items-center gap-x-3">
