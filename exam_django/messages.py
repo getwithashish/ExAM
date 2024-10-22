@@ -79,37 +79,38 @@ ASSET_FIELD_NOT_FILTERABLE = "Asset Field is not filterable"
 
 # Asset Success Messages
 ASSET_LIST_SUCCESSFULLY_RETRIEVED = "Asset list is successfully retreived."
-ASSET_SUCCESSFULLY_CREATED = "Asset successfully created."
-ASSET_SUCCESSFULLY_UPDATED = "Asset details successfully updated."
-ASSET_SUCCESSFULLY_ASSIGNED = "Asset assigned successfully."
-ASSET_SUCCESSFULLY_UNASSIGNED = "Asset unassigned successfully."
-ASSET_ASSIGNING_PENDING = "Asset assignment successfully added to pending state. Approval required to complete Asset assignment."
-ASSET_UNASSIGNING_PENDING = "Asset unassignment successfully added to pending state. Approval required to complete Asset Unassignment."
+ASSET_ASSIGNING_PENDING = "Asset Allocation Request Successfully Sent. Approval required to complete the allocation."
+ASSET_UNASSIGNING_PENDING = "Asset Deallocation Request Successfully Sent. Approval required to complete the deallocation."
 ASSET_COUNT_SUCCESSFULLY_RETRIEVED = "Asset count is successfully retreived."
-ASSET_CREATE_PENDING_SUCCESSFUL = "Asset Creation successfully added to pending state. Approval required to complete Asset Creation."
-ASSET_UPDATE_PENDING_SUCCESSFUL = "Asset Updation successfully added to pending state. Approval required to complete Asset Updation."
+ASSET_CREATE_PENDING_SUCCESSFUL = "Asset Creation Request Successfully Sent. Approval required to complete the creation."
+ASSET_UPDATE_PENDING_SUCCESSFUL = "Asset Updation Request Successfully Sent. Approval required to complete the updation."
 
 AI_RESPONSE_OBTAINED_SUCCESSFULLY = "AI Response is successfully obtained."
 
 # Asset Rejection Messages
-ASSET_CREATION_REJECTED = "Asset creation has been rejected"
-ASSET_UPDATION_REJECTED = "Asset updation has been rejected"
-ASSIGN_ASSET_REJECT_SUCCESSFUL = "Successfully rejected asset allocation request."
-UNASSIGN_ASSET_REJECT_SUCCESSFUL = "Successfully rejected asset deallocation request."
+ASSET_CREATION_REJECTED = "Asset Creation Rejected"
+ASSET_UPDATION_REJECTED = "Asset Modification Rejected"
+ASSIGN_ASSET_REJECT_SUCCESSFUL = "Asset Allocation Rejected"
+UNASSIGN_ASSET_REJECT_SUCCESSFUL = "Asset Deallocation Rejected"
 
 
 # Approval Exception Messages
 APPROVAL_TYPE_NOT_FOUND = (
     "Specified approval type is not valid. Try with correct value."
 )
-CANNOT_APPROVE_ACKNOWLEDGED_ASSET = "Cannot Approve already acknowledged asset."
-CANNOT_REJECT_ACKNOWLEDGED_ASSET = "Cannot Reject already acknowledged asset."
-CANNOT_ASSIGN_UNAPPROVED_ASSET = "Cannot assign asset which is not approved."
-
-CANNOT_UNASSIGN_ASSET_NOT_IN_PENDING = "Cannot unassign asset whic"
+CANNOT_APPROVE_ACKNOWLEDGED_ASSET = "Cannot Approve already acknowledged asset"
+CANNOT_REJECT_ACKNOWLEDGED_ASSET = "Cannot Reject already acknowledged asset"
+CANNOT_ASSIGN_UNAPPROVED_ASSET = "Cannot Allocate asset which is not approved"
+CANNOT_UNASSIGN_UNAPPROVED_ASSET = "Cannot Deallocate asset which is not approved"
 
 # Approval Success Messages
+ASSET_SUCCESSFULLY_CREATED = "Asset Creation Approved"
+ASSET_SUCCESSFULLY_UPDATED = "Asset Modification Approved"
+ASSET_SUCCESSFULLY_ASSIGNED = "Asset Allocation Approved"
+ASSET_SUCCESSFULLY_UNASSIGNED = "Asset Deallocation Approved"
 
+ASSET_DELETION_SUCCESSFUL = "Asset Deleted"
+ASSET_RESTORATION_SUCCESSFUL = "Asset Restored"
 
 # Asset Type Exception Messages
 INVALID_ASSET_TYPE = "The given asset type is invalid."
@@ -193,6 +194,3 @@ MEMORY_CREATION_SUCCESSFUL = "Memory creation is successful"
 MEMORY_CREATION_UNSUCCESSFUL = "Memory creation is unsuccessful"
 MEMORY_SUCCESSFULLY_RETRIEVED = "Memory retrieved succesfully"
 MEMORY_EXISTS = "Memory already exists"
-
-ASSET_DELETION_SUCCESSFUL = "Asset Deletion is sucessful"
-ASSET_RESTORATION_SUCCESSFUL = "Asset Restoration is sucessful"
