@@ -23,5 +23,5 @@ class AssetSysadminRoleUnassignService:
         asset.custodian = None
         asset.requester = requester
         message = ASSET_UNASSIGNING_PENDING
-        
+
         return asset, message, email_subject

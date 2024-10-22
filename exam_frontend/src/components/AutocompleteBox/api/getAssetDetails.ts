@@ -14,7 +14,7 @@ export { getAssetDetails };
 
 const getLocationOptions = () => {
   const res = axiosInstance.get("/asset/location").then((res) => {
-    return res.data.data;
+    return res.data.data.filter(location => location.location_name.trim() !== "");
   });
   return res;
 };

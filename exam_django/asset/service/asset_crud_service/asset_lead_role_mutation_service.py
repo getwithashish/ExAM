@@ -37,7 +37,6 @@ class AssetLeadRoleMutationService(AssetUserRoleMutationAbstract):
             email_subject = "ASSET UPDATION SUCCESSFUL"
 
             # TODO How about doing this operation in trigger
-            # Increment version of asset if there is a change in values of the defined fields
             original_data = AssetWriteSerializer(asset).data
             changed_fields = TableUtil.get_changed_fields(
                 original_data, serializer.validated_data

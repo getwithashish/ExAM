@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SidebarComponentNew from "./components/sidebar/SidebarComponentNew";
 import DashboardPage from "./pages";
@@ -22,6 +22,8 @@ import PendingRequestPage from "./pages/PendingRequest/PendingRequestPage";
 
 const ExamRoutes = () => {
   const { setAuthenticated } = useAuth();
+
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const storedValue = localStorage.getItem("jwt");
@@ -59,7 +61,7 @@ const ExamRoutes = () => {
                     <Route path="/deallocate" element={<Deallocate />} />
                     <Route
                       path="/creation_requests"
-                      element={<CreateRequestPage />}
+                      element={<CreateRequestPage loading={loading} setLoading={setLoading} />}
                     />
                     <Route
                       path="/updation_requests"

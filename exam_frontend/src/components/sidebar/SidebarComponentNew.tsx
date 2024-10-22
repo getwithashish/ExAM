@@ -18,7 +18,7 @@ import { FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 import styles from "./sidebar.module.css";
 import SideDrawerComponent from "../SideDrawerComponent/SideDrawerComponent";
 import AddAsset from "../AddAsset/AddAsset";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../pages/authentication/AuthContext";
 import { EditOutlined } from "@mui/icons-material";
 import { Footer as FlowbiteFooter } from "flowbite-react";
@@ -32,6 +32,9 @@ import Tooltip from "../Tooltip/Tooltip";
 const SidebarComponentNew = ({ children }: any) => {
   const { userRole, setUserRole, login, logout } = useAuth();
   const [loading, setLoading] = useState<boolean>(false);
+
+  const location = useLocation();
+  const selectedKey = location.pathname;
 
   const handleDownload = async () => {
     const fileUrl = "/static/asset_management_windows.exe";
@@ -153,8 +156,9 @@ const SidebarComponentNew = ({ children }: any) => {
             theme="dark"
             mode="vertical"
             className="text-base font-display items-center justify-between bg-transparent pt-10 mx-2 "
+            selectedKeys={[selectedKey]}
           >
-            <Menu.Item icon={<PieChartOutlined />}>
+            <Menu.Item key="/exam/dashboard" icon={<PieChartOutlined />}>
               <Tooltip title="Dashboard">
                 <Link to="/exam/dashboard">Dashboard</Link>
               </Tooltip>
@@ -168,17 +172,17 @@ const SidebarComponentNew = ({ children }: any) => {
                 >
                   <Tooltip title="To Create an Asset">Create Assets</Tooltip>
                 </Menu.Item>
-                <Menu.Item icon={<EditOutlined />}>
+                <Menu.Item key="/exam/updatable_assets" icon={<EditOutlined />}>
                   <Tooltip title="To modify an Asset">
                     <Link to="/exam/updatable_assets">Modify Assets</Link>
                   </Tooltip>
                 </Menu.Item>
-                <Menu.Item icon={<UserSwitchOutlined />}>
+                <Menu.Item key="/exam/assignable_asset" icon={<UserSwitchOutlined />}>
                   <Tooltip title="To allocate an Asset to an employee">
                     <Link to="/exam/assignable_asset">Allocate Assets</Link>
                   </Tooltip>
                 </Menu.Item>
-                <Menu.Item icon={<UserSwitchOutlined />}>
+                <Menu.Item key="/exam/deallocate" icon={<UserSwitchOutlined />}>
                   <Tooltip title="To deallocate an Asset from an employee">
                     <Link to="/exam/deallocate">Deallocate Assets</Link>
                   </Tooltip>
@@ -187,7 +191,7 @@ const SidebarComponentNew = ({ children }: any) => {
             )}
 
             {userRole === "LEAD" && (
-              <Menu.Item icon={<EditOutlined />}>
+              <Menu.Item key="/exam/updatable_assets" icon={<EditOutlined />}>
                 <Tooltip title="To delete an Asset">
                   <Link to="/exam/updatable_assets">Delete Assets</Link>
                 </Tooltip>
@@ -195,9 +199,9 @@ const SidebarComponentNew = ({ children }: any) => {
             )}
 
             {userRole === "MANAGER" && (
-              <Menu.Item icon={<EditOutlined />}>
-                <Tooltip title="View Deleted Assets">
-                  <Link to="/exam/updatable_assets">Deleted Assets</Link>
+              <Menu.Item key="/exam/updatable_assets" icon={<EditOutlined />}>
+                <Tooltip title="Restore Deleted Assets">
+                  <Link to="/exam/updatable_assets">Restore Assets</Link>
                 </Tooltip>
               </Menu.Item>
             )}
@@ -209,7 +213,7 @@ const SidebarComponentNew = ({ children }: any) => {
                 title="Approve Assets"
                 className="bg-custom-400"
               >
-                <Menu.Item icon={<CarryOutOutlined />}>
+                <Menu.Item key="/exam/creation_requests" icon={<CarryOutOutlined />}>
                   <Link to="/exam/creation_requests">
                     <Tooltip title="Approve Assets that are pending to be created">
                       In Creation
@@ -217,7 +221,7 @@ const SidebarComponentNew = ({ children }: any) => {
                   </Link>
                 </Menu.Item>
 
-                <Menu.Item icon={<CarryOutOutlined />}>
+                <Menu.Item key="/exam/updation_requests" icon={<CarryOutOutlined />}>
                   <Link to="/exam/updation_requests">
                     <Tooltip title="Approve Assets that are pending to be updated">
                       In Modification
@@ -225,7 +229,7 @@ const SidebarComponentNew = ({ children }: any) => {
                   </Link>
                 </Menu.Item>
 
-                <Menu.Item icon={<CarryOutOutlined />}>
+                <Menu.Item key="/exam/assign_requests" icon={<CarryOutOutlined />}>
                   <Link to="/exam/assign_requests">
                     <Tooltip title="Approve Assets that are pending to be allocated">
                       In Allocation
@@ -236,7 +240,7 @@ const SidebarComponentNew = ({ children }: any) => {
             )}
 
             {userRole === "LEAD" && (
-              <Menu.Item icon={<MailOutlined />}>
+              <Menu.Item key="/exam/my_approvals" icon={<MailOutlined />}>
                 <Tooltip title="Show Assets that I have approved">
                   <Link to="/exam/my_approvals">My Approval History</Link>
                 </Tooltip>
@@ -250,22 +254,22 @@ const SidebarComponentNew = ({ children }: any) => {
                 title="My Requests"
                 style={{ backgroundColor: "#1D232C" }} // Adjust background color here
               >
-                <Menu.Item icon={<CheckCircleOutlined />}>
+                <Menu.Item key="/exam/approved_requests" icon={<CheckCircleOutlined />}>
                   <Tooltip title="Show my Asset Requests which have been approved">
                     <Link to="/exam/approved_requests">Approved</Link>
                   </Tooltip>
                 </Menu.Item>
-                <Menu.Item icon={<CheckCircleOutlined />}>
+                <Menu.Item key="/exam/pending_requests" icon={<CheckCircleOutlined />}>
                   <Tooltip title="Show the requests which are in pending status">
                     <Link to="/exam/pending_requests">Pending Requests</Link>
                   </Tooltip>
                 </Menu.Item>
-                <Menu.Item icon={<CloseCircleOutlined />}>
+                <Menu.Item key="/exam/rejected_assets" icon={<CloseCircleOutlined />}>
                   <Tooltip title="Show my Asset creation and updation Requests which have been rejected">
                     <Link to="/exam/rejected_assets">Rejected Asset</Link>
                   </Tooltip>
                 </Menu.Item>
-                <Menu.Item icon={<CloseCircleOutlined />}>
+                <Menu.Item key="/exam/rejected_allocation" icon={<CloseCircleOutlined />}>
                   <Tooltip title="Show my Asset allocation Requests which have been rejected">
                     <Link to="/exam/rejected_allocation">
                       Rejected Allocation
@@ -275,7 +279,7 @@ const SidebarComponentNew = ({ children }: any) => {
               </Menu.SubMenu>
             )}
 
-            <Menu.Item icon={<UserSwitchOutlined />}>
+            <Menu.Item key="/exam/expired_assets" icon={<UserSwitchOutlined />}>
               <Tooltip title="To view the expisky assets">
                 <Link to="/exam/expired_assets">Expired Assets</Link>
               </Tooltip>
@@ -289,7 +293,7 @@ const SidebarComponentNew = ({ children }: any) => {
               </Tooltip>
             </Menu.Item>
 
-            <Menu.Item icon={<RobotOutlined />}>
+            <Menu.Item key="/exam/chat" icon={<RobotOutlined />}>
               <Tooltip title="AI Assistant">
                 <Link to="/exam/chat">AssetSense Ai</Link>
               </Tooltip>

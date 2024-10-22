@@ -100,40 +100,30 @@ export const Assignment: React.FC<AssignmentProps> = ({
               />
             </div>
             <div>
-              <label htmlFor="version">VERSION:</label>
+              <label htmlFor="processor">PROCESSOR:</label>
               <input
                 type="text"
-                id="version"
-                value={record?.version}
-                className="mt-1 font-display bg-custom-400 rounded-lg font-semibold"
-                disabled
-              />
-            </div>
-            <div>
-              <label htmlFor="version">PROCESSOR:</label>
-              <input
-                type="text"
-                id="version"
+                id="processor"
                 value={record?.processor}
                 className="mt-1 font-display bg-custom-400 rounded-lg font-semibold"
                 disabled
               />
             </div>
             <div>
-              <label htmlFor="version">MEMORY:</label>
+              <label htmlFor="memory">MEMORY:</label>
               <input
                 type="text"
-                id="version"
+                id="memory"
                 value={record?.memory}
                 className="mt-1 font-display bg-custom-400 rounded-lg font-semibold"
                 disabled
               />
             </div>
             <div>
-              <label htmlFor="version">STORAGE:</label>
+              <label htmlFor="storage">STORAGE:</label>
               <input
                 type="text"
-                id="version"
+                id="storage"
                 value={record?.storage}
                 className="mt-1 font-display bg-custom-400 rounded-lg font-semibold"
                 disabled

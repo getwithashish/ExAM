@@ -11,6 +11,7 @@ from messages import (
     CANNOT_APPROVE_ACKNOWLEDGED_ASSET,
     CANNOT_ASSIGN_UNAPPROVED_ASSET,
     CANNOT_REJECT_ACKNOWLEDGED_ASSET,
+    CANNOT_UNASSIGN_UNAPPROVED_ASSET,
     UNASSIGN_ASSET_REJECT_SUCCESSFUL,
 )
 
@@ -40,8 +41,12 @@ class AssetAssignLeadRoleApproveService(AssetUserRoleApproveAbstract):
             return asset, message, email_subject
 
         else:
+            if asset.custodian:
+                message = CANNOT_ASSIGN_UNAPPROVED_ASSET
+            else:
+                message = CANNOT_UNASSIGN_UNAPPROVED_ASSET
             raise NotAcceptableOperationException(
-                {}, CANNOT_ASSIGN_UNAPPROVED_ASSET, status.HTTP_400_BAD_REQUEST
+                {}, message, status.HTTP_400_BAD_REQUEST
             )
 
     def reject_request(self, asset, request):

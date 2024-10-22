@@ -71,7 +71,7 @@ def construct_deallocate_asset_email_body_content(**kwargs):
     return (
         f"""Dear Lead,
 
-We would like to inform you that a request is made by {kwargs["requester"]["username"]} ({kwargs["requester"]["email"]}) to deallocate an asset from {kwargs["custodian"]["employee_name"]}.
+We would like to inform you that a request is made by {kwargs["requester"]["username"]} ({kwargs["requester"]["email"]}) to deallocate an asset.
 
 Details of the asset:
 Asset Name: {kwargs["product_name"]}

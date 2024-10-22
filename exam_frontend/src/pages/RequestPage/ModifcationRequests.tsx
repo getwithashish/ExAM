@@ -19,19 +19,22 @@ const ModificationRequests: FC = function () {
   const [totalPages, setTotalPages] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [modalOpen, setModalOpen] = useState(false);
+  const [sortBy, setSortBy] = useState<string>("updated_at");
+  const [sortOrder, setSortOrder] = useState<string>("desc");
 
   useEffect(() => {
     fetchAssets();
-  }, [currentPage, pageSize, searchQuery]);
+  }, [currentPage, pageSize, searchQuery, sortBy, sortOrder]);
 
   const fetchAssets = () => {
     setLoading(true);
     const offset = (currentPage - 1) * pageSize;
     const searchQueryParam = searchQuery ? `&global_search=${searchQuery}` : "";
+    const sortQueryParam = `&sort_by=${sortBy}&sort_order=${sortOrder}`;
 
     axiosInstance
       .get(
-        `/asset/?limit=${pageSize}&offset=${offset}&asset_detail_status=UPDATE_PENDING${searchQueryParam}`
+        `/asset/?limit=${pageSize}&offset=${offset}&asset_detail_status=UPDATE_PENDING${searchQueryParam}${sortQueryParam}`
       )
       .then((response) => {
         const updatePendingAssets = response.data.data.results;
@@ -59,12 +62,13 @@ const ModificationRequests: FC = function () {
 
       axiosInstance
         .post("/asset/approve_asset", approvalData)
-        .then(() => {
+        .then((res) => {
           fetchAssets();
           setSelectedAsset(null);
+          message.success(res.data?.message)
         })
         .catch((error) => {
-          message.error("Error Approving Asset");
+          message.error(`Error Approving an Asset: ${error.response.data?.message}`);
           console.error("Error approving asset:", error);
         })
         .finally(() => {
@@ -87,12 +91,13 @@ const ModificationRequests: FC = function () {
 
       axiosInstance
         .delete("/asset/approve_asset", rejectedData)
-        .then(() => {
+        .then((res) => {
           fetchAssets();
           setSelectedAsset(null);
+          message.success(res.data?.message)
         })
         .catch((error) => {
-          message.error("Error Rejecting Asset");
+          message.error(`Error Rejecting an Asset: ${error.response.data?.message}`);
           console.error("Error rejecting asset:", error);
         })
         .finally(() => {
@@ -105,9 +110,6 @@ const ModificationRequests: FC = function () {
     (asset) =>
       asset.asset_type?.asset_type_name
         .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-      String(asset.version)
-        ?.toLowerCase()
         .includes(searchQuery.toLowerCase()) ||
       asset.asset_category?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       asset.product_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -173,24 +175,20 @@ const ModificationRequests: FC = function () {
       <div className="bg-custom-500 lg:ml-64 pt-24">
         <div className="block items-center justify-between bg-custom-400 px-2 dark:border-gray-700 dark:bg-gray-800 sm:flex mx-2 my-2">
           <div className="mb-1 w-full">
-            <div className="m-2 flex">
-              <div className="flex-1">
-                <h1 className="font-medium font-display m-3 leading-none text-white text-xl">
-                  Modification Requests
-                </h1>
-              </div>
-              <div className="flex-2">
-                <RefreshTwoTone
-                  style={{
-                    cursor: "pointer",
-                    marginLeft: "10px",
-                    width: "30px",
-                    height: "40px",
-                    color: "#ffffff",
-                  }}
-                  onClick={handleRefreshClick}
-                />
-              </div>
+            <div className="m-2 flex items-center">
+              <h1 className="font-medium font-display m-0 leading-none text-white text-xl">
+                Modification Requests
+              </h1>
+              <RefreshTwoTone
+                style={{
+                  cursor: "pointer",
+                  marginLeft: "10px",
+                  width: "30px",
+                  height: "40px",
+                  color: "#ffffff",
+                }}
+                onClick={handleRefreshClick}
+              />
             </div>
             <div className="block items-center sm:flex">
               <SearchRequests setSearchQuery={setSearchQuery} />
@@ -232,6 +230,10 @@ const ModificationRequests: FC = function () {
                     assets={filteredAssets}
                     setSelectedAsset={setSelectedAsset}
                     setLatestLogData={setLatestLogData}
+                    sortBy={sortBy}
+                    setSortBy={setSortBy}
+                    sortOrder={sortOrder}
+                    setSortOrder={setSortOrder}
                   />
                 </div>
               </div>
@@ -314,7 +316,11 @@ const RequestTable: FC<{
   assets: any[];
   setSelectedAsset: (asset: any | null) => void;
   setLatestLogData: (data: any | null) => void;
-}> = function ({ assets, setSelectedAsset, setLatestLogData }) {
+  sortBy: string;
+  setSortBy: (data: any | null) => void;
+  sortOrder: string;
+  setSortOrder: (data: any | null) => void;
+}> = function ({ assets, setSelectedAsset, setLatestLogData, sortBy, setSortBy, sortOrder, setSortOrder }) {
   const handleViewAsset = async (asset: any) => {
     try {
       const response = await axiosInstance.get(
@@ -334,7 +340,16 @@ const RequestTable: FC<{
         <Table.HeadCell>Product Name</Table.HeadCell>
         <Table.HeadCell>Requester</Table.HeadCell>
         <Table.HeadCell>Custodian</Table.HeadCell>
-        <Table.HeadCell>Modified at</Table.HeadCell>
+        <Table.HeadCell>
+          <span
+            onClick={() => {
+              setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+            }}
+            className="ml-2 bg-transparent cursor-pointer"
+          >
+            Request Date {sortOrder === "asc" ? "↓" : "↑"}
+          </span>
+        </Table.HeadCell>
         <Table.HeadCell>Actions</Table.HeadCell>
       </Table.Head>
       <Table.Body className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800 font-display">
@@ -487,13 +502,6 @@ const ViewRequestModal: FC<{
         disabled: true,
       },
       {
-        id: "version",
-        label: "VERSION",
-        name: "version",
-        value: asset.version,
-        disabled: true,
-      },
-      {
         id: "os",
         label: "OS",
         name: "os",
@@ -609,58 +617,58 @@ const ViewRequestModal: FC<{
 
     return (
       <DrawerViewRequest title="Request Details" onClose={onClose} open={true}>
-        <Spin spinning={loading}>
-          <div>
-            <form>
-              <div className="grid font-display grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">
-                {formFields.map((field, index) => {
-                  // const latestLog = latestLogData?.logs[0]?.asset_log;
-                  const latestLog = (latestLogData?.logs && latestLogData.logs.length > 0)
-                    ? latestLogData.logs[0].asset_log
-                    : null;
-                  console.log(latestLogData)
-                  let changed = false;
-                  if (latestLog && latestLog.hasOwnProperty(field.id)) {
-                    changed = field.value != latestLog[field.id];
-                  } else {
-                    // changed =
-                    //   field.value !== undefined &&
-                    //   field.value !== null &&
-                    //   field.value !== "";
-                  }
-                  return (
-                    <div key={index}>
-                      <Label
-                        htmlFor={field.id}
-                        className={changed ? "text-blue-500" : "text-white"}
+        {loading && (
+          <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 100000
+          }}>
+            <Spin size="large" />
+          </div>
+        )}
+        <div>
+          <form>
+            <div className="grid font-display grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">
+              {formFields.map((field, index) => {
+                // const latestLog = latestLogData?.logs[0]?.asset_log;
+                const latestLog = (latestLogData?.logs && latestLogData.logs.length > 0)
+                  ? latestLogData.logs[0].asset_log
+                  : null;
+                console.log(latestLogData)
+                let changed = false;
+                if (latestLog && latestLog.hasOwnProperty(field.id)) {
+                  changed = field.value != latestLog[field.id];
+                } else {
+                  // changed =
+                  //   field.value !== undefined &&
+                  //   field.value !== null &&
+                  //   field.value !== "";
+                }
+                return (
+                  <div key={index}>
+                    <Label
+                      htmlFor={field.id}
+                      className={changed ? "text-blue-500" : "text-white"}
+                    >
+                      {field.label}:
+                    </Label>
+                    {changed && (
+                      <CustomTooltip
+                        title={
+                          <>
+                            Previous value: {latestLog ? latestLog[field.id] : "N/A"}
+                            <br />
+                            New value: {field.value}
+                          </>
+                        }
                       >
-                        {field.label}:
-                      </Label>
-                      {changed && (
-                        <CustomTooltip
-                          title={
-                            <>
-                              Previous value: {latestLog ? latestLog[field.id] : "N/A"}
-                              <br />
-                              New value: {field.value}
-                            </>
-                          }
-                        >
-                          <TextInput
-                            id={field.id}
-                            name={field.name}
-                            value={field.value}
-                            disabled={field.disabled}
-                            style={{
-                              background: "transparent",
-                              color: "white",
-                              cursor: "default"
-                            }}
-                            className="mt-1 font-display border-blue-600 border-2 rounded-lg"
-                          />
-                        </CustomTooltip>
-                      )}
-                      {!changed && (
                         <TextInput
                           id={field.id}
                           name={field.name}
@@ -671,107 +679,121 @@ const ViewRequestModal: FC<{
                             color: "white",
                             cursor: "default"
                           }}
-                          className="mt-1 text-white font-display"
+                          className="mt-1 font-display border-blue-600 border-2 rounded-lg"
                         />
-                      )}
-                    </div>
-                  );
-                })}
-                <div className="lg:col-span-5">
-                  <Label className="text-white" htmlFor="notes">NOTES</Label>
-                  <Textarea
-                    id="notes"
-                    name="notes"
-                    rows={1}
-                    value={notes}
-                    disabled={true}
-                    onChange={handleNotesChange}
-                    style={{
-                      cursor: "default"
-                    }}
-                    className="mt-1 text-white bg-custom-400 h-24"
-                  />
-                </div>
-                <div className="lg:col-span-5">
-                  <Label className="text-white" htmlFor="approverNotes">APPROVER NOTES</Label>
-                  <Textarea
-                    id="approverNotes"
-                    name="approverNotes"
-                    rows={1}
-                    value={approverNotes}
-                    onChange={handleApproverNotesChange}
-                    className="mt-1 text-white bg-custom-400 h-24"
-                    autoFocus
-                  />
-                </div>
+                      </CustomTooltip>
+                    )}
+                    {!changed && (
+                      <TextInput
+                        id={field.id}
+                        name={field.name}
+                        value={field.value}
+                        disabled={field.disabled}
+                        style={{
+                          background: "transparent",
+                          color: "white",
+                          cursor: "default"
+                        }}
+                        className="mt-1 text-white font-display"
+                      />
+                    )}
+                  </div>
+                );
+              })}
+              <div className="lg:col-span-5">
+                <Label className="text-white" htmlFor="notes">NOTES</Label>
+                <Textarea
+                  id="notes"
+                  name="notes"
+                  rows={1}
+                  value={notes}
+                  disabled={true}
+                  onChange={handleNotesChange}
+                  style={{
+                    cursor: "default"
+                  }}
+                  className="mt-1 text-white bg-custom-400 h-24"
+                />
               </div>
-            </form>
-          </div>
-          <div className="flex gap-2 my-4">
-            <button
-              className="block font-display text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-3 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-              onClick={() => toggleModal("approve")}
-            >
-              Approve
-            </button>
+              <div className="lg:col-span-5">
+                <Label className="text-white" htmlFor="approverNotes">APPROVER NOTES</Label>
+                <Textarea
+                  id="approverNotes"
+                  name="approverNotes"
+                  rows={1}
+                  value={approverNotes}
+                  onChange={handleApproverNotesChange}
+                  className="mt-1 text-white bg-custom-400 h-24"
+                  autoFocus
+                />
+              </div>
+            </div>
+          </form>
+        </div>
+        <div className="flex gap-2 my-4">
+          <button
+            className="block font-display text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-3 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+            onClick={() => toggleModal("approve")}
+          >
+            Approve
+          </button>
 
-            <button
-              className="block font-display text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-6 py-3 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
-              onClick={() => toggleModal("reject")}
-            >
-              Reject
-            </button>
+          <button
+            className="block font-display text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-6 py-3 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+            onClick={() => toggleModal("reject")}
+          >
+            Reject
+          </button>
 
-            {modalOpen && (
-              <div
-                id="popup-modal"
-                className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen bg-black bg-opacity-50"
-              >
-                <div className="bg-custom-500 rounded-lg p-4 md:p-5 text-center">
-                  <svg
-                    className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                    />
-                  </svg>
-                  <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                    Are you sure you want to {actionType}?
-                  </h3>
-                  {actionType === "approve" ? (
-                    <button
-                      onClick={handleApprove}
-                      className="text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
-                    >
-                      Yes, I'm sure
-                    </button>
-                  ) : (
-                    <button
-                      onClick={handleReject}
-                      className="text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
-                    >
-                      Yes, I'm sure
-                    </button>
-                  )}
+          {modalOpen && (
+            <div
+              id="popup-modal"
+              className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen bg-black bg-opacity-50"
+            >
+              <div className="bg-custom-500 rounded-lg p-4 md:p-5 text-center">
+                <svg
+                  className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                  />
+                </svg>
+                <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                  Are you sure you want to {actionType}?
+                </h3>
+                {actionType === "approve" ? (
                   <button
-                    onClick={() => setModalOpen(false)}
-                    className="py-2.5 px-5 ms-3 text-sm font-display font-medium text-white focus:outline-none bg-red-700 rounded-lg hover:bg-red-900 hover:text-white focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                    onClick={handleApprove}
+                    className="text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
                   >
-                    Cancel
+                    Yes, I'm sure
                   </button>
-                </div>
+                ) : (
+                  <button
+                    onClick={handleReject}
+                    className="text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+                  >
+                    Yes, I'm sure
+                  </button>
+                )}
+                <button
+                  onClick={() => setModalOpen(false)}
+                  className="py-2.5 px-5 ms-3 text-sm font-display font-medium text-white focus:outline-none bg-red-700 rounded-lg hover:bg-red-900 hover:text-white focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                >
+                  Cancel
+                </button>
               </div>
-            )}
-          </div>
-        </Spin>
+            </div>
+          )}
+        </div>
       </DrawerViewRequest>
     );
   };

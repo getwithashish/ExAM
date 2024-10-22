@@ -113,7 +113,7 @@ export const QueryBuilderComponent: React.FC<
             <div
               key={currentEle}
               style={{
-                marginBottom: "10px",
+                marginBottom: "25px",
                 display: "flex",
                 alignItems: "center",
               }}

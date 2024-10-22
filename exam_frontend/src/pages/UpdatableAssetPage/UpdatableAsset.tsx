@@ -10,7 +10,7 @@ const UpdatableAsset = () => {
       : "&asset_detail_status=CREATED|UPDATED|CREATE_REJECTED|UPDATE_REJECTED";
   let heading =
     userRole === "MANAGER"
-      ? "Deleted Assets"
+      ? "Restore Deleted Assets"
       : userRole === "LEAD"
       ? "Delete Assets"
       : "Modify Assets";
