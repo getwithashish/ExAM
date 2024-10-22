@@ -27,8 +27,6 @@ class AssetDetailLeadRoleApproveService(AssetUserRoleApproveAbstract):
             message = ASSET_SUCCESSFULLY_UPDATED
             email_subject = "APPROVED: ASSET UPDATION SUCCESSFUL"
 
-            # TODO How to increment version here since the changed values are already saved in the database
-
         else:
             raise NotAcceptableOperationException(
                 {}, CANNOT_APPROVE_ACKNOWLEDGED_ASSET, status.HTTP_400_BAD_REQUEST
@@ -46,8 +44,6 @@ class AssetDetailLeadRoleApproveService(AssetUserRoleApproveAbstract):
             asset.asset_detail_status = "UPDATE_REJECTED"
             message = ASSET_UPDATION_REJECTED
             email_subject = "REJECTED: ASSET UPDATION REJECTED"
-
-            # TODO How to increment version here since the changed values are already saved in the database
 
         else:
             raise NotAcceptableOperationException(
