@@ -419,8 +419,6 @@ const AddAsset: React.FC = ({
           handleResetForm();
           setAssetCategoryValue("");
           return;
-        } else {
-          message.error("Please fill in all mandatory fields.");
         }
       } catch (error) {
         console.error("Error fetching asset type or asset creation :", error);
@@ -491,7 +489,6 @@ const AddAsset: React.FC = ({
                   setAssetCategoryValue(event.target.value as string);
                   handleResetForm();
                   setFormData({
-                    ...formData,
                     asset_category: event.target.value as string,
                   });
                 }}
@@ -948,7 +945,7 @@ const AddAsset: React.FC = ({
                   height: "40px",
                   color: "white",
                 }}
-                onClick={() => handleSubmit()} // Example: Log form data on submit
+                onClick={() => handleSubmit()}
               >
                 Submit
               </Button>
