@@ -196,8 +196,8 @@ const SidebarComponentNew = ({ children }: any) => {
 
             {userRole === "MANAGER" && (
               <Menu.Item icon={<EditOutlined />}>
-                <Tooltip title="View Deleted Assets">
-                  <Link to="/exam/updatable_assets">Deleted Assets</Link>
+                <Tooltip title="Restore Deleted Assets">
+                  <Link to="/exam/updatable_assets">Restore Assets</Link>
                 </Tooltip>
               </Menu.Item>
             )}
