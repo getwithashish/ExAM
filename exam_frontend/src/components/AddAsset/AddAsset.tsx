@@ -422,7 +422,7 @@ const AddAsset: React.FC = ({
         }
       } catch (error) {
         console.error("Error fetching asset type or asset creation :", error);
-        message.error(error.data?.message);
+        message.error(`Error: ${error.response.data?.message}`);
         return;
       } finally {
         setLoading(false);
@@ -443,7 +443,7 @@ const AddAsset: React.FC = ({
         return;
       } catch (error) {
         console.error("Error in asset creation :", error);
-        message.error(error.data?.message);
+        message.error(`Error: ${error.response.data?.message}`);
         return;
       } finally {
         setLoading(false);
