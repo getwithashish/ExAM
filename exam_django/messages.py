@@ -40,6 +40,7 @@ ASSET_PARAM_EXCEPTION_ERROR = (
 INVALID_ASSET_DATA = (
     "The provided asset data is invalid. Please correct the information and try again."
 )
+REQUIRED_FIELDS_MISSING = "Some required fields are missing"
 ASSET_REJECTED_SUCCESSFUL = "Asset has been successfully rejected."
 ASSET_CREATED_UNSUCCESSFUL = "Error while creating an asset. Please try again later."
 ASSET_UPDATION_UNSUCCESSFUL = "Error while updating asset details. Please try again."
@@ -93,7 +94,6 @@ ASSET_UPDATION_REJECTED = "Asset Modification Rejected"
 ASSIGN_ASSET_REJECT_SUCCESSFUL = "Asset Allocation Rejected"
 UNASSIGN_ASSET_REJECT_SUCCESSFUL = "Asset Deallocation Rejected"
 
-
 # Approval Exception Messages
 APPROVAL_TYPE_NOT_FOUND = (
     "Specified approval type is not valid. Try with correct value."
@@ -112,15 +112,7 @@ ASSET_SUCCESSFULLY_UNASSIGNED = "Asset Deallocation Approved"
 ASSET_DELETION_SUCCESSFUL = "Asset Deleted"
 ASSET_RESTORATION_SUCCESSFUL = "Asset Restored"
 
-# Asset Type Exception Messages
-INVALID_ASSET_TYPE = "The given asset type is invalid."
-ASSET_TYPE_RETRIEVE_FAILURE = "The given asset type was not found."
-
 INVALID_FILE_TYPE = "Invalid file type. Give a valid file type"
-
-# Asset Type Success Messages
-VALID_ASSET_TYPE = "You have entered a valid asset type."
-ASSET_TYPE_RETRIEVE_SUCCESS = "Asset type was successfully retrieved."
 
 # Asset Log Exception Messages
 ASSET_LOG_ERROR = "Something went wrong while adding data to the asset log."
@@ -146,9 +138,15 @@ BUSINESS_UNIT_CREATED_UNSUCCESSFUL = (
 UNAUTHORIZED_NO_PERMISSION = (
     "Unauthorized. You do not have permission to assign assets."
 )
-STATUS_EXPIRED_OR_DISPOSED = "Cannot assign the asset. Status is Damaged, Repair or Scrap."
-CANNOT_REQUEST_ASSIGN_FOR_ASSETS_IN_ASSIGN_PENDING = "Cannot request for assignment for assets which are already in pending state"
-CANNOT_REQUEST_UNASSIGN_FOR_ASSETS_IN_ASSIGN_PENDING = "Cannot request for unassignment for assets which are already in pending state"
+STATUS_EXPIRED_OR_DISPOSED = (
+    "Cannot assign the asset. Status is Damaged, Repair or Scrap."
+)
+CANNOT_REQUEST_ASSIGN_FOR_ASSETS_IN_ASSIGN_PENDING = (
+    "Cannot request for assignment for assets which are already in pending state"
+)
+CANNOT_REQUEST_UNASSIGN_FOR_ASSETS_IN_ASSIGN_PENDING = (
+    "Cannot request for unassignment for assets which are already in pending state"
+)
 
 # Business Unit Success Messages
 BUSINESS_UNIT_SUCCESSFULLY_CREATED = "Business unit sucessfully created."
@@ -157,11 +155,13 @@ BUSINESS_UNIT_SUCCESSFULLY_RETRIEVED = "Business Unit details sucessfully retrie
 MEMORY_SUCCESSFULLY_RETRIEVED = "Memory details sucessfully retrieved."
 EMPLOYEE_DETAILS_SUCCESSFULLY_RETRIEVED = "Employee details sucessfully retrieved"
 EMPLOYEE_DETAILS_FOUND = "Employee details retrieved based on specified search criteria"
+
 # Asset Type -Success/Invalid Messages
 VALID_ASSET_TYPE = "You have entered a valid asset type."
 INVALID_ASSET_TYPE = "The given asset type is invalid."
 ASSET_TYPE_RETRIEVE_SUCCESS = "Asset type was successfully retrieved."
 ASSET_TYPE_RETRIEVE_FAILURE = "The given asset type was not found."
+
 # URL Exception Messages
 INVALID_URL_ERROR = "The requested URL is invalid. Please verify and try again."
 URL_DOES_NOT_EXIST = "The requested URL does not exist. Please verify and try again."

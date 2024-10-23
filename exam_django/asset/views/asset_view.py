@@ -30,6 +30,7 @@ from messages import (
     ASSET_NOT_FOUND,
     ASSET_RESTORATION_SUCCESSFUL,
     INVALID_ASSET_DATA,
+    REQUIRED_FIELDS_MISSING,
     USER_UNAUTHORIZED,
     ASSET_DELETION_SUCCESSFUL,
 )
@@ -122,7 +123,7 @@ class AssetView(APIView):
         except SerializerException as e:
             return APIResponse(
                 data=str(e),
-                message=serializer.errors,
+                message=REQUIRED_FIELDS_MISSING,
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

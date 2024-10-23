@@ -14,6 +14,7 @@ import {
   hardwareSpecificFields,
   softwareSpecificFields,
 } from "./constants/constants";
+import dayjs from "dayjs";
 
 const { Option } = Select;
 type SizeType = Parameters<typeof Form>[0]["size"];
@@ -422,7 +423,7 @@ const AddAsset: React.FC = ({
         }
       } catch (error) {
         console.error("Error fetching asset type or asset creation :", error);
-        message.error(error.data?.message);
+        message.error(`Error: ${error.response.data?.message}`);
         return;
       } finally {
         setLoading(false);
@@ -443,7 +444,7 @@ const AddAsset: React.FC = ({
         return;
       } catch (error) {
         console.error("Error in asset creation :", error);
-        message.error(error.data?.message);
+        message.error(`Error: ${error.response.data?.message}`);
         return;
       } finally {
         setLoading(false);
@@ -579,6 +580,7 @@ const AddAsset: React.FC = ({
                         var dateString = dateinDateJs?.format("YYYY-MM-DD");
                         handleInputChange("date_of_purchase", dateString);
                       }}
+                      maxDate={dayjs()}
                     />
                   </LocalizationProvider>
                 </Form.Item>
@@ -723,6 +725,7 @@ const AddAsset: React.FC = ({
                         var dateString = dateinDateJs?.format("YYYY-MM-DD");
                         handleInputChange("date_of_purchase", dateString);
                       }}
+                      maxDate={dayjs()}
                     />
                   </LocalizationProvider>
                 </Form.Item>

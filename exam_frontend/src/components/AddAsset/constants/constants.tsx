@@ -9,9 +9,9 @@ export const hardwareSpecificFields = [
 
 export const softwareSpecificFields = [
     "product_name",
+    "asset_type",
+    "license_type",
     "location",
     "date_of_purchase",
   ];
-
-
   
