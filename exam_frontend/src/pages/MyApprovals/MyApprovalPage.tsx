@@ -31,7 +31,7 @@ const MyApprovalPage = () => {
   let heading = "My Approved Request";
 
   return (
-    <div className="pt-8 h-full bg-custom-500" style={{ height: "100vh" }}>
+    <div className="pt-8 h-full bg-custom-500">
       <AssetTableHandler
         isRejectedPage={false}
         queryParamProp={queryParamProp}

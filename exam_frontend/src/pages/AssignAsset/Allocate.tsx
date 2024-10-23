@@ -11,7 +11,7 @@ const AssignableAsset = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [queryParam, setQueryParam] = useState("");
 
-  const queryParamProp = "&assign_status=UNASSIGNED|REJECTED&status=STOCK";
+  const queryParamProp = "&assign_status=UNASSIGNED|REJECTED&asset_detail_status=CREATED|UPDATED|UPDATE_REJECTED&status=STOCK";
 
   const {
     data: assetData,
@@ -45,7 +45,7 @@ const AssignableAsset = () => {
         showAssignDrawer={showAssignDrawer}
         queryParamProp={queryParamProp}
       />
-      <DrawerViewRequest title="Allocate this Asset" onClose={closeAssignDrawer} open={open}>
+      <DrawerViewRequest title="Allocate Asset" onClose={closeAssignDrawer} open={open}>
         {record && (
           <AssignmentHandler
             record={record}

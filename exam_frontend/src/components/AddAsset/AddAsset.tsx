@@ -14,6 +14,7 @@ import {
   hardwareSpecificFields,
   softwareSpecificFields,
 } from "./constants/constants";
+import dayjs from "dayjs";
 
 const { Option } = Select;
 type SizeType = Parameters<typeof Form>[0]["size"];
@@ -240,6 +241,7 @@ const AddAsset: React.FC = ({
     setLicenseValue("");
     setOwnerValue("");
     setAssetLocation("");
+    setAssetInLocation("");
     setAssetBu("");
     setModelNumber("");
     setOs("");
@@ -418,12 +420,10 @@ const AddAsset: React.FC = ({
           handleResetForm();
           setAssetCategoryValue("");
           return;
-        } else {
-          message.error("Please fill in all mandatory fields.");
         }
       } catch (error) {
         console.error("Error fetching asset type or asset creation :", error);
-        message.error(error.data?.message);
+        message.error(`Error: ${error.response.data?.message}`);
         return;
       } finally {
         setLoading(false);
@@ -444,7 +444,7 @@ const AddAsset: React.FC = ({
         return;
       } catch (error) {
         console.error("Error in asset creation :", error);
-        message.error(error.data?.message);
+        message.error(`Error: ${error.response.data?.message}`);
         return;
       } finally {
         setLoading(false);
@@ -490,7 +490,6 @@ const AddAsset: React.FC = ({
                   setAssetCategoryValue(event.target.value as string);
                   handleResetForm();
                   setFormData({
-                    ...formData,
                     asset_category: event.target.value as string,
                   });
                 }}
@@ -581,6 +580,7 @@ const AddAsset: React.FC = ({
                         var dateString = dateinDateJs?.format("YYYY-MM-DD");
                         handleInputChange("date_of_purchase", dateString);
                       }}
+                      maxDate={dayjs()}
                     />
                   </LocalizationProvider>
                 </Form.Item>
@@ -725,6 +725,7 @@ const AddAsset: React.FC = ({
                         var dateString = dateinDateJs?.format("YYYY-MM-DD");
                         handleInputChange("date_of_purchase", dateString);
                       }}
+                      maxDate={dayjs()}
                     />
                   </LocalizationProvider>
                 </Form.Item>
@@ -947,7 +948,7 @@ const AddAsset: React.FC = ({
                   height: "40px",
                   color: "white",
                 }}
-                onClick={() => handleSubmit()} // Example: Log form data on submit
+                onClick={() => handleSubmit()}
               >
                 Submit
               </Button>

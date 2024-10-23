@@ -19,7 +19,7 @@ const Deallocate = () => {
       setLoading(false);
     }
   };
-  let queryParamProp = "&assign_status=ASSIGNED|REJECTED&status=USE";
+  let queryParamProp = "&assign_status=ASSIGNED|REJECTED&asset_detail_status=CREATED|UPDATED|UPDATE_REJECTED&status=USE";
   return (
     <div className="bg-custom-400 pt-8">
       {loading && (
