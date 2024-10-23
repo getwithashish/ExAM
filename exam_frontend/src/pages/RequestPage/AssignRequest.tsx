@@ -616,13 +616,6 @@ const ViewRequestModal: FC<{
         value: assignRequest?.accessories,
         disabled: true,
       },
-      {
-        id: "configuration",
-        label: "CONFIGURATION",
-        name: "configuration",
-        value: assignRequest?.configuration,
-        disabled: true,
-      },
     ];
 
     return (

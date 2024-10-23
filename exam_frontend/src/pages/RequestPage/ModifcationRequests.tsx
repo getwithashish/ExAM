@@ -606,13 +606,6 @@ const ViewRequestModal: FC<{
         value: asset?.accessories,
         disabled: true,
       },
-      {
-        id: "configuration",
-        label: "CONFIGURATION",
-        name: "configuration",
-        value: asset?.configuration,
-        disabled: true,
-      },
     ];
 
     return (

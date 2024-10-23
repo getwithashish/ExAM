@@ -7,13 +7,15 @@ const UpdatableAsset = () => {
   let queryParamProp =
     userRole === "MANAGER"
       ? "&deleted=True"
-      : "&asset_detail_status=CREATED|UPDATED|CREATE_REJECTED|UPDATE_REJECTED";
+      : userRole === "LEAD"
+        ? "&asset_detail_status=CREATED|UPDATED|CREATE_REJECTED|UPDATE_REJECTED&assign_status=ASSIGNED|UNASSIGNED|REJECTED"
+        : "&asset_detail_status=CREATED|UPDATED|CREATE_REJECTED|UPDATE_REJECTED";
   let heading =
     userRole === "MANAGER"
       ? "Restore Deleted Assets"
       : userRole === "LEAD"
-      ? "Delete Assets"
-      : "Modify Assets";
+        ? "Delete Assets"
+        : "Modify Assets";
 
   return (
     <div className="pt-8">
