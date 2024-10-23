@@ -34,7 +34,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
   const formItems = [
     {
       label: "Asset Category",
-      value: (
+      value: data.asset_category && (
         <Form.Item
           name="assetCategory"
           style={{ flex: "1" }}
@@ -54,7 +54,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     },
     {
       label: "Asset Type",
-      value: (
+      value: data.asset_type && (
         <Form.Item
           name="assetType"
           style={{ flex: "1" }}
@@ -75,7 +75,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "Asset Status",
       name: "assetStatus",
-      value: (
+      value: data.status && (
         <Form.Item
           name="status"
           style={{ flex: "1" }}
@@ -96,7 +96,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "Location",
       name: "location",
-      value: (
+      value: data.location && (
         <Form.Item
           name="location"
           style={{ boxShadow: "none", border: "none" }}
@@ -118,7 +118,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "Location",
       name: "location",
-      value: (
+      value: data.invoice_location &&(
         <Form.Item
           name="location"
           style={{ boxShadow: "none", border: "none" }}
@@ -140,7 +140,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "OS",
       name: "os",
-      value: (
+      value: data.os &&(
         <Form.Item name="os">
           <b>OS: </b>
           <br></br>
@@ -157,7 +157,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "OS Version",
       name: "osVersion",
-      value: (
+      value: data.os_version && (
         <Form.Item name="os version">
           <b>OS Version:</b>
           <br></br>
@@ -174,7 +174,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "Mobile OS",
       name: "mobileOs",
-      value: (
+      value: data.mobile_os && (
         <Form.Item name="mobile os">
           <b>Mobile OS: </b>
           <br></br>
@@ -191,7 +191,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "Processor",
       name: "processor",
-      value: (
+      value: data.processor && (
         <Form.Item name="processor">
           <b>Processor: </b>
           <br></br>
@@ -208,7 +208,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "Generation",
       name: "generation",
-      value: (
+      value: data["processor_gen"] && (
         <Form.Item name="generation">
           <b>Generation:</b>
           <br></br>
@@ -225,7 +225,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "Accessories",
       name: "accessories",
-      value: (
+      value: data.accessories && (
         <Form.Item name="accessories">
           <b>Accessories:</b> <br></br>
           <br></br>{" "}
@@ -241,7 +241,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "Date of Purchase",
       name: "dateOfPurchase",
-      value: (
+      value: data.date_of_purchase && (
         <Form.Item name="date of purchase">
           <b>Date of Purchase:</b> <br></br>
           <br></br>{" "}
@@ -259,7 +259,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "Warranty Period",
       name: "warrantyPeriod",
-      value: (
+      value: data.warranty_period && (
         <Form.Item name="warranty period">
           <b>Warranty Period:</b>
           <br></br>
@@ -278,7 +278,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "Expiry Date",
       name: "Expiry Date",
-      value: (
+      value: formattedExpiryDate && (
         <Form.Item name="Expiry Date">
           <b>Expiry Date: </b>
           <br></br>
@@ -294,7 +294,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "Asset detail status",
       name: "asset_detail_status",
-      value: (
+      value: data.asset_detail_status && (
         <Form.Item name="asset_detail_status">
           <b>Asset Detail Status </b>
           <br></br>
@@ -313,7 +313,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "Assign status",
       name: "assign_status",
-      value: (
+      value: data.assign_status && (
         <Form.Item name="assign_status">
           <b>Assign Status </b>
           <br></br>
@@ -332,7 +332,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "Approver",
       name: "approver",
-      value: (
+      value: data["approved_by"] && (
         <Form.Item name="approver">
           <b>Approved By:</b>
           <br></br>
@@ -349,7 +349,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "Serial Number",
       name: "serialNumber",
-      value: (
+      value: data.serial_number && (
         <Form.Item name="serial number">
           <b>Serial Number:</b> <br></br>
           <br></br>{" "}
@@ -368,7 +368,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "Model Number",
       name: "modelNumber",
-      value: (
+      value: data.model_number && (
         <Form.Item name="model number">
           <b>Model Number:</b> <br></br>
           <br></br>{" "}
@@ -384,7 +384,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "Custodian",
       name: "custodian",
-      value: (
+      value: data.custodian && (
         <Form.Item name="date of purchase">
           <b>Custodian:</b>
           <br></br>
@@ -401,7 +401,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "Owner",
       name: "owner",
-      value: (
+      value: data.owner && (
         <Form.Item name="owner">
           <b>Owner: </b>
           <br></br>
@@ -418,7 +418,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "Requester",
       name: "requester",
-      value: (
+      value: data.requester && (
         <Form.Item name="requester">
           <b>Requester: </b>
           <br></br>
@@ -436,7 +436,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "Product Name",
       name: "productName",
-      value: (
+      value: data.product_name && (
         <Form.Item name="product name">
           <b>Product Name:</b>
           <br></br>
@@ -454,7 +454,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "Business Unti",
       name: "businessUnit",
-      value: (
+      value: data.business_unit && (
         <Form.Item
           name="business_unit"
           style={{ boxShadow: "none", border: "none" }}
@@ -476,7 +476,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "Memory",
       name: "memory",
-      value: (
+      value: data.memory && (
         <Form.Item
           name="business_unit"
           style={{ boxShadow: "none", border: "none" }}
@@ -498,7 +498,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "Storage",
       name: "storage",
-      value: (
+      value: data.storage && (
         <Form.Item name="storage">
           <b>Storage: </b>
           <br></br>
@@ -534,7 +534,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "Created At",
       name: "createdAt",
-      value: (
+      value: data.created_at && (
         <Form.Item name="created_at">
           <b>Created At: </b>
           <br></br>
@@ -550,7 +550,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "Updated At",
       name: "updatedAt",
-      value: (
+      value: data.updated_at && (
         <Form.Item name="updated_at">
           <b>Updated At: </b>
           <br></br>
@@ -566,7 +566,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "Comments",
       name: "comments",
-      value: (
+      value: data.notes && (
         <Form.Item name="comments">
           <b>Comments: </b>
           <br></br>
@@ -588,7 +588,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "approval_status_message",
       name: "approval_status_message",
-      value: (
+      value:data["approval_status_message"] && (
         <Form.Item name="approval_status_message">
           <b>Approver Message: </b>
           <br></br>
@@ -675,22 +675,26 @@ const DashBoardCardComponent: React.FC<CardType> = ({
         />
       </div>
       <div className="scrollable-content font-display">
-        <Form
-          key={data.asset_id}
-          className="mainCard"
-          title=""
-          style={mainCardStyle}
-        >
-          {filteredFormItems.map((item, index) => (
-            <Form.Item key={index}>
-              <div key={index} style={formItemStyle}>
-                {item.value}
-              </div>
-            </Form.Item>
-          ))}
+      <Form
+  key={data.asset_id}
+  className="mainCard"
+  title=""
+  style={mainCardStyle}
+>
+  {filteredFormItems.map((item, index) => (
+    item.value != null && (  // Check for both null and undefined
+      <Form.Item key={index}>
+        <div key={index} style={formItemStyle}>
+          {item.value}
+        </div>
+      </Form.Item>
+    )
+  ))}
 
-          <div className="rowone" font-display></div>
-        </Form>
+  <div className="rowone" font-display></div>
+</Form>
+
+
       </div>
     </div>
   );
