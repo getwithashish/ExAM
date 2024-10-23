@@ -60,16 +60,6 @@ export const Assignment: React.FC<AssignmentProps> = ({
               />
             </div>
             <div>
-              <label htmlFor="configuration">CONFIGURATION:</label>
-              <input
-                type="text"
-                id="configuration"
-                value={record?.configuration}
-                className="mt-1 font-display bg-custom-400 rounded-lg font-semibold"
-                disabled
-              />
-            </div>
-            <div>
               <label htmlFor="location">LOCATION:</label>
               <input
                 type="text"
