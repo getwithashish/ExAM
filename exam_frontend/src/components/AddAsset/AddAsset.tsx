@@ -14,6 +14,7 @@ import {
   hardwareSpecificFields,
   softwareSpecificFields,
 } from "./constants/constants";
+import dayjs from "dayjs";
 
 const { Option } = Select;
 type SizeType = Parameters<typeof Form>[0]["size"];
@@ -579,6 +580,7 @@ const AddAsset: React.FC = ({
                         var dateString = dateinDateJs?.format("YYYY-MM-DD");
                         handleInputChange("date_of_purchase", dateString);
                       }}
+                      maxDate={dayjs()}
                     />
                   </LocalizationProvider>
                 </Form.Item>
@@ -723,6 +725,7 @@ const AddAsset: React.FC = ({
                         var dateString = dateinDateJs?.format("YYYY-MM-DD");
                         handleInputChange("date_of_purchase", dateString);
                       }}
+                      maxDate={dayjs()}
                     />
                   </LocalizationProvider>
                 </Form.Item>
