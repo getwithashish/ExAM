@@ -1,3 +1,4 @@
+import json
 from django.db import models
 
 
@@ -8,4 +9,4 @@ class AssetType(models.Model):
     )
 
     def __str__(self):
-        return str(self.asset_type_name)
+        return json.dumps({"id": self.id, "asset_type_name": self.asset_type_name})

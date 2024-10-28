@@ -1,3 +1,4 @@
+import json
 from django.db import models
 
 
@@ -8,9 +9,7 @@ class Location(models.Model):
     )
 
     def __str__(self):
-        return str(self.location_name)
-
-    # Return a meaningful representation of the object
+        return json.dumps({"id": self.id, "location_name": self.location_name})
 
     class Meta:
         ordering = ["id"]
