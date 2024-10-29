@@ -105,9 +105,9 @@ const AssetCountComponent = () => {
           }}
         />
       </div>
-      <div className="flex flex-wrap mx-auto px-auto items-center justify-center lg:gap-10 lg:px-16 lg:my-10 md:gap-20 lg:px-8 lg:my-5 sm:gap-20 sm:px-4 sm:my-2 ">
+      <div className="flex flex-wrap mx-auto px-auto items-center justify-center lg:gap-10 lg:px-16 lg:my-10 md:gap-20 lg:px-8 lg:my-5 sm:gap-20 sm:px-4 sm:my-2">
         <div
-          className="relative font-bold text-white rounded-full bg-gradient-to-r from-purple-800 to-purple-800 hover:from-purple-600 hover:to-purple-700 flex items-center justify-center"
+          className="relative mb-4 font-bold text-white rounded-full bg-gradient-to-r from-purple-800 to-purple-800 hover:from-purple-600 hover:to-purple-700 flex items-center justify-center"
           style={{
             height: "13rem",
             width: "13rem",
@@ -129,7 +129,7 @@ const AssetCountComponent = () => {
           </div>
         </div>
         <div
-          className="relative font-bold text-white rounded-full bg-gradient-to-r from-teal-600 to-teal-800 hover:from-teal-800 hover:to-teal-800 flex items-center justify-center"
+          className="relative mb-4 font-bold text-white rounded-full bg-gradient-to-r from-teal-600 to-teal-800 hover:from-teal-800 hover:to-teal-800 flex items-center justify-center"
           style={{
             height: "13rem",
             width: "13rem",
@@ -153,7 +153,7 @@ const AssetCountComponent = () => {
           </div>
         </div>
         <div
-          className="relative font-bold text-white rounded-full bg-gradient-to-r from-cyan-700 to-cyan-700 hover:from-cyan-500 hover:to-cyan-600 flex items-center justify-center"
+          className="relative mb-4 font-bold text-white rounded-full bg-gradient-to-r from-cyan-700 to-cyan-700 hover:from-cyan-500 hover:to-cyan-600 flex items-center justify-center"
           style={{
             height: "13rem",
             width: "13rem",
@@ -177,7 +177,7 @@ const AssetCountComponent = () => {
           </div>
         </div>
         <div
-          className="relative font-bold text-white rounded-full bg-gradient-to-r from-indigo-700 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 flex items-center justify-center"
+          className="relative mb-4 font-bold text-white rounded-full bg-gradient-to-r from-indigo-700 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 flex items-center justify-center"
           style={{
             height: "13rem",
             width: "13rem",
@@ -201,7 +201,7 @@ const AssetCountComponent = () => {
           </div>
         </div>
         <div
-          className="relative font-bold text-white rounded-full bg-gradient-to-r from-blue-700 to-blue-700 hover:from-blue-500 hover:to-blue-600 flex items-center justify-center"
+          className="relative mb-4 font-bold text-white rounded-full bg-gradient-to-r from-blue-700 to-blue-700 hover:from-blue-500 hover:to-blue-600 flex items-center justify-center"
           style={{
             height: "13rem",
             width: "13rem",
