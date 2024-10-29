@@ -46,8 +46,8 @@ root.render(
       <Flowbite>
         <AuthProvider>
           <ThemeProvider theme={darkTheme}>
-          <ConfigProvider theme={customTheme}>
-            <ExamRoutes />
+            <ConfigProvider theme={customTheme}>
+              <ExamRoutes />
             </ConfigProvider>
           </ThemeProvider>
         </AuthProvider>
