@@ -4,7 +4,15 @@ import pandas as pd
 import zipfile
 from datetime import datetime
 from django.forms import ValidationError
-from asset.models import Asset, AssetType, BusinessUnit, Employee, Location, Memory, AssetLog
+from asset.models import (
+    Asset,
+    AssetType,
+    BusinessUnit,
+    Employee,
+    Location,
+    Memory,
+    AssetLog,
+)
 from django.forms import model_to_dict
 import json
 from rest_framework.views import APIView
@@ -12,10 +20,12 @@ from rest_framework.response import Response
 from rest_framework import status
 import base64
 
+
 def clean_field(value):
     if pd.isna(value) or value == "nan" or value == "":
         return None
     return str(value).strip()
+
 
 def create_asset_logs(assets):
     for asset in assets:
@@ -29,6 +39,7 @@ def create_asset_logs(assets):
             asset_uuid=asset,
             asset_log=asset_log_data,
         )
+
 
 class AssetImportService:
     @staticmethod
@@ -65,17 +76,23 @@ class AssetImportService:
                 continue
 
             date_of_purchase = row.get("Date Of Purchase")
-            
-            #default date.
+
+            # default date.
             default_date = datetime.strptime("2010-08-09", "%Y-%m-%d").date()
             if pd.isna(date_of_purchase) or date_of_purchase == "":
                 purchase_date = default_date
             else:
                 try:
                     if isinstance(date_of_purchase, pd.Timestamp):
-                        purchase_date = date_of_purchase.date() if not pd.isna(date_of_purchase) else None
+                        purchase_date = (
+                            date_of_purchase.date()
+                            if not pd.isna(date_of_purchase)
+                            else None
+                        )
                     else:
-                        purchase_date = datetime.strptime(date_of_purchase, "%m/%d/%Y").date()
+                        purchase_date = datetime.strptime(
+                            date_of_purchase, "%m/%d/%Y"
+                        ).date()
                 except ValueError:
                     purchase_date = None
 
@@ -107,17 +124,16 @@ class AssetImportService:
                     missing_fields_assets.append(row)
                     continue
 
-                                    
             try:
                 warranty = row.get("Warranty")
                 if pd.isna(warranty) or warranty == "":
                     warranty = -1
                 elif isinstance(warranty, (int, float)):
-                                warranty = int(warranty)
+                    warranty = int(warranty)
                 else:
                     warranty = str(warranty).strip()
                     if warranty == "1 Year Warranty":
-                       warranty = 12
+                        warranty = 12
                     elif warranty == "3 Year Warranty":
                         warranty = 36
                     elif warranty == "Under Warranty":
@@ -132,9 +148,7 @@ class AssetImportService:
             except ValueError as e:
                 print(e)
                 missing_fields_assets.append(row)
-                continue        
-
-            
+                continue
 
             approval_status = clean_field(row.get("Approval Status"))
             if approval_status == "Approved":
@@ -147,16 +161,21 @@ class AssetImportService:
                 asset_detail_status = "UNKNOWN"
 
             assign_status = (
-                                "UNASSIGNED" 
-                                if not row.get("Custodian") or (row.get("Custodian") == "Experion SFM" and row.get("Asset Category") == "Laptop") 
-                                else "ASSIGNED")
+                "UNASSIGNED"
+                if not row.get("Custodian")
+                or (
+                    row.get("Custodian") == "Experion SFM"
+                    and row.get("Asset Category") == "Laptop"
+                )
+                else "ASSIGNED"
+            )
 
             status = clean_field(row.get("Status"))
             if status == "No Service":
                 status = " SCRAP"
-            elif status == "In Service" and assign_status=="ASSIGNED":
+            elif status == "In Service" and assign_status == "ASSIGNED":
                 status = "USE"
-            elif status == "In Service" and assign_status=="UNASSIGNED":
+            elif status == "In Service" and assign_status == "UNASSIGNED":
                 status = "STOCK"
             elif status == "Damaged":
                 status = "DAMAGED"
@@ -166,7 +185,6 @@ class AssetImportService:
                 status = "REPAIR"
             else:
                 status = "UNKNOWN"
-                
 
             asset = Asset(
                 asset_id=asset_id,
@@ -201,7 +219,6 @@ class AssetImportService:
                 location_id=location.id if location else None,
                 memory_id=memory.id if memory else None,
             )
-
 
             new_assets.append(asset)
             added_assets_count += 1
@@ -252,7 +269,7 @@ class AssetImportService:
                 csv_writer.writerow(asset.values())
 
         return output
-    
+
     @staticmethod
     def generate_missing_fields_xlsx(missing_fields_assets):
         if missing_fields_assets:

@@ -267,18 +267,10 @@ class AssetLogService:
 previous_instance = {}
 
 
-# @receiver(pre_save, sender=Asset)
-# def store_previous_instance(sender, instance, **kwargs):
-#     if instance.pk:
-#         previous_instance[instance.pk] = model_to_dict(instance)
-#         print("Inside Pre-save: ", previous_instance[instance.pk])
-
-
 @receiver(signal=asset_previous_value_signal, sender=Asset)
 def store_previous_instance(sender, instance, **kwargs):
     if instance.pk:
         previous_instance[instance.pk] = model_to_dict(instance)
-        print("Inside Before Saving: ", previous_instance[instance.pk])
 
 
 @receiver(post_save, sender=Asset)
@@ -286,13 +278,6 @@ def log_asset_changes(sender, instance, **kwargs):
     try:
         if instance.pk in previous_instance:
             old_instance = previous_instance[instance.pk]
-            print("Old Instance: ", old_instance["asset_detail_status"])
-            print(
-                "New Instance: ", instance.asset_detail_status, " and pk: ", instance.pk
-            )
-
-            # print("Inside Post-save Prev: ", model_to_dict(previous_instance))
-            # print("Inside Post-save New: ", model_to_dict(instance))
 
             if old_instance["asset_detail_status"] != instance.asset_detail_status:
                 if instance.asset_detail_status not in [
@@ -300,28 +285,15 @@ def log_asset_changes(sender, instance, **kwargs):
                     "UPDATED",
                     "UPDATE_REJECTED",
                 ]:
-                    print(
-                        "========================== Entered 1 ======================="
-                    )
                     return
+
             elif old_instance["assign_status"] != instance.assign_status:
                 if instance.assign_status not in ["ASSIGNED", "UNASSIGNED", "REJECTED"]:
-                    print(
-                        "=========================== Entered 1 ==========================="
-                    )
                     return
+
             else:
-                print(
-                    "========================= Entered 3 ==============================="
-                )
                 return
 
-            # if (
-            #     instance.asset_detail_status == "CREATED"
-            #     or instance.asset_detail_status == "UPDATED"
-            #     or instance.asset_detail_status == "ASSIGNED"
-            #     or instance.asset_detail_status == "UNASSIGNED"
-            # ):
             changes = {
                 field: getattr(instance, field)
                 for field in old_instance
@@ -330,17 +302,11 @@ def log_asset_changes(sender, instance, **kwargs):
             asset_log_data = json.dumps(changes, indent=4, sort_keys=True, default=str)
 
             # TODO - How about a request which was rejected and then sent again for approval, without any changes
+            # TODO - How about logging DELETE and RESTORE operations
             if changes:
                 with transaction.atomic():
-                    # if instance.asset_detail_status == "CREATED":
-                    #     asset_instance = instance
-                    # else:
-                    #     asset_instance = Asset.objects.select_for_update().get(
-                    #         pk=instance.pk
-                    #     )
                     asset_log_entry = AssetLog.objects.create(
                         asset_uuid=instance,
-                        # asset_uuid=asset_instance,
                         asset_log=asset_log_data,
                     )
                     asset_log_entry.save()

@@ -78,7 +78,6 @@ class AssetApproveService:
                     "pavithraexperion@gmail.com",
                 ],
             )
-        print(serializer.data)
 
         return serializer.data, message, status.HTTP_202_ACCEPTED
 
@@ -126,6 +125,5 @@ class AssetApproveService:
                     "pavithraexperion@gmail.com",
                 ],
             )
-        print(serializer.data)
 
         return serializer.data, message, status.HTTP_202_ACCEPTED

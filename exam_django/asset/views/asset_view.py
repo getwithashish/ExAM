@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.views import APIView
+import sentry_sdk
 from asset.serializers import AssetReadSerializer, AssetWriteSerializer
 from asset.models import Asset, Memory, BusinessUnit, AssetType
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -208,6 +209,7 @@ class AssetView(APIView):
 
         except Exception as e:
             print("Error: ", e)
+            sentry_sdk.capture_exception(e)
             return APIResponse(
                 data={},
                 message="Error occurred while deleting asset.",
@@ -216,13 +218,10 @@ class AssetView(APIView):
 
     def put(self, request):
         asset_uuid = request.data.get("asset_uuid")
-        print("Asset UUID: ", asset_uuid)
         try:
             asset = get_object_or_404(Asset, asset_uuid=asset_uuid)
             asset.is_deleted = False
-            print("Reached before SAVE")
             asset.save()
-            print("Reached after SAVE")
             return APIResponse(
                 data={"asset_uuid": asset_uuid},
                 message=ASSET_RESTORATION_SUCCESSFUL,
@@ -238,6 +237,7 @@ class AssetView(APIView):
 
         except Exception as e:
             print("Error: ", e)
+            sentry_sdk.capture_exception(e)
             return APIResponse(
                 data={},
                 message="Error occurred while restoring asset.",
@@ -250,7 +250,6 @@ class UserAgentAssetView(APIView):
 
     def post(self, request):
         request_body = json.loads(request.body)
-        print(request_body)
         asset_type = AssetType.objects.filter(asset_type_name="Laptop").first()
         memory = int(request_body.get("totalMemoryGB"))
         memory, create = Memory.objects.get_or_create(memory_space=memory)

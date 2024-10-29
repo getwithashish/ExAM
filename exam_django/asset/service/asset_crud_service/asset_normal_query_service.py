@@ -1,3 +1,4 @@
+import sentry_sdk
 from asset.models import Asset
 from django.db.models import Q
 from rest_framework import status
@@ -149,6 +150,7 @@ class AssetNormalQueryService(AssetQueryAbstract):
                         queryset = queryset.exclude(asset_uuid=ele.asset_uuid)
             except Exception as e:
                 print("Error Occured: ", e)
+                sentry_sdk.capture_exception(e)
 
         page = self.pagination.paginate_queryset(queryset, request)
 

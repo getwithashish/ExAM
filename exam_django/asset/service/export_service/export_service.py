@@ -45,10 +45,6 @@ class ExportService:
             else:
                 # Handle the case where date_of_purchase or warranty_period is None
                 expiry_dates.append(None)
-        # Print expiry dates for debugging
-        print("Expiry Dates:")
-        for expiry_date in expiry_dates:
-            print(expiry_date)
 
         # Export assets based on the specified format
         if format == "csv":

@@ -129,7 +129,6 @@ class AssetAdvancedQueryServiceWithJsonLogic(AssetQueryAbstract):
         elif "<" in logic_data:
             field = logic_data["<"][0]["var"]
             value = logic_data["<"][1]
-            print("NOT IN: Field: ", field, " Value: ", value)
 
             return Q(**{field + "__lt": value})
 
