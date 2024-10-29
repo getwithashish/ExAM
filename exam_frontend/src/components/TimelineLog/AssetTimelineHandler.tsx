@@ -38,6 +38,13 @@ const useAssetLogs = (assetUuid: string) => {
 export const AssetTimelineHandler = ({ assetUuid }: Props) => {
   const { assetLogs, isLoading } = useAssetLogs(assetUuid);
 
+  const splitAndCapitalizeWords = (assetFieldName: string) => {
+    return assetFieldName
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
   const filteredLogs = useMemo(() => {
     if (!assetLogs) return [];
     return assetLogs.map((log: Log) => {
@@ -60,25 +67,55 @@ export const AssetTimelineHandler = ({ assetUuid }: Props) => {
     );
   }, [filteredLogs]);
 
+  const findKeyName = (key: string) => {
+    const fieldKeys = ["asset_type", "business_unit"]
+    if (fieldKeys.includes(key)) {
+      return `${key}_name`
+    }
+    else if (key === "location" || key === "invoice_location") {
+      return `location_name`
+    }
+    else if (key === "memory") {
+      return `${key}_space`
+    }
+    return key
+  }
+
+  const findFieldValue = (key: string, value: any) => {
+    const keyName = findKeyName(key)
+    if (keyName === key) {
+      return value?.toString();
+    }
+    else {
+      return JSON.parse(value)[keyName].toString()
+    }
+  }
+
   const renderChangeValue = useCallback((key: string, value: any) => {
+
     if (key === "requester_id") {
       return <span>Requester: {value.old_value}</span>;
     }
     if (key === "custodian") {
       return (
         <>
-          {value.old_value !== "None" && <span>Prev custodian: {value.old_value}</span>}
-          {value.new_value && <p>New custodian: {value.new_value}</p>}
+          {(value.old_value && value.old_value != "None") && <span>Prev custodian: {JSON.parse(value.old_value).employee_name}</span>}
+          {(value.new_value && value.new_value != "None") && <p>New custodian: {JSON.parse(value.new_value).employee_name}</p>}
         </>
       );
     }
-    if (value.old_value !== "None" && value.new_value !== "None") {
-      return <>{key}: {value.old_value} to {value.new_value}</>;
+    if (value.old_value == value.new_value) {
+      return <></>
+    }
+    if (value.old_value && value.old_value !== "None" && value.new_value && value.new_value !== "None") {
+      return <>
+        {splitAndCapitalizeWords(key)}: {findFieldValue(key, value.old_value)} to {findFieldValue(key, value.new_value)}
+      </>;
     }
     if (value.old_value !== "None") {
-      return <>{key}: {value.old_value} (removed)</>;
+      return <>{splitAndCapitalizeWords(key)}: {findFieldValue(key, value.old_value)} (removed)</>;
     }
-    return <>{key}: {value.new_value} (added)</>;
+    return <>{splitAndCapitalizeWords(key)}: {findFieldValue(key, value.new_value)} (added)</>;
   }, []);
 
   if (isLoading) {

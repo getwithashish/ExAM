@@ -2,6 +2,8 @@ from rest_framework import status
 
 from asset.models import Asset
 from asset.serializers.asset_serializer import AssetReadSerializer
+from asset.signals.asset_previous_value_signal import asset_previous_value_signal
+from exceptions import ConflictException
 from utils.celery_status_checker import CeleryStatusChecker
 from notification.utils.email_body_contents.system_admin_email_body_contents import (
     construct_allocation_approval_email_body,
@@ -14,6 +16,7 @@ from notification.utils.email_body_contents.system_admin_email_body_contents imp
     construct_modification_rejection_email_body,
 )
 from messages import (
+    ASSET_CONFLICT,
     ASSET_CREATION_REJECTED,
     ASSET_SUCCESSFULLY_ASSIGNED,
     ASSET_SUCCESSFULLY_CREATED,
@@ -34,13 +37,21 @@ class AssetApproveService:
     def approve_request(self, request):
         asset_uuid = request.data.get("asset_uuid")
         comments = request.data.get("comments")
+        version = request.data.get("version")
+
         asset = Asset.objects.get(asset_uuid=asset_uuid)
-        asset.approved_by = request.user
-        asset.approval_status_message = comments
+
+        if asset.version != version:
+            raise ConflictException({}, ASSET_CONFLICT, status.HTTP_409_CONFLICT)
+
+        asset_previous_value_signal.send(sender=Asset, instance=asset)
 
         asset, message, email_subject = (
             self.asset_user_role_approve_service.approve_request(asset, request)
         )
+        asset.approved_by = request.user
+        asset.approval_status_message = comments
+        asset.version = asset.version + 1
 
         asset.save()
         serializer = AssetReadSerializer(asset)
@@ -67,20 +78,27 @@ class AssetApproveService:
                     "pavithraexperion@gmail.com",
                 ],
             )
-        print(serializer.data)
 
         return serializer.data, message, status.HTTP_202_ACCEPTED
 
     def reject_request(self, request):
         asset_uuid = request.data.get("asset_uuid")
         comments = request.data.get("comments")
+        version = request.data.get("version")
+
         asset = Asset.objects.get(asset_uuid=asset_uuid)
-        asset.approved_by = request.user
-        asset.approval_status_message = comments
+
+        if asset.version != version:
+            raise ConflictException({}, ASSET_CONFLICT, status.HTTP_409_CONFLICT)
+
+        asset_previous_value_signal.send(sender=Asset, instance=asset)
 
         asset, message, email_subject = (
             self.asset_user_role_approve_service.reject_request(asset, request)
         )
+        asset.approved_by = request.user
+        asset.approval_status_message = comments
+        asset.version = asset.version + 1
 
         asset.save()
         serializer = AssetReadSerializer(asset)
@@ -107,6 +125,5 @@ class AssetApproveService:
                     "pavithraexperion@gmail.com",
                 ],
             )
-        print(serializer.data)
 
         return serializer.data, message, status.HTTP_202_ACCEPTED

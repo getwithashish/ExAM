@@ -4,6 +4,7 @@ import string
 from django.shortcuts import redirect
 from rest_framework import generics, status
 from rest_framework.response import Response
+import sentry_sdk
 from user_auth.models import User
 from rest_framework_simplejwt.views import TokenObtainPairView
 from user_auth.serializers import (
@@ -123,7 +124,6 @@ class SSOCreateRetrieveView(generics.GenericAPIView):
         elif user_scope.upper() == "MANAGER":
             user_scope = "MANAGER"
         else:
-            print("Some other user scope encountered !!!!")
             return
 
         try:
@@ -142,7 +142,6 @@ class SSOCreateRetrieveView(generics.GenericAPIView):
             if user:
                 tokens = obtain_tokens(user)
             else:
-                print("Something happened")
                 return
 
         redirect_url = f"http://localhost:5173/sso/flow?refresh_token={tokens['refresh']}&access_token={tokens['access']}"
@@ -177,8 +176,10 @@ def create_user_service(user_data):
         else:
             err_data = str(serializer.errors)
             print(err_data)
+            sentry_sdk.capture_exception(err_data)
             return None
 
     except Exception as ex:
-        print(ex)
+        print("Exception Occured: ", ex)
+        sentry_sdk.capture_exception(ex)
         return None

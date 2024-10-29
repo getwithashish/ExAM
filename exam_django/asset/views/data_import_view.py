@@ -2,6 +2,7 @@ import base64
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework import status
+import sentry_sdk
 from asset.service.data_import_service.initial_import_service import AssetImportService
 from rest_framework.permissions import IsAuthenticated
 from response import APIResponse
@@ -22,10 +23,7 @@ class DataImportView(APIView):
             user = request.user
             file = request.FILES.get("file")
             # Specifies whether the data being imported is the data from the old system
-            file_type = request.query_params.get(
-                "file_type", ""
-            ).lower()  # Get file type from query parameters
-            print("File Type: ", file_type)
+            file_type = request.query_params.get("file_type", "").lower()
             if not file_type or file_type not in ["csv", "xlsx"]:
                 return APIResponse(
                     data=[],
@@ -108,6 +106,7 @@ class DataImportView(APIView):
 
         except UnicodeDecodeError as e:
             print("Exception Occured: ", e)
+            sentry_sdk.capture_exception(e)
             return APIResponse(
                 data=[],
                 message=INVALID_FILE_TYPE,

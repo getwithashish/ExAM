@@ -4,6 +4,7 @@ from asset.models import Employee, Asset
 from asset.serializers.asset_serializer import AssetReadSerializer
 from utils.celery_status_checker import CeleryStatusChecker
 from messages import (
+    ASSET_CONFLICT,
     UNAUTHORIZED_NO_PERMISSION,
     EMPLOYEE_NOT_FOUND_ERROR,
     STATUS_EXPIRED_OR_DISPOSED,
@@ -13,6 +14,7 @@ from asset.service.asset_assign_service.asset_sysadmin_role_assignasset_service 
     AssetSysadminRoleAssignService,
 )
 from exceptions import (
+    ConflictException,
     NotAcceptableOperationException,
     NotFoundException,
     PermissionDeniedException,
@@ -25,7 +27,7 @@ from notification.service.email_service import send_email
 
 class AssignAssetService:
     @staticmethod
-    def assign_asset(requester_role, asset_uuid, employee_id, requester):
+    def assign_asset(requester_role, asset_uuid, employee_id, requester, version):
         try:
             employee = Employee.objects.get(id=employee_id)
             asset = Asset.objects.get(asset_uuid=asset_uuid)
@@ -52,6 +54,10 @@ class AssignAssetService:
                 {}, UNAUTHORIZED_NO_PERMISSION, status.HTTP_403_FORBIDDEN
             )
 
+        if asset.version != version:
+            raise ConflictException({}, ASSET_CONFLICT, status.HTTP_409_CONFLICT)
+
+        asset.version = asset.version + 1
         asset.save()
         assigned_asset_serializer = AssetReadSerializer(asset)
 

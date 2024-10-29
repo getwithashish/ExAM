@@ -18,7 +18,6 @@ class AssetAdvancedQueryServiceWithJsonLogic(AssetQueryAbstract):
         self.pagination = LimitOffsetPagination()
         json_logic = request.query_params.get("json_logic")
         logic_data = json.loads(json_logic)
-        print("After json.loads: ", logic_data)
 
         limit = request.query_params.get("limit")
         offset = request.query_params.get("offset")
@@ -130,7 +129,6 @@ class AssetAdvancedQueryServiceWithJsonLogic(AssetQueryAbstract):
         elif "<" in logic_data:
             field = logic_data["<"][0]["var"]
             value = logic_data["<"][1]
-            print("NOT IN: Field: ", field, " Value: ", value)
 
             return Q(**{field + "__lt": value})
 

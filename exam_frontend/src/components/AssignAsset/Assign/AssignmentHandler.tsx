@@ -104,6 +104,7 @@ export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({
       const requestBody = {
         id: employeeId,
         asset_uuid: record.key,
+        version: record.version
       };
       mutation.mutate(requestBody);
     } else {

@@ -10,6 +10,7 @@ from asset.service.asset_approve_service.lead_role_service.asset_lead_role_appro
     AssetLeadRoleApproveService,
 )
 from exceptions import (
+    ConflictException,
     NotAcceptableOperationException,
     NotFoundException,
     PermissionDeniedException,
@@ -78,6 +79,13 @@ class AssetApproveView(APIView):
                 status=e.status,
             )
 
+        except ConflictException as e:
+            return APIResponse(
+                data=str(e),
+                message=e.message,
+                status=e.status,
+            )
+
     def delete(self, request):
         try:
             user_scope = request.user.user_scope
@@ -120,6 +128,13 @@ class AssetApproveView(APIView):
             )
 
         except NotAcceptableOperationException as e:
+            return APIResponse(
+                data=str(e),
+                message=e.message,
+                status=e.status,
+            )
+
+        except ConflictException as e:
             return APIResponse(
                 data=str(e),
                 message=e.message,
