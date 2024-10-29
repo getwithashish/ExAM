@@ -3,11 +3,11 @@ import { Label, Table, Textarea, TextInput } from "flowbite-react";
 import axiosInstance from "../../config/AxiosConfig";
 import React from "react";
 import DrawerViewRequest from "./DrawerViewRequest";
-import { styled } from "@mui/material/styles";
-import Tooltip, { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
 import InfoIcon from "@mui/icons-material/Info";
 import { ConfigProvider, Pagination, Spin, message, theme } from "antd";
 import { RefreshTwoTone } from "@mui/icons-material";
+import CustomTooltip from "../../components/Tooltip/CustomTooltip";
+import { AssetStatusTooltip } from "../../components/Tooltip/AssetStatusTooltip";
 
 const ModificationRequests: FC = function () {
   const [assets, setAssets] = useState<any[]>([]);
@@ -294,11 +294,8 @@ const SearchRequests: FC<{
         <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
           {showInfo && (
             <div className="absolute top-0 right-full w-max bg-gray-700 rounded-lg shadow-lg">
-              <p className="text-white text-xs">
-                Works with a few fields only,
-                <br />
-                will expand in future.
-                <ol></ol>
+              <p className="text-white text-xs mt-3">
+                Search for any value
               </p>
             </div>
           )}
@@ -393,18 +390,6 @@ const RequestTable: FC<{
     </Table>
   );
 };
-
-const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
-  <Tooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
-  [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: "#f5f5f9",
-    color: "rgba(0, 0, 0, 0.87)",
-    maxWidth: 220,
-    fontSize: theme.typography.pxToRem(12),
-    border: "1px solid #dadde9",
-  },
-}));
 
 const ViewRequestModal: FC<{
   loading: boolean;
@@ -596,7 +581,7 @@ const ViewRequestModal: FC<{
       },
       {
         id: "status",
-        label: "STATUS",
+        label: "ASSET STATUS",
         name: "status",
         value: asset?.status,
         disabled: true,
@@ -666,11 +651,6 @@ const ViewRequestModal: FC<{
                 let changed = false;
                 if (latestLog && latestLog.hasOwnProperty(field.id)) {
                   changed = field.value != findFieldValue(field.name, latestLog[field.id]);
-                } else {
-                  // changed =
-                  //   field.value !== undefined &&
-                  //   field.value !== null &&
-                  //   field.value !== "";
                 }
                 return (
                   <div key={index}>
@@ -678,7 +658,7 @@ const ViewRequestModal: FC<{
                       htmlFor={field.id}
                       className={changed ? "text-blue-500" : "text-white"}
                     >
-                      {field.label}:
+                      {field.label} <span hidden={!(field.name === "status")}><AssetStatusTooltip /></span>:
                     </Label>
                     {changed && (
                       <CustomTooltip
