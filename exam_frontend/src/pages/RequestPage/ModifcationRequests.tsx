@@ -58,6 +58,7 @@ const ModificationRequests: FC = function () {
         approval_type: "ASSET_DETAIL_STATUS",
         asset_uuid: selectedAsset.asset_uuid,
         comments: selectedAsset.approverNotes,
+        version: selectedAsset.version
       };
 
       axiosInstance
@@ -86,6 +87,7 @@ const ModificationRequests: FC = function () {
           approval_type: "ASSET_DETAIL_STATUS",
           asset_uuid: selectedAsset.asset_uuid,
           comments: selectedAsset.approverNotes,
+          version: selectedAsset.version
         },
       };
 
@@ -476,14 +478,14 @@ const ViewRequestModal: FC<{
       {
         id: "invoice_location",
         label: "INV.LOCATION",
-        name: "invoiceLocation",
+        name: "invoice_location",
         value: asset.invoice_location?.location_name,
         disabled: true,
       },
       {
         id: "asset_type",
         label: "ASSET TYPE",
-        name: "assetType",
+        name: "asset_type",
         value: asset.asset_type?.asset_type_name,
         disabled: true,
       },
@@ -497,7 +499,7 @@ const ViewRequestModal: FC<{
       {
         id: "business_unit",
         label: "BUSINESS UNIT",
-        name: "businessUnit",
+        name: "business_unit",
         value: asset.business_unit?.business_unit_name,
         disabled: true,
       },
@@ -608,6 +610,34 @@ const ViewRequestModal: FC<{
       },
     ];
 
+    const findKeyName = (key: string) => {
+      const fieldKeys = ["asset_type", "business_unit"]
+      if (fieldKeys.includes(key)) {
+        return `${key}_name`
+      }
+      else if (key === "location" || key === "invoice_location") {
+        return `location_name`
+      }
+      else if (key === "memory") {
+        return `${key}_space`
+      }
+      return key
+    }
+
+    const findFieldValue = (key: string, value: any) => {
+      const keyName = findKeyName(key)
+      if (keyName === key) {
+        return value;
+      }
+      else {
+        if (value) {
+          return JSON.parse(value)[keyName]
+        }
+        return value
+      }
+    }
+
+
     return (
       <DrawerViewRequest title="Request Details" onClose={onClose} open={true}>
         {loading && (
@@ -630,14 +660,12 @@ const ViewRequestModal: FC<{
           <form>
             <div className="grid font-display grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">
               {formFields.map((field, index) => {
-                // const latestLog = latestLogData?.logs[0]?.asset_log;
                 const latestLog = (latestLogData?.logs && latestLogData.logs.length > 0)
                   ? latestLogData.logs[0].asset_log
                   : null;
-                console.log(latestLogData)
                 let changed = false;
                 if (latestLog && latestLog.hasOwnProperty(field.id)) {
-                  changed = field.value != latestLog[field.id];
+                  changed = field.value != findFieldValue(field.name, latestLog[field.id]);
                 } else {
                   // changed =
                   //   field.value !== undefined &&
@@ -656,7 +684,7 @@ const ViewRequestModal: FC<{
                       <CustomTooltip
                         title={
                           <>
-                            Previous value: {latestLog ? latestLog[field.id] : "N/A"}
+                            Previous value: {latestLog ? findFieldValue(field.name, latestLog[field.id]) : "N/A"}
                             <br />
                             New value: {field.value}
                           </>
