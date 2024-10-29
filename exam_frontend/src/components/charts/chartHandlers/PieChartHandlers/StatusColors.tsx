@@ -5,6 +5,7 @@ export const statusColors: { [key: string]: string } = {
   ACTIVE: "#0369a1",
   DAMAGED: "#3ABBC9",
   OUTDATED: "#b91c1c",
+  SCRAP: "#000000",
 
   UNASSIGNED: "#334155",
   ASSIGN_PENDING: "#FFB92A",
