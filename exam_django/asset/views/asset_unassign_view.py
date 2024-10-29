@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from asset.serializers import AssignAssetSerializer
 from asset.models import Asset
 from exceptions import (
+    ConflictException,
     NotAcceptableOperationException,
     PermissionDeniedException,
     SerializerException,
@@ -29,12 +30,13 @@ class UnassignAssetView(APIView):
                 requester = request.user
                 role = requester.user_scope
                 asset_uuid = request.data.get("asset_uuid")
-                # Retrieve the Asset object using the asset_uuid
+                version = request.data.get("version")
+
                 asset = Asset.objects.get(asset_uuid=asset_uuid)
                 custodian = asset.custodian
                 # Assign the asset using the appropriate service based on requester's role
                 data, message, http_status = UnassignAssetService.unassign_asset(
-                    role, asset_uuid, requester, custodian=custodian
+                    role, asset_uuid, requester, version=version, custodian=custodian
                 )
 
                 return APIResponse(
@@ -68,6 +70,13 @@ class UnassignAssetView(APIView):
             )
 
         except NotAcceptableOperationException as e:
+            return APIResponse(
+                data=str(e),
+                message=e.message,
+                status=e.status,
+            )
+
+        except ConflictException as e:
             return APIResponse(
                 data=str(e),
                 message=e.message,

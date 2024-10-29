@@ -1,7 +1,7 @@
 from asset.models import Asset
 from asset.serializers.asset_serializer import AssetReadSerializer
-from exceptions import SerializerException
-from messages import INVALID_ASSET_DATA
+from exceptions import ConflictException, SerializerException
+from messages import ASSET_CONFLICT, INVALID_ASSET_DATA
 from notification.utils.email_body_contents.lead_email_body_contents import (
     construct_create_asset_email_body_content,
     construct_modify_asset_email_body_content,
@@ -33,6 +33,7 @@ class AssetMutationService:
 
     def update_asset(self, serializer, request):
         asset_uuid = request.data.get("asset_uuid")
+        version = request.data.get("version")
 
         asset, old_asset_data = self._get_asset_and_old_data(asset_uuid)
 
@@ -44,7 +45,11 @@ class AssetMutationService:
                 )
             )
 
+            if asset.version != version:
+                raise ConflictException({}, ASSET_CONFLICT, status.HTTP_409_CONFLICT)
+
             new_serializer.validated_data["requester"] = request.user
+            new_serializer.validated_data["version"] = asset.version + 1
             updated_asset = new_serializer.save()
             updated_asset_serializer = AssetReadSerializer(updated_asset)
 

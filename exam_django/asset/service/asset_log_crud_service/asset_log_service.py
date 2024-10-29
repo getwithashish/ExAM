@@ -10,6 +10,7 @@ from asset.models import (
     Employee,
     Asset,
 )
+from asset.signals.asset_previous_value_signal import asset_previous_value_signal
 from user_auth.models import User
 from response import APIResponse
 from messages import ASSET_NOT_FOUND, ASSET_LOG_FOUND, NO_ASSET_LOGS_IN_TIMELINE
@@ -20,6 +21,7 @@ from django.db import transaction
 from typing import Optional
 from datetime import datetime
 import urllib.parse
+import sentry_sdk
 
 
 class AssetLogService:
@@ -78,7 +80,7 @@ class AssetLogService:
                 except ValueError:
                     return APIResponse(
                         data=[],
-                        message="Invalid isoformat string",
+                        message="Invalid ISO format string",
                         status=status.HTTP_400_BAD_REQUEST,
                     )
 
@@ -187,8 +189,6 @@ class AssetLogService:
 
     @staticmethod
     def populate_asset_details(asset_log_json):
-        # Populate asset details
-        # Search location name if it exists
         location_id = asset_log_json.pop("location_id", None)
         if location_id:
             location_obj = Location.objects.filter(id=location_id).first()
@@ -198,7 +198,6 @@ class AssetLogService:
                     "location_name": location_obj.location_name,
                 }
 
-        # Search business unit name if it exists
         business_unit_id = asset_log_json.pop("business_unit_id", None)
         if business_unit_id:
             business_unit_obj = BusinessUnit.objects.filter(id=business_unit_id).first()
@@ -208,7 +207,6 @@ class AssetLogService:
                     "business_unit_name": business_unit_obj.business_unit_name,
                 }
 
-        # Search memory if it exists
         memory_id = asset_log_json.pop("memory_id", None)
         if memory_id:
             memory_obj = Memory.objects.filter(id=memory_id).first()
@@ -218,7 +216,6 @@ class AssetLogService:
                     "memory_space": memory_obj.memory_space,
                 }
 
-        # Search asset type name if it exists
         asset_type_id = asset_log_json.pop("asset_type_id", None)
         if asset_type_id:
             asset_type_obj = AssetType.objects.filter(id=asset_type_id).first()
@@ -228,7 +225,6 @@ class AssetLogService:
                     "asset_type_name": asset_type_obj.asset_type_name,
                 }
 
-        # Search invoice location name if it exists
         invoice_location_id = asset_log_json.pop("invoice_location_id", None)
         if invoice_location_id:
             location_obj = Location.objects.filter(id=invoice_location_id).first()
@@ -238,7 +234,6 @@ class AssetLogService:
                     "invoice_location_name": location_obj.location_name,
                 }
 
-        # Search conceder name if it exists
         conceder_id = asset_log_json.pop("conceder_id", None)
         if conceder_id:
             conceder_obj = User.objects.filter(id=conceder_id).first()
@@ -248,7 +243,6 @@ class AssetLogService:
                     "conceder_name": f"{conceder_obj.first_name} {conceder_obj.last_name}",
                 }
 
-        # Search custodian name if it exists
         custodian_id = asset_log_json.pop("custodian_id", None)
         if custodian_id:
             custodian_obj = Employee.objects.filter(id=custodian_id).first()
@@ -258,7 +252,6 @@ class AssetLogService:
                     "employee_name": custodian_obj.employee_name,
                 }
 
-        # Search requester name if it exists
         requester_id = asset_log_json.pop("requester_id", None)
         if requester_id:
             requester_obj = User.objects.filter(id=requester_id).first()
@@ -271,33 +264,91 @@ class AssetLogService:
         return asset_log_json
 
 
+previous_instance = {}
+
+
+# @receiver(pre_save, sender=Asset)
+# def store_previous_instance(sender, instance, **kwargs):
+#     if instance.pk:
+#         previous_instance[instance.pk] = model_to_dict(instance)
+#         print("Inside Pre-save: ", previous_instance[instance.pk])
+
+
+@receiver(signal=asset_previous_value_signal, sender=Asset)
+def store_previous_instance(sender, instance, **kwargs):
+    if instance.pk:
+        previous_instance[instance.pk] = model_to_dict(instance)
+        print("Inside Before Saving: ", previous_instance[instance.pk])
+
+
 @receiver(post_save, sender=Asset)
 def log_asset_changes(sender, instance, **kwargs):
-    # Convert the instance to a dictionary
-    old_instance = model_to_dict(instance)
-    if (
-        instance.asset_detail_status == "CREATED"
-        or instance.asset_detail_status == "UPDATED"
-        or instance.asset_detail_status == "ASSIGNED"
-        or instance.asset_detail_status == "UNASSIGNED"
-    ):
-        changes = {
-            field: getattr(instance, field)
-            for field in old_instance
-            if field != "asset_uuid"
-        }
-        asset_log_data = json.dumps(changes, indent=4, sort_keys=True, default=str)
+    try:
+        if instance.pk in previous_instance:
+            old_instance = previous_instance[instance.pk]
+            print("Old Instance: ", old_instance["asset_detail_status"])
+            print(
+                "New Instance: ", instance.asset_detail_status, " and pk: ", instance.pk
+            )
 
-        if changes:
-            with transaction.atomic():
-                if instance.asset_detail_status == "CREATED":
-                    asset_instance = instance
-                else:
-                    asset_instance = Asset.objects.select_for_update().get(
-                        pk=instance.pk
+            # print("Inside Post-save Prev: ", model_to_dict(previous_instance))
+            # print("Inside Post-save New: ", model_to_dict(instance))
+
+            if old_instance["asset_detail_status"] != instance.asset_detail_status:
+                if instance.asset_detail_status not in [
+                    "CREATED",
+                    "UPDATED",
+                    "UPDATE_REJECTED",
+                ]:
+                    print(
+                        "========================== Entered 1 ======================="
                     )
-                asset_log_entry = AssetLog.objects.create(
-                    asset_uuid=asset_instance,
-                    asset_log=asset_log_data,
+                    return
+            elif old_instance["assign_status"] != instance.assign_status:
+                if instance.assign_status not in ["ASSIGNED", "UNASSIGNED", "REJECTED"]:
+                    print(
+                        "=========================== Entered 1 ==========================="
+                    )
+                    return
+            else:
+                print(
+                    "========================= Entered 3 ==============================="
                 )
-                asset_log_entry.save()
+                return
+
+            # if (
+            #     instance.asset_detail_status == "CREATED"
+            #     or instance.asset_detail_status == "UPDATED"
+            #     or instance.asset_detail_status == "ASSIGNED"
+            #     or instance.asset_detail_status == "UNASSIGNED"
+            # ):
+            changes = {
+                field: getattr(instance, field)
+                for field in old_instance
+                if field != "asset_uuid"
+            }
+            asset_log_data = json.dumps(changes, indent=4, sort_keys=True, default=str)
+
+            # TODO - How about a request which was rejected and then sent again for approval, without any changes
+            if changes:
+                with transaction.atomic():
+                    # if instance.asset_detail_status == "CREATED":
+                    #     asset_instance = instance
+                    # else:
+                    #     asset_instance = Asset.objects.select_for_update().get(
+                    #         pk=instance.pk
+                    #     )
+                    asset_log_entry = AssetLog.objects.create(
+                        asset_uuid=instance,
+                        # asset_uuid=asset_instance,
+                        asset_log=asset_log_data,
+                    )
+                    asset_log_entry.save()
+
+    except Exception as e:
+        print("Exception: ", str(e))
+        sentry_sdk.capture_exception(e)
+
+    finally:
+        if instance.pk in previous_instance:
+            del previous_instance[instance.pk]
