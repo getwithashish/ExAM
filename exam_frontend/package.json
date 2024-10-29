@@ -33,7 +33,7 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@mui/icons-material": "^5.15.14",
     "@mui/material": "^5.16.1",
-    "@mui/x-charts": "^7.9.0",
+    "@mui/x-charts": "^7.22.0",
     "@mui/x-date-pickers": "^7.10.0",
     "@syncfusion/ej2-base": "^25.1.35",
     "@syncfusion/ej2-react-notifications": "^25.1.35",

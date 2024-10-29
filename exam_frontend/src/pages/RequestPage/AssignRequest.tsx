@@ -7,6 +7,7 @@ import { ChangeEvent } from "react";
 import { ConfigProvider, Pagination, Spin, message, theme } from "antd";
 import InfoIcon from "@mui/icons-material/Info";
 import { RefreshTwoTone } from "@mui/icons-material";
+import { AssetStatusTooltip } from "../../components/Tooltip/AssetStatusTooltip";
 
 const AssignPage: FC = function () {
   const [assignRequests, setAssignRequests] = useState<any[]>([]);
@@ -606,7 +607,7 @@ const ViewRequestModal: FC<{
       },
       {
         id: "status",
-        label: "STATUS",
+        label: "ASSET STATUS",
         name: "status",
         value: assignRequest?.status,
         disabled: true,
@@ -700,7 +701,7 @@ const ViewRequestModal: FC<{
               <div className="grid font-display grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">
                 {assignRequestFields.map((field, index) => (
                   <div key={index}>
-                    <Label htmlFor={field.id} style={{ color: `${field.name === "assignee" ? "#2563eb" : "none"}` }} className={`text-white`}>{field.label}:</Label>
+                    <Label htmlFor={field.id} style={{ color: `${field.name === "assignee" ? "#2563eb" : "none"}` }} className={`text-white`}>{field.label} <span hidden={!(field.name === "status")}><AssetStatusTooltip /></span>:</Label>
                     <TextInput
                       id={field.id}
                       name={field.name}

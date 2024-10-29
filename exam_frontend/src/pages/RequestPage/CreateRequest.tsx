@@ -6,6 +6,7 @@ import DrawerViewRequest from "./DrawerViewRequest";
 import InfoIcon from "@mui/icons-material/Info";
 import { ConfigProvider, Pagination, Spin, message, theme } from "antd";
 import { RefreshTwoTone } from "@mui/icons-material";
+import { AssetStatusTooltip } from "../../components/Tooltip/AssetStatusTooltip";
 
 const CreateRequestPage: FC = function () {
   const [assets, setAssets] = useState<any[]>([]);
@@ -291,10 +292,7 @@ const SearchRequests: FC<{
           {showInfo && (
             <div className="absolute top-0 right-full w-max bg-gray-700 p-2 rounded-lg shadow-lg">
               <p className="text-white text-xs">
-                Works with a few fields only,
-                <br />
-                will expand in future.
-                <ol></ol>
+                Search for any value
               </p>
             </div>
           )}
@@ -557,7 +555,7 @@ const ViewRequestModal: FC<{
       },
       {
         id: "status",
-        label: "STATUS",
+        label: "ASSET STATUS",
         name: "status",
         value: asset?.status,
         disabled: true,
@@ -603,7 +601,7 @@ const ViewRequestModal: FC<{
             <div className="grid font-display grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">
               {formFields.map((field, index) => (
                 <div key={index}>
-                  <Label htmlFor={field.id} className="text-white">{field.label}:</Label>
+                  <Label htmlFor={field.id} className="text-white">{field.label} <span hidden={!(field.name === "status")}><AssetStatusTooltip /></span>:</Label>
                   <TextInput
                     id={field.id}
                     name={field.name}
