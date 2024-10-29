@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.ant-message-notice-content {
+  background: transparent !important;
+}
+.ant-message-custom-content {
+  color: white;
+  backdrop-filter: blur(10px);
+}

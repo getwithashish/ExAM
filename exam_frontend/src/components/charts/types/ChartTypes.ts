@@ -38,6 +38,7 @@ export interface AssetDetailData {
 
 export type ChartData = {
   label: string;
-  value: number;
+  value?: number;
+  count: number;
   color?: string;
 };

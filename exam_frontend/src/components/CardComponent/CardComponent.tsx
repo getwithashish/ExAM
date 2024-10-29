@@ -24,6 +24,7 @@ import AssetFieldAutoComplete from "../AutocompleteBox/AssetFieldAutoComplete";
 import { MenuItem, Select, TextField } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import { AssetStatusTooltip } from "../Tooltip/AssetStatusTooltip";
 
 interface UpdateData {
   asset_uuid: string;
@@ -365,44 +366,6 @@ const CardComponent: React.FC<CardType> = ({
       }
     });
 
-    // if (invalidField) {
-    //   if (
-    //     invalidField === "processor" ||
-    //     invalidField === "processor_gen" ||
-    //     invalidField === "model_number" ||
-    //     invalidField === "storage" ||
-    //     (invalidField === "configuration" &&
-    //       !/^(?=.*[a-zA-Z])(?=.*[0-9])/.test(updatedData[invalidField]))
-    //   ) {
-    //     message.error(
-    //       `${fieldDisplayNames[invalidField]} must contain both letters and digits.`
-    //     );
-    //   } else if (
-    //     (invalidField === "processor_gen" ||
-    //       invalidField === "model_number" ||
-    //       invalidField === "storage" ||
-    //       invalidField === "configuration") &&
-    //     !alphanumericRegex.test(updatedData[invalidField])
-    //   ) {
-    //     message.error(
-    //       `${fieldDisplayNames[invalidField]} must be alphanumeric.`
-    //     );
-    //   } else {
-    //     const displayName = fieldDisplayNames[invalidField];
-    //     message.error(`${displayName} must contain only digits.`);
-    //   }
-    //   setIsLoading(false); // Set loading to false when update fails
-    //   return; // Exit the function without updating
-    // }
-    // if (
-    //   updatedData.hasOwnProperty("accessories") &&
-    //   updatedData.accessories.split(",").length > 3
-    // ) {
-    //   message.error("Only a maximum of three accessories are allowed.");
-    //   setIsLoading(false); // Set loading to false when update fails
-    //   return; // Exit the function without updating
-    // }
-
     try {
       const updatePayload = {
         asset_uuid: data.key,
@@ -454,7 +417,7 @@ const CardComponent: React.FC<CardType> = ({
           rules={[{ required: true, message: "Product Name is required" }]}
         >
           <b>
-            Product Name: <span style={{ color: "red" }}>*</span>
+            Product Name: <span hidden={readOnly} style={{ color: "red" }}>*</span>
           </b>
           <br></br>
           <br></br>
@@ -476,7 +439,7 @@ const CardComponent: React.FC<CardType> = ({
           rules={[{ required: true, message: "Asset Category is required" }]}
         >
           <b style={{ display: "block" }}>
-            Asset Category: <span style={{ color: "red" }}>*</span>
+            Asset Category: <span hidden={readOnly} style={{ color: "red" }}>*</span>
           </b>{" "}
           <br></br>
           <Select
@@ -515,7 +478,7 @@ const CardComponent: React.FC<CardType> = ({
       label: "Asset Type",
       value: (
         <Form.Item name="status">
-          <b> Asset Type:</b>
+          <b> Asset Type: <span hidden={readOnly} style={{ color: "red" }}>*</span></b>
           <br></br>
           <br></br>
           <AssetFieldAutoComplete
@@ -533,7 +496,7 @@ const CardComponent: React.FC<CardType> = ({
       name: "assetStatus",
       value: (
         <Form.Item name="assetStatus">
-          <b> Asset Status:</b>
+          <b> Asset Status: <span hidden={readOnly} style={{ color: "red" }}>*</span> <AssetStatusTooltip /> </b>
           <br></br>
           <br></br>
           <Select
@@ -577,7 +540,7 @@ const CardComponent: React.FC<CardType> = ({
           rules={[{ required: true, message: "Serial Number is required" }]}
         >
           <b>
-            Serial Number: <span style={{ color: "red" }}>*</span>
+            Serial Number:
           </b>{" "}
           <br></br>
           <br></br>
@@ -628,7 +591,7 @@ const CardComponent: React.FC<CardType> = ({
           name="business_unit"
           style={{ boxShadow: "none", border: "none" }}
         >
-          <b>Business Unit:</b>
+          <b>Business Unit: </b>
           <br></br>
           <br></br>
           <AssetFieldAutoComplete
@@ -670,7 +633,7 @@ const CardComponent: React.FC<CardType> = ({
         >
           <b>
             {" "}
-            Asset Location: <span style={{ color: "red" }}>*</span>
+            Asset Location: <span hidden={readOnly} style={{ color: "red" }}>*</span>
           </b>
           <br></br>
           <br></br>
@@ -693,7 +656,7 @@ const CardComponent: React.FC<CardType> = ({
           rules={[{ required: true, message: "Invoice Location is required" }]}
         >
           <b>
-            Invoice Location: <span style={{ color: "red" }}>*</span>
+            Invoice Location: <span hidden={readOnly} style={{ color: "red" }}>*</span>
           </b>
           <br></br>
           <br></br>
@@ -716,7 +679,7 @@ const CardComponent: React.FC<CardType> = ({
           rules={[{ required: true, message: "Date of Purchase is required" }]}
         >
           <b>
-            Date of Purchase: <span style={{ color: "red" }}>*</span>
+            Date of Purchase: <span hidden={readOnly} style={{ color: "red" }}>*</span>
           </b>{" "}
           <br></br>
           <br></br>
@@ -1188,7 +1151,6 @@ const CardComponent: React.FC<CardType> = ({
                   <Spin size="large" />
                 </div>
               )}
-              (
               <>
                 {!readOnly && getUserScope() === "SYSTEM_ADMIN" && (
                   <Button
@@ -1201,9 +1163,9 @@ const CardComponent: React.FC<CardType> = ({
                       marginLeft: "600px",
                     }}
                     onClick={handleUpdate}
-                    disabled={isLoading} // Disable button while updating
+                    disabled={isLoading}
                   >
-                    Update
+                    Update Asset
                   </Button>
                 )}
                 {getUserScope() === "LEAD" && (
@@ -1233,7 +1195,6 @@ const CardComponent: React.FC<CardType> = ({
                   </Button>
                 )}
               </>
-              )
             </>
           )}
         </div>
@@ -1288,7 +1249,6 @@ const CardComponent: React.FC<CardType> = ({
         </Form>
       </div>
     </div>
-    // </Spin>
   );
 };
 export default CardComponent;

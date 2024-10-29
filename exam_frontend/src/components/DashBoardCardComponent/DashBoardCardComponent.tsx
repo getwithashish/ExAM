@@ -3,11 +3,13 @@ import { Form, Input, ConfigProvider } from "antd";
 import "./DashBoardCardComponent.css";
 import { DataType } from "../AssetTable/types/index";
 import { CardType } from "./types/index";
+import { AssetStatusTooltip } from "../Tooltip/AssetStatusTooltip";
 
 interface FormItemConfig {
   label: string;
   name: string;
   value: React.ReactNode | null;
+  tooltipMessage?: string | null;
 }
 
 const DashBoardCardComponent: React.FC<CardType> = ({
@@ -53,9 +55,11 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     value: any;
     fieldName: string;
     isTextArea?: boolean;
-  }> = ({ label, value, fieldName, isTextArea = false }) => (
+    tooltipMessage?: string;
+  }> = ({ label, value, fieldName, isTextArea = false, tooltipMessage = null }) => (
     <Form.Item name={fieldName} className="formItem font-semibold font-display">
-      <b style={{ display: "block" }}>{label}</b>
+
+      <b style={{ display: "block" }}>{label} <span hidden={!(fieldName === "status")}><AssetStatusTooltip /></span></b>
       <br />
       {isTextArea ? (
         <textarea
@@ -72,6 +76,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
           disabled
         />
       )}
+
     </Form.Item>
   );
 
@@ -90,7 +95,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     {
       label: "Asset Status",
       name: "status",
-      value: data.status ? <FormItemField label="Asset Status" value={data.status} fieldName="status" /> : null
+      value: data.status ? <FormItemField label="Asset Status" value={data.status} fieldName="status" /> : null,
     },
     {
       label: "Location",
@@ -229,7 +234,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     }
   ], [data, formattedExpiryDate]);
 
-  const filteredFormItems = useMemo(() => 
+  const filteredFormItems = useMemo(() =>
     formItems.filter(item =>
       item.label.toLowerCase().includes(searchQuery) ||
       (typeof item.value === "string" && item.value.toLowerCase().includes(searchQuery))

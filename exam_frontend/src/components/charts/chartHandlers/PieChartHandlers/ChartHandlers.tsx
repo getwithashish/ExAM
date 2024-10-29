@@ -15,6 +15,7 @@ import { NoData } from "../../../NoData/NoData";
 import { statusColors } from "./StatusColors";
 import { statusMapping } from "./statusMapping";
 import { RefreshTwoTone } from "@mui/icons-material";
+import { AssetStatusTooltip } from "../../../Tooltip/AssetStatusTooltip";
 
 const ChartHandlers: React.FC<PieChartGraphProps> = ({
   selectedTypeId,
@@ -58,6 +59,18 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
       });
   }, []);
 
+  const calculateTotalValue = (data: ChartData[]) => {
+    return data.reduce((total, item) => total + item.count, 0);
+  };
+
+  const adjustChartData = (data: ChartData[]) => {
+    const totalValue = calculateTotalValue(data);
+    return data.map(item => ({
+      ...item,
+      value: totalValue > 0 ? Math.max((item.count / totalValue) * 100, 10) : 0,
+    }));
+  };
+
   useEffect(() => {
     fetchAssetData()
       .then((assetCountData) => {
@@ -66,10 +79,11 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
         const inStoreCount = statusCounts["STOCK"] ?? 0;
         const inServiceCount = inUseCount + inStoreCount;
 
-        const inServiceData = {
+        let inServiceData = {
           label: "ACTIVE",
-          value: inServiceCount,
+          count: inServiceCount,
           color: statusColors["ACTIVE"],
+          value: 0
         };
 
         const statusOrder = [
@@ -80,13 +94,18 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
           "REPAIR",
           "DAMAGED",
         ];
-        const filteredAssetCountData = Object.entries(statusCounts)
-          .filter(([label]) => label !== "SCRAP")
+        let filteredAssetCountData = Object.entries(statusCounts)
+          .filter(([label]) => label.trim() !== "SCRAP")
           .map(([label, value]) => ({
             label: statusMapping[label] ?? label,
-            value: value as number,
+            count: value as number,
             color: statusColors[label],
           }));
+
+        let totalValue = calculateTotalValue(filteredAssetCountData)
+        filteredAssetCountData = adjustChartData(filteredAssetCountData);
+
+        inServiceData.value = totalValue > 0 ? ((Math.max(inUseCount, inStoreCount) / totalValue) * 100) + 5 : 0;
         const assetTypeData = [...filteredAssetCountData, inServiceData];
 
         assetTypeData.sort((a, b) => {
@@ -101,7 +120,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
         setAssetFilteredChartData([]);
       });
 
-    return () => {};
+    return () => { };
   }, []);
 
   const handleChartItemClick = (
@@ -163,15 +182,15 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
       .then((res) => {
         const assetDetailData = res.asset_detail_status;
         const mergedStatusData = Object.entries(assetDetailData ?? {}).reduce(
-          (acc, [label, value]) => {
+          (acc, [label, count]) => {
             const mappedLabel = statusMapping[label] ?? label;
             if (mappedLabel === "REJECTED" || mappedLabel === "PENDING") {
               if (acc[mappedLabel]) {
-                acc[mappedLabel].value += value;
+                acc[mappedLabel].count += count;
               } else {
                 acc[mappedLabel] = {
                   label: mappedLabel,
-                  value: value,
+                  count: count,
                   color: statusColors[mappedLabel],
                 };
               }
@@ -184,11 +203,11 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
               ].includes(mappedLabel)
             ) {
               if (acc[mappedLabel]) {
-                acc[mappedLabel].value += value;
+                acc[mappedLabel].count += count;
               } else {
                 acc[mappedLabel] = {
                   label: mappedLabel,
-                  value: value,
+                  count: count,
                   color: statusColors[label],
                 };
               }
@@ -199,28 +218,30 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
         );
 
         if (mergedStatusData["REJECTED"]) {
-          mergedStatusData["REJECTED"].value +=
-            mergedStatusData["UPDATE_REJECTED"]?.value ?? 0;
-          mergedStatusData["REJECTED"].value +=
-            mergedStatusData["CREATE_REJECTED"]?.value ?? 0;
+          mergedStatusData["REJECTED"].count +=
+            mergedStatusData["UPDATE_REJECTED"]?.count ?? 0;
+          mergedStatusData["REJECTED"].count +=
+            mergedStatusData["CREATE_REJECTED"]?.count ?? 0;
           delete mergedStatusData["UPDATE_REJECTED"];
           delete mergedStatusData["CREATE_REJECTED"];
         }
 
         if (mergedStatusData["PENDING"]) {
-          mergedStatusData["PENDING"].value +=
-            mergedStatusData["UPDATE_PENDING"]?.value ?? 0;
-          mergedStatusData["PENDING"].value +=
-            mergedStatusData["CREATE_PENDING"]?.value ?? 0;
+          mergedStatusData["PENDING"].count +=
+            mergedStatusData["UPDATE_PENDING"]?.count ?? 0;
+          mergedStatusData["PENDING"].count +=
+            mergedStatusData["CREATE_PENDING"]?.count ?? 0;
           delete mergedStatusData["UPDATE_PENDING"];
           delete mergedStatusData["CREATE_PENDING"];
         }
 
         const statusOrder = ["CREATED", "UPDATED", "PENDING", "REJECTED"];
 
-        const mergedStatusArray: ChartData[] = statusOrder
+        let mergedStatusArray: ChartData[] = statusOrder
           .map((label) => mergedStatusData[label])
           .filter((entry): entry is ChartData => entry !== undefined);
+
+        mergedStatusArray = adjustChartData(mergedStatusArray);
 
         setDetailChartData(mergedStatusArray);
         setDetailFilteredChartData(mergedStatusArray);
@@ -234,20 +255,22 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
   useEffect(() => {
     fetchAssetData()
       .then((assetAssignData) => {
-        const assetAssignStatusData = Object.entries(
+        const assetAssignStatusData: ChartData[] = Object.entries(
           assetAssignData?.assign_status ?? {}
         ).map(([label, value]) => ({
           label: statusMapping[label] ?? label,
-          value: value as number,
-          color: statusColors[label] ?? "", // Ensure color is always present
+          count: value as number,
+          color: statusColors[label] ?? "",
         }));
 
         const statusOrder = ["ASSIGNED", "UNASSIGNED", "PENDING", "REJECTED"];
-        const sortedAssignStatusData = statusOrder
+        let sortedAssignStatusData = statusOrder
           .map((label) =>
             assetAssignStatusData.find((data) => data.label === label)
           )
           .filter((entry): entry is ChartData => entry !== undefined);
+
+        sortedAssignStatusData = adjustChartData(sortedAssignStatusData);
 
         setAssignChartData(sortedAssignStatusData);
         setAssignFilteredChartData(sortedAssignStatusData);
@@ -258,7 +281,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
       });
   }, []);
 
-  useEffect(() => {}, [selectedTypeId]);
+  useEffect(() => { }, [selectedTypeId]);
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const assetTypeValue = parseInt(e.target.value);
@@ -505,19 +528,19 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
       </div>
 
       <>
-        <Stack direction="row">
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ justifyContent: "center", alignItems: "center" }}>
           {assetFilteredChartData.length === 0 &&
-          detailFilteredChartData.length === 0 &&
-          assignFilteredChartData.length === 0 ? (
+            detailFilteredChartData.length === 0 &&
+            assignFilteredChartData.length === 0 ? (
             <div className="flex justify-center items-center h-full w-full">
               <NoData />
             </div>
           ) : (
-            <Stack direction="row" sx={{ flexWrap: "wrap" }} className="m-auto">
+            <Stack direction="row" sx={{ flexWrap: "wrap", justifyContent: "center", alignItems: "center" }} className="m-auto">
               <ThemeProvider theme={darkTheme}>
                 <div className=" pt-6 mt-4 text-center items-center justify-center">
                   <span className="font-semibold font-display leading-none text-white dark:text-white text-lg">
-                    Asset Status
+                    Asset Status <AssetStatusTooltip isChartTooltip={true} />
                   </span>
 
                   <PieChart
@@ -537,7 +560,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                           faded: "global",
                           highlighted: "item",
                         },
-                        arcLabel: (item) => `${item.value}`,
+                        arcLabel: (item) => `${item.count}`,
                         arcLabelMinAngle: 10,
                         faded: {
                           innerRadius: 60,
@@ -556,7 +579,35 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                     onItemClick={handleAssetItemClick}
                     width={400}
                     height={400}
-                    tooltip={{ trigger: "item" }}
+                    tooltip={{
+                      trigger: "item",
+                    }}
+                    slots={{
+                      itemContent: (item) => {
+                        const { color, label, count } = item.series.data[item.itemData.dataIndex];
+                        return (
+                          <div style={{
+                            background: 'rgba(0, 0, 0, 0.7)',
+                            borderRadius: '8px',
+                            padding: '10px',
+                            color: 'white',
+                            display: 'flex',
+                            alignItems: 'center',
+                          }}>
+                            <div style={{
+                              width: '12px',
+                              height: '12px',
+                              borderRadius: '50%',
+                              backgroundColor: color,
+                              marginRight: '8px',
+                            }} />
+                            <div>
+                              <div className="flex items-center"><span className="mr-5">{label}</span> <span>{count}</span></div>
+                            </div>
+                          </div>
+                        );
+                      }
+                    }}
                     slotProps={{
                       legend: {
                         direction: "row",
@@ -595,7 +646,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                           faded: "global",
                           highlighted: "item",
                         },
-                        arcLabel: (item) => `${item.value}`,
+                        arcLabel: (item) => `${item.count}`,
                         arcLabelMinAngle: 10,
                         faded: {
                           innerRadius: 60,
@@ -614,6 +665,35 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                     onItemClick={handleDetailItemClick}
                     width={400}
                     height={400}
+                    tooltip={{
+                      trigger: "item",
+                    }}
+                    slots={{
+                      itemContent: (item) => {
+                        const { color, label, count } = item.series.data[item.itemData.dataIndex];
+                        return (
+                          <div style={{
+                            background: 'rgba(0, 0, 0, 0.7)',
+                            borderRadius: '8px',
+                            padding: '10px',
+                            color: 'white',
+                            display: 'flex',
+                            alignItems: 'center',
+                          }}>
+                            <div style={{
+                              width: '12px',
+                              height: '12px',
+                              borderRadius: '50%',
+                              backgroundColor: color,
+                              marginRight: '8px',
+                            }} />
+                            <div>
+                              <div className="flex items-center"><span className="mr-5">{label}</span> <span>{count}</span></div>
+                            </div>
+                          </div>
+                        );
+                      }
+                    }}
                     slotProps={{
                       legend: {
                         direction: "row",
@@ -655,7 +735,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                           faded: "global",
                           highlighted: "item",
                         },
-                        arcLabel: (item) => `${item.value}`,
+                        arcLabel: (item) => `${item.count}`,
                         arcLabelMinAngle: 10,
                         faded: {
                           innerRadius: 60,
@@ -674,6 +754,35 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                     onItemClick={handleAssignItemClick}
                     width={400}
                     height={400}
+                    tooltip={{
+                      trigger: "item",
+                    }}
+                    slots={{
+                      itemContent: (item) => {
+                        const { color, label, count } = item.series.data[item.itemData.dataIndex];
+                        return (
+                          <div style={{
+                            background: 'rgba(0, 0, 0, 0.7)',
+                            borderRadius: '8px',
+                            padding: '10px',
+                            color: 'white',
+                            display: 'flex',
+                            alignItems: 'center',
+                          }}>
+                            <div style={{
+                              width: '12px',
+                              height: '12px',
+                              borderRadius: '50%',
+                              backgroundColor: color,
+                              marginRight: '8px',
+                            }} />
+                            <div>
+                              <div className="flex items-center"><span className="mr-5">{label}</span> <span>{count}</span></div>
+                            </div>
+                          </div>
+                        );
+                      }
+                    }}
                     slotProps={{
                       legend: {
                         direction: "row",
