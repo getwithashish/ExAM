@@ -62,6 +62,7 @@ const AssignPage: FC = function () {
         approval_type: "ASSIGN_STATUS",
         asset_uuid: selectedAssignRequest.asset_uuid,
         comments: approverNotes,
+        version: selectedAssignRequest.version,
       };
 
       axiosInstance
@@ -90,6 +91,7 @@ const AssignPage: FC = function () {
           approval_type: "ASSIGN_STATUS",
           asset_uuid: selectedAssignRequest.asset_uuid,
           comments: approverNotes,
+          version: selectedAssignRequest.version,
         },
       };
 

@@ -406,6 +406,7 @@ const CardComponent: React.FC<CardType> = ({
     try {
       const updatePayload = {
         asset_uuid: data.key,
+        version: data.version,
         data: updatedData,
       };
 
@@ -1060,6 +1061,7 @@ const CardComponent: React.FC<CardType> = ({
       setIsModalVisible(false);
       const deletePayload = {
         asset_uuid: data.key,
+        version: data.version
       };
       const response = await axiosInstance.delete("/asset/", {
         data: deletePayload,
@@ -1096,6 +1098,7 @@ const CardComponent: React.FC<CardType> = ({
       setIsModalVisible(false);
       const restorePayload = {
         asset_uuid: data.key,
+        version: data.version
       };
       const response = await axiosInstance.put("/asset/", restorePayload);
 

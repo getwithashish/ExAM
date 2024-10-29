@@ -29,6 +29,13 @@ class SerializerException(Exception):
         self.status = status
 
 
+class ConflictException(Exception):
+    def __init__(self, errors, message, status):
+        super().__init__(errors)
+        self.message = message
+        self.status = status
+
+
 class BadRequestException(Exception):
     pass
 

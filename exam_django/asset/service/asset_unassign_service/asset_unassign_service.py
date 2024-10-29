@@ -1,11 +1,12 @@
 from asset.serializers.asset_serializer import AssetReadSerializer
 from utils.celery_status_checker import CeleryStatusChecker
-from exceptions import NotFoundException, PermissionDeniedException
+from exceptions import ConflictException, NotFoundException, PermissionDeniedException
 from asset.service.asset_unassign_service.asset_unassign_sys_admin_service import (
     AssetSysadminRoleUnassignService,
 )
 from rest_framework import status
 from messages import (
+    ASSET_CONFLICT,
     ASSET_NOT_FOUND,
     EMPLOYEE_NOT_FOUND_ERROR,
     UNAUTHORIZED_NO_PERMISSION,
@@ -22,7 +23,7 @@ from notification.utils.email_body_contents.lead_email_body_contents import (
 
 class UnassignAssetService:
     @staticmethod
-    def unassign_asset(requester_role, asset_uuid, requester, custodian=None):
+    def unassign_asset(requester_role, asset_uuid, requester, version, custodian=None):
         try:
             # Retrieve the asset with the specified UUID
             asset = Asset.objects.get(asset_uuid=asset_uuid)
@@ -41,7 +42,10 @@ class UnassignAssetService:
                 asset_user_role_unassign_service.unassign_asset(asset, requester)
             )
 
-            # Save the asset after unassignment
+            if asset.version != version:
+                raise ConflictException({}, ASSET_CONFLICT, status.HTTP_409_CONFLICT)
+
+            asset.version = asset.version + 1
             asset.save()
             unassigned_asset_serializer = AssignAssetSerializer(asset)
 

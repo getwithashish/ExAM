@@ -1,3 +1,4 @@
+import json
 from django.db import models
 
 
@@ -8,4 +9,4 @@ class Employee(models.Model):
     employee_designation = models.CharField(max_length=50, null=False, blank=False)
 
     def __str__(self):
-        return str(self.employee_name)
+        return json.dumps({"id": self.id, "employee_name": self.employee_name})
