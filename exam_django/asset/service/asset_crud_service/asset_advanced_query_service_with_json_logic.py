@@ -18,7 +18,6 @@ class AssetAdvancedQueryServiceWithJsonLogic(AssetQueryAbstract):
         self.pagination = LimitOffsetPagination()
         json_logic = request.query_params.get("json_logic")
         logic_data = json.loads(json_logic)
-        print("After json.loads: ", logic_data)
 
         limit = request.query_params.get("limit")
         offset = request.query_params.get("offset")

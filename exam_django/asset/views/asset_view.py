@@ -19,6 +19,7 @@ from asset.service.asset_crud_service.asset_field_value_query_service import (
     AssetFieldValueQueryService,
 )
 from exceptions import (
+    ConflictException,
     NotAcceptableOperationException,
     NotFoundException,
     PermissionDeniedException,
@@ -179,6 +180,13 @@ class AssetView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        except ConflictException as e:
+            return APIResponse(
+                data=str(e),
+                message=e.message,
+                status=e.status,
+            )
+
     def delete(self, request):
         asset_uuid = request.data.get("asset_uuid")
         try:
@@ -189,6 +197,13 @@ class AssetView(APIView):
                 data={"asset_uuid": asset_uuid},
                 message=ASSET_DELETION_SUCCESSFUL,
                 status=status.HTTP_200_OK,
+            )
+
+        except ConflictException as e:
+            return APIResponse(
+                data=str(e),
+                message=e.message,
+                status=e.status,
             )
 
         except Exception as e:
@@ -212,6 +227,13 @@ class AssetView(APIView):
                 data={"asset_uuid": asset_uuid},
                 message=ASSET_RESTORATION_SUCCESSFUL,
                 status=status.HTTP_200_OK,
+            )
+
+        except ConflictException as e:
+            return APIResponse(
+                data=str(e),
+                message=e.message,
+                status=e.status,
             )
 
         except Exception as e:

@@ -26,10 +26,11 @@ class AssignAssetView(APIView):
 
                 employee_id = request.data.get("id")
                 asset_uuid = request.data.get("asset_uuid")
+                version = request.data.get("version")
 
                 # Assign the asset using the appropriate service based on requester's role
                 data, message, http_status = AssignAssetService.assign_asset(
-                    role, asset_uuid, employee_id, requester
+                    role, asset_uuid, employee_id, requester, version
                 )
 
                 return APIResponse(
