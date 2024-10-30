@@ -109,11 +109,14 @@ const TableNavbar: React.FC<TableNavbarProps> = ({
         assetDataRefetch={assetDataRefetch}
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
+        reset={reset}
+        setJson_query={setJson_query}
+        json_query={json_query}
       />
 
-      <button className={styles["button"]} onClick={reset}>Reset</button>
+      {/* <button className={styles["button"]} onClick={reset}>Reset</button> */}
 
-      <button onClick={toggleQueryBuilder} className={styles["button"]}>Advanced Search</button>
+      {/* <button onClick={toggleQueryBuilder} className={styles["button"]}>Advanced Search</button>
       
       <DrawerViewRequest title="Advanced Search" onClose={toggleQueryBuilder} open={visible}>
         <QueryBuilderComponent
@@ -122,7 +125,7 @@ const TableNavbar: React.FC<TableNavbarProps> = ({
           reset={reset}
           setVisible={setVisible}
         />
-      </DrawerViewRequest>
+      </DrawerViewRequest> */}
 
       <DropDown
         onSelect={handleExport}

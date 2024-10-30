@@ -11,6 +11,7 @@ interface QueryBuilderComponentProps {
   setJson_query: (queryParams: string) => void;
   reset: () => void;
   setVisible: (queryParams: boolean) => void;
+  disabledFields?: string[];
 }
 
 interface QueryBuilderProps {
@@ -19,7 +20,13 @@ interface QueryBuilderProps {
 
 export const QueryBuilderComponent: React.FC<
   QueryBuilderComponentProps & QueryBuilderProps
-> = ({ assetDataRefetch, setJson_query, reset, setVisible }) => {
+> = ({
+  assetDataRefetch,
+  setJson_query,
+  reset,
+  setVisible,
+  disabledFields,
+}) => {
   const [selectedFields, setSelectedFields] = useState<
     { field: string; value: string; id: number }[]
   >([]);
@@ -37,10 +44,45 @@ export const QueryBuilderComponent: React.FC<
     setSuggestion([]);
   };
 
-  const handleRemoveField = (currentEle, index: number) => {
+  type InputObject = { [key: string]: any };
+  type MergedObject = { [key: string]: any };
+
+  const mergeObjects = (arr: InputObject[]) => {
+    const result: MergedObject[] = [];
+    const keyMap: { [key: string]: any[] } = {};
+
+    for (const obj of arr) {
+      for (const key in obj) {
+        if (!keyMap[key]) {
+          keyMap[key] = [];
+        }
+        keyMap[key].push(obj[key]);
+      }
+    }
+
+    // Convert the keyMap back to an array of objects
+    for (const key in keyMap) {
+      result.push({ [key]: keyMap[key] });
+    }
+
+    return result;
+  };
+
+  const handleRemoveField = (currentEle: string, index: number) => {
+    const fieldIndex = newFields.indexOf(currentEle);
+    const mergedAllFieldValues = mergeObjects(allFieldValues);
+    let fieldName = "";
+    if (mergedAllFieldValues && mergedAllFieldValues[fieldIndex]) {
+      fieldName = Object.keys(mergedAllFieldValues[fieldIndex])[0];
+    } else {
+      console.error("Empty Field in Advanced Search");
+    }
+
     setNewFields((prev) => prev.filter((ele) => ele !== currentEle));
     setSelectedFields((prev) => prev.filter((_, i) => i !== index));
-    setAllFieldValues((prev) => prev.filter((_, i) => i !== index));
+    setAllFieldValues((prev) =>
+      prev.filter((fieldValue, _) => Object.keys(fieldValue)[0] !== fieldName)
+    );
   };
 
   const [allFieldValues, setAllFieldValues] = React.useState<
@@ -122,6 +164,7 @@ export const QueryBuilderComponent: React.FC<
                 key={currentEle}
                 allFieldValues={allFieldValues}
                 setAllFieldValues={setAllFieldValues}
+                disabledFields={disabledFields}
               />
               <IconButton
                 onClick={() => handleRemoveField(currentEle, index)}

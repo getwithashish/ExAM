@@ -33,14 +33,14 @@ const filter = createFilterOptions();
 
 const darkTheme = createTheme({
   palette: {
-    mode: 'dark',
+    mode: "dark",
     background: {
-      default: '#121212',
-      paper: '#1e1e1e',
+      default: "#121212",
+      paper: "#1e1e1e",
     },
     text: {
-      primary: '#ffffff',
-      secondary: '#b0b0b0',
+      primary: "#ffffff",
+      secondary: "#b0b0b0",
     },
   },
 });
@@ -48,6 +48,7 @@ const darkTheme = createTheme({
 const MuiAutocomplete = ({
   allFieldValues,
   setAllFieldValues,
+  disabledFields,
 }: MuiAutocompleteProps) => {
   const fieldNames = [
     { label: "Product Name", value: "product_name" },
@@ -171,13 +172,19 @@ const MuiAutocomplete = ({
     <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
       <ThemeProvider theme={darkTheme}>
         <FormControl>
-          <InputLabel id="demo-simple-select-label" sx={{ color: 'white' }}>Field Name</InputLabel>
+          <InputLabel id="demo-simple-select-label" sx={{ color: "white" }}>
+            Field Name
+          </InputLabel>
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             value={fieldName}
             label="Select Field Name"
-            sx={{ minWidth: 300, color: 'white', '& .MuiSelect-icon': { color: 'white' } }}
+            sx={{
+              minWidth: 300,
+              color: "white",
+              "& .MuiSelect-icon": { color: "white" },
+            }}
             onChange={(event) => {
               setFieldName(event.target.value as string);
               let newFieldValues = [];
@@ -204,7 +211,19 @@ const MuiAutocomplete = ({
             }}
           >
             {fieldNames.map((field, index) => (
-              <MenuItem key={index} value={field.value}>
+              <MenuItem
+                key={index}
+                value={field.value}
+                disabled={
+                  disabledFields?.includes(field.value) ||
+                  allFieldValues.some((obj) => {
+                    const fieldKey = field.queryFieldName
+                      ? field.queryFieldName
+                      : field.value;
+                    return obj.hasOwnProperty(fieldKey);
+                  })
+                }
+              >
                 {field.label}
               </MenuItem>
             ))}
@@ -256,7 +275,13 @@ const MuiAutocomplete = ({
               )}
               sx={{ width: 300, marginLeft: 5, marginRight: 5 }}
               freeSolo
-              renderInput={(params) => <TextField {...params} label="Search" sx={{ input: { color: 'white' } }} />}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Search"
+                  sx={{ input: { color: "white" } }}
+                />
+              )}
             />
           )}
 
@@ -275,8 +300,8 @@ const MuiAutocomplete = ({
                     | ItemElementTypeWithString
                     | ItemElementTypeWithUndefined
                     | undefined = fieldNames.find(
-                      (item) => item.value == fieldName
-                    );
+                    (item) => item.value == fieldName
+                  );
                   const newFieldValues = allFieldValues.filter(
                     (item) =>
                       !Object.prototype.hasOwnProperty.call(
@@ -320,7 +345,13 @@ const MuiAutocomplete = ({
                 </li>
               )}
               sx={{ width: 300, marginLeft: 5, marginRight: 5 }}
-              renderInput={(params) => <TextField {...params} label="Search" sx={{ input: { color: 'white' } }} />}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Search"
+                  sx={{ input: { color: "white" } }}
+                />
+              )}
             />
           )}
 
@@ -328,7 +359,9 @@ const MuiAutocomplete = ({
           !foreignFieldValueNames.includes(fieldName) &&
           DropDownFieldValueNames.includes(fieldName) && (
             <FormControl sx={{ marginLeft: 5, marginRight: 5 }}>
-              <InputLabel id="simple-status-select" sx={{ color: 'white' }}>Select Status</InputLabel>
+              <InputLabel id="simple-status-select" sx={{ color: "white" }}>
+                Select Status
+              </InputLabel>
               <Select
                 labelId="simple-status-select"
                 id="demo-simple-select"
@@ -381,7 +414,12 @@ const MuiAutocomplete = ({
                     ))}
                   </Box>
                 )}
-                sx={{ width: 300, paddingY: 0, color: 'white', '& .MuiSelect-icon': { color: 'white' } }}
+                sx={{
+                  width: 300,
+                  paddingY: 0,
+                  color: "white",
+                  "& .MuiSelect-icon": { color: "white" },
+                }}
               >
                 {DropDownFieldValue[fieldName].map(
                   (field: string, index: number) => (
