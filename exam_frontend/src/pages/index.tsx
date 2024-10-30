@@ -22,15 +22,18 @@ const DashboardPage: FC = function () {
   };
 
   return (
-    <motion.div className="bg-custom-500 lg:ml-60 mt-20"
+    <motion.div
+      className="bg-custom-500 lg:ml-60 mt-20"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.5 }}>
+      transition={{ duration: 0.5 }}
+    >
       <motion.div
         initial={{ scale: 0.95 }}
         animate={{ scale: 1 }}
-        transition={{ duration: 0.3 }}>
+        transition={{ duration: 0.3 }}
+      >
         <Statistics
           selectedTypeId={selectedTypeId}
           assetState={assetState}
@@ -44,10 +47,12 @@ const DashboardPage: FC = function () {
         />
       </motion.div>
 
-      <motion.div ref={dashboardAssetRef}
+      <motion.div
+        ref={dashboardAssetRef}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}>
+        transition={{ duration: 0.5 }}
+      >
         <DashboardAssetHandler
           selectedTypeId={selectedTypeId}
           assetState={assetState}
