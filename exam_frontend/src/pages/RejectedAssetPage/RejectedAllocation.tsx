@@ -29,11 +29,12 @@ const RejectedAllocationAsset = () => {
   };
 
   let queryParamProp = `&assign_status=REJECTED&requester_id=${getUserId()}`;
-  let heading = "My Rejected Request";
+  let heading = "My Rejected Allocation Requests";
 
   return (
     <div className="pt-8">
       <AssetTableHandler
+        key={"assign_rejected"}
         isRejectedPage={false}
         queryParamProp={queryParamProp}
         heading={heading}
