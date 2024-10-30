@@ -4,7 +4,6 @@ from rest_framework import status
 from rest_framework.pagination import LimitOffsetPagination
 
 from asset.service.asset_crud_service.asset_query_abstract import AssetQueryAbstract
-from asset.models.asset import Asset
 from asset.serializers.asset_serializer import AssetReadSerializer
 from asset.service.asset_crud_service.asset_normal_query_service import (
     AssetNormalQueryService,
@@ -16,6 +15,7 @@ class AssetAdvancedQueryServiceWithJsonLogic(AssetQueryAbstract):
 
     def get_asset_details(self, serializer, request):
         self.pagination = LimitOffsetPagination()
+
         json_logic = request.query_params.get("json_logic")
         logic_data = json.loads(json_logic)
 
@@ -29,16 +29,10 @@ class AssetAdvancedQueryServiceWithJsonLogic(AssetQueryAbstract):
         # Convert JsonLogic expression to Django Q objects
         q_objects = self.convert_json_logic_to_django_q(logic_data)
 
-        queryset = Asset.objects.all().filter(is_deleted=False)
+        asset_normal_query_service = AssetNormalQueryService()
+
+        queryset = asset_normal_query_service.filter_queryset(request=request)
         queryset = queryset.filter(q_objects)
-
-        global_search = request.query_params.get("global_search")
-
-        if global_search:
-            asset_normal_query_service = AssetNormalQueryService()
-            queryset = asset_normal_query_service.get_queryset_from_global_search(
-                global_search, queryset
-            )
 
         page = self.pagination.paginate_queryset(queryset, request)
         if page is not None:

@@ -27,9 +27,10 @@ class AssetNormalQueryService(AssetQueryAbstract):
         "updated_at",
     ]
 
-    def get_asset_details(self, serializer, request):
+    def __init__(self):
         self.pagination = LimitOffsetPagination()
 
+    def filter_queryset(self, request):
         deleted = request.query_params.get("deleted")
 
         is_deleted = False
@@ -83,6 +84,7 @@ class AssetNormalQueryService(AssetQueryAbstract):
             "sort_order",
             "expired",
             "deleted",
+            "json_logic",
         ]
         required_query_params = self.remove_fields_from_dict(
             query_params, query_params_to_exclude
@@ -151,6 +153,12 @@ class AssetNormalQueryService(AssetQueryAbstract):
             except Exception as e:
                 print("Error Occured: ", e)
                 sentry_sdk.capture_exception(e)
+
+        return queryset
+
+    def get_asset_details(self, serializer, request):
+
+        queryset = self.filter_queryset(request=request)
 
         page = self.pagination.paginate_queryset(queryset, request)
 
