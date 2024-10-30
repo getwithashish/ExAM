@@ -25,6 +25,7 @@ import { MenuItem, Select, TextField } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { AssetStatusTooltip } from "../Tooltip/AssetStatusTooltip";
+import { motion } from "framer-motion";
 
 interface UpdateData {
   asset_uuid: string;
@@ -47,9 +48,7 @@ const CardComponent: React.FC<CardType> = ({
   assetDataRefetch,
   onClose,
   onDelete,
-
 }) => {
-
   const [_assetCategoryOption, setAssetCategoryOption] = React.useState();
   const [assetName, setAssetName] = React.useState("");
   const [assetModelNumber, setAssetModelNumber] = React.useState("");
@@ -417,7 +416,10 @@ const CardComponent: React.FC<CardType> = ({
           rules={[{ required: true, message: "Product Name is required" }]}
         >
           <b>
-            Product Name: <span hidden={readOnly} style={{ color: "red" }}>*</span>
+            Product Name:{" "}
+            <span hidden={readOnly} style={{ color: "red" }}>
+              *
+            </span>
           </b>
           <br></br>
           <br></br>
@@ -439,7 +441,10 @@ const CardComponent: React.FC<CardType> = ({
           rules={[{ required: true, message: "Asset Category is required" }]}
         >
           <b style={{ display: "block" }}>
-            Asset Category: <span hidden={readOnly} style={{ color: "red" }}>*</span>
+            Asset Category:{" "}
+            <span hidden={readOnly} style={{ color: "red" }}>
+              *
+            </span>
           </b>{" "}
           <br></br>
           <Select
@@ -478,7 +483,13 @@ const CardComponent: React.FC<CardType> = ({
       label: "Asset Type",
       value: (
         <Form.Item name="status">
-          <b> Asset Type: <span hidden={readOnly} style={{ color: "red" }}>*</span></b>
+          <b>
+            {" "}
+            Asset Type:{" "}
+            <span hidden={readOnly} style={{ color: "red" }}>
+              *
+            </span>
+          </b>
           <br></br>
           <br></br>
           <AssetFieldAutoComplete
@@ -496,7 +507,14 @@ const CardComponent: React.FC<CardType> = ({
       name: "assetStatus",
       value: (
         <Form.Item name="assetStatus">
-          <b> Asset Status: <span hidden={readOnly} style={{ color: "red" }}>*</span> <AssetStatusTooltip /> </b>
+          <b>
+            {" "}
+            Asset Status:{" "}
+            <span hidden={readOnly} style={{ color: "red" }}>
+              *
+            </span>{" "}
+            <AssetStatusTooltip />{" "}
+          </b>
           <br></br>
           <br></br>
           <Select
@@ -539,10 +557,7 @@ const CardComponent: React.FC<CardType> = ({
           name="serial number"
           rules={[{ required: true, message: "Serial Number is required" }]}
         >
-          <b>
-            Serial Number:
-          </b>{" "}
-          <br></br>
+          <b>Serial Number:</b> <br></br>
           <br></br>
           <TextField
             id="outlined-textarea-serial-hardware-modify"
@@ -633,7 +648,10 @@ const CardComponent: React.FC<CardType> = ({
         >
           <b>
             {" "}
-            Asset Location: <span hidden={readOnly} style={{ color: "red" }}>*</span>
+            Asset Location:{" "}
+            <span hidden={readOnly} style={{ color: "red" }}>
+              *
+            </span>
           </b>
           <br></br>
           <br></br>
@@ -656,7 +674,10 @@ const CardComponent: React.FC<CardType> = ({
           rules={[{ required: true, message: "Invoice Location is required" }]}
         >
           <b>
-            Invoice Location: <span hidden={readOnly} style={{ color: "red" }}>*</span>
+            Invoice Location:{" "}
+            <span hidden={readOnly} style={{ color: "red" }}>
+              *
+            </span>
           </b>
           <br></br>
           <br></br>
@@ -679,7 +700,10 @@ const CardComponent: React.FC<CardType> = ({
           rules={[{ required: true, message: "Date of Purchase is required" }]}
         >
           <b>
-            Date of Purchase: <span hidden={readOnly} style={{ color: "red" }}>*</span>
+            Date of Purchase:{" "}
+            <span hidden={readOnly} style={{ color: "red" }}>
+              *
+            </span>
           </b>{" "}
           <br></br>
           <br></br>
@@ -1024,7 +1048,7 @@ const CardComponent: React.FC<CardType> = ({
       setIsModalVisible(false);
       const deletePayload = {
         asset_uuid: data.key,
-        version: data.version
+        version: data.version,
       };
       const response = await axiosInstance.delete("/asset/", {
         data: deletePayload,
@@ -1061,7 +1085,7 @@ const CardComponent: React.FC<CardType> = ({
       setIsModalVisible(false);
       const restorePayload = {
         asset_uuid: data.key,
-        version: data.version
+        version: data.version,
       };
       const response = await axiosInstance.put("/asset/", restorePayload);
 
@@ -1118,7 +1142,7 @@ const CardComponent: React.FC<CardType> = ({
       <div style={{ display: "flex", alignItems: "center" }}>
         <div className="fixed-header">
           <Input
-            placeholder="Search....."
+            placeholder="Search..."
             onChange={handleChange}
             style={{
               border: "0.5px solid #d3d3d3",
@@ -1136,18 +1160,20 @@ const CardComponent: React.FC<CardType> = ({
           {isMyApprovalPage && (
             <>
               {isLoading && (
-                <div style={{
-                  position: 'fixed',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  zIndex: 1000
-                }}>
+                <div
+                  style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    zIndex: 1000,
+                  }}
+                >
                   <Spin size="large" />
                 </div>
               )}
@@ -1240,9 +1266,16 @@ const CardComponent: React.FC<CardType> = ({
                 md={8}
                 lg={6}
               >
-                <Form.Item key={index}>
-                  <div key={index}>{item.value}</div>
-                </Form.Item>
+                <motion.div
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                >
+                  <Form.Item key={index}>
+                    <div key={index}>{item.value}</div>
+                  </Form.Item>
+                </motion.div>
               </Col>
             ))}
           </Row>
