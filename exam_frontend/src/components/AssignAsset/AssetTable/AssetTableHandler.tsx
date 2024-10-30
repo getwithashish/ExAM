@@ -11,14 +11,13 @@ import {
   getMemoryOptions,
 } from "../../AssetTable/api/getAssetDetails";
 import moment from "moment";
-import { Reorder } from "@mui/icons-material";
-interface Props{
-  queryParam?:any;
-  setQueryParam?:any;
-  assetData?:any;
-  isAssetDataLoading?:any;
-  assetDataRefetch?:any;
-  showAssignDrawer?:any;
+interface Props {
+  queryParam?: any;
+  setQueryParam?: any;
+  assetData?: any;
+  isAssetDataLoading?: any;
+  assetDataRefetch?: any;
+  showAssignDrawer?: any;
 }
 
 const AssetTableHandler = ({
@@ -28,13 +27,15 @@ const AssetTableHandler = ({
   isAssetDataLoading,
   assetDataRefetch,
   showAssignDrawer,
-}:Props) => {
+}: Props) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [sortedColumn, setSortedColumn] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<string>("asc");
   const [sortOrders, setSortOrders] = useState<{ [key: string]: string }>({});
   const [searchTerm, setSearchTerm] = useState<string>("");
+
+  const [json_query, setJson_query] = useState<string>("");
 
   const refetchAssetData = (queryParamArg = "") => {
     let editedQueryParam = "";
@@ -88,6 +89,7 @@ const AssetTableHandler = ({
 
   const reset = () => {
     setQueryParam("");
+    setJson_query("");
     setSearchTerm("");
     refetchAssetData();
   };
@@ -100,15 +102,6 @@ const AssetTableHandler = ({
   const onCloseDrawer = useCallback(() => {
     setDrawerVisible(false);
   }, []);
-
-  // const [tableData, setTableData] = useState<DataType[]>([]);
-  // const handleUpdateData = (updatedData: { key: any }) => {
-  //   setTableData((prevData: any[]) =>
-  //     prevData.map((item) =>
-  //       item.key === updatedData.key ? { ...item, ...updatedData } : item
-  //     )
-  //   );
-  // };
 
   const handleSort = (column: string) => {
     const isCurrentColumn = column === sortedColumn;
@@ -131,6 +124,9 @@ const AssetTableHandler = ({
     if (searchTerm !== "" && searchTerm !== null) {
       additionalQueryParams += `&global_search=${searchTerm}`;
     }
+    if (json_query !== "" && json_query !== null) {
+      additionalQueryParams += `&json_logic=${json_query}`;
+    }
     refetchAssetData(queryParams + additionalQueryParams);
   };
 
@@ -138,41 +134,43 @@ const AssetTableHandler = ({
     <h1>Asset Overview</h1>
   </div>;
 
-  const renderClickableColumn = (columnName:any, dataIndex: any) => (_:any, record:any) => {
-    if (dataIndex === "created_at" || dataIndex === "updated_at") {
-      const formattedDate = moment(record[dataIndex]).format("DD-MM-YYYY");
+  const renderClickableColumn =
+    (columnName: any, dataIndex: any) => (_: any, record: any) => {
+      if (dataIndex === "created_at" || dataIndex === "updated_at") {
+        const formattedDate = moment(record[dataIndex]).format("DD-MM-YYYY");
+        return (
+          <div
+            data-column-name={columnName}
+            onClick={() => handleColumnClick(record, columnName)}
+            style={{ cursor: "pointer" }}
+          >
+            {formattedDate}
+          </div>
+        );
+      }
       return (
         <div
           data-column-name={columnName}
           onClick={() => handleColumnClick(record, columnName)}
           style={{ cursor: "pointer" }}
         >
-          {formattedDate}
+          {record[dataIndex]}
         </div>
       );
-    }
-    return (
-      <div
-        data-column-name={columnName}
-        onClick={() => handleColumnClick(record, columnName)}
-        style={{ cursor: "pointer" }}
-      >
-        {record[dataIndex]}
-      </div>
-    );
-  };
+    };
 
   const detailStatusStyleCondition = (record: any): React.CSSProperties => {
     return record.asset_detail_status === "CREATE_REJECTED" ||
       record.asset_detail_status === "UPDATE_REJECTED"
       ? { color: "red" }
-      : {color: "white"};
+      : { color: "white" };
   };
 
   const assignStatusStyleCondition = (record: any): React.CSSProperties => {
-    return record.assign_status === "REJECTED" ? { color: "red" } : {color: "white"};
+    return record.assign_status === "REJECTED"
+      ? { color: "red" }
+      : { color: "white" };
   };
-
 
   const columns = [
     {
@@ -556,7 +554,7 @@ const AssetTableHandler = ({
       responsive: ["md"],
       width: 140,
       render: (text: string, record: any) => (
-        <div style={{...detailStatusStyleCondition(record)}}>
+        <div style={{ ...detailStatusStyleCondition(record) }}>
           {renderClickableColumn("Asset Detail Status", "asset_detail_status")(
             text,
             record
@@ -570,7 +568,7 @@ const AssetTableHandler = ({
       responsive: ["md"],
       width: 140,
       render: (text: string, record: any) => (
-        <div style={{...assignStatusStyleCondition(record)}}>
+        <div style={{ ...assignStatusStyleCondition(record) }}>
           {renderClickableColumn("Asset Assign Status", "assign_status")(
             text,
             record
@@ -716,6 +714,8 @@ const AssetTableHandler = ({
       sortOrder={sortOrder}
       reset={reset}
       sortedColumn={sortedColumn}
+      setJson_query={setJson_query}
+      json_query={json_query}
       memoryData={memoryData}
       assetTypeData={assetTypeData}
       locations={locations}

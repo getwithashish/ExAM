@@ -29,11 +29,12 @@ const RejectedAsset = () => {
   };
 
   let queryParamProp = `&asset_detail_status=UPDATE_REJECTED|CREATE_REJECTED&requester_id=${getUserId()}`;
-  let heading = "My Rejected Request";
+  let heading = "My Rejected Asset Requests";
 
   return (
     <div className="pt-8">
       <AssetTableHandler
+        key={"asset_detail_rejected"}
         isRejectedPage={false}
         queryParamProp={queryParamProp}
         heading={heading}

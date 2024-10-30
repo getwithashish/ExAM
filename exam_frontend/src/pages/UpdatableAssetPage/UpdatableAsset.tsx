@@ -8,14 +8,15 @@ const UpdatableAsset = () => {
     userRole === "MANAGER"
       ? "&deleted=True"
       : userRole === "LEAD"
-        ? "&asset_detail_status=CREATED|UPDATED|CREATE_REJECTED|UPDATE_REJECTED&assign_status=ASSIGNED|UNASSIGNED|REJECTED"
-        : "&asset_detail_status=CREATED|UPDATED|CREATE_REJECTED|UPDATE_REJECTED";
+      ? "&asset_detail_status=CREATED|UPDATED|CREATE_REJECTED|UPDATE_REJECTED&assign_status=ASSIGNED|UNASSIGNED|REJECTED"
+      : "&asset_detail_status=CREATED|UPDATED|CREATE_REJECTED|UPDATE_REJECTED";
   let heading =
     userRole === "MANAGER"
       ? "Restore Deleted Assets"
       : userRole === "LEAD"
-        ? "Delete Assets"
-        : "Modify Assets";
+      ? "Delete Assets"
+      : "Modify Assets";
+  const advancedSearchDisabledFields: string[] = [];
 
   return (
     <div className="pt-8">
@@ -26,6 +27,7 @@ const UpdatableAsset = () => {
         isMyApprovalPage={true}
         userRole={userRole}
         destroyOnClose={true}
+        advancedSearchDisabledFields={advancedSearchDisabledFields}
       />
     </div>
   );

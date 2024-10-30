@@ -9,6 +9,7 @@ export interface MuiAutocompleteProps {
   setAllFieldValues: React.Dispatch<
     React.SetStateAction<(string | FieldValues)[]>
   >;
+  disabledFields?: string[];
 }
 
 export interface ItemElementTypeWithString {

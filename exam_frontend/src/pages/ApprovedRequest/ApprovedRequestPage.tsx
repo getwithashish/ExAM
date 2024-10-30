@@ -33,7 +33,7 @@ const getUserId = () => {
 const ApprovedRequestPage = () => {
   const userId = getUserId();
   const queryParamProp = `&asset_detail_status=CREATED|UPDATED&assign_status=ASSIGNED|UNASSIGNED&requester_id=${userId}`;
-  const heading = "My Approved Request";
+  const heading = "My Approved Requests";
 
   return (
     <div className="pt-8 h-full bg-custom-500">

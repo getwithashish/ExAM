@@ -38,12 +38,10 @@ const Deallocate = () => {
           <Spin size="large" />
         </div>
       )}
-      {/* <Spin spinning={loading}> */}
       <AssetTableHandler
         unassign={unassign}
         queryParamProp={queryParamProp}
       />
-      {/* </Spin> */}
     </div>
   );
 };

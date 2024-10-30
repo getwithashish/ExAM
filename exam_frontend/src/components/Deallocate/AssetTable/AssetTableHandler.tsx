@@ -10,7 +10,7 @@ import { UserDeleteOutlined } from "@ant-design/icons";
 import "./AssetTable.css";
 import { useQuery } from "@tanstack/react-query";
 import { DataType } from "../AssetTable/types";
-import { AssetResult, Location , AssetType} from "../AssetTable/types";
+import { AssetResult, Location, AssetType } from "../AssetTable/types";
 import AssetTable from "./AssetTable";
 import {
   getAssetDetails,
@@ -20,7 +20,7 @@ import {
 } from "../../AssetTable/api/getAssetDetails";
 import moment from "moment";
 interface AssetTableHandlerProps {
-  unassign?:any;
+  unassign?: any;
   queryParamProp: any;
 }
 
@@ -28,7 +28,7 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
   queryParamProp,
   unassign,
 }) => {
-  const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null); 
+  const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null);
   const [sortedColumn, setSortedColumn] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<string>("asc");
   const [sortOrders, setSortOrders] = useState<{ [key: string]: string }>({});
@@ -36,8 +36,11 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [queryParam, setQueryParam] = useState("");
-  const [confirmModalVisible, setConfirmModalVisible] = useState(false); 
+  const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<DataType | null>(null);
+
+  const [json_query, setJson_query] = useState<string>("");
+
   const { data: assetData, refetch: assetDataRefetch } = useQuery({
     queryKey: ["assetList", queryParam],
     queryFn: () => getAssetDetails(`${queryParamProp + queryParam}`),
@@ -98,7 +101,6 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
   });
   const assetTypeFilters =
     assetTypeData?.map((assetType: AssetType) => ({
-
       text: assetType.asset_type_name,
       value: assetType.asset_type_name,
     })) ?? [];
@@ -110,6 +112,7 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
 
   const reset = () => {
     setQueryParam("");
+    setJson_query("");
     setSearchTerm("");
     refetchAssetData();
   };
@@ -118,29 +121,20 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
     setDrawerVisible(false);
   }, []);
 
-  // const [tableData, setTableData] = useState<DataType[]>([]);
-  // // const handleUpdateData = (updatedData: { key: any }) => {
-  // //   setTableData((prevData: any[]) =>
-  // //     prevData.map((item) =>
-  // //       item.key === updatedData.key ? { ...item, ...updatedData } : item
-  // //     )
-  // //   );
-  // // };
-
   const handleSort = (column: string) => {
     const isCurrentColumn = column === sortedColumn;
     let newSortOrders: { [key: string]: string } = { ...sortOrders };
-  
+
     if (!isCurrentColumn) {
       newSortOrders = { [column]: "asc" };
     } else {
       newSortOrders[column] = sortOrders[column] === "asc" ? "desc" : "asc";
     }
-  
+
     setSortedColumn(column);
     setSortOrder(newSortOrders[column]);
     setSortOrders(newSortOrders);
-  
+
     const queryParams = Object.keys(newSortOrders)
       .map((col) => `&sort_by=${col}&sort_order=${newSortOrders[col]}`)
       .join("");
@@ -148,11 +142,13 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
     if (searchTerm !== "" && searchTerm !== null) {
       additionalQueryParams += `&global_search=${searchTerm}`;
     }
+    if (json_query !== "" && json_query !== null) {
+      additionalQueryParams += `&json_logic=${json_query}`;
+    }
     refetchAssetData(queryParams + additionalQueryParams);
   };
-  
 
-  const renderDeallocateButton = (_:any, record: any) => (
+  const renderDeallocateButton = (_: any, record: any) => (
     <Button
       className="ml-6"
       ghost
@@ -161,11 +157,11 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
       icon={<UserDeleteOutlined />}
       onClick={() => {
         setConfirmModalVisible(true);
-        setSelectedRecord(record); 
+        setSelectedRecord(record);
       }}
     />
   );
-  
+
   const handleConfirmDeallocate = async () => {
     setConfirmModalVisible(false);
     if (selectedRecord) {
@@ -179,41 +175,44 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
     <h1>Asset Overview</h1>
   </div>;
 
-const renderClickableColumn = (columnName: any, dataIndex: string) => (_:any , record: any) => {
-  if (dataIndex === 'created_at' || dataIndex === 'updated_at') {
-    const formattedDate = moment(record[dataIndex]).format('DD-MM-YYYY'); 
-    return (
-      <div
-        data-column-name={columnName}
-        onClick={() => handleColumnClick(record, columnName)}
-        style={{ cursor: "pointer" }}
-      >
-        {formattedDate}
-      </div>
-    );
-  }
+  const renderClickableColumn =
+    (columnName: any, dataIndex: string) => (_: any, record: any) => {
+      if (dataIndex === "created_at" || dataIndex === "updated_at") {
+        const formattedDate = moment(record[dataIndex]).format("DD-MM-YYYY");
+        return (
+          <div
+            data-column-name={columnName}
+            onClick={() => handleColumnClick(record, columnName)}
+            style={{ cursor: "pointer" }}
+          >
+            {formattedDate}
+          </div>
+        );
+      }
 
-  return (
-    <div
-      data-column-name={columnName}
-      onClick={() => handleColumnClick(record, columnName)}
-      style={{ cursor: "pointer" }}
-    >
-      {record[dataIndex]}
-    </div>
-  );
-};
+      return (
+        <div
+          data-column-name={columnName}
+          onClick={() => handleColumnClick(record, columnName)}
+          style={{ cursor: "pointer" }}
+        >
+          {record[dataIndex]}
+        </div>
+      );
+    };
 
-const detailStatusStyleCondition = (record: any): React.CSSProperties => {
-  return record.asset_detail_status === "CREATE_REJECTED" ||
-    record.asset_detail_status === "UPDATE_REJECTED"
-    ? { color: "red" }
-    : {color: "white"};
-};
+  const detailStatusStyleCondition = (record: any): React.CSSProperties => {
+    return record.asset_detail_status === "CREATE_REJECTED" ||
+      record.asset_detail_status === "UPDATE_REJECTED"
+      ? { color: "red" }
+      : { color: "white" };
+  };
 
-const assignStatusStyleCondition = (record: any): React.CSSProperties => {
-  return record.assign_status === "REJECTED" ? { color: "red" } : {color: "white"};
-};
+  const assignStatusStyleCondition = (record: any): React.CSSProperties => {
+    return record.assign_status === "REJECTED"
+      ? { color: "red" }
+      : { color: "white" };
+  };
 
   const columns = [
     {
@@ -281,7 +280,7 @@ const assignStatusStyleCondition = (record: any): React.CSSProperties => {
           )}
         </div>
       ),
-     },
+    },
     {
       title: "Asset Type",
       dataIndex: "asset_type",
@@ -342,26 +341,7 @@ const assignStatusStyleCondition = (record: any): React.CSSProperties => {
         </div>
       ),
     },
-  
-    // {
-    //   title: "Version",
-    //   dataIndex: "version",
-    //   responsive: ["md"],
-    //   width: 120,
-    //   sorter: true,
-    //   sortOrder: sortedColumn === "version" ? sortOrder : undefined,
-    //   onHeaderCell: () => ({
-    //     onClick: () => handleSort("version"),
-    //   }),
-    //   render: (text: string, record: any) => (
-    //     <div style={{ color: "#ffffff" }}>
-    //       {renderClickableColumn("Version", "version")(text, record)}
-    //     </div>
-    //   ),
-    // },
-   
-   
-    
+
     {
       title: "Os",
       dataIndex: "os",
@@ -503,21 +483,28 @@ const assignStatusStyleCondition = (record: any): React.CSSProperties => {
       responsive: ["md"],
       width: 120,
       render: (_: any, record: any) => {
-        const dateOfPurchase = record.date_of_purchase ? new Date(record.date_of_purchase) : null;
+        const dateOfPurchase = record.date_of_purchase
+          ? new Date(record.date_of_purchase)
+          : null;
         const warrantyPeriod = parseInt(record.warranty_period) || 0;
-    
-        if (!(dateOfPurchase instanceof Date) || isNaN(dateOfPurchase.getTime())) {
+
+        if (
+          !(dateOfPurchase instanceof Date) ||
+          isNaN(dateOfPurchase.getTime())
+        ) {
           return "Invalid Date";
         }
-    
-        const expiryDate = new Date(dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000);
+
+        const expiryDate = new Date(
+          dateOfPurchase.getTime() + warrantyPeriod * 30 * 24 * 60 * 60 * 1000
+        );
         const formattedExpiryDate = expiryDate.toISOString().split("T")[0];
         const currentDate = new Date();
         const isExpired = expiryDate < currentDate;
-    
+
         const fontWeight = isExpired ? "bold" : "normal";
         const color = isExpired ? "red" : "green";
-    
+
         return (
           <div
             data-column-name="Expiry Date"
@@ -528,7 +515,7 @@ const assignStatusStyleCondition = (record: any): React.CSSProperties => {
           </div>
         );
       },
-    },    
+    },
     {
       title: "Owner",
       dataIndex: "owner",
@@ -588,9 +575,9 @@ const assignStatusStyleCondition = (record: any): React.CSSProperties => {
       dataIndex: "asset_detail_status",
       responsive: ["md"],
       width: 140,
-   
+
       render: (text: string, record: any) => (
-        <div style={{...detailStatusStyleCondition(record) }}>
+        <div style={{ ...detailStatusStyleCondition(record) }}>
           {renderClickableColumn("Asset Detail Status", "asset_detail_status")(
             text,
             record
@@ -769,6 +756,8 @@ const assignStatusStyleCondition = (record: any): React.CSSProperties => {
         }}
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
+        setJson_query={setJson_query}
+        json_query={json_query}
       />
     </>
   );

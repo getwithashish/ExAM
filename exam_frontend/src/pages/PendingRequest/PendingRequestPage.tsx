@@ -1,3 +1,4 @@
+import { useLocation } from "react-router-dom";
 import AssetTableHandler from "../../components/AssetTable/AssetTableHandler";
 
 const PendingRequestPage = () => {
@@ -28,6 +29,10 @@ const PendingRequestPage = () => {
     }
   };
 
+    const location = useLocation();
+          {/* {location.pathname !== "/exam/dashboard" && ( */}
+
+
     let queryParamProp = `&json_logic=%7B%0A%20%20%20%22and%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22or%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7B%22%3D%3D%22%3A%20%5B%7B%22var%22%3A%20%22asset_detail_status%22%7D%2C%20%22CREATE_PENDING%22%5D%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7B%22%3D%3D%22%3A%20%5B%7B%22var%22%3A%20%22asset_detail_status%22%7D%2C%20%22UPDATE_PENDING%22%5D%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7B%22%3D%3D%22%3A%20%5B%7B%22var%22%3A%20%22assign_status%22%7D%2C%20%22ASSIGN_PENDING%22%5D%7D%0A%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%7B%22%3D%3D%22%3A%20%5B%7B%22var%22%3A%20%22requester%22%7D%2C%20${getUserId()}%5D%7D%0A%20%20%20%20%20%20%5D%0A%7D%0A`
     let heading = "My Pending Request";
 
@@ -37,6 +42,7 @@ const PendingRequestPage = () => {
         isRejectedPage={false}
         queryParamProp={queryParamProp}
         heading={heading}
+        isAdvancedSearchDisabled={location.pathname === "/exam/pending_requests"}
       />
     </div>
   );

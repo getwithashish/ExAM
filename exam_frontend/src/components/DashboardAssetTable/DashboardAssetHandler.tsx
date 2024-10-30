@@ -89,7 +89,6 @@ const DashboardAssetHandler = ({
 
   const locations = locationResults ? locationResults : [];
 
-
   const { data: memoryData } = useQuery({
     queryKey: ["memorySpace"],
     queryFn: () => getMemoryOptions(),
@@ -100,7 +99,6 @@ const DashboardAssetHandler = ({
     queryFn: () => getAssetTypeOptions(),
   });
 
-
   const handleRowClick = useCallback((record: React.SetStateAction<null>) => {
     setSelectedRow(record);
     setDrawerVisible(true);
@@ -110,40 +108,31 @@ const DashboardAssetHandler = ({
     setDrawerVisible(false);
   }, []);
 
-  // const [tableData, setTableData] = useState<DataType[]>([]);
+  const renderClickableColumn =
+    (columnName: string, dataIndex: any) => (_: any, record: string[]) => {
+      if (dataIndex === "created_at" || dataIndex === "updated_at") {
+        const formattedDate = moment(record[dataIndex]).format("DD-MM-YYYY");
+        return (
+          <div
+            data-column-name={columnName}
+            onClick={() => handleColumnClick(record, columnName)}
+            style={{ cursor: "pointer" }}
+          >
+            {formattedDate}
+          </div>
+        );
+      }
 
-  // const handleUpdateData = (updatedData: { key: any }) => {
-  //   setTableData((prevData: any[]) =>
-  //     prevData.map((item) =>
-  //       item.key === updatedData.key ? { ...item, ...updatedData } : item
-  //     )
-  //   );
-  // };
-
-  const renderClickableColumn = (columnName: string, dataIndex: any) => (_: any, record: string[]) => {
-    if (dataIndex === "created_at" || dataIndex === "updated_at") {
-      const formattedDate = moment(record[dataIndex]).format("DD-MM-YYYY");
       return (
         <div
           data-column-name={columnName}
           onClick={() => handleColumnClick(record, columnName)}
           style={{ cursor: "pointer" }}
         >
-          {formattedDate}
+          {record[dataIndex]}
         </div>
       );
-    }
-
-    return (
-      <div
-        data-column-name={columnName}
-        onClick={() => handleColumnClick(record, columnName)}
-        style={{ cursor: "pointer" }}
-      >
-        {record[dataIndex]}
-      </div>
-    );
-  };
+    };
 
   const handleSort = (column: string) => {
     const isCurrentColumn = column === sortedColumn;
@@ -190,11 +179,13 @@ const DashboardAssetHandler = ({
     return record.asset_detail_status === "CREATE_REJECTED" ||
       record.asset_detail_status === "UPDATE_REJECTED"
       ? { color: "red" }
-      : {color: "white"};
+      : { color: "white" };
   };
 
   const assignStatusStyleCondition = (record: any): React.CSSProperties => {
-    return record.assign_status === "REJECTED" ? { color: "red" } : {color: "white"};
+    return record.assign_status === "REJECTED"
+      ? { color: "red" }
+      : { color: "white" };
   };
 
   const columns = [
@@ -589,7 +580,7 @@ const DashboardAssetHandler = ({
       responsive: ["md"],
       width: 140,
       render: (text: string, record: any) => (
-        <div style={{ ...detailStatusStyleCondition(record)}}>
+        <div style={{ ...detailStatusStyleCondition(record) }}>
           {renderClickableColumn("Asset Detail Status", "asset_detail_status")(
             text,
             record
@@ -603,7 +594,7 @@ const DashboardAssetHandler = ({
       responsive: ["md"],
       width: 140,
       render: (text: string, record: any) => (
-        <div style={{...assignStatusStyleCondition(record)}}>
+        <div style={{ ...assignStatusStyleCondition(record) }}>
           {renderClickableColumn("Asset Assign Status", "assign_status")(
             text,
             record
@@ -793,9 +784,9 @@ const DashboardAssetHandler = ({
         bordered={false}
         businessUnitOptions={businessUnitOptions}
         assetDataRefetch={refetchAssetData}
-        handleUpdateData={function (updatedData: { key: any; }): void {
+        handleUpdateData={function (updatedData: { key: any }): void {
           throw new Error("Function not implemented.");
-        } }
+        }}
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
         setJson_query={setJson_query}
@@ -804,7 +795,7 @@ const DashboardAssetHandler = ({
         assignState={assignState}
         detailState={detailState}
         selectedTypeId={selectedTypeId}
-          />
+      />
     </div>
   );
 };
