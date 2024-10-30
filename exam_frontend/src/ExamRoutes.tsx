@@ -1,5 +1,6 @@
-import { useEffect, useLayoutEffect, useState } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { useEffect } from "react";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
 import SidebarComponentNew from "./components/sidebar/SidebarComponentNew";
 import DashboardPage from "./pages";
 import Login from "./pages/authentication/Login";
@@ -20,10 +21,30 @@ import AssetSense from "./components/ChatBot/assetSense";
 import ExpiredAssets from "./pages/ExpiredAssets/ExpiredAssets";
 import PendingRequestPage from "./pages/PendingRequest/PendingRequestPage";
 
+const pageVariants = {
+  initial: {
+    opacity: 0,
+    x: 100,
+  },
+  in: {
+    opacity: 1,
+    x: 0,
+  },
+  out: {
+    opacity: 0,
+    x: -100,
+  },
+};
+
+const pageTransition = {
+  type: "tween",
+  ease: "easeInOut",
+  duration: 0.7,
+};
+
 const ExamRoutes = () => {
   const { setAuthenticated } = useAuth();
-
-  const [loading, setLoading] = useState<boolean>(false);
+  const location = useLocation();
 
   useEffect(() => {
     const storedValue = localStorage.getItem("jwt");
@@ -40,14 +61,21 @@ const ExamRoutes = () => {
   }, []);
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route element={<ProtectedRoute />}>
-          <Route
-            path="/exam/*"
-            element={
-              <SidebarComponentNew>
-                <div className="dark">
+    <Routes>
+      <Route element={<ProtectedRoute />}>
+        <Route
+          path="/exam/*"
+          element={
+            <SidebarComponentNew>
+              <div className="dark">
+                <motion.div
+                  key={location.key}
+                  initial="initial"
+                  animate="in"
+                  exit="out"
+                  variants={pageVariants}
+                  transition={pageTransition}
+                >
                   <Routes>
                     <Route path="/dashboard" element={<DashboardPage />} />
                     <Route
@@ -61,7 +89,7 @@ const ExamRoutes = () => {
                     <Route path="/deallocate" element={<Deallocate />} />
                     <Route
                       path="/creation_requests"
-                      element={<CreateRequestPage loading={loading} setLoading={setLoading} />}
+                      element={<CreateRequestPage />}
                     />
                     <Route
                       path="/updation_requests"
@@ -88,15 +116,15 @@ const ExamRoutes = () => {
                     <Route path="/chat" element={<AssetSense />} />
                     <Route path="/expired_assets" element={<ExpiredAssets />} />
                   </Routes>
-                </div>
-              </SidebarComponentNew>
-            }
-          />
-        </Route>
-        <Route path="/login" element={<Login />} />
-        <Route path="/sso/flow" element={<SSORedirect />} />
-      </Routes>
-    </BrowserRouter>
+                </motion.div>
+              </div>
+            </SidebarComponentNew>
+          }
+        />
+      </Route>
+      <Route path="/login" element={<Login />} />
+      <Route path="/sso/flow" element={<SSORedirect />} />
+    </Routes>
   );
 };
 
