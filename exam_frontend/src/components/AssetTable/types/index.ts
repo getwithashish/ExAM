@@ -159,6 +159,8 @@ export interface AssetTableProps {
   sortedColumn: any;
   setSearchTerm?: any;
   searchTerm?: any;
+  json_query: string;
+  setJson_query: any;
   assetPageDataFetch: any;
   isAssetDataLoading: any;
   totalItemCount: any;
@@ -166,12 +168,14 @@ export interface AssetTableProps {
   isMyApprovalPage: any;
   setDrawerVisible?: any;
   destroyOnClose?: boolean;
+  advancedSearchDisabledFields?: string[];
+  isAdvancedSearchDisabled?: boolean;
 }
 
-export interface Props{
-  userRole?:string;
-  isRejectedPage?:boolean;
-  queryParamProp?:string;
-  heading?:string;
-  isMyApprovalPage?:boolean;
+export interface Props {
+  userRole?: string;
+  isRejectedPage?: boolean;
+  queryParamProp?: string;
+  heading?: string;
+  isMyApprovalPage?: boolean;
 }

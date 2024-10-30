@@ -1,5 +1,4 @@
-import React, { Key, SetStateAction, useCallback, useState } from "react";
-import { SearchOutlined } from "@ant-design/icons";
+import React, { SetStateAction, useCallback, useState } from "react";
 import "./AssetTable.css";
 import { useQuery } from "@tanstack/react-query";
 import { DataType } from "../AssetTable/types";
@@ -19,9 +18,10 @@ interface Props {
   queryParamProp?: string;
   heading?: string;
   isMyApprovalPage?: boolean;
-  destroyOnClose?: boolean
+  destroyOnClose?: boolean;
+  advancedSearchDisabledFields?: string[];
+  isAdvancedSearchDisabled?: boolean;
 }
-
 
 const AssetTableHandler = ({
   userRole,
@@ -29,7 +29,9 @@ const AssetTableHandler = ({
   queryParamProp,
   heading,
   isMyApprovalPage,
-  destroyOnClose = false
+  destroyOnClose = false,
+  advancedSearchDisabledFields,
+  isAdvancedSearchDisabled = false,
 }: Props) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -38,6 +40,9 @@ const AssetTableHandler = ({
   const [sortOrders, setSortOrders] = useState<{ [key: string]: string }>({});
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [queryParam, setQueryParam] = useState("");
+
+  const [json_query, setJson_query] = useState<string>("");
+
   const {
     data: assetData,
     isLoading: isAssetDataLoading,
@@ -94,6 +99,7 @@ const AssetTableHandler = ({
 
   const reset = () => {
     setQueryParam("");
+    setJson_query("");
     setSearchTerm("");
     refetchAssetData();
   };
@@ -169,6 +175,9 @@ const AssetTableHandler = ({
     if (searchTerm !== "" && searchTerm !== null) {
       additionalQueryParams += `&global_search=${searchTerm}`;
     }
+    if (json_query !== "" && json_query !== null) {
+      additionalQueryParams += `&json_logic=${json_query}`;
+    }
     refetchAssetData(queryParams + additionalQueryParams);
   };
 
@@ -180,9 +189,10 @@ const AssetTableHandler = ({
   };
 
   const assignStatusStyleCondition = (record: any): React.CSSProperties => {
-    return record.assign_status === "REJECTED" ? { color: "red" } : { color: "white" };
+    return record.assign_status === "REJECTED"
+      ? { color: "red" }
+      : { color: "white" };
   };
-
 
   const columns = [
     {
@@ -658,23 +668,23 @@ const AssetTableHandler = ({
 
     ...(isRejectedPage
       ? [
-        {
-          title: "Reject Type",
-          dataIndex: "asset_type",
-          responsive: ["md"],
-          fixed: "right",
-          width: 160,
-          render: (_: any, record: string[]) => (
-            <div
-              data-column-name="Asset Type"
-              onClick={() => handleColumnClick(record, "Asset Type")}
-              style={{ cursor: "pointer", color: "#ffffff" }}
-            >
-              {record.asset_detail_status}
-            </div>
-          ),
-        },
-      ]
+          {
+            title: "Reject Type",
+            dataIndex: "asset_type",
+            responsive: ["md"],
+            fixed: "right",
+            width: 160,
+            render: (_: any, record: string[]) => (
+              <div
+                data-column-name="Asset Type"
+                onClick={() => handleColumnClick(record, "Asset Type")}
+                style={{ cursor: "pointer", color: "#ffffff" }}
+              >
+                {record.asset_detail_status}
+              </div>
+            ),
+          },
+        ]
       : []),
   ];
 
@@ -731,9 +741,7 @@ const AssetTableHandler = ({
       userRole={userRole}
       heading={heading}
       isAssetDataLoading={isAssetDataLoading}
-      // drawerTitle={drawerTitle}
       totalItemCount={assetData?.count}
-      // assetPageDataFetch={setQueryParam}
       assetPageDataFetch={refetchAssetData}
       handleRowClick={handleRowClick}
       onCloseDrawer={onCloseDrawer}
@@ -758,7 +766,11 @@ const AssetTableHandler = ({
       }}
       searchTerm={searchTerm}
       setSearchTerm={setSearchTerm}
+      setJson_query={setJson_query}
+      json_query={json_query}
       destroyOnClose={destroyOnClose}
+      advancedSearchDisabledFields={advancedSearchDisabledFields}
+      isAdvancedSearchDisabled={isAdvancedSearchDisabled}
     />
   );
 };

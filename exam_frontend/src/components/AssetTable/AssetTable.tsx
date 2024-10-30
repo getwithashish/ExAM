@@ -11,14 +11,14 @@ import { createTheme, ThemeProvider } from "@mui/material";
 
 const darkTheme = createTheme({
   palette: {
-    mode: 'dark',
+    mode: "dark",
     background: {
-      default: '#121212',
-      paper: '#1e1e1e',
+      default: "#121212",
+      paper: "#1e1e1e",
     },
     text: {
-      primary: '#ffffff',
-      secondary: '#b0b0b0',
+      primary: "#ffffff",
+      secondary: "#b0b0b0",
     },
   },
 });
@@ -52,7 +52,11 @@ const AssetTable: React.FC<AssetTableProps> = ({
   sortedColumn,
   searchTerm,
   setSearchTerm,
-  destroyOnClose = false
+  setJson_query,
+  json_query,
+  destroyOnClose = false,
+  advancedSearchDisabledFields,
+  isAdvancedSearchDisabled = false
 }: AssetTableProps) => {
   const [readOnly, setReadOnly] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -101,16 +105,16 @@ const AssetTable: React.FC<AssetTableProps> = ({
         {(heading === "My Approved Request" ||
           pageHeading == "Modify Asset" ||
           pageHeading == "Delete Assets") && (
-            <div
-              className="mb-4 px-4 py-2 bg-yellow-100 text-yellow-800 rounded "
-              style={{ width: "390px", marginLeft: "55px" }}
-            >
-              Note: Assets in pending status will not be visible here.
-              {pageHeading == "Delete Assets" && (
-                <div>Only assets which are approved/rejected can be deleted.</div>
-              )}
-            </div>
-          )}
+          <div
+            className="mb-4 px-4 py-2 bg-yellow-100 text-yellow-800 rounded "
+            style={{ width: "390px", marginLeft: "55px" }}
+          >
+            Note: Assets in pending status will not be visible here.
+            {pageHeading == "Delete Assets" && (
+              <div>Only assets which are approved/rejected can be deleted.</div>
+            )}
+          </div>
+        )}
         <div
           className="flex"
           style={{ marginLeft: "55px", marginBottom: "30px" }}
@@ -120,6 +124,10 @@ const AssetTable: React.FC<AssetTableProps> = ({
             searchTerm={searchTerm}
             reset={reset}
             setSearchTerm={setSearchTerm}
+            setJson_query={setJson_query}
+            json_query={json_query}
+            advancedSearchDisabledFields={advancedSearchDisabledFields}
+            isAdvancedSearchDisabled={isAdvancedSearchDisabled}
           />
           <div className="flex items-center justify-center">
             <RefreshTwoTone
@@ -133,11 +141,14 @@ const AssetTable: React.FC<AssetTableProps> = ({
               onClick={handleRefreshClick}
             />
           </div>
-
         </div>
 
         <div
-          style={{ position: "relative", display: "inline-block", width: "80vw" }}
+          style={{
+            position: "relative",
+            display: "inline-block",
+            width: "80vw",
+          }}
         >
           <ConfigProvider theme={customTheme}>
             <Table
@@ -169,6 +180,9 @@ const AssetTable: React.FC<AssetTableProps> = ({
                     let additionalQueryParams = `&offset=${offset}`;
                     if (searchTerm !== "" && searchTerm !== null) {
                       additionalQueryParams += `&global_search=${searchTerm}`;
+                    }
+                    if (json_query && json_query !== "" && json_query !== null) {
+                      additionalQueryParams += `&json_logic=${json_query}`;
                     }
                     let sortParams = "";
                     const queryParams = `${sortParams}${additionalQueryParams}`;
