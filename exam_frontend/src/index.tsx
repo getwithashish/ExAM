@@ -7,6 +7,7 @@ import ExamRoutes from "./ExamRoutes";
 import { AuthProvider } from "./pages/authentication/AuthContext";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { ConfigProvider, theme } from "antd";
+import { BrowserRouter } from "react-router-dom";
 
 const container = document.getElementById("root");
 if (!container) {
@@ -16,14 +17,14 @@ const root = createRoot(container);
 
 const darkTheme = createTheme({
   palette: {
-    mode: 'dark',
+    mode: "dark",
     background: {
-      default: '#121212',
-      paper: '#1e1e1e',
+      default: "#121212",
+      paper: "#1e1e1e",
     },
     text: {
-      primary: '#ffffff',
-      secondary: '#b0b0b0',
+      primary: "#ffffff",
+      secondary: "#b0b0b0",
     },
   },
 });
@@ -47,7 +48,9 @@ root.render(
         <AuthProvider>
           <ThemeProvider theme={darkTheme}>
             <ConfigProvider theme={customTheme}>
-              <ExamRoutes />
+              <BrowserRouter>
+                <ExamRoutes />
+              </BrowserRouter>
             </ConfigProvider>
           </ThemeProvider>
         </AuthProvider>

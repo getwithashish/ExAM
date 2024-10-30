@@ -65,10 +65,73 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
 
   const adjustChartData = (data: ChartData[]) => {
     const totalValue = calculateTotalValue(data);
-    return data.map(item => ({
+    return data.map((item) => ({
       ...item,
       value: totalValue > 0 ? Math.max((item.count / totalValue) * 100, 10) : 0,
     }));
+  };
+
+  const getAssetDetailStatusCountMergedArray = (asset_detail_status_count) => {
+    const mergedStatusData = Object.entries(
+      asset_detail_status_count ?? {}
+    ).reduce((acc, [label, count]) => {
+      const mappedLabel = statusMapping[label] ?? label;
+      if (mappedLabel === "REJECTED" || mappedLabel === "PENDING") {
+        if (acc[mappedLabel]) {
+          acc[mappedLabel].count += count;
+        } else {
+          acc[mappedLabel] = {
+            label: mappedLabel,
+            count: count,
+            color: statusColors[mappedLabel],
+          };
+        }
+      } else if (
+        ![
+          "UPDATE_PENDING",
+          "CREATE_PENDING",
+          "UPDATE_REJECTED",
+          "CREATE_REJECTED",
+        ].includes(mappedLabel)
+      ) {
+        if (acc[mappedLabel]) {
+          acc[mappedLabel].count += count;
+        } else {
+          acc[mappedLabel] = {
+            label: mappedLabel,
+            count: count,
+            color: statusColors[label],
+          };
+        }
+      }
+      return acc;
+    }, {} as { [key: string]: ChartData });
+
+    if (mergedStatusData["REJECTED"]) {
+      mergedStatusData["REJECTED"].count +=
+        mergedStatusData["UPDATE_REJECTED"]?.count ?? 0;
+      mergedStatusData["REJECTED"].count +=
+        mergedStatusData["CREATE_REJECTED"]?.count ?? 0;
+      delete mergedStatusData["UPDATE_REJECTED"];
+      delete mergedStatusData["CREATE_REJECTED"];
+    }
+
+    if (mergedStatusData["PENDING"]) {
+      mergedStatusData["PENDING"].count +=
+        mergedStatusData["UPDATE_PENDING"]?.count ?? 0;
+      mergedStatusData["PENDING"].count +=
+        mergedStatusData["CREATE_PENDING"]?.count ?? 0;
+      delete mergedStatusData["UPDATE_PENDING"];
+      delete mergedStatusData["CREATE_PENDING"];
+    }
+
+    const statusOrder = ["CREATED", "UPDATED", "PENDING", "REJECTED"];
+
+    const mergedStatusArray: ChartData[] = statusOrder
+      .map((label) => mergedStatusData[label])
+      .filter((entry): entry is ChartData => entry !== undefined);
+
+    return mergedStatusArray;
   };
 
   useEffect(() => {
@@ -83,7 +146,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
           label: "ACTIVE",
           count: inServiceCount,
           color: statusColors["ACTIVE"],
-          value: 0
+          value: 0,
         };
 
         const statusOrder = [
@@ -102,10 +165,13 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
             color: statusColors[label],
           }));
 
-        let totalValue = calculateTotalValue(filteredAssetCountData)
+        let totalValue = calculateTotalValue(filteredAssetCountData);
         filteredAssetCountData = adjustChartData(filteredAssetCountData);
 
-        inServiceData.value = totalValue > 0 ? ((Math.max(inUseCount, inStoreCount) / totalValue) * 100) + 5 : 0;
+        inServiceData.value =
+          totalValue > 0
+            ? (Math.max(inUseCount, inStoreCount) / totalValue) * 100 + 5
+            : 0;
         const assetTypeData = [...filteredAssetCountData, inServiceData];
 
         assetTypeData.sort((a, b) => {
@@ -120,7 +186,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
         setAssetFilteredChartData([]);
       });
 
-    return () => { };
+    return () => {};
   }, []);
 
   const handleChartItemClick = (
@@ -181,66 +247,9 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
     fetchAssetData()
       .then((res) => {
         const assetDetailData = res.asset_detail_status;
-        const mergedStatusData = Object.entries(assetDetailData ?? {}).reduce(
-          (acc, [label, count]) => {
-            const mappedLabel = statusMapping[label] ?? label;
-            if (mappedLabel === "REJECTED" || mappedLabel === "PENDING") {
-              if (acc[mappedLabel]) {
-                acc[mappedLabel].count += count;
-              } else {
-                acc[mappedLabel] = {
-                  label: mappedLabel,
-                  count: count,
-                  color: statusColors[mappedLabel],
-                };
-              }
-            } else if (
-              ![
-                "UPDATE_PENDING",
-                "CREATE_PENDING",
-                "UPDATE_REJECTED",
-                "CREATE_REJECTED",
-              ].includes(mappedLabel)
-            ) {
-              if (acc[mappedLabel]) {
-                acc[mappedLabel].count += count;
-              } else {
-                acc[mappedLabel] = {
-                  label: mappedLabel,
-                  count: count,
-                  color: statusColors[label],
-                };
-              }
-            }
-            return acc;
-          },
-          {} as { [key: string]: ChartData }
-        );
 
-        if (mergedStatusData["REJECTED"]) {
-          mergedStatusData["REJECTED"].count +=
-            mergedStatusData["UPDATE_REJECTED"]?.count ?? 0;
-          mergedStatusData["REJECTED"].count +=
-            mergedStatusData["CREATE_REJECTED"]?.count ?? 0;
-          delete mergedStatusData["UPDATE_REJECTED"];
-          delete mergedStatusData["CREATE_REJECTED"];
-        }
-
-        if (mergedStatusData["PENDING"]) {
-          mergedStatusData["PENDING"].count +=
-            mergedStatusData["UPDATE_PENDING"]?.count ?? 0;
-          mergedStatusData["PENDING"].count +=
-            mergedStatusData["CREATE_PENDING"]?.count ?? 0;
-          delete mergedStatusData["UPDATE_PENDING"];
-          delete mergedStatusData["CREATE_PENDING"];
-        }
-
-        const statusOrder = ["CREATED", "UPDATED", "PENDING", "REJECTED"];
-
-        let mergedStatusArray: ChartData[] = statusOrder
-          .map((label) => mergedStatusData[label])
-          .filter((entry): entry is ChartData => entry !== undefined);
-
+        let mergedStatusArray =
+          getAssetDetailStatusCountMergedArray(assetDetailData);
         mergedStatusArray = adjustChartData(mergedStatusArray);
 
         setDetailChartData(mergedStatusArray);
@@ -281,7 +290,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
       });
   }, []);
 
-  useEffect(() => { }, [selectedTypeId]);
+  useEffect(() => {}, [selectedTypeId]);
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const assetTypeValue = parseInt(e.target.value);
@@ -299,34 +308,43 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
       setAssetFilteredChartData(assetChartData);
       setDetailFilteredChartData(detailChartData);
       setAssignFilteredChartData(assignChartData);
-      // axiosInstance.get(`/asset/asset_count`)
       axiosInstance
         .get(`/asset/asset_count`)
         .then((assetRes) => {
           const assetCountData = assetRes.data.data;
-          const assetFilteredData = Object.entries(
+          let assetFilteredData = Object.entries(
             assetCountData?.status_counts ?? {}
           )
-            .filter(([label, _]) => label !== "SCRAP")
+            .filter(([label, _]) => label.trim() !== "SCRAP")
             .map(([label, value]) => ({
               label,
-              value: value as number,
+              count: value as number,
               color: statusColors[label],
             }));
           const inUseCount =
-            assetFilteredData.find((item) => item.label === "USE")?.value ?? 0;
+            assetFilteredData.find((item) => item.label === "USE")?.count ?? 0;
           const inStoreCount =
-            assetFilteredData.find((item) => item.label === "STOCK")?.value ??
+            assetFilteredData.find((item) => item.label === "STOCK")?.count ??
             0;
+
+          let totalValue = calculateTotalValue(assetFilteredData);
+
           const inServiceCount = inUseCount + inStoreCount;
-          if (inServiceCount > 0) {
-            assetFilteredData.push({
-              label: "ACTIVE",
-              value: inServiceCount,
-              color: statusColors["ACTIVE"],
-            });
-          }
-          setAssetFilteredChartData(assetFilteredData);
+
+          assetFilteredData = adjustChartData(assetFilteredData);
+          let inServiceData = {
+            label: "ACTIVE",
+            count: inServiceCount,
+            color: statusColors["ACTIVE"],
+            value:
+              totalValue > 0
+                ? (Math.max(inUseCount, inStoreCount) / totalValue) * 100 + 5
+                : 0,
+          };
+
+          const assetTypeData = [...assetFilteredData, inServiceData];
+
+          setAssetFilteredChartData(assetTypeData);
         })
         .catch((error) => {
           console.error("Error fetching asset data:", error);
@@ -337,14 +355,12 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
         .get(`/asset/asset_count`)
         .then((detailRes) => {
           const detailCountData = detailRes.data.data;
-          const detailFilteredData = Object.entries(
-            detailCountData?.asset_detail_status ?? {}
-          ).map(([label, value]) => ({
-            label: statusMapping[label] ?? label,
-            value: value as number,
-            color: statusColors[label],
-          }));
-          setDetailFilteredChartData(detailFilteredData);
+
+          let mergedStatusArray = getAssetDetailStatusCountMergedArray(
+            detailCountData?.asset_detail_status
+          );
+          mergedStatusArray = adjustChartData(mergedStatusArray);
+          setDetailFilteredChartData(mergedStatusArray);
         })
         .catch((error) => {
           console.error("Error fetching detail data:", error);
@@ -359,10 +375,19 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
             assignCountData?.assign_status ?? {}
           ).map(([label, value]) => ({
             label: statusMapping[label] ?? label,
-            value: value as number,
+            count: value as number,
             color: statusColors[label],
           }));
-          setAssignFilteredChartData(assignFilteredData);
+          const statusOrder = ["ASSIGNED", "UNASSIGNED", "PENDING", "REJECTED"];
+          let sortedAssignStatusData = statusOrder
+            .map((label) =>
+              assignFilteredData.find((data) => data.label === label)
+            )
+            .filter((entry): entry is ChartData => entry !== undefined);
+
+          sortedAssignStatusData = adjustChartData(sortedAssignStatusData);
+
+          setAssignFilteredChartData(sortedAssignStatusData);
         })
         .catch((error) => {
           console.error("Error fetching assign data:", error);
@@ -373,26 +398,34 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
         .get(`/asset/asset_count?asset_type=${assetTypeValue}`)
         .then((assetRes) => {
           const assetCountData = assetRes.data.data;
-          const assetFilteredData = Object.entries(
+          let assetFilteredData = Object.entries(
             assetCountData?.status_counts ?? {}
           )
-            .filter(([label, _]) => label !== "SCRAP")
+            .filter(([label, _]) => label.trim() !== "SCRAP")
             .map(([label, value]) => ({
               label,
-              value: value as number,
+              count: value as number,
               color: statusColors[label],
             }));
           const inUseCount =
-            assetFilteredData.find((item) => item.label === "USE")?.value ?? 0;
+            assetFilteredData.find((item) => item.label === "USE")?.count ?? 0;
           const inStoreCount =
-            assetFilteredData.find((item) => item.label === "STOCK")?.value ??
+            assetFilteredData.find((item) => item.label === "STOCK")?.count ??
             0;
+
+          let totalValue = calculateTotalValue(assetFilteredData);
+          assetFilteredData = adjustChartData(assetFilteredData);
+
           const inServiceCount = inUseCount + inStoreCount;
           if (inServiceCount > 0) {
             assetFilteredData.push({
               label: "ACTIVE",
-              value: inServiceCount,
+              count: inServiceCount,
               color: statusColors["ACTIVE"],
+              value:
+                totalValue > 0
+                  ? (Math.max(inUseCount, inStoreCount) / totalValue) * 100 + 5
+                  : 0,
             });
           }
           setAssetFilteredChartData(assetFilteredData);
@@ -406,14 +439,12 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
         .get(`/asset/asset_count?asset_type=${assetTypeValue}`)
         .then((detailRes) => {
           const detailCountData = detailRes.data.data;
-          const detailFilteredData = Object.entries(
-            detailCountData?.asset_detail_status ?? {}
-          ).map(([label, value]) => ({
-            label: statusMapping[label] ?? label,
-            value: value as number,
-            color: statusColors[label],
-          }));
-          setDetailFilteredChartData(detailFilteredData);
+          let mergedStatusArray = getAssetDetailStatusCountMergedArray(
+            detailCountData?.asset_detail_status
+          );
+          mergedStatusArray = adjustChartData(mergedStatusArray);
+
+          setDetailFilteredChartData(mergedStatusArray);
         })
         .catch((error) => {
           console.error("Error fetching detail data:", error);
@@ -428,10 +459,19 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
             assignCountData?.assign_status ?? {}
           ).map(([label, value]) => ({
             label: statusMapping[label] ?? label,
-            value: value as number,
+            count: value as number,
             color: statusColors[label],
           }));
-          setAssignFilteredChartData(assignFilteredData);
+          const statusOrder = ["ASSIGNED", "UNASSIGNED", "PENDING", "REJECTED"];
+          let sortedAssignStatusData = statusOrder
+            .map((label) =>
+              assignFilteredData.find((data) => data.label === label)
+            )
+            .filter((entry): entry is ChartData => entry !== undefined);
+
+          sortedAssignStatusData = adjustChartData(sortedAssignStatusData);
+
+          setAssignFilteredChartData(sortedAssignStatusData);
         })
         .catch((error) => {
           console.error("Error fetching assign data:", error);
@@ -512,7 +552,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
             value={selectedTypeId}
           >
             <option value="0" className="text-xs font-display">
-              Select an asset type
+              All Assets
             </option>
             {assetTypeData.map((assetType) => (
               <option
@@ -528,15 +568,27 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
       </div>
 
       <>
-        <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ justifyContent: "center", alignItems: "center" }}>
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={2}
+          sx={{ justifyContent: "center", alignItems: "center" }}
+        >
           {assetFilteredChartData.length === 0 &&
-            detailFilteredChartData.length === 0 &&
-            assignFilteredChartData.length === 0 ? (
+          detailFilteredChartData.length === 0 &&
+          assignFilteredChartData.length === 0 ? (
             <div className="flex justify-center items-center h-full w-full">
               <NoData />
             </div>
           ) : (
-            <Stack direction="row" sx={{ flexWrap: "wrap", justifyContent: "center", alignItems: "center" }} className="m-auto">
+            <Stack
+              direction="row"
+              sx={{
+                flexWrap: "wrap",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              className="m-auto"
+            >
               <ThemeProvider theme={darkTheme}>
                 <div className=" pt-6 mt-4 text-center items-center justify-center">
                   <span className="font-semibold font-display leading-none text-white dark:text-white text-lg">
@@ -584,29 +636,37 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                     }}
                     slots={{
                       itemContent: (item) => {
-                        const { color, label, count } = item.series.data[item.itemData.dataIndex];
+                        const { color, label, count } =
+                          item.series.data[item.itemData.dataIndex];
                         return (
-                          <div style={{
-                            background: 'rgba(0, 0, 0, 0.7)',
-                            borderRadius: '8px',
-                            padding: '10px',
-                            color: 'white',
-                            display: 'flex',
-                            alignItems: 'center',
-                          }}>
-                            <div style={{
-                              width: '12px',
-                              height: '12px',
-                              borderRadius: '50%',
-                              backgroundColor: color,
-                              marginRight: '8px',
-                            }} />
+                          <div
+                            style={{
+                              background: "rgba(0, 0, 0, 0.7)",
+                              borderRadius: "8px",
+                              padding: "10px",
+                              color: "white",
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            <div
+                              style={{
+                                width: "12px",
+                                height: "12px",
+                                borderRadius: "50%",
+                                backgroundColor: color,
+                                marginRight: "8px",
+                              }}
+                            />
                             <div>
-                              <div className="flex items-center"><span className="mr-5">{label}</span> <span>{count}</span></div>
+                              <div className="flex items-center">
+                                <span className="mr-5">{label}</span>{" "}
+                                <span>{count}</span>
+                              </div>
                             </div>
                           </div>
                         );
-                      }
+                      },
                     }}
                     slotProps={{
                       legend: {
@@ -670,29 +730,37 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                     }}
                     slots={{
                       itemContent: (item) => {
-                        const { color, label, count } = item.series.data[item.itemData.dataIndex];
+                        const { color, label, count } =
+                          item.series.data[item.itemData.dataIndex];
                         return (
-                          <div style={{
-                            background: 'rgba(0, 0, 0, 0.7)',
-                            borderRadius: '8px',
-                            padding: '10px',
-                            color: 'white',
-                            display: 'flex',
-                            alignItems: 'center',
-                          }}>
-                            <div style={{
-                              width: '12px',
-                              height: '12px',
-                              borderRadius: '50%',
-                              backgroundColor: color,
-                              marginRight: '8px',
-                            }} />
+                          <div
+                            style={{
+                              background: "rgba(0, 0, 0, 0.7)",
+                              borderRadius: "8px",
+                              padding: "10px",
+                              color: "white",
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            <div
+                              style={{
+                                width: "12px",
+                                height: "12px",
+                                borderRadius: "50%",
+                                backgroundColor: color,
+                                marginRight: "8px",
+                              }}
+                            />
                             <div>
-                              <div className="flex items-center"><span className="mr-5">{label}</span> <span>{count}</span></div>
+                              <div className="flex items-center">
+                                <span className="mr-5">{label}</span>{" "}
+                                <span>{count}</span>
+                              </div>
                             </div>
                           </div>
                         );
-                      }
+                      },
                     }}
                     slotProps={{
                       legend: {
@@ -759,29 +827,37 @@ const ChartHandlers: React.FC<PieChartGraphProps> = ({
                     }}
                     slots={{
                       itemContent: (item) => {
-                        const { color, label, count } = item.series.data[item.itemData.dataIndex];
+                        const { color, label, count } =
+                          item.series.data[item.itemData.dataIndex];
                         return (
-                          <div style={{
-                            background: 'rgba(0, 0, 0, 0.7)',
-                            borderRadius: '8px',
-                            padding: '10px',
-                            color: 'white',
-                            display: 'flex',
-                            alignItems: 'center',
-                          }}>
-                            <div style={{
-                              width: '12px',
-                              height: '12px',
-                              borderRadius: '50%',
-                              backgroundColor: color,
-                              marginRight: '8px',
-                            }} />
+                          <div
+                            style={{
+                              background: "rgba(0, 0, 0, 0.7)",
+                              borderRadius: "8px",
+                              padding: "10px",
+                              color: "white",
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            <div
+                              style={{
+                                width: "12px",
+                                height: "12px",
+                                borderRadius: "50%",
+                                backgroundColor: color,
+                                marginRight: "8px",
+                              }}
+                            />
                             <div>
-                              <div className="flex items-center"><span className="mr-5">{label}</span> <span>{count}</span></div>
+                              <div className="flex items-center">
+                                <span className="mr-5">{label}</span>{" "}
+                                <span>{count}</span>
+                              </div>
                             </div>
                           </div>
                         );
-                      }
+                      },
                     }}
                     slotProps={{
                       legend: {

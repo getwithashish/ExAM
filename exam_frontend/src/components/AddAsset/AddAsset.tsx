@@ -15,6 +15,7 @@ import {
   softwareSpecificFields,
 } from "./constants/constants";
 import dayjs from "dayjs";
+import { motion } from "framer-motion";
 
 const { Option } = Select;
 type SizeType = Parameters<typeof Form>[0]["size"];
@@ -455,6 +456,22 @@ const AddAsset: React.FC = ({
     message.error("Please fill in all mandatory fields.");
   };
 
+  const parentVariants = {
+    initial: {},
+    animate: {
+      transition: {
+        staggerChildren: 0.2,
+      },
+    },
+    exit: {},
+  };
+
+  const childVariants = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: 20 },
+  };
+
   return (
     <Spin spinning={loading}>
       <div className="font-display">
@@ -500,441 +517,508 @@ const AddAsset: React.FC = ({
             </Form.Item>
 
             {formData.asset_category === "SOFTWARE" && (
-              <>
-                <Form.Item
-                  label={<span>Asset ID</span>}
-                  className={styles["formItem"]}
-                >
-                  <TextField
-                    id="outlined-basic"
-                    label="Enter Asset ID"
-                    variant="outlined"
-                    onChange={(e) =>
-                      handleInputChange("asset_id", e.target.value)
-                    }
-                    InputProps={{
-                      endAdornment: (
-                        <Tooltip title="Asset Id should be alphanumeric Eg:ASS101">
-                          <InfoCircleOutlined
-                            style={{ color: "rgba(0,0,0,.45)" }}
-                          />
-                        </Tooltip>
-                      ),
-                    }}
-                    sx={{ width: "100%" }}
-                  />
-                </Form.Item>
-
-                <Form.Item
-                  label={
-                    <span>
-                      Asset Type<span className={styles["star"]}>*</span>
-                    </span>
-                  }
-                  className={styles["formItem"]}
-                >
-                  <AssetFieldAutoComplete
-                    assetField="asset_type"
-                    value={assettypeValue}
-                    setValue={setassettypeValue}
-                  />
-                </Form.Item>
-
-                <Form.Item
-                  label={
-                    <span>
-                      Asset Name<span className={styles["star"]}>*</span>
-                    </span>
-                  }
-                  className={styles["formItem"]}
-                >
-                  <AssetFieldAutoComplete
-                    assetField="product_name"
-                    value={value}
-                    setValue={setValue}
-                  />
-                </Form.Item>
-                <Form.Item
-                  label={
-                    <span>
-                      Purchase Date<span className={styles["star"]}>*</span>
-                    </span>
-                  }
-                  className={styles["formItem"]}
-                >
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <StaticDatePicker
-                      sx={{
-                        backgroundColor: 'transparent',
+              <motion.div
+                variants={parentVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+              >
+                <motion.div variants={childVariants}>
+                  <Form.Item
+                    label={<span>Asset ID</span>}
+                    className={styles["formItem"]}
+                  >
+                    <TextField
+                      id="outlined-basic"
+                      label="Enter Asset ID"
+                      variant="outlined"
+                      onChange={(e) =>
+                        handleInputChange("asset_id", e.target.value)
+                      }
+                      InputProps={{
+                        endAdornment: (
+                          <Tooltip title="Asset Id should be alphanumeric Eg:ASS101">
+                            <InfoCircleOutlined
+                              style={{ color: "rgba(0,0,0,.45)" }}
+                            />
+                          </Tooltip>
+                        ),
                       }}
-                      slotProps={{
-                        toolbar: {
-                          toolbarFormat: "ddd DD MMMM",
-                          hidden: false,
-                        },
-                        actionBar: {
-                          actions: ["today"],
-                        },
-                      }}
-                      onChange={(dateinDateJs) => {
-                        var dateString = dateinDateJs?.format("YYYY-MM-DD");
-                        handleInputChange("date_of_purchase", dateString);
-                      }}
-                      maxDate={dayjs()}
+                      sx={{ width: "100%" }}
                     />
-                  </LocalizationProvider>
-                </Form.Item>
+                  </Form.Item>
+                </motion.div>
 
-                <Form.Item
-                  label={
-                    <span>
-                      License Type<span className={styles["star"]}>*</span>
-                    </span>
-                  }
-                  className={styles["formItem"]}
-                >
-                  <AssetFieldAutoComplete
-                    assetField="license_type"
-                    value={licenseValue}
-                    setValue={setLicenseValue}
-                  />
-                </Form.Item>
+                <motion.div variants={childVariants}>
+                  <Form.Item
+                    label={
+                      <span>
+                        Asset Type<span className={styles["star"]}>*</span>
+                      </span>
+                    }
+                    className={styles["formItem"]}
+                  >
+                    <AssetFieldAutoComplete
+                      assetField="asset_type"
+                      value={assettypeValue}
+                      setValue={setassettypeValue}
+                    />
+                  </Form.Item>
+                </motion.div>
 
-                <Form.Item label="Owner" className={styles["formItem"]}>
-                  <AssetFieldAutoComplete
-                    assetField="owner"
-                    value={ownerValue}
-                    setValue={setOwnerValue}
-                  />
-                </Form.Item>
-                <Form.Item
-                  label={
-                    <span>
-                      Asset Location<span className={styles["star"]}>*</span>
-                    </span>
-                  }
-                  className={styles["formItem"]}
-                >
-                  <AssetFieldAutoComplete
-                    assetField="location"
-                    value={assetLocation}
-                    setValue={setAssetLocation}
-                  />
-                </Form.Item>
-                <Form.Item label="Business Unit" className={styles["formItem"]}>
-                  <AssetFieldAutoComplete
-                    assetField="business_unit"
-                    value={assetBu}
-                    setValue={setAssetBu}
-                  />
-                </Form.Item>
-                <Form.Item label="Notes:" className={styles["formItem"]}>
-                  <TextField
-                    id="outlined-textarea-notes-hardware"
-                    label="Notes"
-                    placeholder="Information related to the Asset"
-                    sx={{ width: "100%" }}
-                    multiline
-                    onChange={(e) => handleInputChange("notes", e.target.value)}
-                  />
-                </Form.Item>
+                <motion.div variants={childVariants}>
+                  <Form.Item
+                    label={
+                      <span>
+                        Asset Name<span className={styles["star"]}>*</span>
+                      </span>
+                    }
+                    className={styles["formItem"]}
+                  >
+                    <AssetFieldAutoComplete
+                      assetField="product_name"
+                      value={value}
+                      setValue={setValue}
+                    />
+                  </Form.Item>
+                </motion.div>
+                <motion.div variants={childVariants}>
+                  <Form.Item
+                    label={
+                      <span>
+                        Purchase Date<span className={styles["star"]}>*</span>
+                      </span>
+                    }
+                    className={styles["formItem"]}
+                  >
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <StaticDatePicker
+                        sx={{
+                          backgroundColor: "transparent",
+                        }}
+                        slotProps={{
+                          toolbar: {
+                            toolbarFormat: "ddd DD MMMM",
+                            hidden: false,
+                          },
+                          actionBar: {
+                            actions: ["today"],
+                          },
+                        }}
+                        onChange={(dateinDateJs) => {
+                          var dateString = dateinDateJs?.format("YYYY-MM-DD");
+                          handleInputChange("date_of_purchase", dateString);
+                        }}
+                        maxDate={dayjs()}
+                      />
+                    </LocalizationProvider>
+                  </Form.Item>
+                </motion.div>
 
-                {/* Add more software specific fields as needed */}
-              </>
+                <motion.div variants={childVariants}>
+                  <Form.Item
+                    label={
+                      <span>
+                        License Type<span className={styles["star"]}>*</span>
+                      </span>
+                    }
+                    className={styles["formItem"]}
+                  >
+                    <AssetFieldAutoComplete
+                      assetField="license_type"
+                      value={licenseValue}
+                      setValue={setLicenseValue}
+                    />
+                  </Form.Item>
+                </motion.div>
+
+                <motion.div variants={childVariants}>
+                  <Form.Item label="Owner" className={styles["formItem"]}>
+                    <AssetFieldAutoComplete
+                      assetField="owner"
+                      value={ownerValue}
+                      setValue={setOwnerValue}
+                    />
+                  </Form.Item>
+                </motion.div>
+
+                <motion.div variants={childVariants}>
+                  <Form.Item
+                    label={
+                      <span>
+                        Asset Location<span className={styles["star"]}>*</span>
+                      </span>
+                    }
+                    className={styles["formItem"]}
+                  >
+                    <AssetFieldAutoComplete
+                      assetField="location"
+                      value={assetLocation}
+                      setValue={setAssetLocation}
+                    />
+                  </Form.Item>
+                </motion.div>
+                <motion.div variants={childVariants}>
+                  <Form.Item
+                    label="Business Unit"
+                    className={styles["formItem"]}
+                  >
+                    <AssetFieldAutoComplete
+                      assetField="business_unit"
+                      value={assetBu}
+                      setValue={setAssetBu}
+                    />
+                  </Form.Item>
+                </motion.div>
+                <motion.div variants={childVariants}>
+                  <Form.Item label="Notes:" className={styles["formItem"]}>
+                    <TextField
+                      id="outlined-textarea-notes-hardware"
+                      label="Notes"
+                      placeholder="Information related to the Asset"
+                      sx={{ width: "100%" }}
+                      multiline
+                      onChange={(e) =>
+                        handleInputChange("notes", e.target.value)
+                      }
+                    />
+                  </Form.Item>
+                </motion.div>
+              </motion.div>
             )}
 
             {formData.asset_category === "HARDWARE" && (
-              <>
-                {/* Render hardware specific fields */}
-                {/* Example: */}
-                <Form.Item
-                  label={<span>Asset ID</span>}
-                  className={styles["formItem"]}
-                >
-                  <TextField
-                    id="outlined-basic-asset-id-software"
-                    label="Enter Asset ID"
-                    variant="outlined"
-                    onChange={(e) =>
-                      handleInputChange("asset_id", e.target.value)
-                    }
-                    InputProps={{
-                      endAdornment: (
-                        <Tooltip title="Asset Id should be alphanumeric Eg:ASS101">
-                          <InfoCircleOutlined
-                            style={{ color: "rgba(0,0,0,.45)" }}
-                          />
-                        </Tooltip>
-                      ),
-                    }}
-                    sx={{ width: "100%" }}
-                  />
-                </Form.Item>
-
-                <Form.Item
-                  label={
-                    <span>
-                      Asset Type<span className={styles["star"]}>*</span>
-                    </span>
-                  }
-                  className={styles["formItem"]}
-                >
-                  <AssetFieldAutoComplete
-                    assetField="asset_type"
-                    value={assettypeValue}
-                    setValue={setassettypeValue}
-                  />
-                </Form.Item>
-                <Form.Item
-                  label={
-                    <span>
-                      Asset Name<span className={styles["star"]}>*</span>
-                    </span>
-                  }
-                  className={styles["formItem"]}
-                >
-                  <AssetFieldAutoComplete
-                    assetField="product_name"
-                    value={value}
-                    setValue={setValue}
-                  />
-                </Form.Item>
-                <Form.Item
-                  label={
-                    <span>
-                      Purchase Date<span className={styles["star"]}>*</span>
-                    </span>
-                  }
-                  className={styles["formItem"]}
-                >
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <StaticDatePicker
-                      sx={{
-                        backgroundColor: 'transparent',
+              <motion.div
+                variants={parentVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+              >
+                <motion.div variants={childVariants}>
+                  <Form.Item
+                    label={<span>Asset ID</span>}
+                    className={styles["formItem"]}
+                  >
+                    <TextField
+                      id="outlined-basic-asset-id-software"
+                      label="Enter Asset ID"
+                      variant="outlined"
+                      onChange={(e) =>
+                        handleInputChange("asset_id", e.target.value)
+                      }
+                      InputProps={{
+                        endAdornment: (
+                          <Tooltip title="Asset Id should be alphanumeric Eg:ASS101">
+                            <InfoCircleOutlined
+                              style={{ color: "rgba(0,0,0,.45)" }}
+                            />
+                          </Tooltip>
+                        ),
                       }}
-                      slotProps={{
-                        toolbar: {
-                          toolbarFormat: "ddd DD MMMM",
-                          hidden: false,
-                        },
-                        actionBar: {
-                          actions: ["today"],
-                        },
-                      }}
-                      onChange={(dateinDateJs) => {
-                        var dateString = dateinDateJs?.format("YYYY-MM-DD");
-                        handleInputChange("date_of_purchase", dateString);
-                      }}
-                      maxDate={dayjs()}
+                      sx={{ width: "100%" }}
                     />
-                  </LocalizationProvider>
-                </Form.Item>
+                  </Form.Item>
+                </motion.div>
 
-                <Form.Item
-                  label={<span>Model Number</span>}
-                  className={styles["formItem"]}
-                >
-                  <AssetFieldAutoComplete
-                    assetField="model_number"
-                    value={modelNumber}
-                    setValue={setModelNumber}
-                  />
-                </Form.Item>
-
-                {/* </Form.Item> */}
-                <Form.Item
-                  label={
-                    <span>
-                      Serial Number<span className={styles["star"]}>*</span>
-                    </span>
-                  }
-                  className={styles["formItem"]}
-                >
-                  <TextField
-                    id="outlined-basic-serial-number"
-                    label="Enter Serial Number"
-                    variant="outlined"
-                    onChange={(e) =>
-                      handleInputChange("serial_number", e.target.value)
+                <motion.div variants={childVariants}>
+                  <Form.Item
+                    label={
+                      <span>
+                        Asset Type<span className={styles["star"]}>*</span>
+                      </span>
                     }
-                    InputProps={{
-                      endAdornment: (
-                        <Tooltip title="Serial Number should be alphanumeric and should not exceed 30 characters Eg:ABC123DEF456">
-                          <InfoCircleOutlined
-                            style={{ color: "rgba(0,0,0,.45)" }}
-                          />
-                        </Tooltip>
-                      ),
-                    }}
-                    sx={{ width: "100%" }}
-                  />
-                </Form.Item>
-                <Form.Item
-                  label={<span>Warranty Period</span>}
-                  className={styles["formItem"]}
-                >
-                  <TextField
-                    id="outlined-number-warranty-period"
-                    label="Warranty Period"
-                    InputProps={{
-                      endAdornment: (
-                        <Tooltip title="Warranty period should be in months Eg: 12, 24">
-                          <InfoCircleOutlined
-                            style={{ color: "rgba(0,0,0,.45)" }}
-                          />
-                        </Tooltip>
-                      ),
-                    }}
-                    sx={{ width: "100%" }}
-                    onChange={(e) => {
-                      validateWarrantyPeriod(e);
-                    }}
-                  />
-                </Form.Item>
-                <Form.Item
-                  label={
-                    <span>
-                      Asset Location<span className={styles["star"]}>*</span>
-                    </span>
-                  }
-                  className={styles["formItem"]}
-                >
-                  <AssetFieldAutoComplete
-                    assetField="location"
-                    value={assetLocation}
-                    setValue={setAssetLocation}
-                  />
-                </Form.Item>
+                    className={styles["formItem"]}
+                  >
+                    <AssetFieldAutoComplete
+                      assetField="asset_type"
+                      value={assettypeValue}
+                      setValue={setassettypeValue}
+                    />
+                  </Form.Item>
+                </motion.div>
 
-                <Form.Item
-                  label={
-                    <span>
-                      Invoice Location<span className={styles["star"]}>*</span>
-                    </span>
-                  }
-                  className={styles["formItem"]}
-                >
-                  <AssetFieldAutoComplete
-                    assetField="invoice_location"
-                    value={assetInLocation}
-                    setValue={setAssetInLocation}
-                  />
-                </Form.Item>
+                <motion.div variants={childVariants}>
+                  <Form.Item
+                    label={
+                      <span>
+                        Asset Name<span className={styles["star"]}>*</span>
+                      </span>
+                    }
+                    className={styles["formItem"]}
+                  >
+                    <AssetFieldAutoComplete
+                      assetField="product_name"
+                      value={value}
+                      setValue={setValue}
+                    />
+                  </Form.Item>
+                </motion.div>
 
-                <Form.Item label="Owner" className={styles["formItem"]}>
-                  <AssetFieldAutoComplete
-                    assetField="owner"
-                    value={ownerValue}
-                    setValue={setOwnerValue}
-                  />
-                </Form.Item>
+                <motion.div variants={childVariants}>
+                  <Form.Item
+                    label={
+                      <span>
+                        Purchase Date<span className={styles["star"]}>*</span>
+                      </span>
+                    }
+                    className={styles["formItem"]}
+                  >
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <StaticDatePicker
+                        sx={{
+                          backgroundColor: "transparent",
+                        }}
+                        slotProps={{
+                          toolbar: {
+                            toolbarFormat: "ddd DD MMMM",
+                            hidden: false,
+                          },
+                          actionBar: {
+                            actions: ["today"],
+                          },
+                        }}
+                        onChange={(dateinDateJs) => {
+                          var dateString = dateinDateJs?.format("YYYY-MM-DD");
+                          handleInputChange("date_of_purchase", dateString);
+                        }}
+                        maxDate={dayjs()}
+                      />
+                    </LocalizationProvider>
+                  </Form.Item>
+                </motion.div>
 
-                <Form.Item label="Business Unit" className={styles["formItem"]}>
-                  <AssetFieldAutoComplete
-                    assetField="business_unit"
-                    value={assetBu}
-                    setValue={setAssetBu}
-                  />
-                </Form.Item>
-                <Form.Item label="OS:" className={styles["formItem"]}>
-                  <AssetFieldAutoComplete
-                    assetField="os"
-                    value={os}
-                    setValue={setOs}
-                  />
-                </Form.Item>
+                <motion.div variants={childVariants}>
+                  <Form.Item
+                    label={<span>Model Number</span>}
+                    className={styles["formItem"]}
+                  >
+                    <AssetFieldAutoComplete
+                      assetField="model_number"
+                      value={modelNumber}
+                      setValue={setModelNumber}
+                    />
+                  </Form.Item>
+                </motion.div>
 
-                <Form.Item label="OS Version" className={styles["formItem"]}>
-                  <AssetFieldAutoComplete
-                    assetField="os_version"
-                    value={osVersion}
-                    setValue={setOsVersion}
-                  />
-                </Form.Item>
+                <motion.div variants={childVariants}>
+                  <Form.Item
+                    label={
+                      <span>
+                        Serial Number<span className={styles["star"]}>*</span>
+                      </span>
+                    }
+                    className={styles["formItem"]}
+                  >
+                    <TextField
+                      id="outlined-basic-serial-number"
+                      label="Enter Serial Number"
+                      variant="outlined"
+                      onChange={(e) =>
+                        handleInputChange("serial_number", e.target.value)
+                      }
+                      InputProps={{
+                        endAdornment: (
+                          <Tooltip title="Serial Number should be alphanumeric and should not exceed 30 characters Eg:ABC123DEF456">
+                            <InfoCircleOutlined
+                              style={{ color: "rgba(0,0,0,.45)" }}
+                            />
+                          </Tooltip>
+                        ),
+                      }}
+                      sx={{ width: "100%" }}
+                    />
+                  </Form.Item>
+                </motion.div>
 
-                <Form.Item label="Mobile OS" className={styles["formItem"]}>
-                  <AssetFieldAutoComplete
-                    assetField="mobile_os"
-                    value={mobileOs}
-                    setValue={setMobileOs}
-                  />
-                </Form.Item>
+                <motion.div variants={childVariants}>
+                  <Form.Item
+                    label={<span>Warranty Period</span>}
+                    className={styles["formItem"]}
+                  >
+                    <TextField
+                      id="outlined-number-warranty-period"
+                      label="Warranty Period"
+                      InputProps={{
+                        endAdornment: (
+                          <Tooltip title="Warranty period should be in months Eg: 12, 24">
+                            <InfoCircleOutlined
+                              style={{ color: "rgba(0,0,0,.45)" }}
+                            />
+                          </Tooltip>
+                        ),
+                      }}
+                      sx={{ width: "100%" }}
+                      onChange={(e) => {
+                        validateWarrantyPeriod(e);
+                      }}
+                    />
+                  </Form.Item>
+                </motion.div>
 
-                <Form.Item label="Processor" className={styles["formItem"]}>
-                  <AssetFieldAutoComplete
-                    assetField="processor"
-                    value={processor}
-                    setValue={setProcessor}
-                  />
-                </Form.Item>
+                <motion.div variants={childVariants}>
+                  <Form.Item
+                    label={
+                      <span>
+                        Asset Location<span className={styles["star"]}>*</span>
+                      </span>
+                    }
+                    className={styles["formItem"]}
+                  >
+                    <AssetFieldAutoComplete
+                      assetField="location"
+                      value={assetLocation}
+                      setValue={setAssetLocation}
+                    />
+                  </Form.Item>
+                </motion.div>
 
-                <Form.Item
-                  label="Processor Gen:"
-                  className={styles["formItem"]}
-                >
-                  <AssetFieldAutoComplete
-                    assetField="processor_gen"
-                    value={processorGen}
-                    setValue={setProcessorGen}
-                  />
-                </Form.Item>
+                <motion.div variants={childVariants}>
+                  <Form.Item
+                    label={
+                      <span>
+                        Invoice Location
+                        <span className={styles["star"]}>*</span>
+                      </span>
+                    }
+                    className={styles["formItem"]}
+                  >
+                    <AssetFieldAutoComplete
+                      assetField="invoice_location"
+                      value={assetInLocation}
+                      setValue={setAssetInLocation}
+                    />
+                  </Form.Item>
+                </motion.div>
 
-                <Form.Item label="Memory:" className={styles["formItem"]}>
-                  <AssetFieldAutoComplete
-                    assetField="memory"
-                    value={memory}
-                    setValue={setMemory}
-                  />
-                </Form.Item>
+                <motion.div variants={childVariants}>
+                  <Form.Item label="Owner" className={styles["formItem"]}>
+                    <AssetFieldAutoComplete
+                      assetField="owner"
+                      value={ownerValue}
+                      setValue={setOwnerValue}
+                    />
+                  </Form.Item>
+                </motion.div>
 
-                <Form.Item label="Storage:" className={styles["formItem"]}>
-                  <AssetFieldAutoComplete
-                    assetField="storage"
-                    value={storage}
-                    setValue={setStorage}
-                  />
-                </Form.Item>
+                <motion.div variants={childVariants}>
+                  <Form.Item
+                    label="Business Unit"
+                    className={styles["formItem"]}
+                  >
+                    <AssetFieldAutoComplete
+                      assetField="business_unit"
+                      value={assetBu}
+                      setValue={setAssetBu}
+                    />
+                  </Form.Item>
+                </motion.div>
 
-                {/* <Form.Item
-                  label="Configuration:"
-                  className={styles["formItem"]}
-                >
-                  <TextField
-                    id="outlined-textarea-configuration-hardware"
-                    label="Configuration"
-                    sx={{ width: "100%" }}
-                    multiline
-                    onChange={(e) => {
-                      handleInputChange("configuration", e.target.value);
-                    }}
-                  />
-                </Form.Item> */}
+                <motion.div variants={childVariants}>
+                  <Form.Item label="OS:" className={styles["formItem"]}>
+                    <AssetFieldAutoComplete
+                      assetField="os"
+                      value={os}
+                      setValue={setOs}
+                    />
+                  </Form.Item>
+                </motion.div>
 
-                <Form.Item label="Accessories:" className={styles["formItem"]}>
-                  <TextField
-                    id="outlined-textarea-accessories-hardware"
-                    label="Accessories"
-                    placeholder="Accessories obtained with the hardware"
-                    sx={{ width: "100%" }}
-                    multiline
-                    onChange={(e) => {
-                      handleAccessoryChange(e);
-                    }}
-                  />
-                </Form.Item>
+                <motion.div variants={childVariants}>
+                  <Form.Item label="OS Version" className={styles["formItem"]}>
+                    <AssetFieldAutoComplete
+                      assetField="os_version"
+                      value={osVersion}
+                      setValue={setOsVersion}
+                    />
+                  </Form.Item>
+                </motion.div>
 
-                <Form.Item label="Notes:" className={styles["formItem"]}>
-                  <TextField
-                    id="outlined-textarea-notes-software"
-                    label="Notes"
-                    placeholder="Information related to the Asset"
-                    sx={{ width: "100%" }}
-                    multiline
-                    onChange={(e) => handleInputChange("notes", e.target.value)}
-                  />
-                </Form.Item>
-                {/* Add more hardware specific fields as needed */}
-              </>
+                <motion.div variants={childVariants}>
+                  <Form.Item label="Mobile OS" className={styles["formItem"]}>
+                    <AssetFieldAutoComplete
+                      assetField="mobile_os"
+                      value={mobileOs}
+                      setValue={setMobileOs}
+                    />
+                  </Form.Item>
+                </motion.div>
+
+                <motion.div variants={childVariants}>
+                  <Form.Item label="Processor" className={styles["formItem"]}>
+                    <AssetFieldAutoComplete
+                      assetField="processor"
+                      value={processor}
+                      setValue={setProcessor}
+                    />
+                  </Form.Item>
+                </motion.div>
+
+                <motion.div variants={childVariants}>
+                  <Form.Item
+                    label="Processor Gen:"
+                    className={styles["formItem"]}
+                  >
+                    <AssetFieldAutoComplete
+                      assetField="processor_gen"
+                      value={processorGen}
+                      setValue={setProcessorGen}
+                    />
+                  </Form.Item>
+                </motion.div>
+
+                <motion.div variants={childVariants}>
+                  <Form.Item label="Memory:" className={styles["formItem"]}>
+                    <AssetFieldAutoComplete
+                      assetField="memory"
+                      value={memory}
+                      setValue={setMemory}
+                    />
+                  </Form.Item>
+                </motion.div>
+
+                <motion.div variants={childVariants}>
+                  <Form.Item label="Storage:" className={styles["formItem"]}>
+                    <AssetFieldAutoComplete
+                      assetField="storage"
+                      value={storage}
+                      setValue={setStorage}
+                    />
+                  </Form.Item>
+                </motion.div>
+
+                <motion.div variants={childVariants}>
+                  <Form.Item
+                    label="Accessories:"
+                    className={styles["formItem"]}
+                  >
+                    <TextField
+                      id="outlined-textarea-accessories-hardware"
+                      label="Accessories"
+                      placeholder="Accessories obtained with the hardware"
+                      sx={{ width: "100%" }}
+                      multiline
+                      onChange={(e) => {
+                        handleAccessoryChange(e);
+                      }}
+                    />
+                  </Form.Item>
+                </motion.div>
+
+                <motion.div variants={childVariants}>
+                  <Form.Item label="Notes:" className={styles["formItem"]}>
+                    <TextField
+                      id="outlined-textarea-notes-software"
+                      label="Notes"
+                      placeholder="Information related to the Asset"
+                      sx={{ width: "100%" }}
+                      multiline
+                      onChange={(e) =>
+                        handleInputChange("notes", e.target.value)
+                      }
+                    />
+                  </Form.Item>
+                </motion.div>
+              </motion.div>
             )}
 
             <Form.Item>
@@ -961,7 +1045,7 @@ const AddAsset: React.FC = ({
                   marginLeft: "30px",
                   width: "120px",
                   height: "40px",
-                  color: "white"
+                  color: "white",
                 }}
                 onClick={() => {
                   handleResetForm();

@@ -1,6 +1,7 @@
 import { FC, useState, useRef } from "react";
 import { Statistics } from "../components/charts/Statistics";
 import DashboardAssetHandler from "../components/DashboardAssetTable/DashboardAssetHandler";
+import { motion } from "framer-motion";
 
 const DashboardPage: FC = function () {
   const [selectedTypeId, setSelectedTypeId] = useState<number>(0);
@@ -21,20 +22,37 @@ const DashboardPage: FC = function () {
   };
 
   return (
-    <div className="bg-custom-500 lg:ml-60 mt-20">
-     <Statistics
-        selectedTypeId={selectedTypeId}
-        assetState={assetState}
-        detailState={detailState}
-        assignState={assignState}
-        setSelectedTypeId={setSelectedTypeId}
-        setAssetState={setAssetState}
-        setDetailState={setDetailState}
-        setAssignState={setAssignState}
-        onClick={() => handleScroll(95)}
-      />
-      
-      <div ref={dashboardAssetRef}>
+    <motion.div
+      className="bg-custom-500 lg:ml-60 mt-20"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.5 }}
+    >
+      <motion.div
+        initial={{ scale: 0.95 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 0.3 }}
+      >
+        <Statistics
+          selectedTypeId={selectedTypeId}
+          assetState={assetState}
+          detailState={detailState}
+          assignState={assignState}
+          setSelectedTypeId={setSelectedTypeId}
+          setAssetState={setAssetState}
+          setDetailState={setDetailState}
+          setAssignState={setAssignState}
+          onClick={() => handleScroll(95)}
+        />
+      </motion.div>
+
+      <motion.div
+        ref={dashboardAssetRef}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <DashboardAssetHandler
           selectedTypeId={selectedTypeId}
           assetState={assetState}
@@ -45,8 +63,8 @@ const DashboardPage: FC = function () {
           setDetailState={setDetailState}
           setAssignState={setAssignState}
         />
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 

@@ -70,6 +70,7 @@ const CreateRequestPage: FC = function () {
         approval_type: "ASSET_DETAIL_STATUS",
         asset_uuid: selectedAsset.asset_uuid,
         comments: approverNotes,
+        version: selectedAsset.version
       };
       axiosInstance
         .post("/asset/approve_asset", approvalData)
@@ -325,7 +326,7 @@ const RequestTable: FC<{
         <Table.HeadCell>
           <span
             onClick={() => {
-              setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+              setSortOrder((prev: string) => (prev === "asc" ? "desc" : "asc"));
             }}
             className="ml-2 bg-transparent cursor-pointer"
           >

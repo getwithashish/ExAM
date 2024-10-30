@@ -4,7 +4,7 @@ import { FC } from "react";
 
 
 interface AssetStatusTooltipProps {
-    isChartTooltip: boolean;
+    isChartTooltip?: boolean;
 }
 
 
