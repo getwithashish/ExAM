@@ -177,7 +177,10 @@ const SidebarComponentNew = ({ children }: any) => {
                     <Link to="/exam/updatable_assets">Modify Assets</Link>
                   </Tooltip>
                 </Menu.Item>
-                <Menu.Item key="/exam/assignable_asset" icon={<UserSwitchOutlined />}>
+                <Menu.Item
+                  key="/exam/assignable_asset"
+                  icon={<UserSwitchOutlined />}
+                >
                   <Tooltip title="To allocate an Asset to an employee">
                     <Link to="/exam/assignable_asset">Allocate Assets</Link>
                   </Tooltip>
@@ -213,7 +216,10 @@ const SidebarComponentNew = ({ children }: any) => {
                 title="Approve Assets"
                 className="bg-custom-400"
               >
-                <Menu.Item key="/exam/creation_requests" icon={<CarryOutOutlined />}>
+                <Menu.Item
+                  key="/exam/creation_requests"
+                  icon={<CarryOutOutlined />}
+                >
                   <Link to="/exam/creation_requests">
                     <Tooltip title="Approve Assets that are pending to be created">
                       In Creation
@@ -221,7 +227,10 @@ const SidebarComponentNew = ({ children }: any) => {
                   </Link>
                 </Menu.Item>
 
-                <Menu.Item key="/exam/updation_requests" icon={<CarryOutOutlined />}>
+                <Menu.Item
+                  key="/exam/updation_requests"
+                  icon={<CarryOutOutlined />}
+                >
                   <Link to="/exam/updation_requests">
                     <Tooltip title="Approve Assets that are pending to be updated">
                       In Modification
@@ -229,7 +238,10 @@ const SidebarComponentNew = ({ children }: any) => {
                   </Link>
                 </Menu.Item>
 
-                <Menu.Item key="/exam/assign_requests" icon={<CarryOutOutlined />}>
+                <Menu.Item
+                  key="/exam/assign_requests"
+                  icon={<CarryOutOutlined />}
+                >
                   <Link to="/exam/assign_requests">
                     <Tooltip title="Approve Assets that are pending to be allocated">
                       In Allocation
@@ -254,22 +266,34 @@ const SidebarComponentNew = ({ children }: any) => {
                 title="My Requests"
                 style={{ backgroundColor: "#1D232C" }} // Adjust background color here
               >
-                <Menu.Item key="/exam/approved_requests" icon={<CheckCircleOutlined />}>
+                <Menu.Item
+                  key="/exam/approved_requests"
+                  icon={<CheckCircleOutlined />}
+                >
                   <Tooltip title="Show my Asset Requests which have been approved">
                     <Link to="/exam/approved_requests">Approved</Link>
                   </Tooltip>
                 </Menu.Item>
-                <Menu.Item key="/exam/pending_requests" icon={<CheckCircleOutlined />}>
-                  <Tooltip title="Show the requests which are in pending status">
+                <Menu.Item
+                  key="/exam/pending_requests"
+                  icon={<CheckCircleOutlined />}
+                >
+                  <Tooltip title="Show the Asset requests which are in pending status">
                     <Link to="/exam/pending_requests">Pending Requests</Link>
                   </Tooltip>
                 </Menu.Item>
-                <Menu.Item key="/exam/rejected_assets" icon={<CloseCircleOutlined />}>
+                <Menu.Item
+                  key="/exam/rejected_assets"
+                  icon={<CloseCircleOutlined />}
+                >
                   <Tooltip title="Show my Asset creation and updation Requests which have been rejected">
                     <Link to="/exam/rejected_assets">Rejected Asset</Link>
                   </Tooltip>
                 </Menu.Item>
-                <Menu.Item key="/exam/rejected_allocation" icon={<CloseCircleOutlined />}>
+                <Menu.Item
+                  key="/exam/rejected_allocation"
+                  icon={<CloseCircleOutlined />}
+                >
                   <Tooltip title="Show my Asset allocation Requests which have been rejected">
                     <Link to="/exam/rejected_allocation">
                       Rejected Allocation

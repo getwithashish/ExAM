@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Pagination, Table, ConfigProvider, theme } from "antd";
 import "./AssetTable.css";
-import CardComponent from "../../CardComponent/CardComponent"
+import CardComponent from "../../CardComponent/CardComponent";
 import { CloseOutlined } from "@ant-design/icons";
 import { AssetTableProps } from "../AssetTable/types";
 import SideDrawerComponent from "../../SideDrawerComponent/SideDrawerComponent";
@@ -39,6 +39,8 @@ const AssetTable = ({
   sortedColumn,
   searchTerm,
   setSearchTerm,
+  setJson_query,
+  json_query,
 }: AssetTableProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const { darkAlgorithm } = theme;
@@ -47,12 +49,14 @@ const AssetTable = ({
     algorithm: darkAlgorithm,
     components: {
       Table: {
-        colorBgContainer: '#161B21',
+        colorBgContainer: "#161B21",
       },
     },
   };
 
-  const handleRefreshClick = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+  const handleRefreshClick = (
+    event: React.MouseEvent<SVGSVGElement, MouseEvent>
+  ) => {
     event.preventDefault();
     const queryParams = `&global_search=${searchTerm}`;
     assetDataRefetch(queryParams);
@@ -69,12 +73,17 @@ const AssetTable = ({
       <div className="mainHeading pt-4">
         <div className="font-display text-white ml-4">Deallocate Assets</div>
       </div>
-      <div className="flex" style={{ marginLeft: "55px", marginBottom: "30px" }}>
+      <div
+        className="flex"
+        style={{ marginLeft: "55px", marginBottom: "30px" }}
+      >
         <GlobalSearch
           assetDataRefetch={assetDataRefetch}
           searchTerm={searchTerm}
           reset={reset}
           setSearchTerm={setSearchTerm}
+          setJson_query={setJson_query}
+          json_query={json_query}
         />
         <div className="flex items-center justify-center">
           <RefreshTwoTone
@@ -125,7 +134,9 @@ const AssetTable = ({
               <Pagination
                 pageSize={20}
                 current={currentPage}
-                showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} assets`}
+                showTotal={(total, range) =>
+                  `${range[0]}-${range[1]} of ${total} assets`
+                }
                 total={totalItemCount}
                 onChange={(page, pageSize) => {
                   setCurrentPage(page);
@@ -134,10 +145,13 @@ const AssetTable = ({
                   if (searchTerm !== "" && searchTerm !== null) {
                     additionalQueryParams += `&global_search=${searchTerm}`;
                   }
+                  if (json_query && json_query !== "" && json_query !== null) {
+                    additionalQueryParams += `&json_logic=${json_query}`;
+                  }
                   let sortParams = "";
                   const queryParams = `${sortParams}${additionalQueryParams}`;
                   if (sortedColumn && sortOrder) {
-                    if (queryParams.indexOf('sort_by') === -1) {
+                    if (queryParams.indexOf("sort_by") === -1) {
                       sortParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
                     }
                   }
