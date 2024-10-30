@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { fetchAssetData } from '../api/ChartApi';
 import { AxisConfig, BarChart, barElementClasses } from '@mui/x-charts';
 import { axisClasses } from '@mui/x-charts/ChartsAxis';
+import "./BarChart.css";
 import { AxiosError } from 'axios';
 import { ErrorResponse } from './types';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { RefreshTwoTone } from '@mui/icons-material';
 import { DataError, DataLoading } from './assets';
+import { motion } from 'framer-motion';
 
 type Error = AxiosError<ErrorResponse>;
 
@@ -79,30 +81,36 @@ export default function BarChartHandler() {
           />
         </div>
       </div>
-      <div style={{ overflowX: 'auto' }}>
+      <div className="scrollable" style={{ overflowX: 'auto' }}>
         <ThemeProvider theme={darkTheme}>
-          <BarChart
-            sx={() => ({
-              [`.${barElementClasses.root}`]: {
-                fill: '#075985',
-                strokeWidth: 0,
-              },
-              [`.${axisClasses.root}`]: {
-                '.MuiChartsAxis-line, .MuiChartsAxis-tick': {
-                  stroke: '#ffffff',
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.75 }}
+          >
+            <BarChart
+              sx={() => ({
+                [`.${barElementClasses.root}`]: {
+                  fill: '#075985',
                   strokeWidth: 0,
                 },
-                '.MuiChartsAxis-tickLabel': {
-                  fill: '#ffffff',
-                  fontFamily: 'Inter'
+                [`.${axisClasses.root}`]: {
+                  '.MuiChartsAxis-line, .MuiChartsAxis-tick': {
+                    stroke: '#ffffff',
+                    strokeWidth: 0,
+                  },
+                  '.MuiChartsAxis-tickLabel': {
+                    fill: '#ffffff',
+                    fontFamily: 'Inter'
+                  },
                 },
-              },
-            })}
-            xAxis={xAxis}
-            series={series}
-            height={350}
-            width={2500}
-          />
+              })}
+              xAxis={xAxis}
+              series={series}
+              height={350}
+              width={2500}
+            />
+          </motion.div>
         </ThemeProvider>
       </div>
     </div>
