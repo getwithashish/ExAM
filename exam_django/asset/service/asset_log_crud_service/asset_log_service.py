@@ -279,7 +279,16 @@ def log_asset_changes(sender, instance, **kwargs):
         if instance.pk in previous_instance:
             old_instance = previous_instance[instance.pk]
 
-            if old_instance["asset_detail_status"] != instance.asset_detail_status:
+            print(
+                f'Outside Log Service: Old Log: {old_instance["is_deleted"]}, New Log: {instance.is_deleted}'
+            )
+
+            if old_instance["is_deleted"] != instance.is_deleted:
+                print(
+                    f'Inside Log Service: Old Log: {old_instance["is_deleted"]}, New Log: {instance.is_deleted}'
+                )
+                pass
+            elif old_instance["asset_detail_status"] != instance.asset_detail_status:
                 if instance.asset_detail_status not in [
                     "CREATED",
                     "UPDATED",
@@ -301,7 +310,6 @@ def log_asset_changes(sender, instance, **kwargs):
             }
             asset_log_data = json.dumps(changes, indent=4, sort_keys=True, default=str)
 
-            # TODO - How about a request which was rejected and then sent again for approval, without any changes
             # TODO - How about logging DELETE and RESTORE operations
             if changes:
                 with transaction.atomic():
