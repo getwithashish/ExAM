@@ -4,11 +4,10 @@ const ExpiredAssets = () => {
   const queryParamProp = "&expired=true";
   const heading = "Expired Assets";
 
-
   return (
-    <div >
-       <div className="pt-8">
-        { 
+    <div>
+      <div>
+        {
           <AssetTableHandler
             isRejectedPage={false}
             queryParamProp={queryParamProp}

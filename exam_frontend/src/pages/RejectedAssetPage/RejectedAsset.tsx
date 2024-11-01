@@ -32,7 +32,7 @@ const RejectedAsset = () => {
   let heading = "My Rejected Asset Requests";
 
   return (
-    <div className="pt-8">
+    <div>
       <AssetTableHandler
         key={"asset_detail_rejected"}
         isRejectedPage={false}

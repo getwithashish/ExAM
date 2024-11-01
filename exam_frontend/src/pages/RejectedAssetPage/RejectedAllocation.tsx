@@ -32,7 +32,7 @@ const RejectedAllocationAsset = () => {
   let heading = "My Rejected Allocation Requests";
 
   return (
-    <div className="pt-8">
+    <div>
       <AssetTableHandler
         key={"assign_rejected"}
         isRejectedPage={false}

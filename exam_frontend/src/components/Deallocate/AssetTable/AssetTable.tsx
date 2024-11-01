@@ -69,13 +69,15 @@ const AssetTable = ({
   };
 
   return (
-    <div className="bg-custom-400 lg:ml-60 mt-10 lg:pl-10">
+    <div
+      
+    >
       <div className="mainHeading pt-4">
-        <div className="font-display text-white ml-4">Deallocate Assets</div>
+        <div className="font-display text-white">Deallocate Assets</div>
       </div>
       <div
         className="flex"
-        style={{ marginLeft: "55px", marginBottom: "30px" }}
+        style={{ marginLeft: "35px", marginBottom: "30px" }}
       >
         <GlobalSearch
           assetDataRefetch={assetDataRefetch}
@@ -103,7 +105,7 @@ const AssetTable = ({
         style={{
           position: "relative",
           display: "inline-block",
-          width: "80vw",
+          width: "79vw",
         }}
       >
         <SideDrawerComponent

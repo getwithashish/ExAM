@@ -37,7 +37,7 @@ const PendingRequestPage = () => {
     let heading = "My Pending Request";
 
   return (
-    <div className="pt-8">
+    <div>
       <AssetTableHandler
         isRejectedPage={false}
         queryParamProp={queryParamProp}

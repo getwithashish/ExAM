@@ -35,7 +35,7 @@ const AssignableAsset = () => {
   };
 
   return (
-    <div className="pt-8">
+    <div>
       <AssetTableHandler
         queryParam={queryParam}
         setQueryParam={setQueryParam}

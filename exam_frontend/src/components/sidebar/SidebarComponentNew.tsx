@@ -370,9 +370,22 @@ const SidebarComponentNew = ({ children }: any) => {
             </div>
           </div>
         </Header>
-        <Content style={{ overflow: "initial", backgroundColor: "#161b21" }}>
+        <Content
+          style={{
+            overflow: "initial",
+            backgroundColor: "#161b21",
+            width: "100vw",
+          }}
+        >
           <Spin spinning={loading}>
-            {children}
+            <div
+              className="bg-custom-500 lg:ml-60"
+              style={{
+                marginTop: "97px",
+              }}
+            >
+              {children}
+            </div>
             <SideDrawerComponent
               displayDrawer={displaydrawer}
               closeDrawer={closeDrawer}
@@ -383,7 +396,7 @@ const SidebarComponentNew = ({ children }: any) => {
                 setDisplayDrawer={setDisplayDrawer}
               />
             </SideDrawerComponent>
-            <Footer className="lg:ml-60 text-center md:ml-40 bg-custom-400">
+            <Footer className="lg:ml-60 text-center md:ml-40 bg-custom-400 mt-2">
               <FlowbiteFooter container className="bg-custom-500">
                 <div className="flex flex-col lg:flex-row lg:justify-between lg:gap-y-0">
                   <FlowbiteFooter.LinkGroup>
