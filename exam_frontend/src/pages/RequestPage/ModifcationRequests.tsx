@@ -58,7 +58,7 @@ const ModificationRequests: FC = function () {
         approval_type: "ASSET_DETAIL_STATUS",
         asset_uuid: selectedAsset.asset_uuid,
         comments: selectedAsset.approverNotes,
-        version: selectedAsset.version
+        version: selectedAsset.version,
       };
 
       axiosInstance
@@ -66,10 +66,12 @@ const ModificationRequests: FC = function () {
         .then((res) => {
           fetchAssets();
           setSelectedAsset(null);
-          message.success(res.data?.message)
+          message.success(res.data?.message);
         })
         .catch((error) => {
-          message.error(`Error Approving an Asset: ${error.response.data?.message}`);
+          message.error(
+            `Error Approving an Asset: ${error.response.data?.message}`
+          );
           console.error("Error approving asset:", error);
         })
         .finally(() => {
@@ -87,7 +89,7 @@ const ModificationRequests: FC = function () {
           approval_type: "ASSET_DETAIL_STATUS",
           asset_uuid: selectedAsset.asset_uuid,
           comments: selectedAsset.approverNotes,
-          version: selectedAsset.version
+          version: selectedAsset.version,
         },
       };
 
@@ -96,10 +98,12 @@ const ModificationRequests: FC = function () {
         .then((res) => {
           fetchAssets();
           setSelectedAsset(null);
-          message.success(res.data?.message)
+          message.success(res.data?.message);
         })
         .catch((error) => {
-          message.error(`Error Rejecting an Asset: ${error.response.data?.message}`);
+          message.error(
+            `Error Rejecting an Asset: ${error.response.data?.message}`
+          );
           console.error("Error rejecting asset:", error);
         })
         .finally(() => {
@@ -155,11 +159,10 @@ const ModificationRequests: FC = function () {
   };
 
   const handleRefreshClick = () => {
-    setLoading(true)
+    setLoading(true);
     setTimeout(() => {
       fetchAssets();
     }, 2000);
-
   };
 
   const { darkAlgorithm } = theme;
@@ -174,7 +177,14 @@ const ModificationRequests: FC = function () {
 
   return (
     <React.Fragment>
-      <div className="bg-custom-500 lg:ml-64 pt-24">
+      <div
+        className="bg-gray-800 sm:mx-0"
+        style={{
+          margin: "0 37px 0 30px",
+          paddingBottom: "20px",
+          borderRadius: "10px",
+        }}
+      >
         <div className="block items-center justify-between bg-custom-400 px-2 dark:border-gray-700 dark:bg-gray-800 sm:flex mx-2 my-2">
           <div className="mb-1 w-full">
             <div className="m-2 flex items-center">
@@ -226,7 +236,7 @@ const ModificationRequests: FC = function () {
                 </div>
               </div>
             ) : (
-              <div className="inline-block w-full align-middle">
+              <div className="inline-block w-[97%] align-middle mx-4">
                 <div className="overflow-hidden shadow-2xl mx-2 rounded-lg bg-custom-400">
                   <RequestTable
                     assets={filteredAssets}
@@ -280,7 +290,7 @@ const SearchRequests: FC<{
   };
 
   return (
-    <form className="mb-4 sm:mb-0 sm:pr-3 relative " action="#" method="GET">
+    <form className="mb-4 sm:mb-0 sm:px-2 relative " action="#" method="GET">
       <Label htmlFor="search-request" className="sr-only font-display">
         Search
       </Label>
@@ -294,9 +304,7 @@ const SearchRequests: FC<{
         <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
           {showInfo && (
             <div className="absolute top-0 right-full w-max bg-gray-700 rounded-lg shadow-lg">
-              <p className="text-white text-xs mt-3">
-                Search for any value
-              </p>
+              <p className="text-white text-xs mt-3">Search for any value</p>
             </div>
           )}
           <InfoIcon
@@ -319,7 +327,15 @@ const RequestTable: FC<{
   setSortBy: (data: any | null) => void;
   sortOrder: string;
   setSortOrder: (data: any | null) => void;
-}> = function ({ assets, setSelectedAsset, setLatestLogData, sortBy, setSortBy, sortOrder, setSortOrder }) {
+}> = function ({
+  assets,
+  setSelectedAsset,
+  setLatestLogData,
+  sortBy,
+  setSortBy,
+  sortOrder,
+  setSortOrder,
+}) {
   const handleViewAsset = async (asset: any) => {
     try {
       const response = await axiosInstance.get(
@@ -333,8 +349,8 @@ const RequestTable: FC<{
   };
 
   return (
-    <Table className="w-full divide-y font-display divide-gray-200 dark:divide-gray-600 mx-2 my-2 rounded-lg">
-      <Table.Head className="bg-gray-100 dark:bg-gray-700">
+    <Table className="min-w-full divide-y font-display divide-gray-200 dark:divide-gray-600 rounded-xl">
+      <Table.Head className="bg-gray-700">
         <Table.HeadCell>Asset Type</Table.HeadCell>
         <Table.HeadCell>Product Name</Table.HeadCell>
         <Table.HeadCell>Requester</Table.HeadCell>
@@ -410,281 +426,274 @@ const ViewRequestModal: FC<{
   onClose,
   latestLogData,
 }) {
-    const [notes, setNotes] = useState(asset.notes);
-    const [approverNotes, setApproverNotes] = useState(
-      asset.approval_status_message
-    );
+  const [notes, setNotes] = useState(asset.notes);
+  const [approverNotes, setApproverNotes] = useState(
+    asset.approval_status_message
+  );
 
-    const [actionType, setActionType] = useState("");
+  const [actionType, setActionType] = useState("");
 
-    const toggleModal = (type: string) => {
-      setActionType(type);
-      setModalOpen(!modalOpen);
-    };
+  const toggleModal = (type: string) => {
+    setActionType(type);
+    setModalOpen(!modalOpen);
+  };
 
-    const handleNotesChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-      setNotes(e.target.value);
-    };
+  const handleNotesChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setNotes(e.target.value);
+  };
 
-    const handleApproverNotesChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-      setApproverNotes(e.target.value);
-      asset.approverNotes = e.target.value;
-    };
+  const handleApproverNotesChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setApproverNotes(e.target.value);
+    asset.approverNotes = e.target.value;
+  };
 
-    const formFields = [
-      {
-        id: "asset_id",
-        label: "ASSET ID",
-        name: "assetId",
-        value: asset.asset_id,
-        disabled: true,
-      },
-      {
-        id: "product_name",
-        label: "PRODUCT NAME",
-        name: "productName",
-        value: asset.product_name,
-        disabled: true,
-      },
-      {
-        id: "serial_number",
-        label: "SERIAL NUMBER",
-        name: "serialNumber",
-        value: asset?.serial_number,
-        disabled: true,
-      },
-      {
-        id: "location",
-        label: "LOCATION",
-        name: "location",
-        value: asset.location?.location_name,
-        disabled: true,
-      },
-      {
-        id: "invoice_location",
-        label: "INV.LOCATION",
-        name: "invoice_location",
-        value: asset.invoice_location?.location_name,
-        disabled: true,
-      },
-      {
-        id: "asset_type",
-        label: "ASSET TYPE",
-        name: "asset_type",
-        value: asset.asset_type?.asset_type_name,
-        disabled: true,
-      },
-      {
-        id: "asset_category",
-        label: "CATEGORY",
-        name: "assetCategory",
-        value: asset.asset_category,
-        disabled: true,
-      },
-      {
-        id: "business_unit",
-        label: "BUSINESS UNIT",
-        name: "business_unit",
-        value: asset.business_unit?.business_unit_name,
-        disabled: true,
-      },
-      {
-        id: "os",
-        label: "OS",
-        name: "os",
-        value: asset?.os,
-        disabled: true,
-      },
-      {
-        id: "os_version",
-        label: "OS VERSION",
-        name: "os_version",
-        value: asset?.os_version,
-        disabled: true,
-      },
-      {
-        id: "mobile_os",
-        label: "MOBILE OS",
-        name: "mobile_os",
-        value: asset?.mobile_os,
-        disabled: true,
-      },
-      {
-        id: "processor",
-        label: "PROCESSOR",
-        name: "processor",
-        value: asset?.processor,
-        disabled: true,
-      },
-      {
-        id: "processor_gen",
-        label: "PROCESSOR GEN",
-        name: "p_gen",
-        value: asset?.processor_gen,
-        disabled: true,
-      },
-      {
-        id: "model_number",
-        label: "MODEL NUMBER",
-        name: "modelNumber",
-        value: asset?.model_number,
-        disabled: true,
-      },
-      {
-        id: "memory",
-        label: "MEMORY",
-        name: "memory",
-        value: asset.memory?.memory_space,
-        disabled: true,
-      },
-      {
-        id: "storage",
-        label: "STORAGE",
-        name: "storage",
-        value: asset?.storage,
-        disabled: true,
-      },
-      {
-        id: "license_type",
-        label: "LICENSE TYPE",
-        name: "license_type",
-        value: asset?.license_type,
-        disabled: true,
-      },
-      {
-        id: "date_of_purchase",
-        label: "D.O.P",
-        name: "dop",
-        value: asset?.date_of_purchase,
-        disabled: true,
-      },
-      {
-        id: "warranty_period",
-        label: "WARRANTY",
-        name: "warranty_period",
-        value: asset?.warranty_period,
-        disabled: true,
-      },
-      {
-        id: "owner",
-        label: "OWNER",
-        name: "owner",
-        value: asset?.owner,
-        disabled: true,
-      },
-      {
-        id: "requester",
-        label: "REQUESTER",
-        name: "requester_username",
-        value: asset?.requester.username,
-        disabled: true,
-      },
-      {
-        id: "status",
-        label: "ASSET STATUS",
-        name: "status",
-        value: asset?.status,
-        disabled: true,
-      },
-      {
-        id: "accessories",
-        label: "ACCESSORIES",
-        name: "accessories",
-        value: asset?.accessories,
-        disabled: true,
-      },
-    ];
+  const formFields = [
+    {
+      id: "asset_id",
+      label: "ASSET ID",
+      name: "assetId",
+      value: asset.asset_id,
+      disabled: true,
+    },
+    {
+      id: "product_name",
+      label: "PRODUCT NAME",
+      name: "productName",
+      value: asset.product_name,
+      disabled: true,
+    },
+    {
+      id: "serial_number",
+      label: "SERIAL NUMBER",
+      name: "serialNumber",
+      value: asset?.serial_number,
+      disabled: true,
+    },
+    {
+      id: "location",
+      label: "LOCATION",
+      name: "location",
+      value: asset.location?.location_name,
+      disabled: true,
+    },
+    {
+      id: "invoice_location",
+      label: "INV.LOCATION",
+      name: "invoice_location",
+      value: asset.invoice_location?.location_name,
+      disabled: true,
+    },
+    {
+      id: "asset_type",
+      label: "ASSET TYPE",
+      name: "asset_type",
+      value: asset.asset_type?.asset_type_name,
+      disabled: true,
+    },
+    {
+      id: "asset_category",
+      label: "CATEGORY",
+      name: "assetCategory",
+      value: asset.asset_category,
+      disabled: true,
+    },
+    {
+      id: "business_unit",
+      label: "BUSINESS UNIT",
+      name: "business_unit",
+      value: asset.business_unit?.business_unit_name,
+      disabled: true,
+    },
+    {
+      id: "os",
+      label: "OS",
+      name: "os",
+      value: asset?.os,
+      disabled: true,
+    },
+    {
+      id: "os_version",
+      label: "OS VERSION",
+      name: "os_version",
+      value: asset?.os_version,
+      disabled: true,
+    },
+    {
+      id: "mobile_os",
+      label: "MOBILE OS",
+      name: "mobile_os",
+      value: asset?.mobile_os,
+      disabled: true,
+    },
+    {
+      id: "processor",
+      label: "PROCESSOR",
+      name: "processor",
+      value: asset?.processor,
+      disabled: true,
+    },
+    {
+      id: "processor_gen",
+      label: "PROCESSOR GEN",
+      name: "p_gen",
+      value: asset?.processor_gen,
+      disabled: true,
+    },
+    {
+      id: "model_number",
+      label: "MODEL NUMBER",
+      name: "modelNumber",
+      value: asset?.model_number,
+      disabled: true,
+    },
+    {
+      id: "memory",
+      label: "MEMORY",
+      name: "memory",
+      value: asset.memory?.memory_space,
+      disabled: true,
+    },
+    {
+      id: "storage",
+      label: "STORAGE",
+      name: "storage",
+      value: asset?.storage,
+      disabled: true,
+    },
+    {
+      id: "license_type",
+      label: "LICENSE TYPE",
+      name: "license_type",
+      value: asset?.license_type,
+      disabled: true,
+    },
+    {
+      id: "date_of_purchase",
+      label: "D.O.P",
+      name: "dop",
+      value: asset?.date_of_purchase,
+      disabled: true,
+    },
+    {
+      id: "warranty_period",
+      label: "WARRANTY",
+      name: "warranty_period",
+      value: asset?.warranty_period,
+      disabled: true,
+    },
+    {
+      id: "owner",
+      label: "OWNER",
+      name: "owner",
+      value: asset?.owner,
+      disabled: true,
+    },
+    {
+      id: "requester",
+      label: "REQUESTER",
+      name: "requester_username",
+      value: asset?.requester.username,
+      disabled: true,
+    },
+    {
+      id: "status",
+      label: "ASSET STATUS",
+      name: "status",
+      value: asset?.status,
+      disabled: true,
+    },
+    {
+      id: "accessories",
+      label: "ACCESSORIES",
+      name: "accessories",
+      value: asset?.accessories,
+      disabled: true,
+    },
+  ];
 
-    const findKeyName = (key: string) => {
-      const fieldKeys = ["asset_type", "business_unit"]
-      if (fieldKeys.includes(key)) {
-        return `${key}_name`
-      }
-      else if (key === "location" || key === "invoice_location") {
-        return `location_name`
-      }
-      else if (key === "memory") {
-        return `${key}_space`
-      }
-      return key
+  const findKeyName = (key: string) => {
+    const fieldKeys = ["asset_type", "business_unit"];
+    if (fieldKeys.includes(key)) {
+      return `${key}_name`;
+    } else if (key === "location" || key === "invoice_location") {
+      return `location_name`;
+    } else if (key === "memory") {
+      return `${key}_space`;
     }
+    return key;
+  };
 
-    const findFieldValue = (key: string, value: any) => {
-      const keyName = findKeyName(key)
-      if (keyName === key) {
-        return value;
+  const findFieldValue = (key: string, value: any) => {
+    const keyName = findKeyName(key);
+    if (keyName === key) {
+      return value;
+    } else {
+      if (value) {
+        return JSON.parse(value)[keyName];
       }
-      else {
-        if (value) {
-          return JSON.parse(value)[keyName]
-        }
-        return value
-      }
+      return value;
     }
+  };
 
-
-    return (
-      <DrawerViewRequest title="Request Details" onClose={onClose} open={true}>
-        {loading && (
-          <div style={{
-            position: 'fixed',
+  return (
+    <DrawerViewRequest title="Request Details" onClose={onClose} open={true}>
+      {loading && (
+        <div
+          style={{
+            position: "fixed",
             top: 0,
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundColor: 'rgba(255, 255, 255, 0.1)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: 100000
-          }}>
-            <Spin size="large" />
-          </div>
-        )}
-        <div>
-          <form>
-            <div className="grid font-display grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">
-              {formFields.map((field, index) => {
-                const latestLog = (latestLogData?.logs && latestLogData.logs.length > 0)
+            backgroundColor: "rgba(255, 255, 255, 0.1)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 100000,
+          }}
+        >
+          <Spin size="large" />
+        </div>
+      )}
+      <div>
+        <form>
+          <div className="grid font-display grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">
+            {formFields.map((field, index) => {
+              const latestLog =
+                latestLogData?.logs && latestLogData.logs.length > 0
                   ? latestLogData.logs[0].asset_log
                   : null;
-                let changed = false;
-                if (latestLog && latestLog.hasOwnProperty(field.id)) {
-                  changed = field.value != findFieldValue(field.name, latestLog[field.id]);
-                }
-                return (
-                  <div key={index}>
-                    <Label
-                      htmlFor={field.id}
-                      className={changed ? "text-blue-500" : "text-white"}
+              let changed = false;
+              if (latestLog && latestLog.hasOwnProperty(field.id)) {
+                changed =
+                  field.value !=
+                  findFieldValue(field.name, latestLog[field.id]);
+              }
+              return (
+                <div key={index}>
+                  <Label
+                    htmlFor={field.id}
+                    className={changed ? "text-blue-500" : "text-white"}
+                  >
+                    {field.label}{" "}
+                    <span hidden={!(field.name === "status")}>
+                      <AssetStatusTooltip />
+                    </span>
+                    :
+                  </Label>
+                  {changed && (
+                    <CustomTooltip
+                      title={
+                        <>
+                          Previous value:{" "}
+                          {latestLog
+                            ? findFieldValue(field.name, latestLog[field.id])
+                            : "N/A"}
+                          <br />
+                          New value: {field.value}
+                        </>
+                      }
                     >
-                      {field.label} <span hidden={!(field.name === "status")}><AssetStatusTooltip /></span>:
-                    </Label>
-                    {changed && (
-                      <CustomTooltip
-                        title={
-                          <>
-                            Previous value: {latestLog ? findFieldValue(field.name, latestLog[field.id]) : "N/A"}
-                            <br />
-                            New value: {field.value}
-                          </>
-                        }
-                      >
-                        <TextInput
-                          id={field.id}
-                          name={field.name}
-                          value={field.value}
-                          disabled={field.disabled}
-                          style={{
-                            background: "transparent",
-                            color: "white",
-                            cursor: "default"
-                          }}
-                          className="mt-1 font-display border-blue-600 border-2 rounded-lg"
-                        />
-                      </CustomTooltip>
-                    )}
-                    {!changed && (
                       <TextInput
                         id={field.id}
                         name={field.name}
@@ -693,110 +702,129 @@ const ViewRequestModal: FC<{
                         style={{
                           background: "transparent",
                           color: "white",
-                          cursor: "default"
+                          cursor: "default",
                         }}
-                        className="mt-1 text-white font-display"
+                        className="mt-1 font-display border-blue-600 border-2 rounded-lg"
                       />
-                    )}
-                  </div>
-                );
-              })}
-              <div className="lg:col-span-5">
-                <Label className="text-white" htmlFor="notes">NOTES</Label>
-                <Textarea
-                  id="notes"
-                  name="notes"
-                  rows={1}
-                  value={notes}
-                  disabled={true}
-                  onChange={handleNotesChange}
-                  style={{
-                    cursor: "default"
-                  }}
-                  className="mt-1 text-white bg-custom-400 h-24"
-                />
-              </div>
-              <div className="lg:col-span-5">
-                <Label className="text-white" htmlFor="approverNotes">APPROVER NOTES</Label>
-                <Textarea
-                  id="approverNotes"
-                  name="approverNotes"
-                  rows={1}
-                  value={approverNotes}
-                  onChange={handleApproverNotesChange}
-                  className="mt-1 text-white bg-custom-400 h-24"
-                  autoFocus
-                />
-              </div>
+                    </CustomTooltip>
+                  )}
+                  {!changed && (
+                    <TextInput
+                      id={field.id}
+                      name={field.name}
+                      value={field.value}
+                      disabled={field.disabled}
+                      style={{
+                        background: "transparent",
+                        color: "white",
+                        cursor: "default",
+                      }}
+                      className="mt-1 text-white font-display"
+                    />
+                  )}
+                </div>
+              );
+            })}
+            <div className="lg:col-span-5">
+              <Label className="text-white" htmlFor="notes">
+                NOTES
+              </Label>
+              <Textarea
+                id="notes"
+                name="notes"
+                rows={1}
+                value={notes}
+                disabled={true}
+                onChange={handleNotesChange}
+                style={{
+                  cursor: "default",
+                }}
+                className="mt-1 text-white bg-custom-400 h-24"
+              />
             </div>
-          </form>
-        </div>
-        <div className="flex gap-2 my-4">
-          <button
-            className="block font-display text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-3 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-            onClick={() => toggleModal("approve")}
-          >
-            Approve
-          </button>
+            <div className="lg:col-span-5">
+              <Label className="text-white" htmlFor="approverNotes">
+                APPROVER NOTES
+              </Label>
+              <Textarea
+                id="approverNotes"
+                name="approverNotes"
+                rows={1}
+                value={approverNotes}
+                onChange={handleApproverNotesChange}
+                className="mt-1 text-white bg-custom-400 h-24"
+                autoFocus
+              />
+            </div>
+          </div>
+        </form>
+      </div>
+      <div className="flex gap-2 my-4">
+        <button
+          className="block font-display text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-3 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+          onClick={() => toggleModal("approve")}
+        >
+          Approve
+        </button>
 
-          <button
-            className="block font-display text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-6 py-3 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
-            onClick={() => toggleModal("reject")}
-          >
-            Reject
-          </button>
+        <button
+          className="block font-display text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-6 py-3 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+          onClick={() => toggleModal("reject")}
+        >
+          Reject
+        </button>
 
-          {modalOpen && (
-            <div
-              id="popup-modal"
-              className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen bg-black bg-opacity-50"
-            >
-              <div className="bg-custom-500 rounded-lg p-4 md:p-5 text-center">
-                <svg
-                  className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                  />
-                </svg>
-                <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                  Are you sure you want to {actionType}?
-                </h3>
-                {actionType === "approve" ? (
-                  <button
-                    onClick={handleApprove}
-                    className="text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
-                  >
-                    Yes, I'm sure
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleReject}
-                    className="text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
-                  >
-                    Yes, I'm sure
-                  </button>
-                )}
+        {modalOpen && (
+          <div
+            id="popup-modal"
+            className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen bg-black bg-opacity-50"
+          >
+            <div className="bg-custom-500 rounded-lg p-4 md:p-5 text-center">
+              <svg
+                className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                />
+              </svg>
+              <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                Are you sure you want to {actionType}?
+              </h3>
+              {actionType === "approve" ? (
                 <button
-                  onClick={() => setModalOpen(false)}
-                  className="py-2.5 px-5 ms-3 text-sm font-display font-medium text-white focus:outline-none bg-red-700 rounded-lg hover:bg-red-900 hover:text-white focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                  onClick={handleApprove}
+                  className="text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
                 >
-                  Cancel
+                  Yes, I'm sure
                 </button>
-              </div>
+              ) : (
+                <button
+                  onClick={handleReject}
+                  className="text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+                >
+                  Yes, I'm sure
+                </button>
+              )}
+              <button
+                onClick={() => setModalOpen(false)}
+                className="py-2.5 px-5 ms-3 text-sm font-display font-medium text-white focus:outline-none bg-red-700 rounded-lg hover:bg-red-900 hover:text-white focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+              >
+                Cancel
+              </button>
             </div>
-          )}
-        </div>
-      </DrawerViewRequest>
-    );
-  };
+          </div>
+        )}
+      </div>
+    </DrawerViewRequest>
+  );
+};
 
 export default ModificationRequests;
