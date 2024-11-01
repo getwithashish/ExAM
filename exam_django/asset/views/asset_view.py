@@ -19,6 +19,7 @@ from asset.service.asset_crud_service.asset_advanced_query_service_with_json_log
 from asset.service.asset_crud_service.asset_field_value_query_service import (
     AssetFieldValueQueryService,
 )
+from asset.signals.asset_previous_value_signal import asset_previous_value_signal
 from exceptions import (
     ConflictException,
     NotAcceptableOperationException,
@@ -188,11 +189,18 @@ class AssetView(APIView):
                 status=e.status,
             )
 
+    # Delete Asset
     def delete(self, request):
+        # TODO Check whether this is lead
         asset_uuid = request.data.get("asset_uuid")
         try:
             asset = get_object_or_404(Asset, asset_uuid=asset_uuid)
+
+            asset_previous_value_signal.send(sender=Asset, instance=asset)
+
             asset.is_deleted = True
+
+            # TODO Use Optmistic Locking
             asset.save()
             return APIResponse(
                 data={"asset_uuid": asset_uuid},
@@ -216,11 +224,18 @@ class AssetView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+    # Restore Asset
     def put(self, request):
+        # TODO Check whether this is manager
         asset_uuid = request.data.get("asset_uuid")
         try:
             asset = get_object_or_404(Asset, asset_uuid=asset_uuid)
+
+            asset_previous_value_signal.send(sender=Asset, instance=asset)
+
             asset.is_deleted = False
+
+            # TODO Use Optmistic Locking
             asset.save()
             return APIResponse(
                 data={"asset_uuid": asset_uuid},
