@@ -1,8 +1,7 @@
-import React, { Key, useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import "./DasboardAssetTable.css";
 import { useQuery } from "@tanstack/react-query";
-import { AssetType, DataType } from "../AssetTable/types";
 import { AssetResult } from "../AssetTable/types";
 import DashboardAssetTable from "./DashboardAssetTable";
 import TimelineViewDrawer from "../TimelineLog/TimeLineDrawer";

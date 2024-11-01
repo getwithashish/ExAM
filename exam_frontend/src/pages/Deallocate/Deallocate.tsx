@@ -21,7 +21,12 @@ const Deallocate = () => {
   };
   let queryParamProp = "&assign_status=ASSIGNED|REJECTED&asset_detail_status=CREATED|UPDATED|UPDATE_REJECTED&status=USE";
   return (
-    <div className="bg-custom-400 pt-8">
+    <div className="bg-custom-400 sm:mx-0"
+    style={{
+      margin: "0 37px 0 30px",
+      paddingBottom: "20px",
+      borderRadius: "10px",
+    }}>
       {loading && (
         <div style={{
           position: 'fixed',

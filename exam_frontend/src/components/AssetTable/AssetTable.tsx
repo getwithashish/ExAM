@@ -56,7 +56,7 @@ const AssetTable: React.FC<AssetTableProps> = ({
   json_query,
   destroyOnClose = false,
   advancedSearchDisabledFields,
-  isAdvancedSearchDisabled = false
+  isAdvancedSearchDisabled = false,
 }: AssetTableProps) => {
   const [readOnly, setReadOnly] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -98,16 +98,23 @@ const AssetTable: React.FC<AssetTableProps> = ({
 
   return (
     <ThemeProvider theme={darkTheme}>
-      <div className="bg-custom-400 lg:ml-60 mt-10 lg:pl-10">
+      <div
+        className="bg-custom-400 sm:mx-0"
+        style={{
+          margin: "0 37px 0 30px",
+          paddingBottom: "20px",
+          borderRadius: "10px",
+        }}
+      >
         <div className="mainHeading pt-4">
-          <div className=" font-display text-white ml-4">{heading}</div>
+          <div className=" font-display text-white">{heading}</div>
         </div>
         {(heading === "My Approved Request" ||
           pageHeading == "Modify Asset" ||
           pageHeading == "Delete Assets") && (
           <div
             className="mb-4 px-4 py-2 bg-yellow-100 text-yellow-800 rounded "
-            style={{ width: "390px", marginLeft: "55px" }}
+            style={{ width: "390px", marginLeft: "43px" }}
           >
             Note: Assets in pending status will not be visible here.
             {pageHeading == "Delete Assets" && (
@@ -117,7 +124,7 @@ const AssetTable: React.FC<AssetTableProps> = ({
         )}
         <div
           className="flex"
-          style={{ marginLeft: "55px", marginBottom: "30px" }}
+          style={{ marginLeft: "35px", marginBottom: "30px" }}
         >
           <GlobalSearch
             assetDataRefetch={assetDataRefetch}
@@ -147,7 +154,7 @@ const AssetTable: React.FC<AssetTableProps> = ({
           style={{
             position: "relative",
             display: "inline-block",
-            width: "80vw",
+            width: "79vw",
           }}
         >
           <ConfigProvider theme={customTheme}>
@@ -181,7 +188,11 @@ const AssetTable: React.FC<AssetTableProps> = ({
                     if (searchTerm !== "" && searchTerm !== null) {
                       additionalQueryParams += `&global_search=${searchTerm}`;
                     }
-                    if (json_query && json_query !== "" && json_query !== null) {
+                    if (
+                      json_query &&
+                      json_query !== "" &&
+                      json_query !== null
+                    ) {
                       additionalQueryParams += `&json_logic=${json_query}`;
                     }
                     let sortParams = "";

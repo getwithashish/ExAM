@@ -19,7 +19,7 @@ const UpdatableAsset = () => {
   const advancedSearchDisabledFields: string[] = [];
 
   return (
-    <div className="pt-8">
+    <div>
       <AssetTableHandler
         isRejectedPage={false}
         queryParamProp={queryParamProp}

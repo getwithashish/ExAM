@@ -4,8 +4,6 @@ import axiosInstance from "../../config/AxiosConfig";
 import GlobalSearch from "../GlobalSearch/GlobalSearch";
 import styles from "./TableNavbar.module.css";
 import DropDown from "../DropDown/DropDown";
-import DrawerViewRequest from "../../pages/RequestPage/DrawerViewRequest";
-import { QueryBuilderComponent } from "../QueryBuilder/QueryBuilder";
 import { TableNavbarProps } from "./types";
 import { message, Spin } from "antd";
 

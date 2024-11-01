@@ -63,13 +63,20 @@ const DashboardAssetTable = ({
   };
 
   return (
-    <div className="bg-custom-400 sm:mx-2">
+    <div
+      className="bg-custom-400 sm:mx-0"
+      style={{
+        margin: "0 20px 0 20px",
+        paddingBottom: "20px",
+        borderRadius: "10px",
+      }}
+    >
       <div className="mainHeading font-medium font-display font-semibold">
-        <span className="font-semibold font-display text-white dark:text-white text-xl ml-6">
+        <span className="font-semibold font-display text-white dark:text-white text-xl">
           Asset Details
         </span>
       </div>
-      <div className="mx-8">
+      <div>
         <TableNavbar
           showUpload={showUpload}
           setShowUpload={setShowUpload}
@@ -83,7 +90,7 @@ const DashboardAssetTable = ({
         />
       </div>
       <div
-        style={{ position: "relative", display: "inline-block", width: "83vw" }}
+        style={{ position: "relative", display: "inline-block", width: "79vw" }}
       >
         <SideDrawerComponent
           displayDrawer={showUpload}
