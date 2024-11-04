@@ -5,7 +5,6 @@ from asset.service.business_unit_crud_service.business_unit_service import (
     BusinessUnitService,
 )
 from asset.serializers import BusinessUnitSerializer
-from rest_framework import status
 
 
 class BusinessUnitView(ListCreateAPIView):
@@ -29,14 +28,3 @@ class BusinessUnitView(ListCreateAPIView):
             BusinessUnitService.retrieve_business_units(search_query)
         )
         return APIResponse(data=business_units, message=message, status=http_status)
-
-
-
-
-
-
-
-
-
-
-

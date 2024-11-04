@@ -4,7 +4,6 @@ from response import APIResponse
 
 from asset.service.employee_crud_service.employee_service import EmployeeService
 from asset.serializers import EmployeeSerializer
-from rest_framework import status
 
 
 class EmployeeView(ListCreateAPIView):
@@ -24,5 +23,3 @@ class EmployeeView(ListCreateAPIView):
         name = request.query_params.get("name", None)
         employees, message, http_status = EmployeeService.retrieve_employees(name)
         return APIResponse(data=employees, message=message, status=http_status)
-
-
