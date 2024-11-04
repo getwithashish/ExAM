@@ -5,16 +5,6 @@ from user_auth.models import User
 
 asset_category_choices = (("HARDWARE", "HARDWARE"), ("SOFTWARE", "SOFTWARE"))
 
-# status_choices = (
-#     ("IN USE", "IN USE"),
-#     ("IN STORE", "IN STORE"),
-#     ("IN REPAIR", "IN REPAIR"),
-#     ("OUTDATED", "OUTDATED"),
-#     ("DISPOSED", "DISPOSED"),
-#     ("DAMAGED", "DAMAGED"),
-#     ("UNREPAIRABLE", "UNREPAIRABLE"),
-# )
-
 status_choices = (
     ("STOCK", "STOCK"),
     ("USE", "USE"),

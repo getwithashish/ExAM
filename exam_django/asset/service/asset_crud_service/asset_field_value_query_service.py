@@ -26,13 +26,11 @@ class AssetFieldValueQueryService(AssetQueryAbstract):
 
         unfilterable_fields = [
             "asset_uuid",
-            # "version",
             "asset_category",
             "date_of_purchase",
             "status",
             "notes",
             "approval_status_message",
-            # "warranty_period",
             "asset_detail_status",
             "assign_status",
             "created_at",

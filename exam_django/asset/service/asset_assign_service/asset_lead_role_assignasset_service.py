@@ -1,3 +1,6 @@
+from messages import ASSET_SUCCESSFULLY_ASSIGNED
+
+
 class AssetLeadRoleAssignService:
     @staticmethod
     def assign_asset(asset, employee, requester):
@@ -6,4 +9,4 @@ class AssetLeadRoleAssignService:
         asset.custodian = employee
         asset.requester = requester
         asset.save()
-        return "ASSET ASSIGNMENT SUCCESSFUL"
+        return ASSET_SUCCESSFULLY_ASSIGNED
