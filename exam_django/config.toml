@@ -1,0 +1,33 @@
+[sso]
+
+redirect_url = "http://localhost:5173/sso/flow?refresh_token={tokens['refresh']}&access_token={tokens['access']}"
+
+# TODO The below is not currently used in code
+[model_data]
+
+[model_data.asset]
+asset_category = ["HARDWARE", "SOFTWARE"]
+default_asset_owner = "EXPERION"
+
+[model_data.asset.status.asset_status]
+asset_status = [
+    "STOCK",
+    "USE",
+    "DAMAGED",
+    "REPAIR",
+    "OUTDATED",
+    "SCRAP",
+]
+default_asset_status = "STOCK"
+asset_status_in_which_asset_is_in_use = "USE"
+asset_status_in_which_asset_is_in_stock = "STOCK"
+
+asset_status_in_which_asset_not_assignable = [
+    "DAMAGED",
+    "OUTDATED",
+    "REPAIR",
+    "SCRAP",
+]
+
+[model_data.user]
+user_scopes = ["MANAGER", "LEAD", "SYSTEM_ADMIN"]
