@@ -2,6 +2,7 @@
 GLOBAL_500_EXCEPTION_ERROR = "Something unexpected occurred while processing your request. Please try again later."
 BAD_REQUEST_ERROR = "The server has encountered a validation error"
 DATABASE_ERROR = "Database is exhausted."
+UNSUPPORTED_OPERATION = "Unsupported operation"
 
 # Global Success Messages
 PAGINATED_RESPONSE_RETRIEVED_SUCESSFULLY = "Paginated response sucessfully retrieved."
@@ -142,3 +143,7 @@ MEMORY_CREATION_SUCCESSFUL = "Memory creation is successful"
 MEMORY_CREATION_UNSUCCESSFUL = "Memory creation is unsuccessful"
 MEMORY_SUCCESSFULLY_RETRIEVED = "Memory retrieved successfully"
 MEMORY_EXISTS = "Memory already exists"
+
+# Health Check Messages
+HEALTH_CHECK_APPLICATION_FAILED = "Health Check for Application Failed: {}"
+HEALTH_CHECK_EXTERNAL_SERVICE_FAILED = "Health Check for External Services Failed: {}"

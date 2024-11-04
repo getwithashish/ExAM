@@ -2,6 +2,10 @@ from celery import shared_task
 import sentry_sdk
 import requests
 
+from messages import (
+    HEALTH_CHECK_APPLICATION_FAILED,
+    HEALTH_CHECK_EXTERNAL_SERVICE_FAILED,
+)
 from utils.decouple_config_util import DecoupleConfigUtil
 
 
@@ -16,7 +20,7 @@ def check_application_health():
         health_status = response.json()
         if not are_all_status_working(health_status.values()):
             sentry_sdk.capture_message(
-                f"Health Check for Application Failed: {health_status}", level="error"
+                HEALTH_CHECK_APPLICATION_FAILED.format(health_status), level="error"
             )
     except Exception as e:
         sentry_sdk.capture_exception(e)
@@ -30,7 +34,7 @@ def check_external_service_health():
         health_status = response.json()
         if not are_all_status_working(health_status.values()):
             sentry_sdk.capture_message(
-                f"Health Check for External Services Failed: {health_status}",
+                HEALTH_CHECK_EXTERNAL_SERVICE_FAILED.format(health_status),
                 level="error",
             )
     except Exception as e:
