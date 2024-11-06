@@ -14,13 +14,13 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const [showPassword, setShowPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
 
   const decodeJWT = (token: string) => {
     try {
       const base64Url = token.split(".")[1];
       if (!base64Url) {
-        throw new Error("Invalid Jwt token: Missing base URL segment")
+        throw new Error("Invalid Jwt token: Missing base URL segment");
       }
       const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
       const jsonPayload = decodeURIComponent(
@@ -156,8 +156,9 @@ export default function Login() {
                   type="button"
                   className="w-full bg-blue-500 text-white hover:bg-blue-700 font-display"
                   onClick={() =>
-                  (window.location.href =
-                    import.meta.env["VITE_LOGIN_URL"])
+                    (window.location.href = import.meta.env[
+                      "VITE_MICROSOFT_AD_LOGIN_URL"
+                    ])
                   }
                 >
                   <img
