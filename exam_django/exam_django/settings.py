@@ -7,9 +7,11 @@ from ms_identity_web import IdentityWebPython
 from celery.schedules import crontab
 import sentry_sdk
 
+from exam_django.config import GlobalConfig
 from utils.decouple_config_util import DecoupleConfigUtil
 
 
+GLOBAL_CONFIG = GlobalConfig.get_configuration()
 config = DecoupleConfigUtil.get_env_config()
 
 AAD_CONFIG = AADConfig.parse_json(file_path="aad.config.json")
@@ -107,6 +109,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "social_django",
     # REST framework
     "rest_framework",
     "rest_framework_simplejwt",
@@ -137,6 +140,16 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "ms_identity_web.django.middleware.MsalMiddleware",
 ]
+
+AUTHENTICATION_BACKENDS = (
+    "social_core.backends.github.GithubOAuth2",
+    "social_core.backends.azuread.AzureADOAuth2",
+    "social_core.backends.microsoft.MicrosoftOAuth2",
+    "django.contrib.auth.backends.ModelBackend",
+)
+
+
+SOCIAL_CALLBACK_URL = "http://localhost:8000/api/v1/user/auth/sso/{}"
 
 ROOT_URLCONF = "exam_django.urls"
 
@@ -204,7 +217,6 @@ DATABASES = {
         "PASSWORD": config("DB_PASSWORD"),
         "HOST": config("DB_HOST"),
         "PORT": config("DB_PORT"),
-        
     }
 }
 
