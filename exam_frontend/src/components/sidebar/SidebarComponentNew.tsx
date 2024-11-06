@@ -349,7 +349,11 @@ const SidebarComponentNew = ({ children }: any) => {
               {jwtPayload && jwtPayload.username && (
                 <div>
                   <div className={styles["username"]}>
-                    <span className="font-display">{jwtPayload.username}</span>
+                    <span className="font-display">
+                      {jwtPayload.full_name.trim() !== ""
+                        ? jwtPayload.full_name
+                        : jwtPayload.username}
+                    </span>
                   </div>
                   {jwtPayload.user_scope && (
                     <div className={styles["userscope"]}>
