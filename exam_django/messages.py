@@ -14,6 +14,8 @@ USERS_RETRIEVAL_UNSUCCESSFUL = "The list of user couldn't be retrieved. Please t
 USER_UNAUTHORIZED = "User does not have permission to perform this action"
 EMPLOYEE_NOT_FOUND_ERROR = "Employee is not found in the request. Please try again."
 EMPLOYEE_CREATION_UNSUCCESSFUL = "Error while creating an employee. Please try again later."
+USER_SCOPE_NOT_FOUND = "User Scope not found. Please try another user."
+USER_NOT_ACTIVE = "User is not currently active."
 
 # User Success Messages
 EMPLOYEE_SUCCESSFULLY_CREATED = "Employee has been created successfully."
@@ -147,3 +149,6 @@ MEMORY_EXISTS = "Memory already exists"
 # Health Check Messages
 HEALTH_CHECK_APPLICATION_FAILED = "Health Check for Application Failed: {}"
 HEALTH_CHECK_EXTERNAL_SERVICE_FAILED = "Health Check for External Services Failed: {}"
+
+# Authentication Messages
+SSO_CALLBACK_AUTHORIZATION_CODE_REQUIRED = "Authorization code is required"
