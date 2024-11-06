@@ -1,5 +1,11 @@
 import { useEffect } from "react";
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 import { motion } from "framer-motion";
 import SidebarComponentNew from "./components/sidebar/SidebarComponentNew";
 import DashboardPage from "./pages";
@@ -62,6 +68,7 @@ const ExamRoutes = () => {
 
   return (
     <Routes>
+      <Route path="/" element={<Navigate to="/exam/dashboard" replace />} />
       <Route element={<ProtectedRoute />}>
         <Route
           path="/exam/*"
