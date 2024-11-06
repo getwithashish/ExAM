@@ -42,6 +42,7 @@ class UsernameAndUserscopeTokenObtainPairSerializer(TokenObtainPairSerializer):
         token["user_id"] = user.id
         token["username"] = user.username
         token["user_scope"] = user.user_scope
+        token["full_name"] = f"{user.first_name} {user.last_name}"
 
         return token
 
