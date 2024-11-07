@@ -148,8 +148,16 @@ AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
 )
 
+SOCIAL_AUTH_GITHUB_KEY = config("SOCIAL_AUTH_GITHUB_KEY")
+SOCIAL_AUTH_GITHUB_SECRET = config("SOCIAL_AUTH_GITHUB_SECRET")
+SOCIAL_AUTH_GITHUB_SCOPE = config(
+    "SOCIAL_AUTH_GITHUB_SCOPE", cast=lambda v: [item.strip() for item in v.split(",")]
+)
 
-SOCIAL_CALLBACK_URL = "http://localhost:8000/api/v1/user/auth/sso/{}"
+SOCIAL_AUTH_AZUREAD_OAUTH2_KEY = config("SOCIAL_AUTH_AZUREAD_OAUTH2_KEY")
+SOCIAL_AUTH_AZUREAD_OAUTH2_SECRET = config("SOCIAL_AUTH_AZUREAD_OAUTH2_SECRET")
+
+SOCIAL_CALLBACK_URL = config("SOCIAL_CALLBACK_URL")
 
 ROOT_URLCONF = "exam_django.urls"
 
