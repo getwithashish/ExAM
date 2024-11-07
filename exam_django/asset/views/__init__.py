@@ -12,6 +12,7 @@ from .data_import_view import DataImportView
 from .asset_export_view import AssetExportView
 from .asset_lifecycle_view import AssetLifeCycleView
 from .asset_unassign_view import UnassignAssetView
+from .data_initial_import_view import DataInitialImportView
 
 __all__ = [
     "AssetView",
@@ -26,6 +27,7 @@ __all__ = [
     "UnassignAssetView",
     "AssetLogView",
     "DataImportView",
+    "DataInitialImportView",
     "AssetExportView",
     "UserAgentAssetView",
     "AssetLifeCycleView",

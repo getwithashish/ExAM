@@ -19,7 +19,10 @@ class MethodNotAllowedException(Exception):
 
 
 class ValidationException(Exception):
-    pass
+    def __init__(self, errors, message, status):
+        super().__init__(errors)
+        self.message = message
+        self.status = status
 
 
 class SerializerException(Exception):
@@ -52,6 +55,20 @@ class ServiceUnavailableException(Exception):
 
 
 class PermissionDeniedException(Exception):
+    def __init__(self, errors, message, status):
+        super().__init__(errors)
+        self.message = message
+        self.status = status
+
+
+class UserScopeNotFoundException(Exception):
+    def __init__(self, errors, message, status):
+        super().__init__(errors)
+        self.message = message
+        self.status = status
+
+
+class UserNotActiveException(Exception):
     def __init__(self, errors, message, status):
         super().__init__(errors)
         self.message = message

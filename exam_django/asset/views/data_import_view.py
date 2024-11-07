@@ -1,12 +1,22 @@
-import base64
-from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework import status
 import sentry_sdk
-from asset.service.data_import_service.initial_import_service import AssetImportService
+from asset.service.data_import_service.asset_import_service import AssetImportService
 from rest_framework.permissions import IsAuthenticated
+from asset.utils.file_format_handler.csv_handler import (
+    CsvHandler,
+)
+from asset.utils.file_format_handler.xlsx_handler import (
+    XlsxHandler,
+)
+from exceptions import NotFoundException, ValidationException
 from response import APIResponse
-from messages import INVALID_FILE_TYPE, FILE_NOT_FOUND, USER_UNAUTHORIZED
+from messages import (
+    IMPORT_OPERATION_UNSUCCESSFUL,
+    INVALID_FILE_TYPE,
+    FILE_NOT_FOUND,
+    USER_UNAUTHORIZED,
+)
 
 
 class DataImportView(APIView):
@@ -20,95 +30,67 @@ class DataImportView(APIView):
                     message=USER_UNAUTHORIZED,
                     status=status.HTTP_401_UNAUTHORIZED,
                 )
+
             user = request.user
             file = request.FILES.get("file")
-            # Specifies whether the data being imported is the data from the old system
+
             file_type = request.query_params.get("file_type", "").lower()
-            if not file_type or file_type not in ["csv", "xlsx"]:
-                return APIResponse(
-                    data=[],
-                    message=INVALID_FILE_TYPE,
-                    status=status.HTTP_400_BAD_REQUEST,
+            if file_type.lower() == "csv":
+                file_format_handler = CsvHandler
+            elif file_type.lower() == "xlsx":
+                file_format_handler = XlsxHandler
+            else:
+                raise ValidationException(
+                    {}, INVALID_FILE_TYPE, status.HTTP_400_BAD_REQUEST
                 )
 
             if not file:
-                return APIResponse(
-                    data=[],
-                    message=FILE_NOT_FOUND,
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+                raise NotFoundException({}, FILE_NOT_FOUND, status.HTTP_400_BAD_REQUEST)
 
             result = AssetImportService.parse_and_add_assets(
-                file.read(), user, file_type
+                file.read(), user, file_format_handler
             )
 
-            if isinstance(result, bytes):  # If result is bytes, it's an XLSX file
-                response = HttpResponse(
-                    result,
-                    content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                )
-                response["Content-Disposition"] = (
-                    'attachment; filename="missing_fields.xlsx"'
-                )
-                return response
-            elif result["missing_fields_assets"] or result["skipped_fields_assets"]:
-                if file_type == "csv":
-                    skipped_fields_data = (
-                        AssetImportService.generate_missing_fields_csv(
-                            result["skipped_fields_assets"]
-                        )
-                    )
-                    missing_fields_data = (
-                        AssetImportService.generate_missing_fields_csv(
-                            result["missing_fields_assets"]
-                        )
-                    )
-                    # content_type = 'text/csv'
-                elif file_type == "xlsx":
-                    skipped_fields_data = (
-                        AssetImportService.generate_missing_fields_xlsx(
-                            result["skipped_fields_assets"]
-                        )
-                    )
-                    missing_fields_data = (
-                        AssetImportService.generate_missing_fields_xlsx(
-                            result["missing_fields_assets"]
-                        )
-                    )
-                else:
-                    return APIResponse(
-                        data=[],
-                        message=INVALID_FILE_TYPE,
-                        status=status.HTTP_400_BAD_REQUEST,
-                    )
+            data, message, http_status = AssetImportService.create_import_report(
+                result=result,
+                file_type=file_type,
+                file_format_handler=file_format_handler,
+            )
 
-                if file_type == "csv":
-                    data_to_be_returned = AssetImportService.generate_zip_file_csv(
-                        skipped_fields_data, missing_fields_data
-                    )
-                elif file_type == "xlsx":
-                    data_to_be_returned = AssetImportService.generate_zip_file_xlsx(
-                        skipped_fields_data, missing_fields_data
-                    )
+            return APIResponse(
+                data=data,
+                message=message,
+                status=http_status,
+            )
 
-                # content_type = "application/zip"
-                base64_encoded = base64.b64encode(
-                    data_to_be_returned.getvalue()
-                ).decode("utf-8")
-                response = HttpResponse(base64_encoded, content_type="text/plain")
-                return response
-            else:
-                return APIResponse(
-                    data=result,
-                    message="All assets uploaded successfully.",
-                    status=status.HTTP_200_OK,
-                )
+        except NotFoundException as e:
+            return APIResponse(
+                data=str(e),
+                message=e.message,
+                status=e.status,
+            )
+
+        except ValidationException as e:
+            return APIResponse(
+                data=str(e),
+                message=e.message,
+                status=e.status,
+            )
 
         except UnicodeDecodeError as e:
-            print("Exception Occured: ", e)
+            print("Unicode Exception Occured during import: ", e)
             sentry_sdk.capture_exception(e)
             return APIResponse(
-                data=[],
-                message=INVALID_FILE_TYPE,
+                data={},
+                message=IMPORT_OPERATION_UNSUCCESSFUL,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        except Exception as e:
+            print("Exception Occured during Import: ", e)
+            sentry_sdk.capture_exception(e)
+            return APIResponse(
+                data={},
+                message=IMPORT_OPERATION_UNSUCCESSFUL,
                 status=status.HTTP_400_BAD_REQUEST,
             )

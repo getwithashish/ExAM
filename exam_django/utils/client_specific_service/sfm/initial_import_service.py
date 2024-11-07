@@ -3,7 +3,6 @@ import io
 import pandas as pd
 import zipfile
 from datetime import datetime
-from django.forms import ValidationError
 from asset.models import (
     Asset,
     AssetType,
@@ -15,10 +14,6 @@ from asset.models import (
 )
 from django.forms import model_to_dict
 import json
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-import base64
 
 
 def clean_field(value):
@@ -126,20 +121,20 @@ class AssetImportService:
 
             try:
                 warranty = row.get("Warranty")
-                if pd.isna(warranty) or warranty == "":
-                    warranty = -1
+                if pd.isna(warranty) or str(warranty).strip() == "":
+                    warranty = None
                 elif isinstance(warranty, (int, float)):
                     warranty = int(warranty)
                 else:
                     warranty = str(warranty).strip()
-                    if warranty == "1 Year Warranty":
+                    if warranty == "12" or warranty == "1 Year Warranty":
                         warranty = 12
-                    elif warranty == "3 Year Warranty":
+                    elif warranty == "36" or warranty == "3 Year Warranty":
                         warranty = 36
-                    elif warranty == "Under Warranty":
+                    elif warranty == "48" or warranty == "4 Year Warranty":
                         warranty = 48
-                    elif warranty == "under warranty":
-                        warranty = 48
+                    elif warranty == "-2" or warranty.lower() == "under warranty":
+                        warranty = 0
                     elif warranty == "Expired":
                         warranty = -1
                     else:
@@ -154,9 +149,9 @@ class AssetImportService:
             if approval_status == "Approved":
                 asset_detail_status = "CREATED"
             elif approval_status == "Pending":
-                asset_detail_status = "UPDATE PENDING"
+                asset_detail_status = "UPDATE_PENDING"
             elif approval_status == "Rejected":
-                asset_detail_status = "UPDATE REJECTED"
+                asset_detail_status = "UPDATE_REJECTED"
             else:
                 asset_detail_status = "UNKNOWN"
 
@@ -257,23 +252,23 @@ class AssetImportService:
         }
 
     @staticmethod
-    def generate_missing_fields_csv(missing_fields_assets):
+    def generate_assets_csv(assets):
         output = io.StringIO()
         csv_writer = csv.writer(output)
 
-        if missing_fields_assets:
-            header_row = missing_fields_assets[0].keys()
+        if assets:
+            header_row = assets[0].keys()
             csv_writer.writerow(header_row)
 
-            for asset in missing_fields_assets:
+            for asset in assets:
                 csv_writer.writerow(asset.values())
 
         return output
 
     @staticmethod
-    def generate_missing_fields_xlsx(missing_fields_assets):
-        if missing_fields_assets:
-            df = pd.DataFrame(missing_fields_assets)
+    def generate_assets_xlsx(assets):
+        if assets:
+            df = pd.DataFrame(assets)
             output = io.BytesIO()
             df.to_excel(output, index=False)
             output.seek(0)

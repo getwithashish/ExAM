@@ -1,5 +1,11 @@
 import { useEffect } from "react";
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 import { motion } from "framer-motion";
 import SidebarComponentNew from "./components/sidebar/SidebarComponentNew";
 import DashboardPage from "./pages";
@@ -20,6 +26,7 @@ import RejectedAllocationAsset from "./pages/RejectedAssetPage/RejectedAllocatio
 import AssetSense from "./components/ChatBot/assetSense";
 import ExpiredAssets from "./pages/ExpiredAssets/ExpiredAssets";
 import PendingRequestPage from "./pages/PendingRequest/PendingRequestPage";
+import InitialImportPage from "./pages/ClientSpecificPages/InitialImportPage";
 
 const pageVariants = {
   initial: {
@@ -62,6 +69,7 @@ const ExamRoutes = () => {
 
   return (
     <Routes>
+      <Route path="/" element={<Navigate to="/exam/dashboard" replace />} />
       <Route element={<ProtectedRoute />}>
         <Route
           path="/exam/*"
@@ -115,6 +123,7 @@ const ExamRoutes = () => {
                     <Route path="/my_approvals" element={<MyApprovalPage />} />
                     <Route path="/chat" element={<AssetSense />} />
                     <Route path="/expired_assets" element={<ExpiredAssets />} />
+                    <Route path="/initial_import" element={<InitialImportPage />} />
                   </Routes>
                 </motion.div>
               </div>
