@@ -8,7 +8,7 @@ from asset.serializers.asset_serializer import AssetReadSerializer
 from asset.service.asset_crud_service.asset_normal_query_service import (
     AssetNormalQueryService,
 )
-from messages import ASSET_LIST_SUCCESSFULLY_RETRIEVED
+from messages import ASSET_LIST_SUCCESSFULLY_RETRIEVED, UNSUPPORTED_OPERATION
 
 
 class AssetAdvancedQueryServiceWithJsonLogic(AssetQueryAbstract):
@@ -215,4 +215,4 @@ class AssetAdvancedQueryServiceWithJsonLogic(AssetQueryAbstract):
             return ~Q(**{field + "__range": (values[0], values[1])})
 
         else:
-            raise ValueError("Unsupported operation")
+            raise ValueError(UNSUPPORTED_OPERATION)

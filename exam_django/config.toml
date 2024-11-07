@@ -1,0 +1,42 @@
+[global]
+hostname = "http://localhost:5173"
+login_endpoint = "/login"
+dashboard_endpoint = "/exam/dashboard"
+
+[sso]
+redirect_url = "http://localhost:5173/sso/flow?refresh_token={}&access_token={}"
+
+# TODO Should show the callback uris to be used for different IdPs
+
+# TODO The below is not currently used in code
+[model_data]
+
+[model_data.asset]
+asset_category = ["HARDWARE", "SOFTWARE"]
+default_asset_owner = "EXPERION"
+
+[model_data.asset.status.asset_status]
+asset_status = ["STOCK", "USE", "DAMAGED", "REPAIR", "OUTDATED", "SCRAP"]
+default_asset_status = "STOCK"
+asset_status_in_which_asset_is_in_use = "USE"
+asset_status_in_which_asset_is_in_stock = "STOCK"
+
+asset_status_in_which_asset_not_assignable = [
+    "DAMAGED",
+    "OUTDATED",
+    "REPAIR",
+    "SCRAP",
+]
+
+[model_data.user.application]
+# User scopes used by application
+user_scopes = ["MANAGER", "LEAD", "SYSTEM_ADMIN"]
+user_scope_manager = "MANAGER"
+user_scope_lead = "LEAD"
+user_scope_sysadmin = "SYSTEM_ADMIN"
+
+[model_data.user.client]
+# User scopes used by the client
+user_scope_manager = ["MANAGER"]
+user_scope_lead = ["LEAD", "SENIORLEAD"]
+user_scope_sysadmin = ["SYSTEM_ADMIN", "SYSADMIN", "SENIORADMINISTRATOR"]
