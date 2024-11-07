@@ -15,6 +15,7 @@ from asset.views import (
     UserAgentAssetView,
     AssetLifeCycleView,
     UnassignAssetView,
+    DataInitialImportView,
 )
 
 
@@ -29,7 +30,8 @@ urlpatterns = [
     path("assign_asset", AssignAssetView.as_view(), name="assign_asset"),
     path("approve_asset", AssetApproveView.as_view(), name="approve_asset"),
     path("asset_logs/<str:asset_uuid>", AssetLogView.as_view(), name="asset_logs"),
-    path("import-csv/", DataImportView.as_view(), name="csv_file_import"),
+    path("import/", DataImportView.as_view(), name="file_import"),
+    path("import/initial", DataInitialImportView.as_view(), name="initial_file_import"),
     path("export", AssetExportView.as_view(), name="export"),
     path(
         "asset_lifecycle/<str:asset_uuid>",
