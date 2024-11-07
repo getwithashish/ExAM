@@ -28,6 +28,7 @@ import React from "react";
 import { Avatar, Button } from "@mui/material";
 import { Polygon } from "../../assets";
 import Tooltip from "../Tooltip/Tooltip";
+import { UploadingProvider, useUploading } from "../Upload/UploadContext";
 
 const SidebarComponentNew = ({ children }: any) => {
   const { userRole, setUserRole, login, logout } = useAuth();
@@ -131,6 +132,8 @@ const SidebarComponentNew = ({ children }: any) => {
     },
   ];
 
+  const { uploading, setUploading } = useUploading();
+
   return (
     <Layout style={{ marginLeft: 0, minHeight: "100vh" }}>
       <Sider
@@ -139,6 +142,7 @@ const SidebarComponentNew = ({ children }: any) => {
           height: "100%",
           zIndex: 110,
           backgroundColor: "#161B21",
+          pointerEvents: uploading ? "none" : "auto",
         }}
         width={265}
         breakpoint="lg"

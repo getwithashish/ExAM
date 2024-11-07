@@ -8,6 +8,7 @@ import { AuthProvider } from "./pages/authentication/AuthContext";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { ConfigProvider, theme } from "antd";
 import { BrowserRouter } from "react-router-dom";
+import { UploadingProvider } from "./components/Upload/UploadContext";
 
 const container = document.getElementById("root");
 if (!container) {
@@ -38,6 +39,9 @@ const customTheme = {
       colorBgElevated: "#161B21",
       colorText: "#FFFFFF",
     },
+    Modal: {
+      titleFontSize: 24,
+    },
   },
 };
 
@@ -48,9 +52,11 @@ root.render(
         <AuthProvider>
           <ThemeProvider theme={darkTheme}>
             <ConfigProvider theme={customTheme}>
-              <BrowserRouter>
-                <ExamRoutes />
-              </BrowserRouter>
+              <UploadingProvider>
+                <BrowserRouter>
+                  <ExamRoutes />
+                </BrowserRouter>
+              </UploadingProvider>
             </ConfigProvider>
           </ThemeProvider>
         </AuthProvider>
