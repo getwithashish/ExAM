@@ -7,6 +7,12 @@ UNSUPPORTED_OPERATION = "Unsupported operation"
 # Global Success Messages
 PAGINATED_RESPONSE_RETRIEVED_SUCESSFULLY = "Paginated response sucessfully retrieved."
 
+# Import Messages
+IMPORT_OPERATION_FULL_SUCCESSFUL = "All the assets are successfully imported"
+IMPORT_OPERATION_PARTIAL_SUCCESSFUL = "Some assets failed to be imported"
+NO_ASSETS_IMPORTED = "No assets were successfully imported"
+IMPORT_OPERATION_UNSUCCESSFUL = "Some error occured during import. Please try again later with correct data."
+
 # User Exception Messages
 USER_NOT_FOUND_ERROR = "User not found in the request. Please try again."
 INVALID_USER_DETAILS_ERROR = "The provided details do not match. Please check the details and try again."
