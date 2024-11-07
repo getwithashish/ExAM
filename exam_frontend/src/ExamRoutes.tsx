@@ -26,6 +26,7 @@ import RejectedAllocationAsset from "./pages/RejectedAssetPage/RejectedAllocatio
 import AssetSense from "./components/ChatBot/assetSense";
 import ExpiredAssets from "./pages/ExpiredAssets/ExpiredAssets";
 import PendingRequestPage from "./pages/PendingRequest/PendingRequestPage";
+import InitialImportPage from "./pages/ClientSpecificPages/InitialImportPage";
 
 const pageVariants = {
   initial: {
@@ -122,6 +123,7 @@ const ExamRoutes = () => {
                     <Route path="/my_approvals" element={<MyApprovalPage />} />
                     <Route path="/chat" element={<AssetSense />} />
                     <Route path="/expired_assets" element={<ExpiredAssets />} />
+                    <Route path="/initial_import" element={<InitialImportPage />} />
                   </Routes>
                 </motion.div>
               </div>
