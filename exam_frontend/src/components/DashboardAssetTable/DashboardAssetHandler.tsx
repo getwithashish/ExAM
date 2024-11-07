@@ -574,34 +574,6 @@ const DashboardAssetHandler = ({
       ),
     },
     {
-      title: "Asset Detail Status",
-      dataIndex: "asset_detail_status",
-      responsive: ["md"],
-      width: 140,
-      render: (text: string, record: any) => (
-        <div style={{ ...detailStatusStyleCondition(record) }}>
-          {renderClickableColumn("Asset Detail Status", "asset_detail_status")(
-            text,
-            record
-          )}
-        </div>
-      ),
-    },
-    {
-      title: "Asset Assign Status",
-      dataIndex: "assign_status",
-      responsive: ["md"],
-      width: 140,
-      render: (text: string, record: any) => (
-        <div style={{ ...assignStatusStyleCondition(record) }}>
-          {renderClickableColumn("Asset Assign Status", "assign_status")(
-            text,
-            record
-          )}
-        </div>
-      ),
-    },
-    {
       title: "Created At",
       dataIndex: "created_at",
       responsive: ["md"],

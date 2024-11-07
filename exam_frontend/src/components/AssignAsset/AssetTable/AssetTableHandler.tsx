@@ -289,22 +289,6 @@ const AssetTableHandler = ({
         </div>
       ),
     },
-    // {
-    //   title: "Version",
-    //   dataIndex: "version",
-    //   responsive: ["md"],
-    //   width: 120,
-    //   sorter: true,
-    //   sortOrder: sortedColumn === "version" ? sortOrder : undefined,
-    //   onHeaderCell: () => ({
-    //     onClick: () => handleSort("version"),
-    //   }),
-    //   render: (text: string, record: any) => (
-    //     <div style={{ color: "#ffffff" }}>
-    //       {renderClickableColumn("Version", "version")(text, record)}
-    //     </div>
-    //   ),
-    // },
     {
       title: "Asset Status",
       dataIndex: "Status",
@@ -545,34 +529,6 @@ const AssetTableHandler = ({
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("Requester", "requester")(text, record)}
-        </div>
-      ),
-    },
-    {
-      title: "Asset Detail Status",
-      dataIndex: "asset_detail_status",
-      responsive: ["md"],
-      width: 140,
-      render: (text: string, record: any) => (
-        <div style={{ ...detailStatusStyleCondition(record) }}>
-          {renderClickableColumn("Asset Detail Status", "asset_detail_status")(
-            text,
-            record
-          )}
-        </div>
-      ),
-    },
-    {
-      title: "Asset Assign Status",
-      dataIndex: "assign_status",
-      responsive: ["md"],
-      width: 140,
-      render: (text: string, record: any) => (
-        <div style={{ ...assignStatusStyleCondition(record) }}>
-          {renderClickableColumn("Asset Assign Status", "assign_status")(
-            text,
-            record
-          )}
         </div>
       ),
     },
