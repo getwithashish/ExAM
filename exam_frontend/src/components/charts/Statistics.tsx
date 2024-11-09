@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AssetCountComponent from "./chartHandlers/ChartCardsHandler";
 import ChartHandlers from "./chartHandlers/PieChartHandlers/ChartHandlers";
 import { fetchAssetData } from "./api/ChartApi";
 import BarChartHandler from "./chartHandlers/BarChartHandler";
+import { RefreshTwoTone } from "@mui/icons-material";
 
 interface StatisticsProps {
   selectedTypeId?: number;
@@ -25,11 +26,12 @@ export const Statistics = ({
   setAssetState,
   setDetailState,
   setAssignState,
-  onClick
+  onClick,
 }: StatisticsProps) => {
   const [assetCountData, setAssetCountData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [triggerRefresh, setTriggerRefresh] = useState<number>(0);
 
   useEffect(() => {
     fetchAssetData()
@@ -44,47 +46,78 @@ export const Statistics = ({
       });
   }, []);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const handleRefreshOnClick = () => {
+    setTriggerRefresh(triggerRefresh + 1);
+  };
+
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
 
   if (error) {
     return <div>Error: {error}</div>;
   }
+
+  const childRef = useRef(null);
+
+  const handleAssetTypeSelect = (id) => {
+    if (childRef.current) {
+      childRef.current.handleSelectChange({
+        target: { value: id.toString() },
+      } as React.ChangeEvent<HTMLSelectElement>);
+    }
+  };
 
   return (
     <div className="rounded-xl bg-custom-400 pt-10 sm:mx-6 ">
       <div className="">
         <span className="font-bold font-display text-white m-10 text-grey-900 text-xl">
           Asset Overview
+          <span className="items-center justify-end mx-2">
+            <RefreshTwoTone
+              onClick={handleRefreshOnClick}
+              style={{
+                cursor: "pointer",
+                marginLeft: "10px",
+                width: "25px",
+                height: "20px",
+                color: "#ffffff",
+              }}
+            />
+          </span>
         </span>
       </div>
       <div className="border-t-4 border-gray-600 rounded-xl m-8"></div>
       <div className="xl:p-2 mx-6 py-2">
-        <div className="mx-auto">
-          <AssetCountComponent />
-          <div className="border-t-4 border-gray-600 rounded-xl m-2 mt-24"></div>          
-          <div className="w-full my-14">
-            <div className="bg-custom-500 rounded-lg shadow-md m-2" style={{ boxShadow: "0 0 5px rgba(0, 0, 0, 0.5)" }}>
-              <BarChartHandler />
+        <div className="flex mx-auto">
+          <div className="">
+            <AssetCountComponent triggerRefresh={triggerRefresh} />
+          </div>
+          <div className="border-l-4 border-gray-600 h-full rounded-xl m-8"></div>
+          <div className="flex flex-col flex-1 w-1/2">
+            <div className="bg-transparent rounded-lg shadow-md ">
+              <BarChartHandler
+                triggerRefresh={triggerRefresh}
+                handleBarItemClick={handleAssetTypeSelect}
+              />
+            </div>
+            <div className="items-center justify-center">
+              <ChartHandlers
+                assetCountData={assetCountData}
+                selectedTypeId={selectedTypeId}
+                assetState={assetState}
+                detailState={detailState}
+                assignState={assignState}
+                setSelectedTypeId={setSelectedTypeId}
+                setAssetState={setAssetState}
+                setDetailState={setDetailState}
+                setAssignState={setAssignState}
+                onClick={onClick}
+                triggerRefresh={triggerRefresh}
+                ref={childRef}
+              />
             </div>
           </div>
-          <div className="border-t-4 border-gray-600 rounded-xl m-2 mb-16"></div>
-          <div className="items-center justify-center">
-            <ChartHandlers
-              assetCountData={assetCountData}
-              selectedTypeId={selectedTypeId}
-              assetState={assetState}
-              detailState={detailState}
-              assignState={assignState}
-              setSelectedTypeId={setSelectedTypeId}
-              setAssetState={setAssetState}
-              setDetailState={setDetailState}
-              setAssignState={setAssignState}
-              onClick={onClick}
-            />
-          </div>
-          <div className="border-t-4 border-gray-600 rounded-xl my-16"></div>
         </div>
       </div>
     </div>
