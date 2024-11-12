@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from asset.serializers import AssignAssetSerializer
-from messages import INVALID_ASSET_DATA
+from messages import BUSINESS_UNIT_NOT_PROVIDED, INVALID_ASSET_DATA
 from exceptions import (
     NotAcceptableOperationException,
     NotFoundException,
@@ -26,11 +26,17 @@ class AssignAssetView(APIView):
 
                 employee_id = request.data.get("id")
                 asset_uuid = request.data.get("asset_uuid")
+                business_unit = request.data.get("business_unit_id")
                 version = request.data.get("version")
+
+                if not business_unit:
+                    raise NotAcceptableOperationException(
+                        {}, BUSINESS_UNIT_NOT_PROVIDED, status.HTTP_400_BAD_REQUEST
+                    )
 
                 # Assign the asset using the appropriate service based on requester's role
                 data, message, http_status = AssignAssetService.assign_asset(
-                    role, asset_uuid, employee_id, requester, version
+                    role, asset_uuid, employee_id, business_unit, requester, version
                 )
 
                 return APIResponse(

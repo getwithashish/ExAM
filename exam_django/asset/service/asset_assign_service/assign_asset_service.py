@@ -2,9 +2,11 @@
 from rest_framework import status
 from asset.models import Employee, Asset
 from asset.serializers.asset_serializer import AssetReadSerializer
+from asset.models.business_unit import BusinessUnit
 from utils.celery_status_checker import CeleryStatusChecker
 from messages import (
     ASSET_CONFLICT,
+    BUSINESS_UNIT_NOT_FOUND,
     UNAUTHORIZED_NO_PERMISSION,
     EMPLOYEE_NOT_FOUND_ERROR,
     STATUS_EXPIRED_OR_DISPOSED,
@@ -27,10 +29,13 @@ from notification.service.email_service import send_email
 
 class AssignAssetService:
     @staticmethod
-    def assign_asset(requester_role, asset_uuid, employee_id, requester, version):
+    def assign_asset(
+        requester_role, asset_uuid, employee_id, business_unit, requester, version
+    ):
         try:
             employee = Employee.objects.get(id=employee_id)
             asset = Asset.objects.get(asset_uuid=asset_uuid)
+            business_unit = BusinessUnit.objects.get(id=business_unit)
 
         except Employee.DoesNotExist:
             raise NotFoundException(
@@ -40,6 +45,11 @@ class AssignAssetService:
         except Asset.DoesNotExist:
             raise NotFoundException({}, ASSET_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
+        except BusinessUnit.DoesNotExist:
+            raise NotFoundException(
+                {}, BUSINESS_UNIT_NOT_FOUND, status.HTTP_404_NOT_FOUND
+            )
+
         if asset.status in ["DAMAGED", "OUTDATED", "REPAIR", "SCRAP"]:
             raise NotAcceptableOperationException(
                 {}, STATUS_EXPIRED_OR_DISPOSED, status.HTTP_406_NOT_ACCEPTABLE
@@ -47,7 +57,7 @@ class AssignAssetService:
 
         if requester_role == "SYSTEM_ADMIN":
             asset, message, email_subject = AssetSysadminRoleAssignService.assign_asset(
-                asset, employee, requester
+                asset, employee, business_unit, requester
             )
         else:
             raise PermissionDeniedException(
