@@ -71,9 +71,6 @@ class AssetLifeCycleService(APIView):
         if previous_log_data and (
             previous_log_data.get("is_deleted") != current_log_data.get("is_deleted")
         ):
-            print(
-                f'Previous Log: {previous_log_data.get("is_deleted")} and Current Log: {current_log_data.get("is_deleted")}'
-            )
             operation = "DELETED" if current_log_data.get("is_deleted") else "RESTORED"
             changes = AssetLifeCycleService.detect_changes(
                 previous_log_data, current_log_data
@@ -101,6 +98,10 @@ class AssetLifeCycleService(APIView):
                 "custodian": {
                     "old_value": previous_log_data.get("custodian"),
                     "new_value": None,
+                },
+                "business_unit": {
+                    "old_value": previous_log_data.get("business_unit"),
+                    "new_value": current_log_data.get("business_unit"),
                 },
                 "status": {
                     "old_value": previous_log_data.get("status"),
