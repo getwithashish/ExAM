@@ -38,6 +38,7 @@ export const Statistics = ({
       .then((assetCountData) => {
         setAssetCountData(assetCountData);
         setLoading(false);
+        setError(null);
       })
       .catch((error) => {
         console.error("Error fetching asset count data:", error);
@@ -49,14 +50,6 @@ export const Statistics = ({
   const handleRefreshOnClick = () => {
     setTriggerRefresh(triggerRefresh + 1);
   };
-
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
 
   const childRef = useRef(null);
 
@@ -70,56 +63,62 @@ export const Statistics = ({
 
   return (
     <div className="rounded-xl bg-custom-400 pt-10 sm:mx-6 ">
-      <div className="">
-        <span className="font-bold font-display text-white m-10 text-grey-900 text-xl">
-          Asset Overview
-          <span className="items-center justify-end mx-2">
-            <RefreshTwoTone
-              onClick={handleRefreshOnClick}
-              style={{
-                cursor: "pointer",
-                marginLeft: "10px",
-                width: "25px",
-                height: "20px",
-                color: "#ffffff",
-              }}
-            />
-          </span>
-        </span>
-      </div>
-      <div className="border-t-4 border-gray-600 rounded-xl m-8"></div>
-      <div className="xl:p-2 mx-6 py-2">
-        <div className="flex mx-auto">
+      {error ? (
+        <div>Error: {error}</div>
+      ) : (
+        <>
           <div className="">
-            <AssetCountComponent triggerRefresh={triggerRefresh} />
+            <span className="font-bold font-display text-white m-10 text-grey-900 text-xl">
+              Asset Overview
+              <span className="items-center justify-end mx-2">
+                <RefreshTwoTone
+                  onClick={handleRefreshOnClick}
+                  style={{
+                    cursor: "pointer",
+                    marginLeft: "10px",
+                    width: "25px",
+                    height: "20px",
+                    color: "#ffffff",
+                  }}
+                />
+              </span>
+            </span>
           </div>
-          <div className="border-l-4 border-gray-600 h-full rounded-xl m-8"></div>
-          <div className="flex flex-col flex-1 w-1/2">
-            <div className="bg-transparent rounded-lg shadow-md ">
-              <BarChartHandler
-                triggerRefresh={triggerRefresh}
-                handleBarItemClick={handleAssetTypeSelect}
-              />
-            </div>
-            <div className="items-center justify-center">
-              <ChartHandlers
-                assetCountData={assetCountData}
-                selectedTypeId={selectedTypeId}
-                assetState={assetState}
-                detailState={detailState}
-                assignState={assignState}
-                setSelectedTypeId={setSelectedTypeId}
-                setAssetState={setAssetState}
-                setDetailState={setDetailState}
-                setAssignState={setAssignState}
-                onClick={onClick}
-                triggerRefresh={triggerRefresh}
-                ref={childRef}
-              />
+          <div className="border-t-4 border-gray-600 rounded-xl m-8"></div>
+          <div className="xl:p-2 mx-6 py-2">
+            <div className="flex mx-auto">
+              <div className="">
+                <AssetCountComponent triggerRefresh={triggerRefresh} />
+              </div>
+              <div className="border-l-4 border-gray-600 h-full rounded-xl m-8"></div>
+              <div className="flex flex-col flex-1 w-1/2">
+                <div className="bg-transparent rounded-lg shadow-md ">
+                  <BarChartHandler
+                    triggerRefresh={triggerRefresh}
+                    handleBarItemClick={handleAssetTypeSelect}
+                  />
+                </div>
+                <div className="items-center justify-center">
+                  <ChartHandlers
+                    assetCountData={assetCountData}
+                    selectedTypeId={selectedTypeId}
+                    assetState={assetState}
+                    detailState={detailState}
+                    assignState={assignState}
+                    setSelectedTypeId={setSelectedTypeId}
+                    setAssetState={setAssetState}
+                    setDetailState={setDetailState}
+                    setAssignState={setAssignState}
+                    onClick={onClick}
+                    triggerRefresh={triggerRefresh}
+                    ref={childRef}
+                  />
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 };

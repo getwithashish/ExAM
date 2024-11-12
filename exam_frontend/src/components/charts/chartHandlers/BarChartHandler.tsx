@@ -46,10 +46,6 @@ export default function BarChartHandler({
     fetchData();
   }, []);
 
-  if (error) {
-    return <DataError />;
-  }
-
   const xAxis: AxisConfig[] = [
     {
       id: "x-axis",
@@ -90,7 +86,7 @@ export default function BarChartHandler({
 
   return (
     <div className="text-center items-center">
-      {loading ? (
+      {loading || error ? (
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}

@@ -662,7 +662,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = forwardRef(
               }}
               className="m-auto"
             >
-              {isDataFetching >= 0 ? (
+              {isDataFetching >= 0 || assetError ? (
                 <>
                   {["pie1", "pie2", "pie3"].map((item, index) => (
                     <motion.div

@@ -59,9 +59,9 @@ const AssetCountComponent = ({ triggerRefresh }) => {
     handleRefreshOnClick();
   }, [triggerRefresh]);
 
-  if (error) {
-    return <div>Error fetching data...</div>;
-  }
+  // if (error) {
+  //   return <div>Error fetching data...</div>;
+  // }
 
   return (
     <div>
@@ -98,7 +98,7 @@ const AssetCountComponent = ({ triggerRefresh }) => {
             gradient: "from-green-500 to-green-500",
           },
         ].map((item, index) =>
-          loading ? (
+          loading || error ? (
             <motion.div
               key={index}
               initial={{ opacity: 0, scale: 0.8 }}
