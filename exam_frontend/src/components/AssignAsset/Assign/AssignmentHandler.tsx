@@ -22,6 +22,7 @@ export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({
   const [value, setValue] = useState<string>("");
   const [fetchData, setFetchData] = useState<boolean>(false); // Initialize as false
   const [employeeId, setEmployeeId] = useState<number>();
+  const [businessUnit, setBusinessUnit] = useState("");
   const [divVisible, setdivVisible] = useState<boolean>(false);
   const [employeeDepartment, setEmployeeDepartment] = useState<string>("");
   const [employeeDesignation, setEmployeeDesignation] = useState<string>("");
@@ -56,9 +57,10 @@ export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({
         closeAssignDrawer();
       },
       onError: (error) => {
-        message.error(error.data?.message);
+        message.error(error.response.data?.message);
+        setEmployeeId(undefined);
+        setBusinessUnit("");
         setLoading(false);
-        closeAssignDrawer();
       },
     }
   );
@@ -67,7 +69,7 @@ export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({
     if (value == "") {
       setEmployeeId(undefined);
     }
-    return () => { };
+    return () => {};
   }, [value]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,11 +103,25 @@ export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({
     setLoading(true);
 
     if (data != null && record) {
+      if (!employeeId) {
+        message.error("You should select an Employee!");
+        setLoading(false);
+        return;
+      }
+
+      if (!businessUnit || businessUnit === "" || !businessUnit.id) {
+        message.error("You should select a Business Unit!");
+        setLoading(false);
+        return;
+      }
+
       const requestBody = {
         id: employeeId,
+        business_unit_id: businessUnit.id,
         asset_uuid: record.key,
-        version: record.version
+        version: record.version,
       };
+
       mutation.mutate(requestBody);
     } else {
       message.error("Please select an employee");
@@ -115,24 +131,28 @@ export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({
   return (
     <>
       {loading && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(255, 255, 255, 0.1)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+          }}
+        >
           <Spin size="large" />
         </div>
       )}
       <Assignment
         value={value}
         employeeId={employeeId}
+        businessUnit={businessUnit}
+        setBusinessUnit={setBusinessUnit}
         divVisible={divVisible}
         employeeDepartment={employeeDepartment}
         employeeDesignation={employeeDesignation}
