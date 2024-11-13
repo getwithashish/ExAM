@@ -48,7 +48,7 @@ const AssetTableHandler = ({
     isLoading: isAssetDataLoading,
     refetch: assetDataRefetch,
   } = useQuery({
-    queryKey: ["assetList", queryParam],
+    queryKey: ["assetListFetch", queryParam],
     queryFn: () => getAssetDetails(`${queryParamProp + queryParam}`),
   });
 
@@ -86,14 +86,14 @@ const AssetTableHandler = ({
     ) || [];
 
   const { data: locationResults } = useQuery({
-    queryKey: ["location"],
+    queryKey: ["location_AssetTable"],
     queryFn: () => getLocationOptions(),
   });
 
   const locations = locationResults ? locationResults : [];
 
   const { data: memoryData } = useQuery({
-    queryKey: ["memorySpace"],
+    queryKey: ["memorySpace_AssetTable"],
     queryFn: () => getMemoryOptions(),
   });
 
@@ -105,7 +105,7 @@ const AssetTableHandler = ({
   };
 
   const { data: assetTypeData } = useQuery({
-    queryKey: ["assetDrawerassetType"],
+    queryKey: ["assetDrawerassetType_AssetTable"],
     queryFn: () => getAssetTypeOptions(),
   });
 

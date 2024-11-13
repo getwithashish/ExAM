@@ -743,7 +743,7 @@ const CardComponent: React.FC<CardType> = ({
             InputProps={{
               endAdornment: (
                 <Tooltip title="Warranty period should be in months Eg: 12, 24">
-                  <InfoCircleOutlined style={{ color: "rgba(0,0,0,.45)" }} />
+                  <InfoCircleOutlined style={{ color: "white" }} />
                 </Tooltip>
               ),
             }}

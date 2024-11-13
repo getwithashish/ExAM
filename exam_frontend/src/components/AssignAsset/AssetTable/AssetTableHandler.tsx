@@ -71,19 +71,19 @@ const AssetTableHandler = ({
     ) || [];
 
   const { data: locationResults } = useQuery({
-    queryKey: ["location"],
+    queryKey: ["location_AssignAsset"],
     queryFn: () => getLocationOptions(),
   });
 
   const locations = locationResults ? locationResults : [];
 
   const { data: memoryData } = useQuery({
-    queryKey: ["memorySpace"],
+    queryKey: ["memorySpace_AssignAsset"],
     queryFn: () => getMemoryOptions(),
   });
 
   const { data: assetTypeData } = useQuery({
-    queryKey: ["assetDrawerassetType"],
+    queryKey: ["assetDrawerassetType_AssignAsset"],
     queryFn: () => getAssetTypeOptions(),
   });
 

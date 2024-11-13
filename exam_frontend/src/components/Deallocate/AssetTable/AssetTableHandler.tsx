@@ -42,7 +42,7 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
   const [json_query, setJson_query] = useState<string>("");
 
   const { data: assetData, refetch: assetDataRefetch } = useQuery({
-    queryKey: ["assetList", queryParam],
+    queryKey: ["assetList_Deallocate", queryParam],
     queryFn: () => getAssetDetails(`${queryParamProp + queryParam}`),
   });
 
@@ -79,7 +79,7 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
     ) || [];
 
   const { data: locationResults } = useQuery({
-    queryKey: ["location"],
+    queryKey: ["location_Deallocate"],
     queryFn: () => getLocationOptions(),
   });
 
@@ -91,12 +91,12 @@ const AssetTableHandler: React.FC<AssetTableHandlerProps> = ({
   }));
 
   const { data: memoryData } = useQuery({
-    queryKey: ["memorySpace"],
+    queryKey: ["memorySpace_Deallocate"],
     queryFn: () => getMemoryOptions(),
   });
 
   const { data: assetTypeData } = useQuery({
-    queryKey: ["assetDrawerassetType"],
+    queryKey: ["assetDrawerassetType_Deallocate"],
     queryFn: () => getAssetTypeOptions(),
   });
   const assetTypeFilters =

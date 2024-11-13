@@ -54,7 +54,7 @@ const DashboardAssetHandler = ({
     isLoading: isAssetDataLoading,
     refetch: assetDataRefetch,
   } = useQuery({
-    queryKey: ["assetList", queryParam],
+    queryKey: ["assetList_Dashboard", queryParam],
     queryFn: () => getAssetDetails(`${queryParam}`),
   });
 
@@ -82,19 +82,19 @@ const DashboardAssetHandler = ({
     ) || [];
 
   const { data: locationResults } = useQuery({
-    queryKey: ["location"],
+    queryKey: ["location_Dashboard"],
     queryFn: () => getLocationOptions(),
   });
 
   const locations = locationResults ? locationResults : [];
 
   const { data: memoryData } = useQuery({
-    queryKey: ["memorySpace"],
+    queryKey: ["memorySpace_Dashboard"],
     queryFn: () => getMemoryOptions(),
   });
 
   const { data: assetTypeData } = useQuery({
-    queryKey: ["assetDrawerassetType"],
+    queryKey: ["assetDrawerassetType_Dashboard"],
     queryFn: () => getAssetTypeOptions(),
   });
 

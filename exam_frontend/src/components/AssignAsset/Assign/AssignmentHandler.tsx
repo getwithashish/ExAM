@@ -30,7 +30,7 @@ export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({
   const [loading, setLoading] = useState<boolean>(false); // Loading state
 
   const { data } = useQuery<ApiResponse>({
-    queryKey: ["Assign"],
+    queryKey: ["employeeFetch_Assign"],
     enabled: fetchData && query.trim().length > 0,
     queryFn: (): Promise<ApiResponse> =>
       axiosInstance.get(`/asset/employee?name=${query}`).then((res) => {
