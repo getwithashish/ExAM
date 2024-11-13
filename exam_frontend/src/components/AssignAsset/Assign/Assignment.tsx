@@ -74,18 +74,17 @@ export const Assignment: React.FC<AssignmentProps> = ({
           </Form.Item>
         </div>
 
-        <div className="mt-1">
+        <div className="mt-6">
+          <Form.Item>
           <Button
             className="rounded-lg"
             disabled={!employeeId || businessUnit === ""}
             onClick={handleAssign}
             size="large"
-            sx={{
-              height: "57px",
-            }}
           >
             Assign
           </Button>
+          </Form.Item>
         </div>
       </div>
       <div className={divVisible ? styles[""] : styles["result"]}>

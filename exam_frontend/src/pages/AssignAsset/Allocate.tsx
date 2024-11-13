@@ -50,6 +50,7 @@ const AssignableAsset = () => {
         title="Allocate Asset"
         onClose={closeAssignDrawer}
         open={open}
+        destroyOnClose={true}
       >
         {record && (
           <AssignmentHandler
