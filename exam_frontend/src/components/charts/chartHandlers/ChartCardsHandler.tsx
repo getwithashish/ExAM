@@ -111,6 +111,16 @@ const AssetCountComponent = ({ triggerRefresh }) => {
                 variant="circular"
                 width={120}
                 height={120}
+                sx={{
+                  bgcolor: "transparent",
+                  backdropFilter: "blur(10px)",
+                  border: "1px solid rgba(255, 255, 255, 0.2)",
+                  boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.4)",
+                  "& .MuiSkeleton-wave": {
+                    background: `linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0) 100%)`,
+                    animationDuration: "1.5s",
+                  },
+                }}
               />
             </motion.div>
           ) : (

@@ -59,7 +59,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = forwardRef(
       isLoading: assetLoading,
       isError: assetError,
     } = useQuery<AssetData>({
-      queryKey: ["assetData"],
+      queryKey: ["assetData_PieChart"],
       queryFn: fetchAssetData,
     });
 
@@ -678,6 +678,16 @@ const ChartHandlers: React.FC<PieChartGraphProps> = forwardRef(
                         variant="circular"
                         width={150}
                         height={150}
+                        sx={{
+                          bgcolor: "transparent",
+                          backdropFilter: "blur(10px)",
+                          border: "1px solid rgba(255, 255, 255, 0.2)",
+                          boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.4)",
+                          "& .MuiSkeleton-wave": {
+                            background: `linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0) 100%)`,
+                            animationDuration: "1.5s",
+                          },
+                        }}
                       />
                     </motion.div>
                   ))}
