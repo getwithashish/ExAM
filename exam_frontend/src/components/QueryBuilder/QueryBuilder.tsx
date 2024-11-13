@@ -34,6 +34,7 @@ export const QueryBuilderComponent: React.FC<
   const initialState = { selectedFields: [], newFields: [] };
   const [filterValue, setFilterValue] = useState<number | string>();
   const [suggestion, setSuggestion] = useState<string[]>([]);
+  const [selectedSelectFields, setSelectedSelectFields] = React.useState([]);
 
   const handleAddField = () => {
     setNewFields((prev) => [
@@ -77,7 +78,10 @@ export const QueryBuilderComponent: React.FC<
     } else {
       console.error("Empty Field in Advanced Search");
     }
-
+    setSelectedSelectFields((prev) =>
+      prev.filter((ele) => ele != selectedSelectFields[fieldIndex])
+    );
+    console.log("All Fields: ", selectedSelectFields[fieldIndex]);
     setNewFields((prev) => prev.filter((ele) => ele !== currentEle));
     setSelectedFields((prev) => prev.filter((_, i) => i !== index));
     setAllFieldValues((prev) =>
@@ -90,11 +94,11 @@ export const QueryBuilderComponent: React.FC<
   >([]);
 
   const handleReset = () => {
+    setSelectedSelectFields([]);
     setSelectedFields([]);
     setNewFields([]);
     reset();
     setAllFieldValues([]);
-    // assetDataRefetch("");
     message.success("Query builder reset successfully");
   };
 
@@ -165,6 +169,8 @@ export const QueryBuilderComponent: React.FC<
                 allFieldValues={allFieldValues}
                 setAllFieldValues={setAllFieldValues}
                 disabledFields={disabledFields}
+                selectedSelectFields={selectedSelectFields}
+                setSelectedSelectFields={setSelectedSelectFields}
               />
               <IconButton
                 onClick={() => handleRemoveField(currentEle, index)}
