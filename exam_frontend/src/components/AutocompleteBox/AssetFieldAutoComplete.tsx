@@ -211,7 +211,7 @@ const AssetFieldAutoComplete = ({
                 (option) =>
                   params.inputValue.trim() === option[assetFieldKeyName()]
               );
-              if (params.inputValue !== "" && !isExisting) {
+              if (params.inputValue.trim() !== "" && !isExisting) {
                 filtered.push({
                   inputValue: params.inputValue.trim(),
                   [assetFieldKeyName()]: `Add "${params.inputValue}"`,
