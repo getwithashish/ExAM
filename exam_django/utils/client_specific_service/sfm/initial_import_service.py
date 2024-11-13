@@ -91,19 +91,19 @@ class AssetImportService:
                 except ValueError:
                     purchase_date = None
 
-            asset_type = clean_field(row["asset_type"])
+            asset_type = clean_field(row["Asset Category"])
             if asset_type is not None:
                 asset_type, _ = AssetType.objects.get_or_create(
                     asset_type_name=asset_type
                 )
 
-            business_unit = clean_field(row["business_unit"])
+            business_unit = clean_field(row["BU"])
             if business_unit is not None:
                 business_unit, _ = BusinessUnit.objects.get_or_create(
                     business_unit_name=business_unit
                 )
 
-            location = clean_field(row["location"])
+            location = clean_field(row["Location"])
             if location is not None:
                 location, _ = Location.objects.get_or_create(location_name=location)
 
@@ -111,13 +111,13 @@ class AssetImportService:
                 employee_name=clean_field(row.get("Custodian"))
             )
 
-            invoice_location = clean_field(row["invoice_location"])
+            invoice_location = clean_field(row["Invoice Location"])
             if invoice_location is not None:
                 invoice_location, _ = Location.objects.get_or_create(
                     location_name=invoice_location
                 )
 
-            memory = clean_field(row["memory"])
+            memory = clean_field(row["Memory"])
             if memory is not None:
                 memory, _ = Memory.objects.get_or_create(
                     memory_space=int(float(memory))
@@ -169,17 +169,23 @@ class AssetImportService:
             elif approval_status == "Rejected":
                 asset_detail_status = "UPDATE_REJECTED"
             else:
-                asset_detail_status = "UNKNOWN"
+                asset_detail_status = "CREATED"
 
             assign_status = (
                 "UNASSIGNED"
                 if not row.get("Custodian")
                 or (
                     row.get("Custodian") == "Experion SFM"
-                    and row.get("Asset Category") == "Laptop"
+                    and (
+                        row.get("Asset Category") == "Laptop"
+                        or row.get("BU") == "STOCK"
+                    )
                 )
                 else "ASSIGNED"
             )
+
+            if assign_status == "UNASSIGNED":
+                custodian = None
 
             status = clean_field(row.get("Status"))
             if status == "No Service":
