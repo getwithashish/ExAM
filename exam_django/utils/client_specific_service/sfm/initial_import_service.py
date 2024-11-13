@@ -17,7 +17,7 @@ import json
 
 
 def clean_field(value):
-    if pd.isna(value) or value == "nan" or value == "":
+    if pd.isna(value) or value == "nan" or str(value).strip() == "":
         return None
     return str(value).strip()
 
@@ -91,33 +91,49 @@ class AssetImportService:
                 except ValueError:
                     purchase_date = None
 
-            asset_type, _ = AssetType.objects.get_or_create(
-                asset_type_name=clean_field(row.get("Asset Category")) or ""
-            )
-            business_unit, _ = BusinessUnit.objects.get_or_create(
-                business_unit_name=clean_field(row.get("BU")) or ""
-            )
+            asset_type = clean_field(row["asset_type"])
+            if asset_type is not None:
+                asset_type, _ = AssetType.objects.get_or_create(
+                    asset_type_name=asset_type
+                )
+
+            business_unit = clean_field(row["business_unit"])
+            if business_unit is not None:
+                business_unit, _ = BusinessUnit.objects.get_or_create(
+                    business_unit_name=business_unit
+                )
+
+            location = clean_field(row["location"])
+            if location is not None:
+                location, _ = Location.objects.get_or_create(location_name=location)
+
             custodian, _ = Employee.objects.get_or_create(
-                employee_name=clean_field(row.get("Custodian")) or ""
-            )
-            location, _ = Location.objects.get_or_create(
-                location_name=clean_field(row.get("Location")) or ""
-            )
-            invoice_location, _ = Location.objects.get_or_create(
-                location_name=clean_field(row.get("Invoice Location")) or ""
+                employee_name=clean_field(row.get("Custodian"))
             )
 
-            memory_space = row.get("Memory")
-            if pd.isna(memory_space) or memory_space == "" or memory_space == "nan":
-                memory = None
-            else:
-                try:
-                    memory_space = int(float(str(memory_space).strip()))
-                    memory, _ = Memory.objects.get_or_create(memory_space=memory_space)
-                except ValueError:
-                    row["Error"] = "Invalid memory value"
-                    missing_fields_assets.append(row)
-                    continue
+            invoice_location = clean_field(row["invoice_location"])
+            if invoice_location is not None:
+                invoice_location, _ = Location.objects.get_or_create(
+                    location_name=invoice_location
+                )
+
+            memory = clean_field(row["memory"])
+            if memory is not None:
+                memory, _ = Memory.objects.get_or_create(
+                    memory_space=int(float(memory))
+                )
+
+            # memory_space = row.get("Memory")
+            # if pd.isna(memory_space) or memory_space == "" or memory_space == "nan":
+            #     memory = None
+            # else:
+            #     try:
+            #         memory_space = int(float(str(memory_space).strip()))
+            #         memory, _ = Memory.objects.get_or_create(memory_space=memory_space)
+            #     except ValueError:
+            #         row["Error"] = "Invalid memory value"
+            #         missing_fields_assets.append(row)
+            #         continue
 
             try:
                 warranty = row.get("Warranty")

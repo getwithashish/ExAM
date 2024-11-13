@@ -48,7 +48,7 @@ const AssetTableHandler = ({
     isLoading: isAssetDataLoading,
     refetch: assetDataRefetch,
   } = useQuery({
-    queryKey: ["assetList", queryParam],
+    queryKey: ["assetListFetch", queryParam],
     queryFn: () => getAssetDetails(`${queryParamProp + queryParam}`),
   });
 
@@ -86,14 +86,14 @@ const AssetTableHandler = ({
     ) || [];
 
   const { data: locationResults } = useQuery({
-    queryKey: ["location"],
+    queryKey: ["location_AssetTable"],
     queryFn: () => getLocationOptions(),
   });
 
   const locations = locationResults ? locationResults : [];
 
   const { data: memoryData } = useQuery({
-    queryKey: ["memorySpace"],
+    queryKey: ["memorySpace_AssetTable"],
     queryFn: () => getMemoryOptions(),
   });
 
@@ -105,7 +105,7 @@ const AssetTableHandler = ({
   };
 
   const { data: assetTypeData } = useQuery({
-    queryKey: ["assetDrawerassetType"],
+    queryKey: ["assetDrawerassetType_AssetTable"],
     queryFn: () => getAssetTypeOptions(),
   });
 
@@ -565,34 +565,6 @@ const AssetTableHandler = ({
       render: (text: string, record: any) => (
         <div style={{ color: "#ffffff" }}>
           {renderClickableColumn("Asset Status", "status")(text, record)}
-        </div>
-      ),
-    },
-    {
-      title: "Asset Detail Status",
-      dataIndex: "asset_detail_status",
-      responsive: ["md"],
-      width: 140,
-      render: (text: string, record: any) => (
-        <div style={{ ...detailStatusStyleCondition(record) }}>
-          {renderClickableColumn("Asset Detail Status", "asset_detail_status")(
-            text,
-            record
-          )}
-        </div>
-      ),
-    },
-    {
-      title: "Asset Assign Status",
-      dataIndex: "assign_status",
-      responsive: ["md"],
-      width: 140,
-      render: (text: string, record: any) => (
-        <div style={{ ...assignStatusStyleCondition(record) }}>
-          {renderClickableColumn("Asset Assign Status", "assign_status")(
-            text,
-            record
-          )}
         </div>
       ),
     },

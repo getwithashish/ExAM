@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { InboxOutlined } from "@ant-design/icons";
-import { message, Upload as AntUpload, Button, Modal, Card } from "antd";
+import { InboxOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import {
+  message,
+  Upload as AntUpload,
+  Button,
+  Modal,
+  Card,
+  Tooltip,
+} from "antd";
 import { UploadProps, UploadFile } from "antd/lib/upload";
 import axiosInstance from "../../config/AxiosConfig";
 import axios, { AxiosError } from "axios";
 import { ErrorResponse } from "./types/types";
 import { motion } from "framer-motion";
 import { useUploading } from "./UploadContext";
+import CustomTooltip from "../Tooltip/CustomTooltip";
 
 const { Dragger } = AntUpload;
 
@@ -189,7 +197,7 @@ const UploadComponent: React.FC = ({ initial_import = false }) => {
         <p className="ant-upload-text">
           Click here to upload a CSV or XLSX file
         </p>
-        <p className="ant-upload-hint">Support for single or bulk upload.</p>
+        <p className="ant-upload-hint">Support for single upload.</p>
       </Dragger>
       <Button
         style={{ marginTop: 20 }}
@@ -199,6 +207,11 @@ const UploadComponent: React.FC = ({ initial_import = false }) => {
       >
         Import
       </Button>
+      <Tooltip
+        title={`File should contain all the mandatory fields: asset_category, asset_type, product_name, owner, date_of_purchase, location`}
+      >
+        <InfoCircleOutlined style={{ color: "white", marginLeft: "10px" }} />
+      </Tooltip>
 
       <Modal
         title="Status of Asset Import"

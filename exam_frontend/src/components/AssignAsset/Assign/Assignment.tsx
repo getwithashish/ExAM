@@ -1,6 +1,9 @@
 import styles from "./Assignment.module.css";
 import { ApiResponse, EmployeeDetails } from "./types";
 import { DataType } from "../../AssetTable/types";
+import { Form } from "antd";
+import AssetFieldAutoComplete from "../../AutocompleteBox/AssetFieldAutoComplete";
+import { Button, TextField } from "@mui/material";
 
 interface AssignmentProps {
   value: string;
@@ -24,6 +27,8 @@ interface AssignmentProps {
 export const Assignment: React.FC<AssignmentProps> = ({
   value,
   employeeId,
+  businessUnit,
+  setBusinessUnit,
   divVisible,
   employeeDepartment,
   employeeDesignation,
@@ -36,113 +41,51 @@ export const Assignment: React.FC<AssignmentProps> = ({
 }) => {
   return (
     <div>
-      <div>
-        <form>
-          <div className="grid font-display grid-cols-2 gap-2 lg:grid-cols-4 my-3 text-sm text-white">
-            <div>
-              <label htmlFor="productName">ASSET NAME:</label>
-              <input
-                type="text"
-                id="productName"
-                value={record?.product_name}
-                className="mt-1 font-display bg-custom-400 rounded-lg font-semibold"
-                disabled
-              />
-            </div>
-            <div>
-              <label htmlFor="assetType">ASSET TYPE:</label>
-              <input
-                type="text"
-                id="assetType"
-                value={record?.asset_type}
-                className="mt-1 font-display bg-custom-400 rounded-lg font-semibold"
-                disabled
-              />
-            </div>
-            <div>
-              <label htmlFor="location">LOCATION:</label>
-              <input
-                type="text"
-                id="location"
-                value={record?.location}
-                className="mt-1 font-display bg-custom-400 rounded-lg font-semibold"
-                disabled
-              />
-            </div>
-            <div>
-              <label htmlFor="serialNumber">ASSET SERIAL NUMBER:</label>
-              <input
-                type="text"
-                id="serialNumber"
-                value={record?.serial_number}
-                className="mt-1 font-display bg-custom-400 rounded-lg font-semibold"
-                disabled
-              />
-            </div>
-            <div>
-              <label htmlFor="modelNumber">ASSET MODEL NUMBER:</label>
-              <input
-                type="text"
-                id="modelNumber"
-                value={record?.model_number}
-                className="mt-1 font-display bg-custom-400 rounded-lg font-semibold"
-                disabled
-              />
-            </div>
-            <div>
-              <label htmlFor="processor">PROCESSOR:</label>
-              <input
-                type="text"
-                id="processor"
-                value={record?.processor}
-                className="mt-1 font-display bg-custom-400 rounded-lg font-semibold"
-                disabled
-              />
-            </div>
-            <div>
-              <label htmlFor="memory">MEMORY:</label>
-              <input
-                type="text"
-                id="memory"
-                value={record?.memory}
-                className="mt-1 font-display bg-custom-400 rounded-lg font-semibold"
-                disabled
-              />
-            </div>
-            <div>
-              <label htmlFor="storage">STORAGE:</label>
-              <input
-                type="text"
-                id="storage"
-                value={record?.storage}
-                className="mt-1 font-display bg-custom-400 rounded-lg font-semibold"
-                disabled
-              />
-            </div>
-          </div>
-        </form>
-      </div>
-      <div className="grid font-display grid-cols-3 items-center justify-center gap-2 mt-20 lg:grid-cols-3 my-3 text-sm text-white">
-        <div className="text-lg  text-right">
-          <span>
-            Search for employee:
-          </span>
-        </div>
+      <div className="grid font-display grid-cols-3 items-center justify-center gap-2 mt-5 lg:grid-cols-3 my-3 text-sm text-white">
         <div>
-          <input
-            type="text"
-            name={"employee"}
-            className="rounded-lg bg-custom-400 font-display w-full"
-            placeholder="Enter employee name"
-            onChange={handleInputChange}
-            value={value}
-          />
+          <Form.Item>
+            <b>Search for employee:</b>
+            <br></br>
+            <br></br>
+            <TextField
+              type="text"
+              name={"employee"}
+              className="rounded-lg bg-custom-400 font-display w-full"
+              placeholder="Enter employee name"
+              onChange={handleInputChange}
+              value={value}
+            />
+          </Form.Item>
         </div>
 
         <div>
-          <button className={styles["assign-button"]} onClick={handleAssign}>
+          <Form.Item
+            name="business_unit"
+            style={{ boxShadow: "none", border: "none" }}
+          >
+            <b>Business Unit: </b>
+            <br></br>
+            <br></br>
+            <AssetFieldAutoComplete
+              assetField="business_unit"
+              value={businessUnit}
+              setValue={setBusinessUnit}
+            />
+          </Form.Item>
+        </div>
+
+        <div className="mt-1">
+          <Button
+            className="rounded-lg"
+            disabled={!employeeId || businessUnit === ""}
+            onClick={handleAssign}
+            size="large"
+            sx={{
+              height: "57px",
+            }}
+          >
             Assign
-          </button>
+          </Button>
         </div>
       </div>
       <div className={divVisible ? styles[""] : styles["result"]}>
@@ -151,7 +94,7 @@ export const Assignment: React.FC<AssignmentProps> = ({
             {data?.data.length ? (
               data.data.map((employee: EmployeeDetails) => (
                 <div
-                  className='text-lg text-white shadow-lg bg-custom-400 border border-gray-300 rounded-lg p-2 w-64 transition-transform transform hover:scale-105 hover:shadow-xl cursor-pointer'
+                  className="text-lg text-white shadow-lg bg-custom-400 border border-gray-300 rounded-lg p-2 w-64 transition-transform transform hover:scale-105 hover:shadow-xl cursor-pointer"
                   key={employee.id}
                   onClick={() =>
                     handleNameClick(
@@ -162,21 +105,27 @@ export const Assignment: React.FC<AssignmentProps> = ({
                     )
                   }
                 >
-                  {employee
-                    ? (
-                      <div>
-                        <h2 className='text-xl font-semibold'>{employee.employee_name} <span className="text-sm">({employee.id})</span></h2>
-                        {/* <p>{employee.employee_department}</p>
+                  {employee ? (
+                    <div>
+                      <h2 className="text-xl font-semibold">
+                        {employee.employee_name}{" "}
+                        <span className="text-sm">({employee.id})</span>
+                      </h2>
+                      {/* <p>{employee.employee_department}</p>
                         <p>{employee.employee_designation}</p> */}
-                        <p className='text-sm font-semibold'>Software Engineer</p>
-                        <p className='text-sm font-semibold'>DU6</p>
-                      </div>
-                    )
-                    : "Sorry!!! Employee with this name does not exist"}
+                      <p className="text-sm font-semibold">Software Engineer</p>
+                      <p className="text-sm font-semibold">DU6</p>
+                    </div>
+                  ) : (
+                    "Sorry!!! Employee with this name does not exist"
+                  )}
                 </div>
               ))
             ) : (
-              <div className="text-center text-lg text-red-500 p-5 my-10"> {"Sorry!!! Employee with this name does not exist"}</div>
+              <div className="text-center text-lg text-red-500 p-5 my-10">
+                {" "}
+                {"Sorry!!! Employee with this name does not exist"}
+              </div>
             )}
           </div>
         </div>
@@ -185,7 +134,7 @@ export const Assignment: React.FC<AssignmentProps> = ({
         <div
           className={
             employeeName == value && value
-              ? 'mt-20 bg-gradient-to-r from-gray-800 to-teal-900 hover:from-gray-800 hover:to-teal-700 p-10 w-full text-lg font-display font-semibold rounded-xl text-white inline-block'
+              ? "mt-20 bg-gradient-to-r from-gray-800 to-teal-900 hover:from-gray-800 hover:to-teal-700 p-10 w-full text-lg font-display font-semibold rounded-xl text-white inline-block"
               : styles["result"]
           }
         >
@@ -209,7 +158,6 @@ export const Assignment: React.FC<AssignmentProps> = ({
           </div>
         </div>
       </div>
-
     </div>
   );
 };

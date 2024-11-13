@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
@@ -49,6 +49,8 @@ const MuiAutocomplete = ({
   allFieldValues,
   setAllFieldValues,
   disabledFields,
+  selectedSelectFields,
+  setSelectedSelectFields,
 }: MuiAutocompleteProps) => {
   const fieldNames = [
     { label: "Product Name", value: "product_name" },
@@ -60,7 +62,6 @@ const MuiAutocomplete = ({
     },
     { label: "Warranty Period", value: "warranty_period" },
     { label: "License Type", value: "license_type" },
-    // { label: "Version", value: "version" },
     { label: "Operating System", value: "os" },
     { label: "Operating System Version", value: "os_version" },
     { label: "Mobile OS", value: "mobile_os" },
@@ -68,7 +69,6 @@ const MuiAutocomplete = ({
     { label: "Processor Generation", value: "processor_gen" },
     { label: "Memory", value: "memory_space", queryFieldName: "memory" },
     { label: "Storage", value: "storage" },
-    // { label: "Configuration", value: "configuration" },
     { label: "Status", value: "status" },
     { label: "Asset Approval Status", value: "asset_detail_status" },
     { label: "Asset Assignment Status", value: "assign_status" },
@@ -125,8 +125,25 @@ const MuiAutocomplete = ({
 
   const [isQueryEnabled, setIsQueryEnabled] = React.useState(false);
 
+  const [updatedAssetData, setUpdatedAssetData] = React.useState([]);
+
+  const getFieldName = () => {
+    if (fieldName == "location_name" || fieldName == "invoice_location") {
+      return "location_name";
+    } else if (fieldName == "requester" || fieldName == "approved_by") {
+      return "username";
+    } else if (fieldName == "custodian") {
+      return "employee_name";
+    } else {
+      return fieldName;
+    }
+  };
+
+  const foreignFieldBlankValue = { id: "null", [getFieldName()]: "(Blank)" };
+  const fieldBlankValue = { [getFieldName()]: "null" };
+
   const { data: assetData, isLoading: isAssetDataLoading } = useQuery({
-    queryKey: ["assetList", fieldName],
+    queryKey: ["assetList_QueryBuilder", fieldName],
     queryFn: () => {
       if (fieldName !== "") {
         if (fieldName == "asset_type_name") {
@@ -156,17 +173,17 @@ const MuiAutocomplete = ({
     initialData: [],
   });
 
-  const getFieldName = () => {
-    if (fieldName == "location_name" || fieldName == "invoice_location") {
-      return "location_name";
-    } else if (fieldName == "requester" || fieldName == "approved_by") {
-      return "username";
-    } else if (fieldName == "custodian") {
-      return "employee_name";
-    } else {
-      return fieldName;
+  useEffect(() => {
+    if (assetData) {
+      const newValue = foreignFieldValueNames.includes(fieldName)
+        ? foreignFieldBlankValue
+        : fieldBlankValue;
+      setUpdatedAssetData((prevData) => [newValue, ...assetData]);
     }
-  };
+  }, [assetData]);
+
+  const [currentSelectedSelectField, setCurrentSelectedSelectField] =
+    React.useState("");
 
   return (
     <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
@@ -187,6 +204,20 @@ const MuiAutocomplete = ({
             }}
             onChange={(event) => {
               setFieldName(event.target.value as string);
+              setSelectedSelectFields((prev) => {
+                if (currentSelectedSelectField.trim() !== "") {
+                  let newSelectedSelectFields = prev.filter(
+                    (item) => item !== currentSelectedSelectField
+                  );
+                  return [
+                    ...newSelectedSelectFields,
+                    event.target.value as string,
+                  ];
+                } else {
+                  return [...prev, event.target.value as string];
+                }
+              });
+              setCurrentSelectedSelectField(event.target.value as string);
               let newFieldValues = [];
               if (!foreignFieldValueNames.includes(fieldName)) {
                 newFieldValues = allFieldValues.filter(
@@ -216,11 +247,9 @@ const MuiAutocomplete = ({
                 value={field.value}
                 disabled={
                   disabledFields?.includes(field.value) ||
-                  allFieldValues.some((obj) => {
-                    const fieldKey = field.queryFieldName
-                      ? field.queryFieldName
-                      : field.value;
-                    return obj.hasOwnProperty(fieldKey);
+                  selectedSelectFields.some((obj) => {
+                    const fieldKey = field.value;
+                    return obj === fieldKey;
                   })
                 }
               >
@@ -257,7 +286,7 @@ const MuiAutocomplete = ({
                 return filtered;
               }}
               id="free-solo-dialog-demo"
-              options={assetData}
+              options={updatedAssetData}
               getOptionLabel={(option) => {
                 if (typeof option === "string") {
                   return option;
@@ -265,13 +294,19 @@ const MuiAutocomplete = ({
                 if (option.inputValue) {
                   return option.inputValue;
                 }
-                return option[fieldName] as string;
+                return (option[fieldName] as string) === "null"
+                  ? "(Blank)"
+                  : (option[fieldName] as string);
               }}
               selectOnFocus
               clearOnBlur
               handleHomeEndKeys
               renderOption={(props, option) => (
-                <li {...props}>{option[fieldName]}</li>
+                <li {...props}>
+                  {(option[fieldName] as string) === "null"
+                    ? "(Blank)"
+                    : (option[fieldName] as string)}
+                </li>
               )}
               sx={{ width: 300, marginLeft: 5, marginRight: 5 }}
               freeSolo
@@ -326,7 +361,7 @@ const MuiAutocomplete = ({
                 return filtered;
               }}
               id="advanced-query-autcomplete-foreign-fields"
-              options={assetData}
+              options={updatedAssetData}
               getOptionLabel={(option) => {
                 if (typeof option === "string") {
                   return option;
