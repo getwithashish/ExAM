@@ -5,6 +5,7 @@ from rest_framework import status
 
 from asset.models import Asset, AssetType, BusinessUnit, Employee, Location, Memory
 from asset.utils.archive_file_generator import ArchiveFileGenerator
+from asset.utils.data_cleaner import clean_field
 from messages import (
     IMPORT_OPERATION_FULL_SUCCESSFUL,
     IMPORT_OPERATION_PARTIAL_SUCCESSFUL,
@@ -37,8 +38,8 @@ class AssetImportService:
 
         for row in csv_reader:
             try:
-                asset_id = row.get("asset_id", "")
-                serial_number = row.get("serial_number", "")
+                asset_id = row.get("asset_id", "").strip()
+                serial_number = row.get("serial_number", "").strip()
 
                 if (
                     asset_id in existing_asset_ids
@@ -49,17 +50,11 @@ class AssetImportService:
 
                 mandatory_fields = [
                     "asset_category",
-                    "asset_id",
-                    "version",
                     "asset_type",
                     "product_name",
-                    "serial_number",
-                    "model_number",
                     "owner",
                     "date_of_purchase",
-                    "warranty_period",
-                    "invoice_location",
-                    "business_unit",
+                    "location",
                 ]
 
                 if any(
@@ -72,48 +67,60 @@ class AssetImportService:
                     row["date_of_purchase"], "%Y-%m-%d"
                 ).date()
 
-                asset_type, _ = AssetType.objects.get_or_create(
-                    asset_type_name=row["asset_type"]
-                )
-                business_unit, _ = BusinessUnit.objects.get_or_create(
-                    business_unit_name=row["business_unit"]
-                )
-                custodian = Employee.objects.filter(
-                    employee_name=row["custodian"]
-                ).first()
-                location, _ = Location.objects.get_or_create(
-                    location_name=row["location"]
-                )
-                invoice_location, _ = Location.objects.get_or_create(
-                    location_name=row["invoice_location"]
-                )
-                memory, _ = Memory.objects.get_or_create(memory_space=row["memory"])
+                asset_type = clean_field(row["asset_type"])
+                if asset_type is not None:
+                    asset_type, _ = AssetType.objects.get_or_create(
+                        asset_type_name=asset_type
+                    )
+
+                business_unit = clean_field(row["business_unit"])
+                if business_unit is not None:
+                    business_unit, _ = BusinessUnit.objects.get_or_create(
+                        business_unit_name=business_unit
+                    )
+
+                location = clean_field(row["location"])
+                if location is not None:
+                    location, _ = Location.objects.get_or_create(location_name=location)
+
+                invoice_location = clean_field(row["invoice_location"])
+                if invoice_location is not None:
+                    invoice_location, _ = Location.objects.get_or_create(
+                        location_name=invoice_location
+                    )
+
+                memory = clean_field(row["memory"])
+                if memory is not None:
+                    memory, _ = Memory.objects.get_or_create(memory_space=memory)
+
+                # TODO Need to change this after integrating SSO
+                custodian = clean_field(row["custodian"])
+                if custodian is not None:
+                    custodian = Employee.objects.filter(
+                        employee_name=row["custodian"]
+                    ).first()
 
                 asset = Asset(
                     asset_id=asset_id,
-                    version=row["version"],
-                    asset_category=row["asset_category"],
-                    product_name=row["product_name"],
-                    model_number=row["model_number"],
+                    asset_category=clean_field(row["asset_category"]),
+                    product_name=clean_field(row["product_name"]),
+                    model_number=clean_field(row["model_number"]),
                     serial_number=serial_number,
-                    owner=row["owner"],
+                    owner=clean_field(row["owner"]),
                     date_of_purchase=purchase_date,
-                    status=row["status"],
-                    warranty_period=row["warranty_period"],
-                    os=row["os"],
-                    os_version=row["os_version"],
-                    mobile_os=row["mobile_os"],
-                    processor=row["processor"],
-                    processor_gen=row["processor_gen"],
-                    storage=row["storage"],
-                    configuration=row["configuration"],
-                    accessories=row["accessories"],
-                    notes=row["notes"],
+                    status=clean_field(row["status"]),
+                    warranty_period=clean_field(row["warranty_period"]),
+                    os=clean_field(row["os"]),
+                    os_version=clean_field(row["os_version"]),
+                    mobile_os=clean_field(row["mobile_os"]),
+                    processor=clean_field(row["processor"]),
+                    processor_gen=clean_field(row["processor_gen"]),
+                    storage=clean_field(row["storage"]),
+                    configuration=clean_field(row["configuration"]),
+                    accessories=clean_field(row["accessories"]),
+                    notes=clean_field(row["notes"]),
                     asset_detail_status=asset_detail_status,
-                    approval_status_message=row["approval_status_message"],
-                    created_at=row["created_at"],
-                    updated_at=row["updated_at"],
-                    is_deleted=row["is_deleted"],
+                    approval_status_message=clean_field(row["approval_status_message"]),
                     approved_by=approved_by,
                     requester_id=user.id,
                     asset_type_id=asset_type.id if asset_type else None,
@@ -129,10 +136,7 @@ class AssetImportService:
                 new_assets.append(asset)
                 added_assets_count += 1
 
-            except ValueError:
-                invalid_fields_assets.append(row)
-
-            except Exception:
+            except (ValueError, Exception):
                 invalid_fields_assets.append(row)
 
         Asset.objects.bulk_create(new_assets)
