@@ -49,6 +49,12 @@ make_curl_request "getwithashish.lead" "getwithashish@lead" "94460209990" "getwi
 make_curl_request "getwithashish.manager" "getwithashish@manager" "94460209901" "getwithashish@manager.in" "MANAGER"
 make_curl_request "sukesh.sysadmin" "sukesh@sysadmin" "9446020992" "sukesh@sysadmin.in" "SYSTEM_ADMIN"
 make_curl_request "sukesh.lead" "sukesh@lead" "9446020993" "sukesh@lead.in" "LEAD"
+make_curl_request "saheer.sysadmin" "saheer@sysadmin" "9446090992" "saheer@sysadmin.in" "SYSTEM_ADMIN"
+make_curl_request "saheer.lead" "saheer@lead" "9446090993" "saheer@lead.in" "LEAD"
+make_curl_request "saheer.manager" "saheer@manager" "94460909901" "saheer@manager.in" "MANAGER"
+make_curl_request "dennis.sysadmin" "dennis@sysadmin" "9449020992" "dennis@sysadmin.in" "SYSTEM_ADMIN"
+make_curl_request "dennis.lead" "dennis@lead" "9449020993" "dennis@lead.in" "LEAD"
+
 
 # Sign in
 response=$(curl --request POST \
