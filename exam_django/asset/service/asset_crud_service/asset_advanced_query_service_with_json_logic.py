@@ -65,7 +65,8 @@ class AssetAdvancedQueryServiceWithJsonLogic(AssetQueryAbstract):
         elif "==" in logic_data:
             field = logic_data["=="][0]["var"]
             value = logic_data["=="][1]
-            return Q(**{field: value})
+            # Checked for null
+            return Q(**{field: value if value != "null" else None})
 
         # "not equals" operation
         elif "!=" in logic_data:
