@@ -47,7 +47,10 @@ class AssetCountService:
             asset_type_name = asset_type_names.get(
                 asset_type_id, asset_type_id
             )  # Use asset_type_id if name not found
-            asset_type_counts_with_names[asset_type_name] = count
+            asset_type_counts_with_names[asset_type_name] = {
+                "id": asset_type_id,
+                "count": count,
+            }
 
         total_assets = queryset.count()
 

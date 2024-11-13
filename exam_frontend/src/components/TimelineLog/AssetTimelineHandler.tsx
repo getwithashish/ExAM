@@ -115,6 +115,24 @@ export const AssetTimelineHandler = ({ assetUuid }: Props) => {
         </>
       );
     }
+    if (key === "business_unit") {
+      return (
+        <>
+          {value.old_value && value.old_value != "None" && (
+            <span>
+              Prev Business Unit:{" "}
+              {JSON.parse(value.old_value).business_unit_name}
+            </span>
+          )}
+          {value.new_value && value.new_value != "None" && (
+            <p>
+              New Business Unit:{" "}
+              {JSON.parse(value.new_value).business_unit_name}
+            </p>
+          )}
+        </>
+      );
+    }
     if (value.old_value == value.new_value) {
       return <></>;
     }

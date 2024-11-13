@@ -324,7 +324,7 @@ const AddAsset: React.FC = ({
     isLoading: isAssetTypeLoading,
     isError: isAssetTypeError,
   } = useQuery({
-    queryKey: ["assetType"],
+    queryKey: ["assetType_AddAsset"],
     queryFn: () =>
       axiosInstance.get("/asset/asset_type").then((res) => res.data.data),
   });
@@ -333,7 +333,7 @@ const AddAsset: React.FC = ({
     isLoading: isMemoryLoading,
     isError: isMemoryError,
   } = useQuery({
-    queryKey: ["memorySpace"],
+    queryKey: ["memorySpace_AddAsset"],
     queryFn: () =>
       axiosInstance.get("/asset/memory_list").then((res) => res.data.data),
   });
@@ -342,7 +342,7 @@ const AddAsset: React.FC = ({
     isLoading: isBusinessUnitLoading,
     isError: isBusinessUnitError,
   } = useQuery({
-    queryKey: ["businessUnit"],
+    queryKey: ["businessUnit_AddAsset"],
     queryFn: () =>
       axiosInstance.get("/asset/business_unit").then((res) => res.data.data),
   });
@@ -352,7 +352,7 @@ const AddAsset: React.FC = ({
     isLoading: isLocationLoading,
     isError: isLocationError,
   } = useQuery({
-    queryKey: ["locations"],
+    queryKey: ["locations_AddAsset"],
     queryFn: () => axiosInstance.get("/asset/location").then((res) => res.data),
   });
 
@@ -539,7 +539,7 @@ const AddAsset: React.FC = ({
                         endAdornment: (
                           <Tooltip title="Asset Id should be alphanumeric Eg:ASS101">
                             <InfoCircleOutlined
-                              style={{ color: "rgba(0,0,0,.45)" }}
+                              style={{ color: "white" }}
                             />
                           </Tooltip>
                         ),
@@ -710,7 +710,7 @@ const AddAsset: React.FC = ({
                         endAdornment: (
                           <Tooltip title="Asset Id should be alphanumeric Eg:ASS101">
                             <InfoCircleOutlined
-                              style={{ color: "rgba(0,0,0,.45)" }}
+                              style={{ color: "white" }}
                             />
                           </Tooltip>
                         ),
@@ -820,7 +820,7 @@ const AddAsset: React.FC = ({
                         endAdornment: (
                           <Tooltip title="Serial Number should be alphanumeric and should not exceed 30 characters Eg:ABC123DEF456">
                             <InfoCircleOutlined
-                              style={{ color: "rgba(0,0,0,.45)" }}
+                              style={{ color: "white" }}
                             />
                           </Tooltip>
                         ),
@@ -842,7 +842,7 @@ const AddAsset: React.FC = ({
                         endAdornment: (
                           <Tooltip title="Warranty period should be in months Eg: 12, 24">
                             <InfoCircleOutlined
-                              style={{ color: "rgba(0,0,0,.45)" }}
+                              style={{ color: "white" }}
                             />
                           </Tooltip>
                         ),

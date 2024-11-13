@@ -8,7 +8,7 @@ from messages import (
 
 class AssetSysadminRoleAssignService:
     @staticmethod
-    def assign_asset(asset, employee, requester):
+    def assign_asset(asset, employee, business_unit, requester):
         if asset.assign_status == "ASSIGN_PENDING":
             raise NotAcceptableOperationException(
                 {},
@@ -21,6 +21,7 @@ class AssetSysadminRoleAssignService:
             email_subject = "REQUEST: ASSET ALLOCATION REQUEST"
         asset.assign_status = "ASSIGN_PENDING"
         asset.custodian = employee
+        asset.business_unit = business_unit
         asset.requester = requester
         message = ASSET_ASSIGNING_PENDING
         return asset, message, email_subject

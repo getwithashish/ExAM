@@ -10,6 +10,8 @@ export interface MuiAutocompleteProps {
     React.SetStateAction<(string | FieldValues)[]>
   >;
   disabledFields?: string[];
+  selectedFields: string[];
+  setSelectedFields: () => void;
 }
 
 export interface ItemElementTypeWithString {

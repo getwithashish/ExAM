@@ -15,19 +15,20 @@ export interface PieChartGraphProps {
     status_counts: { [key: string]: number };
     asset_detail_status: { [key: string]: number };
     assign_status: { [key: string]: number };
-    asset_type_counts: { [key: string]: number };
-  };  
+    asset_type_counts: { [key: string]: Object };
+  };
   selectedAssetType?: string;
   type?: string;
-  selectedTypeId?:number | undefined;
-  assetState?: string | null;  
-  detailState?:string | null;
-  assignState:string | null;
+  selectedTypeId?: number | undefined;
+  assetState?: string | null;
+  detailState?: string | null;
+  assignState: string | null;
   setSelectedTypeId: (id: number) => void;
   setAssetState: React.Dispatch<React.SetStateAction<string | null>>;
   setDetailState: React.Dispatch<React.SetStateAction<string | null>>;
   setAssignState: React.Dispatch<React.SetStateAction<string | null>>;
-  onClick: () => void
+  onClick: () => void;
+  triggerRefresh: number;
 }
 export interface AssetDetailData {
   id: number;

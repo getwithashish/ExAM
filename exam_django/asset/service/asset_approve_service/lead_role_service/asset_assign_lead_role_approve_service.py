@@ -30,6 +30,7 @@ class AssetAssignLeadRoleApproveService(AssetUserRoleApproveAbstract):
                 else:
                     asset.assign_status = "UNASSIGNED"
                     asset.status = "STOCK"
+                    asset.business_unit = None
                     message = ASSET_SUCCESSFULLY_UNASSIGNED
                     email_subject = "APPROVED: ASSET DEALLOCATION SUCCESSFUL"
 

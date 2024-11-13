@@ -721,7 +721,9 @@ const ViewRequestModal: FC<{
                     htmlFor={field.id}
                     style={{
                       color: `${
-                        field.name === "assignee" ? "#2563eb" : "none"
+                        ["assignee", "businessUnit"].includes(field.name)
+                          ? "#2563eb"
+                          : "none"
                       }`,
                     }}
                     className={`text-white`}
@@ -741,10 +743,10 @@ const ViewRequestModal: FC<{
                       background: "transparent",
                       color: "white",
                       borderColor: `${
-                        field.name === "assignee" ? "#2563eb" : "none"
+                        ["assignee", "businessUnit"].includes(field.name) ? "#2563eb" : "none"
                       }`,
                       borderWidth: `${
-                        field.name === "assignee" ? "3px" : "none"
+                        ["assignee", "businessUnit"].includes(field.name) ? "3px" : "none"
                       }`,
                       cursor: "default",
                     }}
