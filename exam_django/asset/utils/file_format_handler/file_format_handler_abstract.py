@@ -10,3 +10,7 @@ class FileFormatHandlerAbstract(ABC):
     @staticmethod
     def generate_from_list(csv_list):
         pass
+
+    @staticmethod
+    def export(assets, expiry_dates, exclude_fields, foreign_fields):
+        pass
