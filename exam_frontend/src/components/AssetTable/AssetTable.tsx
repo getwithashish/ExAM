@@ -162,6 +162,7 @@ const AssetTable: React.FC<AssetTableProps> = ({
               columns={columns}
               loading={isAssetDataLoading}
               dataSource={assetData}
+              showSorterTooltip={{title: "Click to Sort"}}
               scroll={{ y: 600 }}
               className="mainTable"
               pagination={false}
