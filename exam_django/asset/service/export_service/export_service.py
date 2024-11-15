@@ -1,34 +1,47 @@
 # export_service.py
 import datetime
 import json
-import uuid
-from django.http import HttpResponse
-from asset.models import Asset
+from rest_framework import status
 from asset.service.asset_crud_service.asset_advanced_query_service_with_json_logic import (
     AssetAdvancedQueryServiceWithJsonLogic,
 )
-from asset.service.export_service.export_csv_service import ExportCSV
-from asset.service.export_service.export_xlsx_service import ExportXLSX
 from asset.service.export_service.export_pdf_service import ExportPDF
+from asset.service.asset_crud_service.asset_normal_query_service import (
+    AssetNormalQueryService,
+)
+from asset.utils.file_format_handler.csv_handler import CsvHandler
+from asset.utils.file_format_handler.xlsx_handler import XlsxHandler
+from messages import EXPORT_FORMAT_NOT_SUPPORTED
+from response import APIResponse
 
 
 class ExportService:
 
+    FOREIGN_FIELDS = {
+        "location": "location_name",
+        "invoice_location": "location_name",
+        "asset_type": "asset_type_name",
+        "custodian": "employee_name",
+        "memory": "memory_space",
+        "business_unit": "business_unit_name",
+    }
+
+    EXCLUDE_FIELDS = ["is_deleted", "version"]
+
     @staticmethod
-    def export_asset(format: str, logic_data):
+    def export_asset(format: str, logic_data, request):
+
+        asset_normal_query = AssetNormalQueryService()
+        queryset = asset_normal_query.filter_queryset(request=request)
 
         if logic_data and logic_data != "":
             logic_data = json.loads(logic_data)
-            # Convert JsonLogic expression to Django Q =objects
             asset_advanced_query = AssetAdvancedQueryServiceWithJsonLogic()
             q_objects = asset_advanced_query.convert_json_logic_to_django_q(logic_data)
-            queryset = Asset.objects.all().filter(is_deleted=False)
 
-            queryset = queryset.filter(is_deleted=False)
             queryset = queryset.filter(q_objects)
-            assets = queryset
-        else:
-            assets = Asset.objects.all().filter(is_deleted=False)
+
+        assets = queryset
 
         # Calculate 'expiry_dates' for each asset
         expiry_dates = []
@@ -48,14 +61,25 @@ class ExportService:
 
         # Export assets based on the specified format
         if format == "csv":
+            # assets_with_expiry = list(zip(assets, expiry_dates))
+            file_format_handler = CsvHandler
 
-            assets_with_expiry = list(zip(assets, expiry_dates))
-            return ExportCSV.export_csv(assets, expiry_dates)
         elif format == "xlsx":
+            file_format_handler = XlsxHandler
 
-            return ExportXLSX.export_xlsx(assets, expiry_dates)
         elif format == "pdf":
-
             return ExportPDF.export_pdf(assets, expiry_dates)
+
         else:
-            return HttpResponse("Invalid format specified", status=400)
+            return APIResponse(
+                data={},
+                message=EXPORT_FORMAT_NOT_SUPPORTED,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return file_format_handler.export(
+            assets,
+            expiry_dates,
+            ExportService.EXCLUDE_FIELDS,
+            ExportService.FOREIGN_FIELDS,
+        )

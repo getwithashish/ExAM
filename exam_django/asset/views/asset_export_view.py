@@ -14,7 +14,7 @@ class AssetExportView(APIView):
         # Ensure the ExportService is correctly called with the specified format
         if export_format in ["csv", "xlsx", "pdf"]:
             response = ExportService.export_asset(
-                export_format, json_logic
+                export_format, json_logic, request
             )  # Pass request to the export_asset method
 
             return response
