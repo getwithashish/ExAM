@@ -69,9 +69,7 @@ const AssetTable = ({
   };
 
   return (
-    <div
-      
-    >
+    <div>
       <div className="mainHeading pt-4">
         <div className="font-display text-white">Deallocate Assets</div>
       </div>
@@ -119,6 +117,7 @@ const AssetTable = ({
           <Table
             columns={columns}
             dataSource={assetData}
+            showSorterTooltip={{ title: "Click to Sort" }}
             scroll={{ y: 600 }}
             className="mainTable"
             pagination={false}

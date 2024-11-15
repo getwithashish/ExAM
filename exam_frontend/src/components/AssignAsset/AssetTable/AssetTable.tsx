@@ -142,6 +142,7 @@ const AssetTable = ({
             columns={columns}
             dataSource={assetData}
             loading={isAssetDataLoading}
+            showSorterTooltip={{title: "Click to Sort"}}
             scroll={{ y: 600 }}
             className="mainTable"
             pagination={false}

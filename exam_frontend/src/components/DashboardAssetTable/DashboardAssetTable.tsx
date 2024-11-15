@@ -40,6 +40,7 @@ const DashboardAssetTable = ({
   assignState,
   detailState,
   selectedTypeId,
+  queryParam
 }: AssetTableProps) => {
   const handleSearch = (searchTerm: string) => {
     setSearchTerm(searchTerm);
@@ -87,6 +88,7 @@ const DashboardAssetTable = ({
           setSearchTerm={setSearchTerm}
           setJson_query={setJson_query}
           json_query={json_query}
+          queryParam={queryParam}
         />
       </div>
       <div
@@ -107,6 +109,7 @@ const DashboardAssetTable = ({
               sortOrder:
                 column.dataIndex === sortedColumn ? sortOrder : undefined,
             }))}
+            showSorterTooltip={{title: "Click to Sort"}}
             dataSource={assetData}
             className="mainTable"
             loading={isAssetDataLoading}
