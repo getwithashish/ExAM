@@ -11,21 +11,22 @@ from django.utils import timezone
 
 
 class AssetNormalQueryService(AssetQueryAbstract):
-    SORTABLE_FIELDS = [
-        "product_name",
-        "location",
-        "asset_type",
-        "version",
-        "date_of_purchase",
-        "warranty_period",
-        "requester",
-        "custodian",
-        "approved_by",
-        "invoice_location",
-        "memory",
-        "created_at",
-        "updated_at",
-    ]
+    SORTABLE_FIELDS = {
+        "product_name": "product_name",
+        "location": "location__location_name",
+        "asset_type": "asset_type__asset_type_name",
+        "asset_category": "asset_category",
+        "date_of_purchase": "date_of_purchase",
+        "warranty_period": "warranty_period",
+        "requester": "requester__first_name",
+        "custodian": "custodian__employee_name",
+        "model_number": "model_number",
+        "approved_by": "approved_by__first_name",
+        "invoice_location": "invoice_location__location_name",
+        "memory": "memory__memory_space",
+        "created_at": "created_at",
+        "updated_at": "updated_at",
+    }
 
     def __init__(self):
         self.pagination = LimitOffsetPagination()
@@ -85,6 +86,7 @@ class AssetNormalQueryService(AssetQueryAbstract):
             "expired",
             "deleted",
             "json_logic",
+            "export_format",
         ]
         required_query_params = self.remove_fields_from_dict(
             query_params, query_params_to_exclude
@@ -112,11 +114,13 @@ class AssetNormalQueryService(AssetQueryAbstract):
             filter_kwargs[f"{field}__icontains"] = value
 
         if sort_by:
-            if sort_by in self.SORTABLE_FIELDS:
+            if sort_by in self.SORTABLE_FIELDS.keys():
                 if sort_order == "asc":
-                    queryset = queryset.order_by(sort_by)
+                    queryset = queryset.order_by(self.SORTABLE_FIELDS.get(sort_by))
                 elif sort_order == "desc":
-                    queryset = queryset.order_by(f"-{sort_by}")
+                    queryset = queryset.order_by(
+                        f"-{self.SORTABLE_FIELDS.get(sort_by)}"
+                    )
             else:
                 pass
 

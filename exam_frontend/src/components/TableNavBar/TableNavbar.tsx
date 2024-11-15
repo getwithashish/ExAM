@@ -1,9 +1,10 @@
 import React, { useState, useCallback, useMemo } from "react";
 import {
-  DownloadOutlined,
   UploadOutlined,
   CloudDownloadOutlined,
   LoadingOutlined,
+  TableOutlined,
+  FileTextOutlined,
 } from "@ant-design/icons";
 import axiosInstance from "../../config/AxiosConfig";
 import GlobalSearch from "../GlobalSearch/GlobalSearch";
@@ -20,6 +21,7 @@ const TableNavbar: React.FC<TableNavbarProps> = ({
   setSearchTerm,
   setJson_query,
   json_query,
+  queryParam,
 }) => {
   const [visible, setVisible] = useState(false);
   const [exporting, setExporting] = useState(false);
@@ -54,7 +56,7 @@ const TableNavbar: React.FC<TableNavbarProps> = ({
       message.info("Please wait, the export may take some time");
       axiosInstance
         .get(
-          `/asset/export?export_format=${exportFormat}&json_logic=${json_query}`,
+          `/asset/export?export_format=${exportFormat}${queryParam}&json_logic=${json_query}`,
           { responseType: "blob" }
         )
         .then((response) => {
@@ -72,20 +74,20 @@ const TableNavbar: React.FC<TableNavbarProps> = ({
         })
         .catch((error) => {
           console.error("Error exporting assets:", error);
-          message.error("Asset export failed");
+          message.error(error.response.data?.message);
         })
         .finally(() => {
           setExporting(false);
         });
     },
-    [json_query]
+    [json_query, queryParam]
   );
 
   const exportOptions = useMemo(
     () => [
-      { label: "Export as CSV", format: "csv", icon: <DownloadOutlined /> },
-      { label: "Export as XLSX", format: "xlsx", icon: <DownloadOutlined /> },
-      { label: "Export as PDF", format: "pdf", icon: <DownloadOutlined /> },
+      { label: "Export as CSV", format: "csv", icon: <FileTextOutlined /> },
+      { label: "Export as XLSX", format: "xlsx", icon: <TableOutlined /> },
+      // { label: "Export as PDF", format: "pdf", icon: <DownloadOutlined /> },
     ],
     []
   );
