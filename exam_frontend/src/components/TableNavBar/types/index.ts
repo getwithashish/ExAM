@@ -25,5 +25,6 @@ export interface TableNavbarProps {
   onSearch: (searchTerm: string) => void;
   setSearchTerm: (searchTerm: string) => void;
   setJson_query: (query: string) => void;
-  json_query:string;
+  json_query: string;
+  queryParam: string;
 }

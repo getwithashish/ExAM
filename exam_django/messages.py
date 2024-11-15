@@ -15,6 +15,9 @@ IMPORT_OPERATION_UNSUCCESSFUL = (
     "Some error occured during import. Please try again later with correct data."
 )
 
+# Export Messages
+EXPORT_FORMAT_NOT_SUPPORTED = "The specified export format is not supported"
+
 # User Exception Messages
 USER_NOT_FOUND_ERROR = "User not found in the request. Please try again."
 INVALID_USER_DETAILS_ERROR = (
