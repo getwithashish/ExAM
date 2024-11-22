@@ -1,4 +1,4 @@
-import { Layout, Menu, Dropdown, Spin } from "antd";
+import { Layout, Menu, Spin } from "antd";
 import {
   AppstoreAddOutlined,
   CarryOutOutlined,
@@ -12,7 +12,6 @@ import {
   CheckCircleOutlined,
   CheckSquareOutlined,
   CloseCircleOutlined,
-  RobotOutlined,
 } from "@ant-design/icons";
 import { FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 import styles from "./sidebar.module.css";
@@ -25,10 +24,9 @@ import { Footer as FlowbiteFooter } from "flowbite-react";
 import { MdFacebook } from "react-icons/md";
 import { useEffect, useState } from "react";
 import React from "react";
-import { Avatar, Button } from "@mui/material";
-import { Polygon } from "../../assets";
+import { Avatar } from "@mui/material";
 import Tooltip from "../Tooltip/Tooltip";
-import { UploadingProvider, useUploading } from "../Upload/UploadContext";
+import { useUploading } from "../Upload/UploadContext";
 
 const SidebarComponentNew = ({ children }: any) => {
   const { userRole, setUserRole, login, logout } = useAuth();
@@ -117,20 +115,6 @@ const SidebarComponentNew = ({ children }: any) => {
     setUserRole("None");
     navigate("/login", { replace: true });
   };
-
-  const menuItems = [
-    {
-      key: "logout",
-      label: (
-        <div>
-          <Button className="w-4" color="primary" onClick={handleLogout}>
-            <span className="text-xs">Logout</span>
-            <LogoutOutlined style={{ width: "10px", height: "10px" }} />
-          </Button>
-        </div>
-      ),
-    },
-  ];
 
   const { uploading, setUploading } = useUploading();
 
@@ -321,10 +305,17 @@ const SidebarComponentNew = ({ children }: any) => {
               </Tooltip>
             </Menu.Item>
 
-            <Menu.Item key="/exam/chat" icon={<RobotOutlined />}>
+            {/* <Menu.Item key="/exam/chat" icon={<RobotOutlined />}>
               <Tooltip title="AI Assistant">
                 <Link to="/exam/chat">AssetSense Ai</Link>
               </Tooltip>
+            </Menu.Item> */}
+
+            <Menu.Item onClick={handleLogout} className="group">
+              <div className="flex items-center space-x-2 group-hover:text-red-500 transition-colors">
+                <LogoutOutlined className="group-hover:text-red-500 transition-colors" />
+                <span>Logout</span>
+              </div>
             </Menu.Item>
           </Menu>
         </div>
@@ -370,11 +361,7 @@ const SidebarComponentNew = ({ children }: any) => {
               )}
             </div>
             <div className="mx-4">
-              <Dropdown menu={{ items: menuItems }} placement="bottom" arrow>
-                <div className="cursor-pointer">
-                  <Avatar />
-                </div>
-              </Dropdown>
+              <Avatar />
             </div>
           </div>
         </Header>
