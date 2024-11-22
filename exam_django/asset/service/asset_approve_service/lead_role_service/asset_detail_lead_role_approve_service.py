@@ -32,6 +32,9 @@ class AssetDetailLeadRoleApproveService(AssetUserRoleApproveAbstract):
                 {}, CANNOT_APPROVE_ACKNOWLEDGED_ASSET, status.HTTP_400_BAD_REQUEST
             )
 
+        if asset.status == "SCRAP":
+            asset.is_deleted = True
+
         return asset, message, email_subject
 
     def reject_request(self, asset, request):

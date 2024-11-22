@@ -203,6 +203,10 @@ class AssetImportService:
             else:
                 status = "UNKNOWN"
 
+            is_deleted = False
+            if status == "SCRAP":
+                is_deleted = True
+
             asset = Asset(
                 asset_id=asset_id,
                 asset_category=clean_field(row.get("Category")),
@@ -227,7 +231,7 @@ class AssetImportService:
                 approval_status_message=clean_field(row.get("approval_status_message")),
                 created_at=clean_field(row.get("created_at")),
                 updated_at=clean_field(row.get("updated_at")),
-                is_deleted=False,
+                is_deleted=is_deleted,
                 requester_id=user.id,
                 asset_type_id=asset_type.id if asset_type else None,
                 business_unit_id=business_unit.id if business_unit else None,
