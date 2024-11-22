@@ -76,18 +76,29 @@ class AssetLifeCycleService(APIView):
                 previous_log_data, current_log_data
             )
 
-        elif previous_log_data and (
-            (
-                previous_log_data.get("assign_status") == "REJECTED"
-                and (
-                    not previous_log_data.get("custodian")
-                    and not current_log_data.get("custodian")
-                    # TODO Need to test it in case of modifying the asset when assign status is in rejected
+        elif (
+            previous_log_data
+            and (current_log_data.get("assign_status") != "ASSIGN_PENDING")
+            and (
+                (
+                    previous_log_data.get("assign_status")
+                    != current_log_data.get("assign_status")
+                    and current_log_data.get("assign_status") == "REJECTED"
                 )
-            )
-            or (
-                previous_log_data.get("custodian")
-                and not current_log_data.get("custodian")
+                or (
+                    (
+                        previous_log_data.get("assign_status") == "REJECTED"
+                        and (
+                            not previous_log_data.get("custodian")
+                            and not current_log_data.get("custodian")
+                            # TODO Need to test it in case of modifying the asset when assign status is in rejected
+                        )
+                    )
+                    or (
+                        previous_log_data.get("custodian")
+                        and not current_log_data.get("custodian")
+                    )
+                )
             )
         ):
             if current_log_data.get("assign_status") == "REJECTED":
@@ -114,15 +125,26 @@ class AssetLifeCycleService(APIView):
                 },
             }
 
-        elif previous_log_data and (
-            (
-                previous_log_data.get("assign_status") == "REJECTED"
-                and (
-                    previous_log_data.get("custodian")
-                    == current_log_data.get("custodian")
+        elif (
+            previous_log_data
+            and (current_log_data.get("assign_status") != "ASSIGN_PENDING")
+            and (
+                previous_log_data.get("assign_status")
+                != current_log_data.get("assign_status")
+                or (
+                    (
+                        previous_log_data.get("assign_status") == "REJECTED"
+                        and (
+                            previous_log_data.get("custodian")
+                            == current_log_data.get("custodian")
+                        )
+                    )
+                    or (
+                        previous_log_data.get("custodian")
+                        != current_log_data.get("custodian")
+                    )
                 )
             )
-            or (previous_log_data.get("custodian") != current_log_data.get("custodian"))
         ):
             if current_log_data.get("assign_status") == "REJECTED":
                 operation = "ALLOCATION REJECTED"

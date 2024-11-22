@@ -38,8 +38,8 @@ class AssetImportService:
 
         for row in csv_reader:
             try:
-                asset_id = row.get("asset_id", "").strip()
-                serial_number = row.get("serial_number", "").strip()
+                asset_id = str(row.get("asset_id", "")).strip()
+                serial_number = str(row.get("serial_number", "")).strip()
 
                 if (
                     asset_id in existing_asset_ids
@@ -60,6 +60,7 @@ class AssetImportService:
                 if any(
                     str(row.get(field, "")).strip() == "" for field in mandatory_fields
                 ):
+                    print("Field Name: ", row)
                     missing_fields_assets.append(row)
                     continue
 
@@ -100,6 +101,10 @@ class AssetImportService:
                         employee_name=row["custodian"]
                     ).first()
 
+                is_deleted = False
+                if row["status"] == "SCRAP":
+                    is_deleted = True
+
                 asset = Asset(
                     asset_id=asset_id,
                     asset_category=clean_field(row["asset_category"]),
@@ -131,12 +136,14 @@ class AssetImportService:
                     ),
                     location_id=location.id if location else None,
                     memory_id=memory.id if memory else None,
+                    is_deleted=is_deleted,
                 )
 
                 new_assets.append(asset)
                 added_assets_count += 1
 
-            except (ValueError, Exception):
+            except (ValueError, Exception) as e:
+                print("Exception: ", e)
                 invalid_fields_assets.append(row)
 
         Asset.objects.bulk_create(new_assets)
