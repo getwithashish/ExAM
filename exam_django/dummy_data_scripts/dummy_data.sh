@@ -2,8 +2,8 @@
 
 # Check if hostname argument is provided
 if [ $# -ne 1 ]; then
-    echo "Usage: $0 <hostname>"
-    exit 1
+  echo "Usage: $0 <hostname>"
+  exit 1
 fi
 
 hostname=$1
@@ -15,18 +15,17 @@ curl -L -o "$target_filename" "https://github.com/jqlang/jq/releases/download/jq
 chmod +x "$target_filename"
 
 make_curl_request() {
-    local username="$1"
-    local password="$2"
-    local mobile="$3"
-    local email="$4"
-    local scope="$5"
-    
+  local username="$1"
+  local password="$2"
+  local mobile="$3"
+  local email="$4"
+  local scope="$5"
 
-    curl --request POST \
-      --url "http://$hostname:8000/api/v1/user/register" \
-      --header 'Content-Type: application/json' \
-      --header 'User-Agent: insomnia/8.6.1' \
-      --data "{
+  curl --request POST \
+    --url "http://$hostname:8000/api/v1/user/register" \
+    --header 'Content-Type: application/json' \
+    --header 'User-Agent: insomnia/8.6.1' \
+    --data "{
         \"username\":\"$username\",
         \"password\":\"$password\",
         \"email\":\"$email\",
@@ -55,7 +54,6 @@ make_curl_request "saheer.manager" "saheer@manager" "94460909901" "saheer@manage
 make_curl_request "dennis.sysadmin" "dennis@sysadmin" "9449020992" "dennis@sysadmin.in" "SYSTEM_ADMIN"
 make_curl_request "dennis.lead" "dennis@lead" "9449020993" "dennis@lead.in" "LEAD"
 
-
 # Sign in
 response=$(curl --request POST \
   --url http://$hostname:8000/api/v1/user/signin \
@@ -68,10 +66,9 @@ response=$(curl --request POST \
 
 access_token=$(echo $response | ./jq -r '.access')
 
-if ! command -v ./jq &> /dev/null
-then
-    echo "jq could not be found. Please install it to continue."
-    exit
+if ! command -v ./jq &>/dev/null; then
+  echo "jq could not be found. Please install it to continue."
+  exit
 fi
 
 # Create Laptop Asset Type
@@ -137,31 +134,29 @@ curl --request POST \
   --header "Authorization: Bearer $access_token" \
   --header 'Content-Type: application/json' \
   --data '{
-  "asset_id":"91023",
-   "version":"5",
-   "asset_category":"HARDWARE",
-   "asset_type":"1",
-   "product_name":"HP Pavilion Yahoo Smart Glass",
-    "model_number" :"HPModel2423",
-    "serial_number":"001234",
-    "owner":"EXPERION",
-    "custodian":"1",
-    "date_of_purchase":"2024-02-20" ,
-     "status":"STOCK",
-      "warranty_period":"4",
-        "location":"1", 
-        "invoice_location":"1",
-				"business_unit": "1",
-             "os":"WINDOWS",
-             "os_version":"11",
-							"memory": "",
-               "configuration":"i5/8GB/256GB+SSD",
-                "accessories":"bag,charger",
-                 "approval_status":"PENDING",
-						"conceder": "1",
-                  "created_at":"20/02/24",
-                  "notes":"Asset laptop added"
-}
+  "asset_category":"SOFTWARE",
+  "asset_type":"1",
+  "product_name":"Docker",
+  "date_of_purchase":"2024-02-20" ,
+  "license_type": "Permanent",
+  "location":"1", 
+  }
 '
+
+curl --request POST \
+  --url http://$hostname:8000/api/v1/asset/ \
+  --header "Authorization: Bearer $access_token" \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "asset_category":"SOFTWARE",
+  "asset_type":"1",
+  "product_name":"Docker",
+  "date_of_purchase":"2024-02-20" ,
+  "license_type": "Monthly",
+  "location":"1", 
+  }
+'
+
+# TODO Delete these two assets
 
 rm "$target_filename"
