@@ -19,34 +19,36 @@ const Deallocate = () => {
       setLoading(false);
     }
   };
-  let queryParamProp = "&assign_status=ASSIGNED|REJECTED&asset_detail_status=CREATED|UPDATED|UPDATE_REJECTED&status=USE";
+  let queryParamProp =
+    "&assign_status=ASSIGNED|REJECTED&asset_detail_status=CREATED|UPDATED|UPDATE_REJECTED&status=USE";
   return (
-    <div className="bg-custom-400 sm:mx-0"
-    style={{
-      margin: "0 37px 0 30px",
-      paddingBottom: "20px",
-      borderRadius: "10px",
-    }}>
+    <div
+      className="bg-white dark:bg-custom-400 sm:mx-0"
+      style={{
+        margin: "0 37px 0 30px",
+        paddingBottom: "20px",
+        borderRadius: "10px",
+      }}
+    >
       {loading && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(255, 255, 255, 0.1)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+          }}
+        >
           <Spin size="large" />
         </div>
       )}
-      <AssetTableHandler
-        unassign={unassign}
-        queryParamProp={queryParamProp}
-      />
+      <AssetTableHandler unassign={unassign} queryParamProp={queryParamProp} />
     </div>
   );
 };

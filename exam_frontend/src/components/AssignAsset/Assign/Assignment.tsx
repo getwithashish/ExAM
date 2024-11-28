@@ -50,7 +50,7 @@ export const Assignment: React.FC<AssignmentProps> = ({
             <TextField
               type="text"
               name={"employee"}
-              className="rounded-lg bg-custom-400 font-display w-full"
+              className="rounded-lg dark:bg-custom-400 font-display w-full"
               placeholder="Enter employee name"
               onChange={handleInputChange}
               value={value}
@@ -76,24 +76,24 @@ export const Assignment: React.FC<AssignmentProps> = ({
 
         <div className="mt-6">
           <Form.Item>
-          <Button
-            className="rounded-lg"
-            disabled={!employeeId || businessUnit === ""}
-            onClick={handleAssign}
-            size="large"
-          >
-            Assign
-          </Button>
+            <Button
+              className="rounded-lg"
+              disabled={!employeeId || businessUnit === ""}
+              onClick={handleAssign}
+              size="large"
+            >
+              Assign
+            </Button>
           </Form.Item>
         </div>
       </div>
       <div className={divVisible ? styles[""] : styles["result"]}>
         <div className={value && data ? styles[""] : styles["result"]}>
-          <div className="flex flex-wrap items-center justify-center gap-6 p-4 bg-gray-800 rounded-lg my-10">
+          <div className="flex flex-wrap items-center justify-center gap-6 p-4 dark:bg-gray-800 rounded-lg my-10">
             {data?.data.length ? (
               data.data.map((employee: EmployeeDetails) => (
                 <div
-                  className="text-lg text-white shadow-lg bg-custom-400 border border-gray-300 rounded-lg p-2 w-64 transition-transform transform hover:scale-105 hover:shadow-xl cursor-pointer"
+                  className="text-lg dark:text-white shadow-lg dark:bg-custom-400 border border-gray-300 rounded-lg p-2 w-64 transition-transform transform hover:scale-105 hover:shadow-xl cursor-pointer"
                   key={employee.id}
                   onClick={() =>
                     handleNameClick(

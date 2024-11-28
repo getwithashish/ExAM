@@ -4,9 +4,10 @@ import axiosInstance from "../../config/AxiosConfig";
 import React from "react";
 import DrawerViewRequest from "./DrawerViewRequest";
 import InfoIcon from "@mui/icons-material/Info";
-import { ConfigProvider, Pagination, Spin, message, theme } from "antd";
+import { Pagination, Spin, message, theme } from "antd";
 import { RefreshTwoTone } from "@mui/icons-material";
 import { AssetStatusTooltip } from "../../components/Tooltip/AssetStatusTooltip";
+import { useTheme } from "../../components/CustomThemeContext/CustomThemeContext";
 
 const CreateRequestPage: FC = function () {
   const [assets, setAssets] = useState<any[]>([]);
@@ -20,16 +21,6 @@ const CreateRequestPage: FC = function () {
   const [modalOpen, setModalOpen] = useState(false);
   const [sortBy, setSortBy] = useState<string>("updated_at");
   const [sortOrder, setSortOrder] = useState<string>("desc");
-
-  const { darkAlgorithm } = theme;
-  const customTheme = {
-    algorithm: darkAlgorithm,
-    components: {
-      Table: {
-        colorBgContainer: "#161B21",
-      },
-    },
-  };
 
   useEffect(() => {
     fetchAssets();
@@ -172,17 +163,17 @@ const CreateRequestPage: FC = function () {
   return (
     <React.Fragment>
       <div
-        className="bg-gray-800 sm:mx-0"
+        className="bg-white dark:bg-gray-800 sm:mx-0"
         style={{
           margin: "0 37px 0 30px",
           paddingBottom: "20px",
           borderRadius: "10px",
         }}
       >
-        <div className="block items-center justify-between bg-custom-400 px-2 dark:border-gray-700 dark:bg-gray-800 sm:flex mx-2 my-2">
+        <div className="block items-center justify-between bg-white dark:bg-custom-400 px-2 dark:border-gray-700 dark:bg-gray-800 sm:flex mx-2 my-2">
           <div className="mb-1 w-full">
             <div className="m-2 flex items-center">
-              <h1 className="font-medium font-display m-0 leading-none text-white text-xl">
+              <h1 className="font-medium font-display m-0 leading-none dark:text-white text-xl">
                 Creation Requests
               </h1>
               <RefreshTwoTone
@@ -231,7 +222,7 @@ const CreateRequestPage: FC = function () {
               </div>
             ) : (
               <div className="inline-block w-[97%] align-middle mx-4">
-                <div className="overflow-hidden shadow-2xl mx-2 rounded-lg bg-custom-400">
+                <div className="overflow-hidden shadow-xl mx-2 rounded-lg bg-custom-400 mb-6">
                   <RequestTable
                     assets={filteredAssets}
                     setSelectedAsset={setSelectedAsset}
@@ -245,17 +236,15 @@ const CreateRequestPage: FC = function () {
             )}
           </div>
         </div>
-        <ConfigProvider theme={customTheme}>
-          <Pagination
-            showSizeChanger
-            onShowSizeChange={onShowSizeChange}
-            pageSize={pageSize}
-            current={currentPage}
-            total={totalPages * pageSize}
-            onChange={setCurrentPage}
-            className="rounded-xl p-4 ml-2 mt-2"
-          />
-        </ConfigProvider>
+        <Pagination
+          showSizeChanger
+          onShowSizeChange={onShowSizeChange}
+          pageSize={pageSize}
+          current={currentPage}
+          total={totalPages * pageSize}
+          onChange={setCurrentPage}
+          className="rounded-xl p-4 ml-2 mt-2"
+        />
         {selectedAsset && (
           <ViewRequestModal
             loading={loading}
@@ -586,6 +575,8 @@ const ViewRequestModal: FC<{
     },
   ];
 
+  const { theme: customTheme } = useTheme();
+
   return (
     <DrawerViewRequest
       title="Request Details"
@@ -620,10 +611,15 @@ const ViewRequestModal: FC<{
           <div className="grid font-display grid-cols-2 gap-3 lg:grid-cols-5 my-3 text-sm">
             {formFields.map((field, index) => (
               <div key={index}>
-                <Label htmlFor={field.id} className="text-white">
+                <Label
+                  htmlFor={field.id}
+                  className={`${
+                    customTheme.theme === "dark" ? "text-white" : "text-black"
+                  }`}
+                >
                   {field.label}{" "}
                   <span hidden={!(field.name === "status")}>
-                    <AssetStatusTooltip />
+                    <AssetStatusTooltip />{" "}
                   </span>
                   :
                 </Label>
@@ -634,7 +630,9 @@ const ViewRequestModal: FC<{
                   disabled={field.disabled}
                   style={{
                     background: "transparent",
-                    color: "white",
+                    color: `${
+                      customTheme.theme === "dark" ? "white" : "black"
+                    }`,
                     cursor: "default",
                   }}
                   className={`mt-1 text-white font-display`}
@@ -642,7 +640,12 @@ const ViewRequestModal: FC<{
               </div>
             ))}
             <div className="lg:col-span-5">
-              <Label className="text-white" htmlFor="notes">
+              <Label
+                className={`${
+                  customTheme.theme === "dark" ? "text-white" : "text-black"
+                }`}
+                htmlFor="notes"
+              >
                 NOTES
               </Label>
               <Textarea
@@ -654,11 +657,20 @@ const ViewRequestModal: FC<{
                 style={{
                   cursor: "default",
                 }}
-                className="mt-1 text-white bg-custom-400 h-24"
+                className={`${
+                  customTheme.theme === "dark"
+                    ? "text-white bg-custom-400"
+                    : "text-black"
+                } mt-1 h-24`}
               />
             </div>
             <div className="lg:col-span-5">
-              <Label className="text-white" htmlFor="approverNotes">
+              <Label
+                className={`${
+                  customTheme.theme === "dark" ? "text-white" : "text-black"
+                }`}
+                htmlFor="approverNotes"
+              >
                 APPROVER NOTES
               </Label>
               <Textarea
@@ -667,7 +679,16 @@ const ViewRequestModal: FC<{
                 rows={1}
                 value={approverNotes}
                 onChange={handleApproverNotesChange}
-                className="mt-1 text-white bg-custom-400 h-24"
+                // className={`${
+                //   customTheme.theme === "dark"
+                //     ? "text-white bg-custom-400"
+                //     : "text-black"
+                // }`}
+                className={`${
+                  customTheme.theme === "dark"
+                    ? "text-white bg-transparent"
+                    : "text-black"
+                } mt-1 h-24`}
               />
             </div>
           </div>
@@ -693,7 +714,11 @@ const ViewRequestModal: FC<{
             id="popup-modal"
             className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen bg-black bg-opacity-50"
           >
-            <div className="bg-custom-500 rounded-lg p-4 md:p-5 text-center">
+            <div
+              className={`${
+                customTheme.theme === "dark" ? "bg-custom-500" : "bg-custom-600"
+              } rounded-lg p-4 md:p-5 text-center`}
+            >
               <svg
                 className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
                 aria-hidden="true"
@@ -709,7 +734,7 @@ const ViewRequestModal: FC<{
                   d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                 />
               </svg>
-              <h3 className="mb-5 text-lg font-normal text-white dark:text-white">
+              <h3 className="mb-5 text-lg font-normal dark:text-white">
                 Are you sure you want to {actionType}?
               </h3>
               {actionType === "approve" ? (

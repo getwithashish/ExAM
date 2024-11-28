@@ -4,10 +4,11 @@ import axiosInstance from "../../config/AxiosConfig";
 import React from "react";
 import DrawerViewRequest from "./DrawerViewRequest";
 import { ChangeEvent } from "react";
-import { ConfigProvider, Pagination, Spin, message, theme } from "antd";
+import { Pagination, Spin, message, theme } from "antd";
 import InfoIcon from "@mui/icons-material/Info";
 import { RefreshTwoTone } from "@mui/icons-material";
 import { AssetStatusTooltip } from "../../components/Tooltip/AssetStatusTooltip";
+import { useTheme } from "../../components/CustomThemeContext/CustomThemeContext";
 
 const AssignPage: FC = function () {
   const [assignRequests, setAssignRequests] = useState<any[]>([]);
@@ -188,30 +189,20 @@ const AssignPage: FC = function () {
     }, 2000);
   };
 
-  const { darkAlgorithm } = theme;
-  const customTheme = {
-    algorithm: darkAlgorithm,
-    components: {
-      Table: {
-        colorBgContainer: "#161B21",
-      },
-    },
-  };
-
   return (
     <React.Fragment>
       <div
-        className="bg-gray-800 sm:mx-0"
+        className="bg-white dark:bg-gray-800 sm:mx-0"
         style={{
           margin: "0 37px 0 30px",
           paddingBottom: "20px",
           borderRadius: "10px",
         }}
       >
-        <div className="block items-center justify-between bg-custom-400 px-2 dark:border-gray-700 dark:bg-gray-800 sm:flex mx-2 my-2">
+        <div className="block items-center justify-between bg-white dark:bg-custom-400 px-2 dark:border-gray-700 dark:bg-gray-800 sm:flex mx-2 my-2">
           <div className="mb-1 w-full">
             <div className="m-2 flex items-center">
-              <h1 className="font-medium font-display m-0 leading-none text-white text-xl">
+              <h1 className="font-medium font-display m-0 leading-none dark:text-white text-xl">
                 Allocation Requests
               </h1>
               <RefreshTwoTone
@@ -270,7 +261,7 @@ const AssignPage: FC = function () {
               </div>
             ) : (
               <div className="inline-block w-[97%] align-middle mx-4">
-                <div className="overflow-hidden shadow-2xl mx-2 rounded-lg bg-custom-400">
+                <div className="overflow-hidden shadow-xl mx-2 rounded-lg bg-custom-400 mb-6">
                   <AssignRequestTable
                     assignRequests={filteredAssigns}
                     setSelectedAssignRequest={setSelectedAssignRequest}
@@ -284,17 +275,15 @@ const AssignPage: FC = function () {
             )}
           </div>
         </div>
-        <ConfigProvider theme={customTheme}>
-          <Pagination
-            showSizeChanger
-            onShowSizeChange={onShowSizeChange}
-            pageSize={pageSize}
-            current={currentPage}
-            total={totalPages * pageSize}
-            onChange={setCurrentPage}
-            className="rounded-xl p-4 ml-2 mt-2"
-          />
-        </ConfigProvider>
+        <Pagination
+          showSizeChanger
+          onShowSizeChange={onShowSizeChange}
+          pageSize={pageSize}
+          current={currentPage}
+          total={totalPages * pageSize}
+          onChange={setCurrentPage}
+          className="rounded-xl p-4 ml-2 mt-2"
+        />
         {selectedAssignRequest && (
           <ViewRequestModal
             loading={loading}
@@ -635,6 +624,8 @@ const ViewRequestModal: FC<{
     },
   ];
 
+  const { theme: customTheme } = useTheme();
+
   return (
     <div>
       <nav className="flex mb-4 mx-4 my-0 py-4" aria-label="Breadcrumb">
@@ -726,11 +717,13 @@ const ViewRequestModal: FC<{
                           : "none"
                       }`,
                     }}
-                    className={`text-white`}
+                    className={`${
+                      customTheme.theme === "dark" ? "text-white" : "text-black"
+                    }`}
                   >
                     {field.label}{" "}
                     <span hidden={!(field.name === "status")}>
-                      <AssetStatusTooltip />
+                      <AssetStatusTooltip />{" "}
                     </span>
                     :
                   </Label>
@@ -741,12 +734,18 @@ const ViewRequestModal: FC<{
                     disabled={field.disabled}
                     style={{
                       background: "transparent",
-                      color: "white",
+                      color: `${
+                        customTheme.theme === "dark" ? "white" : "black"
+                      }`,
                       borderColor: `${
-                        ["assignee", "businessUnit"].includes(field.name) ? "#2563eb" : "none"
+                        ["assignee", "businessUnit"].includes(field.name)
+                          ? "#2563eb"
+                          : "none"
                       }`,
                       borderWidth: `${
-                        ["assignee", "businessUnit"].includes(field.name) ? "3px" : "none"
+                        ["assignee", "businessUnit"].includes(field.name)
+                          ? "3px"
+                          : "none"
                       }`,
                       cursor: "default",
                     }}
@@ -755,7 +754,12 @@ const ViewRequestModal: FC<{
                 </div>
               ))}
               <div className="lg:col-span-5">
-                <Label className="text-white" htmlFor="notes">
+                <Label
+                  className={`${
+                    customTheme.theme === "dark" ? "text-white" : "text-black"
+                  }`}
+                  htmlFor="notes"
+                >
                   NOTES
                 </Label>
                 <Textarea
@@ -768,11 +772,20 @@ const ViewRequestModal: FC<{
                   style={{
                     cursor: "default",
                   }}
-                  className="mt-1 text-white bg-custom-400 h-24"
+                  className={`${
+                    customTheme.theme === "dark"
+                      ? "text-white bg-custom-400"
+                      : "text-black"
+                  } mt-1 h-24`}
                 />
               </div>
               <div className="lg:col-span-5">
-                <Label className="text-white" htmlFor="approverNotes">
+                <Label
+                  className={`${
+                    customTheme.theme === "dark" ? "text-white" : "text-black"
+                  }`}
+                  htmlFor="approverNotes"
+                >
                   APPROVER NOTES
                 </Label>
                 <Textarea
@@ -781,7 +794,11 @@ const ViewRequestModal: FC<{
                   rows={1}
                   value={approverNotes}
                   onChange={handleApproverNotesChange}
-                  className="mt-1 text-white bg-custom-400 h-24"
+                  className={`${
+                    customTheme.theme === "dark"
+                      ? "text-white bg-transparent"
+                      : "text-black"
+                  } mt-1 h-24`}
                 />
               </div>
             </div>
@@ -806,7 +823,13 @@ const ViewRequestModal: FC<{
               id="popup-modal"
               className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen bg-black bg-opacity-50"
             >
-              <div className="bg-custom-500 rounded-lg p-4 md:p-5 text-center">
+              <div
+                className={`${
+                  customTheme.theme === "dark"
+                    ? "bg-custom-500"
+                    : "bg-custom-600"
+                } rounded-lg p-4 md:p-5 text-center`}
+              >
                 <svg
                   className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
                   aria-hidden="true"

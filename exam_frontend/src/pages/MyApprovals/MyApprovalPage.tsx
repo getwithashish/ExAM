@@ -1,4 +1,5 @@
 import AssetTableHandler from "../../components/AssetTable/AssetTableHandler";
+
 const MyApprovalPage = () => {
   const decodeJWT = (token: string) => {
     try {
@@ -31,7 +32,7 @@ const MyApprovalPage = () => {
   let heading = "Requests I Approved";
 
   return (
-    <div className="pt-8 h-full bg-custom-500">
+    <div className="h-full bg-custom-600 dark:bg-custom-500">
       <AssetTableHandler
         isRejectedPage={false}
         queryParamProp={queryParamProp}
