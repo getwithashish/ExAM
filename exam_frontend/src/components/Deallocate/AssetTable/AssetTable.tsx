@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from "react";
-import { Pagination, Table, ConfigProvider, theme } from "antd";
+import React, { useState } from "react";
+import { Pagination, Table, theme } from "antd";
 import "./AssetTable.css";
 import CardComponent from "../../CardComponent/CardComponent";
 import { CloseOutlined } from "@ant-design/icons";
@@ -45,15 +45,6 @@ const AssetTable = ({
   const [currentPage, setCurrentPage] = useState(1);
   const { darkAlgorithm } = theme;
 
-  const customTheme = {
-    algorithm: darkAlgorithm,
-    components: {
-      Table: {
-        colorBgContainer: "#161B21",
-      },
-    },
-  };
-
   const handleRefreshClick = (
     event: React.MouseEvent<SVGSVGElement, MouseEvent>
   ) => {
@@ -69,9 +60,9 @@ const AssetTable = ({
   };
 
   return (
-    <div>
+    <div className="bg-white dark:bg-custom-400 rounded-lg sm:mx-0">
       <div className="mainHeading pt-4">
-        <div className="font-display text-white">Deallocate Assets</div>
+        <div className="font-display dark:text-white">Deallocate Assets</div>
       </div>
       <div
         className="flex"
@@ -113,56 +104,54 @@ const AssetTable = ({
           <UploadComponent />
         </SideDrawerComponent>
 
-        <ConfigProvider theme={customTheme}>
-          <Table
-            columns={columns}
-            dataSource={assetData}
-            showSorterTooltip={{ title: "Click to Sort" }}
-            scroll={{ y: 600 }}
-            className="mainTable"
-            pagination={false}
-            bordered={false}
-            handleRowClick={handleRowClick}
-            style={{
-              fontSize: "50px",
-              borderColor: "white",
-              // width: "29%",
-              marginLeft: "3.5%",
-              boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-              // marginRight: "120px",
-            }}
-            footer={() => (
-              <Pagination
-                pageSize={20}
-                current={currentPage}
-                showTotal={(total, range) =>
-                  `${range[0]}-${range[1]} of ${total} assets`
+        <Table
+          columns={columns}
+          dataSource={assetData}
+          showSorterTooltip={{ title: "Click to Sort" }}
+          scroll={{ y: 600 }}
+          className="mainTable"
+          pagination={false}
+          bordered={false}
+          handleRowClick={handleRowClick}
+          style={{
+            fontSize: "50px",
+            borderColor: "white",
+            // width: "29%",
+            marginLeft: "3.5%",
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+            // marginRight: "120px",
+          }}
+          footer={() => (
+            <Pagination
+              pageSize={20}
+              current={currentPage}
+              showTotal={(total, range) =>
+                `${range[0]}-${range[1]} of ${total} assets`
+              }
+              total={totalItemCount}
+              onChange={(page, pageSize) => {
+                setCurrentPage(page);
+                const offset = (page - 1) * pageSize;
+                let additionalQueryParams = `&offset=${offset}`;
+                if (searchTerm !== "" && searchTerm !== null) {
+                  additionalQueryParams += `&global_search=${searchTerm}`;
                 }
-                total={totalItemCount}
-                onChange={(page, pageSize) => {
-                  setCurrentPage(page);
-                  const offset = (page - 1) * pageSize;
-                  let additionalQueryParams = `&offset=${offset}`;
-                  if (searchTerm !== "" && searchTerm !== null) {
-                    additionalQueryParams += `&global_search=${searchTerm}`;
+                if (json_query && json_query !== "" && json_query !== null) {
+                  additionalQueryParams += `&json_logic=${json_query}`;
+                }
+                let sortParams = "";
+                const queryParams = `${sortParams}${additionalQueryParams}`;
+                if (sortedColumn && sortOrder) {
+                  if (queryParams.indexOf("sort_by") === -1) {
+                    sortParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
                   }
-                  if (json_query && json_query !== "" && json_query !== null) {
-                    additionalQueryParams += `&json_logic=${json_query}`;
-                  }
-                  let sortParams = "";
-                  const queryParams = `${sortParams}${additionalQueryParams}`;
-                  if (sortedColumn && sortOrder) {
-                    if (queryParams.indexOf("sort_by") === -1) {
-                      sortParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
-                    }
-                  }
-                  assetPageDataFetch(queryParams);
-                }}
-                hideOnSinglePage={true}
-              />
-            )}
-          />
-        </ConfigProvider>
+                }
+                assetPageDataFetch(queryParams);
+              }}
+              hideOnSinglePage={true}
+            />
+          )}
+        />
       </div>
       <DrawerViewRequest
         open={drawerVisible}

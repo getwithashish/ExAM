@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Pagination, Table, ConfigProvider, theme } from "antd";
+import { Pagination, Table, theme } from "antd";
 import "./AssetTable.css";
 import CardComponent from "../CardComponent/CardComponent";
 import { CloseOutlined } from "@ant-design/icons";
@@ -7,7 +7,7 @@ import { AssetTableProps } from "../AssetTable/types";
 import DrawerViewRequest from "../../pages/RequestPage/DrawerViewRequest";
 import GlobalSearch from "../GlobalSearch/GlobalSearch";
 import { RefreshTwoTone } from "@mui/icons-material";
-import { createTheme, ThemeProvider } from "@mui/material";
+import { createTheme } from "@mui/material";
 
 const darkTheme = createTheme({
   palette: {
@@ -72,15 +72,6 @@ const AssetTable: React.FC<AssetTableProps> = ({
     setCurrentPage(1);
   };
 
-  const customTheme = {
-    algorithm: darkAlgorithm,
-    components: {
-      Table: {
-        colorBgContainer: "#161B21",
-      },
-    },
-  };
-
   useEffect(() => {
     if (userRole === "SYSTEM_ADMIN") {
       setReadOnly(false);
@@ -97,158 +88,150 @@ const AssetTable: React.FC<AssetTableProps> = ({
   }
 
   return (
-    <ThemeProvider theme={darkTheme}>
+    <div
+      className="bg-white dark:bg-custom-400 sm:mx-0"
+      style={{
+        margin: "0 37px 0 30px",
+        paddingBottom: "20px",
+        borderRadius: "10px",
+      }}
+    >
+      <div className="mainHeading pt-4">
+        <div className=" font-display dark:text-white">{heading}</div>
+      </div>
+      {(heading === "My Approved Request" ||
+        pageHeading == "Modify Asset" ||
+        pageHeading == "Delete Assets") && (
+        <div
+          className="mb-4 px-4 py-2 bg-yellow-100 text-yellow-800 rounded "
+          style={{ width: "390px", marginLeft: "43px" }}
+        >
+          Note: Assets in pending status will not be visible here.
+          {pageHeading == "Delete Assets" && (
+            <div>Only assets which are approved/rejected can be deleted.</div>
+          )}
+        </div>
+      )}
       <div
-        className="bg-custom-400 sm:mx-0"
+        className="flex"
+        style={{ marginLeft: "35px", marginBottom: "30px" }}
+      >
+        <GlobalSearch
+          assetDataRefetch={assetDataRefetch}
+          searchTerm={searchTerm}
+          reset={reset}
+          setSearchTerm={setSearchTerm}
+          setJson_query={setJson_query}
+          json_query={json_query}
+          advancedSearchDisabledFields={advancedSearchDisabledFields}
+          isAdvancedSearchDisabled={isAdvancedSearchDisabled}
+        />
+        <div className="flex items-center justify-center">
+          <RefreshTwoTone
+            style={{
+              cursor: "pointer",
+              marginLeft: "10px",
+              width: "30px",
+              height: "40px",
+              color: "#ffffff",
+            }}
+            onClick={handleRefreshClick}
+          />
+        </div>
+      </div>
+
+      <div
         style={{
-          margin: "0 37px 0 30px",
-          paddingBottom: "20px",
-          borderRadius: "10px",
+          position: "relative",
+          display: "inline-block",
+          width: "79vw",
         }}
       >
-        <div className="mainHeading pt-4">
-          <div className=" font-display text-white">{heading}</div>
-        </div>
-        {(heading === "My Approved Request" ||
-          pageHeading == "Modify Asset" ||
-          pageHeading == "Delete Assets") && (
-          <div
-            className="mb-4 px-4 py-2 bg-yellow-100 text-yellow-800 rounded "
-            style={{ width: "390px", marginLeft: "43px" }}
-          >
-            Note: Assets in pending status will not be visible here.
-            {pageHeading == "Delete Assets" && (
-              <div>Only assets which are approved/rejected can be deleted.</div>
-            )}
+        <Table
+          columns={columns}
+          loading={isAssetDataLoading}
+          dataSource={assetData}
+          showSorterTooltip={{ title: "Click to Sort" }}
+          scroll={{ y: 600 }}
+          className="mainTable"
+          pagination={false}
+          bordered={false}
+          handleRowClick={handleRowClick}
+          style={{
+            fontSize: "50px",
+            borderColor: "white",
+            marginLeft: "3.5%",
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+          }}
+          footer={() => (
+            <Pagination
+              pageSize={20}
+              current={currentPage}
+              showTotal={(total, range) =>
+                `${range[0]}-${range[1]} of ${total} assets`
+              }
+              total={totalItemCount}
+              onChange={(page, pageSize) => {
+                setCurrentPage(page);
+                const offset = (page - 1) * pageSize;
+                let additionalQueryParams = `&offset=${offset}`;
+                if (searchTerm !== "" && searchTerm !== null) {
+                  additionalQueryParams += `&global_search=${searchTerm}`;
+                }
+                if (json_query && json_query !== "" && json_query !== null) {
+                  additionalQueryParams += `&json_logic=${json_query}`;
+                }
+                let sortParams = "";
+                const queryParams = `${sortParams}${additionalQueryParams}`;
+                if (sortedColumn && sortOrder) {
+                  if (queryParams.indexOf("sort_by") === -1) {
+                    sortParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
+                  }
+                }
+                assetPageDataFetch(queryParams);
+              }}
+              hideOnSinglePage={true}
+            />
+          )}
+        />
+      </div>
+      <DrawerViewRequest
+        open={drawerVisible}
+        onClose={onCloseDrawer}
+        selectedRow={selectedRow}
+        drawerTitle={drawerTitle}
+        onUpdateData={handleUpdateData}
+        closeIcon={<CloseOutlined rev={undefined} />}
+        title={""}
+        destroyOnClose={destroyOnClose}
+      >
+        {selectedRow && (
+          <div>
+            <h2 className="drawerHeading">{selectedRow.ProductName}</h2>
           </div>
         )}
-        <div
-          className="flex"
-          style={{ marginLeft: "35px", marginBottom: "30px" }}
-        >
-          <GlobalSearch
+
+        {selectedRow && (
+          <CardComponent
+            readOnly={readOnly}
+            selectedAssetId={selectedAssetId}
+            isMyApprovalPage={isMyApprovalPage}
+            data={selectedRow}
+            statusOptions={statusOptions}
+            businessUnitOptions={businessUnitOptions}
+            locations={locations}
+            memoryData={memoryData}
+            assetTypeData={assetTypeData}
+            asset_uuid={asset_uuid}
+            setDrawerVisible={setDrawerVisible}
             assetDataRefetch={assetDataRefetch}
-            searchTerm={searchTerm}
-            reset={reset}
-            setSearchTerm={setSearchTerm}
-            setJson_query={setJson_query}
-            json_query={json_query}
-            advancedSearchDisabledFields={advancedSearchDisabledFields}
-            isAdvancedSearchDisabled={isAdvancedSearchDisabled}
+            onUpdate={function (): void {
+              throw new Error("Function not implemented.");
+            }}
           />
-          <div className="flex items-center justify-center">
-            <RefreshTwoTone
-              style={{
-                cursor: "pointer",
-                marginLeft: "10px",
-                width: "30px",
-                height: "40px",
-                color: "#ffffff",
-              }}
-              onClick={handleRefreshClick}
-            />
-          </div>
-        </div>
-
-        <div
-          style={{
-            position: "relative",
-            display: "inline-block",
-            width: "79vw",
-          }}
-        >
-          <ConfigProvider theme={customTheme}>
-            <Table
-              columns={columns}
-              loading={isAssetDataLoading}
-              dataSource={assetData}
-              showSorterTooltip={{title: "Click to Sort"}}
-              scroll={{ y: 600 }}
-              className="mainTable"
-              pagination={false}
-              bordered={false}
-              handleRowClick={handleRowClick}
-              style={{
-                fontSize: "50px",
-                borderColor: "white",
-                marginLeft: "3.5%",
-                boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-              }}
-              footer={() => (
-                <Pagination
-                  pageSize={20}
-                  current={currentPage}
-                  showTotal={(total, range) =>
-                    `${range[0]}-${range[1]} of ${total} assets`
-                  }
-                  total={totalItemCount}
-                  onChange={(page, pageSize) => {
-                    setCurrentPage(page);
-                    const offset = (page - 1) * pageSize;
-                    let additionalQueryParams = `&offset=${offset}`;
-                    if (searchTerm !== "" && searchTerm !== null) {
-                      additionalQueryParams += `&global_search=${searchTerm}`;
-                    }
-                    if (
-                      json_query &&
-                      json_query !== "" &&
-                      json_query !== null
-                    ) {
-                      additionalQueryParams += `&json_logic=${json_query}`;
-                    }
-                    let sortParams = "";
-                    const queryParams = `${sortParams}${additionalQueryParams}`;
-                    if (sortedColumn && sortOrder) {
-                      if (queryParams.indexOf("sort_by") === -1) {
-                        sortParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
-                      }
-                    }
-                    assetPageDataFetch(queryParams);
-                  }}
-                  hideOnSinglePage={true}
-                />
-              )}
-            />
-          </ConfigProvider>
-        </div>
-        <DrawerViewRequest
-          open={drawerVisible}
-          onClose={onCloseDrawer}
-          selectedRow={selectedRow}
-          drawerTitle={drawerTitle}
-          onUpdateData={handleUpdateData}
-          closeIcon={<CloseOutlined rev={undefined} />}
-          title={""}
-          destroyOnClose={destroyOnClose}
-        >
-          {selectedRow && (
-            <div>
-              <h2 className="drawerHeading">{selectedRow.ProductName}</h2>
-            </div>
-          )}
-
-          {selectedRow && (
-            <CardComponent
-              readOnly={readOnly}
-              selectedAssetId={selectedAssetId}
-              isMyApprovalPage={isMyApprovalPage}
-              data={selectedRow}
-              statusOptions={statusOptions}
-              businessUnitOptions={businessUnitOptions}
-              locations={locations}
-              memoryData={memoryData}
-              assetTypeData={assetTypeData}
-              asset_uuid={asset_uuid}
-              setDrawerVisible={setDrawerVisible}
-              assetDataRefetch={assetDataRefetch}
-              onUpdate={function (): void {
-                throw new Error("Function not implemented.");
-              }}
-            />
-          )}
-        </DrawerViewRequest>
-      </div>
-    </ThemeProvider>
+        )}
+      </DrawerViewRequest>
+    </div>
   );
 };
 

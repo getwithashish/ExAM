@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Pagination, Table, ConfigProvider, theme } from "antd";
+import { Pagination, Table, theme } from "antd";
 import "./DasboardAssetTable.css";
 import { CloseOutlined } from "@ant-design/icons";
 import { AssetTableProps } from "./types";
@@ -40,7 +40,7 @@ const DashboardAssetTable = ({
   assignState,
   detailState,
   selectedTypeId,
-  queryParam
+  queryParam,
 }: AssetTableProps) => {
   const handleSearch = (searchTerm: string) => {
     setSearchTerm(searchTerm);
@@ -54,18 +54,9 @@ const DashboardAssetTable = ({
     setShowUpload(false);
   };
 
-  const customTheme = {
-    algorithm: darkAlgorithm,
-    components: {
-      Table: {
-        colorBgContainer: "#161B21",
-      },
-    },
-  };
-
   return (
     <div
-      className="bg-custom-400 sm:mx-0"
+      className="bg-white dark:bg-custom-400 sm:mx-0"
       style={{
         margin: "0 20px 0 20px",
         paddingBottom: "20px",
@@ -73,7 +64,7 @@ const DashboardAssetTable = ({
       }}
     >
       <div className="mainHeading font-medium font-display font-semibold">
-        <span className="font-semibold font-display text-white dark:text-white text-xl">
+        <span className="font-semibold font-display dark:text-white text-xl">
           Asset Details
         </span>
       </div>
@@ -102,70 +93,68 @@ const DashboardAssetTable = ({
         </SideDrawerComponent>
         <br></br>
         <br></br>
-        <ConfigProvider theme={customTheme}>
-          <Table
-            columns={columns.map((column: { dataIndex: string }) => ({
-              ...column,
-              sortOrder:
-                column.dataIndex === sortedColumn ? sortOrder : undefined,
-            }))}
-            showSorterTooltip={{title: "Click to Sort"}}
-            dataSource={assetData}
-            className="mainTable"
-            loading={isAssetDataLoading}
-            pagination={false}
-            bordered={false}
-            scroll={{ x: 1300, y: 600 }}
-            handleRowClick={handleRowClick}
-            style={{
-              fontSize: "100px",
-              borderColor: "white",
-              borderRadius: "10px",
-              marginLeft: "3.5%",
-              boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-              fontFamily: "Inter",
-            }}
-            footer={() => (
-              <Pagination
-                pageSize={20}
-                showTotal={(total, range) =>
-                  `${range[0]}-${range[1]} of ${total} assets`
-                }
-                total={totalItemCount}
-                onChange={(page, pageSize) => {
-                  const offset = (page - 1) * pageSize;
-                  let additionalQueryParams = `&offset=${offset}`;
+        <Table
+          columns={columns.map((column: { dataIndex: string }) => ({
+            ...column,
+            sortOrder:
+              column.dataIndex === sortedColumn ? sortOrder : undefined,
+          }))}
+          showSorterTooltip={{ title: "Click to Sort" }}
+          dataSource={assetData}
+          className="mainTable"
+          loading={isAssetDataLoading}
+          pagination={false}
+          bordered={false}
+          scroll={{ x: 1300, y: 600 }}
+          handleRowClick={handleRowClick}
+          style={{
+            fontSize: "100px",
+            borderColor: "white",
+            borderRadius: "10px",
+            marginLeft: "3.5%",
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+            fontFamily: "Inter",
+          }}
+          footer={() => (
+            <Pagination
+              pageSize={20}
+              showTotal={(total, range) =>
+                `${range[0]}-${range[1]} of ${total} assets`
+              }
+              total={totalItemCount}
+              onChange={(page, pageSize) => {
+                const offset = (page - 1) * pageSize;
+                let additionalQueryParams = `&offset=${offset}`;
 
-                  if (searchTerm !== "" && searchTerm !== null) {
-                    additionalQueryParams += `&global_search=${searchTerm}`;
-                  }
-                  if (json_query !== "" && json_query !== null) {
-                    additionalQueryParams += `&json_logic=${json_query}`;
-                  }
-                  if (assetState !== "" && assetState !== null) {
-                    additionalQueryParams += `&status=${assetState}`;
-                  }
-                  if (detailState !== "" && detailState !== null) {
-                    additionalQueryParams += `&asset_detail_status=${detailState}`;
-                  }
-                  if (assignState !== "" && assignState !== null) {
-                    additionalQueryParams += `&assign_status=${assignState}`;
-                  }
-                  if (selectedTypeId !== 0) {
-                    additionalQueryParams += `&asset_type=${selectedTypeId}`;
-                  }
-                  let sortParams = "";
-                  if (sortedColumn && sortOrder) {
-                    sortParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
-                  }
-                  const queryParams = `${sortParams}${additionalQueryParams}`;
-                  assetPageDataFetch(queryParams);
-                }}
-                hideOnSinglePage={true}
-              />
-            )}
-          />
-        </ConfigProvider>
+                if (searchTerm !== "" && searchTerm !== null) {
+                  additionalQueryParams += `&global_search=${searchTerm}`;
+                }
+                if (json_query !== "" && json_query !== null) {
+                  additionalQueryParams += `&json_logic=${json_query}`;
+                }
+                if (assetState !== "" && assetState !== null) {
+                  additionalQueryParams += `&status=${assetState}`;
+                }
+                if (detailState !== "" && detailState !== null) {
+                  additionalQueryParams += `&asset_detail_status=${detailState}`;
+                }
+                if (assignState !== "" && assignState !== null) {
+                  additionalQueryParams += `&assign_status=${assignState}`;
+                }
+                if (selectedTypeId !== 0) {
+                  additionalQueryParams += `&asset_type=${selectedTypeId}`;
+                }
+                let sortParams = "";
+                if (sortedColumn && sortOrder) {
+                  sortParams = `&sort_by=${sortedColumn}&sort_order=${sortOrder}`;
+                }
+                const queryParams = `${sortParams}${additionalQueryParams}`;
+                assetPageDataFetch(queryParams);
+              }}
+              hideOnSinglePage={true}
+            />
+          )}
+        />
       </div>
       <DrawerViewRequest
         title=""
