@@ -2,12 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-.ant-message-notice-content {
+/* .ant-message-notice-content {
   background: transparent !important;
-}
-.ant-message-custom-content {
+} */
+/* .ant-message-custom-content {
   color: white;
   backdrop-filter: blur(10px);
+} */
+
+:root {
+  --transition-duration: 0.7s; /* Adjust as needed */
 }
 
 /* For WebKit browsers (Chrome, Safari) */
@@ -37,4 +41,6 @@
 /* For Internet Explorer and Edge */
 body {
   -ms-overflow-style: -ms-autohiding-scrollbar; /* Hide scrollbar when not in use */
+  transition: background-color var(--transition-duration),
+    color var(--transition-duration);
 }
