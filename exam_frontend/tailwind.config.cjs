@@ -77,6 +77,7 @@ module.exports = {
         300: "#FF0044", //strong red
         400: "#1D232C", // new deep blue dark black
         500: "#161B21", //secondary blue black
+        600: "#ebeff2", // background color
       },
     },
     fontFamily: {
