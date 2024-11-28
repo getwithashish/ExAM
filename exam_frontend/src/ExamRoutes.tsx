@@ -1,11 +1,5 @@
 import { useEffect } from "react";
-import {
-  BrowserRouter,
-  Navigate,
-  Route,
-  Routes,
-  useLocation,
-} from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import SidebarComponentNew from "./components/sidebar/SidebarComponentNew";
 import DashboardPage from "./pages";
@@ -75,7 +69,7 @@ const ExamRoutes = () => {
           path="/exam/*"
           element={
             <SidebarComponentNew>
-              <div className="dark">
+              <div>
                 <motion.div
                   key={location.key}
                   initial="initial"
@@ -123,7 +117,10 @@ const ExamRoutes = () => {
                     <Route path="/my_approvals" element={<MyApprovalPage />} />
                     <Route path="/chat" element={<AssetSense />} />
                     <Route path="/expired_assets" element={<ExpiredAssets />} />
-                    <Route path="/initial_import" element={<InitialImportPage />} />
+                    <Route
+                      path="/initial_import"
+                      element={<InitialImportPage />}
+                    />
                   </Routes>
                 </motion.div>
               </div>
