@@ -476,7 +476,9 @@ const AddAsset: React.FC = ({
     <Spin spinning={loading}>
       <div className="font-display">
         <div className={styles["container"]}>
-          <h1 className={styles["heading"]}>Create a new Asset</h1>
+          <h1 className={`dark:text-white text-3xl mb-8`}>
+            Create a new Asset
+          </h1>
           <Form
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 12 }}
@@ -538,9 +540,7 @@ const AddAsset: React.FC = ({
                       InputProps={{
                         endAdornment: (
                           <Tooltip title="Asset Id should be alphanumeric Eg:ASS101">
-                            <InfoCircleOutlined
-                              style={{ color: "white" }}
-                            />
+                            <InfoCircleOutlined className="dark:text-white" />
                           </Tooltip>
                         ),
                       }}
@@ -709,9 +709,7 @@ const AddAsset: React.FC = ({
                       InputProps={{
                         endAdornment: (
                           <Tooltip title="Asset Id should be alphanumeric Eg:ASS101">
-                            <InfoCircleOutlined
-                              style={{ color: "white" }}
-                            />
+                            <InfoCircleOutlined className="dark:text-white" />
                           </Tooltip>
                         ),
                       }}
@@ -819,9 +817,7 @@ const AddAsset: React.FC = ({
                       InputProps={{
                         endAdornment: (
                           <Tooltip title="Serial Number should be alphanumeric and should not exceed 30 characters Eg:ABC123DEF456">
-                            <InfoCircleOutlined
-                              style={{ color: "white" }}
-                            />
+                            <InfoCircleOutlined className="dark:text-white" />
                           </Tooltip>
                         ),
                       }}
@@ -841,9 +837,7 @@ const AddAsset: React.FC = ({
                       InputProps={{
                         endAdornment: (
                           <Tooltip title="Warranty period should be in months Eg: 12, 24">
-                            <InfoCircleOutlined
-                              style={{ color: "white" }}
-                            />
+                            <InfoCircleOutlined className="dark:text-white" />
                           </Tooltip>
                         ),
                       }}
