@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { DownOutlined } from "@ant-design/icons";
-import { ConfigProvider, Dropdown, Button, MenuProps } from "antd";
+import { Dropdown, Button, MenuProps } from "antd";
 
 interface DropDownProps {
   onSelect: (key: string) => void;
@@ -36,54 +36,37 @@ const DropDown: React.FC<DropDownProps> = ({
     onClick: handleMenuClick,
   };
 
-  const customTheme = {
-    components: {
-      Button: {
-        colorPrimary: "#161b21",
-        colorPrimaryHover: "#1e2329",
-        colorPrimaryActive: "#0e1114",
-        colorText: "#ffffff",
-      },
-      Dropdown: {
-        colorBgElevated: "#161b21",
-        colorText: "#ffffff",
-      },
-    },
-  };
-
   return (
-    <ConfigProvider theme={customTheme}>
-      <Dropdown
-        className="mx-2"
-        menu={menuProps}
+    <Dropdown
+      className="mx-2"
+      menu={menuProps}
+      disabled={disabled}
+      dropdownRender={(menu) => (
+        <div>
+          {React.cloneElement(menu as React.ReactElement, {
+            style: {},
+          })}
+        </div>
+      )}
+    >
+      <Button
+        style={{
+          borderRadius: "7px",
+          border: "none",
+          background: "#1677ff",
+          color: "white",
+          height: "41px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          boxShadow: "none",
+        }}
         disabled={disabled}
-        dropdownRender={(menu) => (
-          <div style={{ backgroundColor: "#161b21", color: "white" }}>
-            {React.cloneElement(menu as React.ReactElement, {
-              style: { backgroundColor: "#161b21" },
-            })}
-          </div>
-        )}
       >
-        <Button
-          style={{
-            borderRadius: "7px",
-            border: "none",
-            background: "#1677ff",
-            color: "white",
-            height: "41px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            boxShadow: "none",
-          }}
-          disabled={disabled}
-        >
-          <span style={{ marginRight: "8px" }}>{buttonLabel}</span>
-          <DownOutlined />
-        </Button>
-      </Dropdown>
-    </ConfigProvider>
+        <span style={{ marginRight: "8px" }}>{buttonLabel}</span>
+        <DownOutlined />
+      </Button>
+    </Dropdown>
   );
 };
 

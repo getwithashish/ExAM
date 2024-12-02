@@ -210,7 +210,7 @@ const UploadComponent: React.FC = ({ initial_import = false }) => {
       <Tooltip
         title={`File should contain all the mandatory fields: asset_category, asset_type, product_name, owner, date_of_purchase, location`}
       >
-        <InfoCircleOutlined style={{ color: "white", marginLeft: "10px" }} />
+        <InfoCircleOutlined style={{  marginLeft: "10px" }} />
       </Tooltip>
 
       <Modal
