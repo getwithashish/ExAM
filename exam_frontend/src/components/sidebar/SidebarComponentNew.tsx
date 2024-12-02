@@ -12,6 +12,8 @@ import {
   CheckCircleOutlined,
   CheckSquareOutlined,
   CloseCircleOutlined,
+  SunOutlined,
+  MoonOutlined,
 } from "@ant-design/icons";
 import { FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 import styles from "./sidebar.module.css";
@@ -27,6 +29,7 @@ import React from "react";
 import { Avatar } from "@mui/material";
 import Tooltip from "../Tooltip/Tooltip";
 import { useUploading } from "../Upload/UploadContext";
+import { useTheme } from "../CustomThemeContext/CustomThemeContext";
 
 const SidebarComponentNew = ({ children }: any) => {
   const { userRole, setUserRole, login, logout } = useAuth();
@@ -34,6 +37,8 @@ const SidebarComponentNew = ({ children }: any) => {
 
   const location = useLocation();
   const selectedKey = location.pathname;
+
+  const { theme, toggleTheme } = useTheme();
 
   const handleDownload = async () => {
     const fileUrl = "/static/asset_management_windows.exe";
@@ -125,23 +130,27 @@ const SidebarComponentNew = ({ children }: any) => {
           position: "fixed",
           height: "100%",
           zIndex: 110,
-          backgroundColor: "#161B21",
+          backgroundColor: "transparent",
           pointerEvents: uploading ? "none" : "auto",
         }}
         width={265}
         breakpoint="lg"
         collapsedWidth="0"
       >
-        <div className="bg-custom-400 rounded-lg h-screen m-2">
+        <div className="bg-white dark:bg-custom-400 rounded-lg h-screen m-2">
           <div className="justify-center p-2items-center pt-6 mx-8">
             <img
               className="h-8"
-              src="/images/experion technologies.png"
+              src={`${
+                theme.theme === "dark"
+                  ? "/images/experion technologies.png"
+                  : "/images/experion technologies_black.jpg"
+              }`}
               alt="Company Logo"
             />
           </div>
           <Menu
-            theme="dark"
+            theme={theme.theme}
             mode="vertical"
             className="text-base font-display items-center justify-between bg-transparent pt-10 mx-2 "
             selectedKeys={[selectedKey]}
@@ -202,7 +211,6 @@ const SidebarComponentNew = ({ children }: any) => {
                 key="sub1"
                 icon={<CheckSquareOutlined />}
                 title="Approve Assets"
-                className="bg-custom-400"
               >
                 <Menu.Item
                   key="/exam/creation_requests"
@@ -252,7 +260,6 @@ const SidebarComponentNew = ({ children }: any) => {
                 key="sub1"
                 icon={<MailOutlined />}
                 title="My Requests"
-                style={{ backgroundColor: "#1D232C" }} // Adjust background color here
               >
                 <Menu.Item
                   key="/exam/approved_requests"
@@ -317,6 +324,13 @@ const SidebarComponentNew = ({ children }: any) => {
                 <span>Logout</span>
               </div>
             </Menu.Item>
+            <Menu.Item
+              className="text-center text-xl"
+              onClick={toggleTheme}
+              id="themeToggle"
+            >
+              {theme.theme === "dark" ? <SunOutlined /> : <MoonOutlined />}
+            </Menu.Item>
           </Menu>
         </div>
       </Sider>
@@ -326,7 +340,9 @@ const SidebarComponentNew = ({ children }: any) => {
             position: "fixed",
             zIndex: 100,
             width: "100vw",
-            backgroundColor: "#161B21",
+            backgroundColor: `${
+              theme.theme === "dark" ? "#161B21" : "#ebeff2"
+            }`,
             padding: "0 28px",
             height: "97px",
             display: "flex",
@@ -334,13 +350,13 @@ const SidebarComponentNew = ({ children }: any) => {
             justifyContent: "space-between",
           }}
         >
-          <div className="flex w-screen lg:ml-60 sm:px-2 mx-2 bg-custom-400 rounded-lg items-center">
+          <div className="flex w-screen lg:ml-60 sm:px-2 mx-2 bg-white dark:bg-custom-400 rounded-lg items-center">
             <div className="flex-1">
-              <span className="font-display font-bold text-white ml-8 text-2xl">
+              <span className="font-display font-bold dark:text-white ml-8 text-2xl">
                 A M S
               </span>
             </div>
-            <div className="flex-1 text-right text-gray-200">
+            <div className="flex-1 text-right dark:text-gray-200">
               {jwtPayload && jwtPayload.username && (
                 <div>
                   <div className={styles["username"]}>
@@ -352,7 +368,7 @@ const SidebarComponentNew = ({ children }: any) => {
                   </div>
                   {jwtPayload.user_scope && (
                     <div className={styles["userscope"]}>
-                      <span className="font-display text-gray-400">
+                      <span className="font-display dark:text-gray-400">
                         {jwtPayload.user_scope.split("_").join(" ")}
                       </span>
                     </div>
@@ -368,13 +384,15 @@ const SidebarComponentNew = ({ children }: any) => {
         <Content
           style={{
             overflow: "initial",
-            backgroundColor: "#161b21",
+            backgroundColor: `${
+              theme.theme === "dark" ? "#161B21" : "#ebeff2"
+            }`,
             width: "100vw",
           }}
         >
           <Spin spinning={loading}>
             <div
-              className="bg-custom-500 lg:ml-60"
+              className="dark:bg-custom-500 lg:ml-60"
               style={{
                 marginTop: "97px",
               }}
@@ -391,8 +409,8 @@ const SidebarComponentNew = ({ children }: any) => {
                 setDisplayDrawer={setDisplayDrawer}
               />
             </SideDrawerComponent>
-            <Footer className="lg:ml-60 text-center md:ml-40 bg-custom-400 mt-2">
-              <FlowbiteFooter container className="bg-custom-500">
+            <Footer className="lg:ml-60 text-center md:ml-40 bg-white dark:bg-custom-400 mt-2">
+              <FlowbiteFooter container className="dark:bg-custom-500">
                 <div className="flex flex-col lg:flex-row lg:justify-between lg:gap-y-0">
                   <FlowbiteFooter.LinkGroup>
                     <FlowbiteFooter.Link
