@@ -1,10 +1,11 @@
 import React, { useState, useMemo } from "react";
-import { Form, Input, ConfigProvider } from "antd";
+import { Form, Input } from "antd";
 import "./DashBoardCardComponent.css";
 import { DataType } from "../AssetTable/types/index";
 import { CardType } from "./types/index";
 import { AssetStatusTooltip } from "../Tooltip/AssetStatusTooltip";
 import { motion } from "framer-motion";
+import { useTheme } from "../CustomThemeContext/CustomThemeContext";
 
 interface FormItemConfig {
   label: string;
@@ -20,12 +21,14 @@ const DashBoardCardComponent: React.FC<CardType> = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [_updatedData, setUpdatedData] = useState<Partial<DataType>>({});
 
+  const { theme } = useTheme();
+
   const inputStyle = {
     width: "180px",
     boxShadow: "none",
-    background: "#1D232C",
+    background: `${theme.theme === "dark" ? "#1D232C" : "white"}`,
     borderRadius: "5px",
-    color: "white",
+    color: `${theme.theme === "dark" ? "white" : "black"}`,
     textAlign: "center",
     cursor: "default",
   } as const;
@@ -33,7 +36,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
   const textAreaStyle = {
     width: "387px",
     height: "100px",
-    background: "#1D232C",
+    background: `${theme.theme === "dark" ? "#1D232C" : "white"}`,
     borderRadius: "5px",
   } as const;
 
@@ -64,7 +67,7 @@ const DashBoardCardComponent: React.FC<CardType> = ({
     isTextArea = false,
     tooltipMessage = null,
   }) => (
-    <Form.Item name={fieldName} className="formItem font-semibold font-display">
+    <Form.Item name={fieldName} className="formItem font-display">
       <b style={{ display: "block" }}>
         {label}{" "}
         <span hidden={!(fieldName === "status")}>
@@ -433,72 +436,61 @@ const DashBoardCardComponent: React.FC<CardType> = ({
   );
 
   return (
-    <ConfigProvider
-      theme={{
-        components: {
-          Select: {
-            multipleItemBorderColor: "transparent",
-            colorBorder: "none",
-          },
-        },
-      }}
-    >
-      <div>
-        <div className="fixed-header font-display">
-          <Input
-            placeholder="Search..."
-            onChange={(e) => setSearchQuery(e.target.value.toLowerCase())}
-            style={{
-              border: "0.5px solid #d3d3d3",
-              padding: "20px",
-              marginTop: "-10px",
-              marginBottom: "30px",
-              width: "300px",
-              height: "30px",
-              borderRadius: "5px",
-              marginLeft: "5.4%",
-              backgroundColor: "#1D232C",
-            }}
-          />
-        </div>
-        <div className="scrollable-content font-display">
-          <Form
-            key={data.asset_id}
-            className="mainCard"
-            style={{
-              width: "90%",
-              display: "flex",
-              flexWrap: "wrap",
-              background: "#161B21",
-              marginLeft: "6%",
-              alignItems: "flex-start",
-              gap: "-400px",
-            }}
-          >
-            {filteredFormItems.map(
-              (item, index) =>
-                item.value && (
-                  <Form.Item key={index}>
-                    <motion.div
-                      initial={{ opacity: 0, y: -20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.3 }}
-                      style={{
-                        flex: "0 0 calc(16.66% - 20px)",
-                        margin: "10px",
-                        boxSizing: "border-box",
-                      }}
-                    >
-                      {item.value}
-                    </motion.div>
-                  </Form.Item>
-                )
-            )}
-          </Form>
-        </div>
+    <div>
+      <div className="fixed-header font-display">
+        <Input
+          placeholder="Search..."
+          onChange={(e) => setSearchQuery(e.target.value.toLowerCase())}
+          style={{
+            border: "0.5px solid #d3d3d3",
+            padding: "20px",
+            marginTop: "-10px",
+            marginBottom: "30px",
+            width: "300px",
+            height: "30px",
+            borderRadius: "5px",
+            marginLeft: "5.4%",
+            backgroundColor: `${theme.theme === "dark" ? "black" : "#ebeff2"}`,
+          }}
+        />
       </div>
-    </ConfigProvider>
+      <div className="scrollable-content font-display">
+        <Form
+          key={data.asset_id}
+          className="mainCard"
+          style={{
+            width: "90%",
+            display: "flex",
+            flexWrap: "wrap",
+            background: `${theme.theme === "dark" ? "#161B21" : "white"}`,
+            marginLeft: "6%",
+            alignItems: "flex-start",
+            gap: "-400px",
+          }}
+        >
+          {filteredFormItems.map(
+            (item, index) =>
+              item.value && (
+                <Form.Item key={index}>
+                  <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.3 }}
+                    style={{
+                      flex: "0 0 calc(16.66% - 20px)",
+                      margin: "10px",
+                      boxSizing: "border-box",
+                    }}
+                  >
+                    {item.value}
+                  </motion.div>
+                </Form.Item>
+              )
+          )}
+        </Form>
+      </div>
+    </div>
   );
 };
 

@@ -26,6 +26,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { AssetStatusTooltip } from "../Tooltip/AssetStatusTooltip";
 import { motion } from "framer-motion";
+import { useTheme } from "../CustomThemeContext/CustomThemeContext";
 
 interface UpdateData {
   asset_uuid: string;
@@ -74,6 +75,8 @@ const CardComponent: React.FC<CardType> = ({
 
   const assetCategoryValues = ["HARDWARE", "SOFTWARE"];
   const assetStatusValues = ["DAMAGED", "REPAIR", "OUTDATED", "SCRAP"];
+
+  const { theme } = useTheme();
 
   useEffect(() => {
     if (
@@ -1151,7 +1154,9 @@ const CardComponent: React.FC<CardType> = ({
               width: "300px",
               height: "30px",
               borderRadius: "5px",
-              background: "#1D232C",
+              backgroundColor: `${
+                theme.theme === "dark" ? "black" : "#ebeff2"
+              }`,
               marginLeft: "58px",
               padding: "20px",
             }}
