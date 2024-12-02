@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamation, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { Log, Props } from "./types/types";
 import { motion } from "framer-motion";
+import { useTheme } from "../CustomThemeContext/CustomThemeContext";
 
 const FILTERED_KEYS = ["updated_at", "asset_detail_status"];
 
@@ -72,6 +73,8 @@ export const AssetTimelineHandler = ({ assetUuid }: Props) => {
         .map(([key, _]) => key)
     );
   }, [filteredLogs]);
+
+  const { theme } = useTheme();
 
   const findKeyName = (key: string) => {
     const fieldKeys = ["asset_type", "business_unit"];
@@ -173,7 +176,11 @@ export const AssetTimelineHandler = ({ assetUuid }: Props) => {
     return (
       <div className="flex">
         <FontAwesomeIcon className="mt-3" icon={faExclamation} size="2x" />
-        <span className="m-3 text-lg font-display text-white font-semibold">
+        <span
+          className={`m-3 text-lg font-display ${
+            theme.theme === "dark" ? "text-white" : "text-black"
+          } font-semibold`}
+        >
           NO LOGS AVAILABLE
         </span>
       </div>
@@ -197,7 +204,13 @@ export const AssetTimelineHandler = ({ assetUuid }: Props) => {
                 <Timeline.Content>
                   <Timeline.Time>{log.timestamp}</Timeline.Time>
                   <Timeline.Title>
-                    <span className="text-white">{log.operation}</span>
+                    <span
+                      className={`${
+                        theme.theme === "dark" ? "text-white" : "text-black"
+                      }`}
+                    >
+                      {log.operation}
+                    </span>
                   </Timeline.Title>
                   <Timeline.Body>
                     <ul>

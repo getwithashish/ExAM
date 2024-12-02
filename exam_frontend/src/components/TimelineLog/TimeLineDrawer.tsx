@@ -32,7 +32,7 @@ const TimelineViewDrawer: FC<{ assetUuid: string }> = ({ assetUuid }) => {
   return (
     <>
       <Button color="primary" className="mx-5" onClick={handleDrawerOpen}>
-        <HiPencilAlt className="mr-2 text-lg font-display mx-2" />
+        <HiPencilAlt className="mr-2 text-lg font-display mx-2 dark:text-white" />
       </Button>
       <TimelineDrawer
         assetUuid={assetUuid}
