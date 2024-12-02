@@ -5,10 +5,11 @@ import { axisClasses } from "@mui/x-charts/ChartsAxis";
 import "./BarChart.css";
 import { AxiosError } from "axios";
 import { ErrorResponse } from "./types";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles";
 import { DataError, DataLoading } from "./assets";
 import { motion } from "framer-motion";
 import { Skeleton } from "@mui/material";
+import { useTheme } from "../../CustomThemeContext/CustomThemeContext";
 
 type Error = AxiosError<ErrorResponse>;
 
@@ -84,6 +85,8 @@ export default function BarChartHandler({
     handleBarItemClick(assetData[barItem.dataIndex].id);
   };
 
+  const { theme } = useTheme();
+
   return (
     <div className="text-center items-center">
       {loading || error ? (
@@ -99,12 +102,26 @@ export default function BarChartHandler({
             width={"100%"}
             height={200}
             sx={{
-              bgcolor: "transparent",
+              bgcolor: `${
+                theme.theme === "dark" ? "transparent" : "rgba(0, 0, 0, 0.05)"
+              }`,
               backdropFilter: "blur(10px)",
-              border: "1px solid rgba(255, 255, 255, 0.2)",
-              boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.4)",
+              border: `${
+                theme.theme === "dark"
+                  ? "1px solid rgba(255, 255, 255, 0.2)"
+                  : "1px solid rgba(0, 0, 0, 0.1)"
+              }`,
+              boxShadow: `${
+                theme.theme === "dark"
+                  ? "0px 4px 12px rgba(0, 0, 0, 0.4)"
+                  : "0px 4px 12px rgba(0, 0, 0, 0.1)"
+              }`,
               "& .MuiSkeleton-wave": {
-                background: `linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0) 100%)`,
+                background: `${
+                  theme.theme === "dark"
+                    ? "linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0) 100%)"
+                    : "linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0) 100%)"
+                }`,
                 animationDuration: "1.5s",
               },
             }}
@@ -112,41 +129,39 @@ export default function BarChartHandler({
         </motion.div>
       ) : (
         <div
-          className="bg-custom-500 rounded-lg scrollable"
+          className="dark:bg-custom-500 rounded-lg scrollable"
           style={{ overflowX: "auto", boxShadow: "0 0 5px rgba(0, 0, 0, 0.5)" }}
         >
-          <ThemeProvider theme={darkTheme}>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.75 }}
-            >
-              <BarChart
-                sx={() => ({
-                  [`.${barElementClasses.root}`]: {
-                    fill: "#075985",
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.75 }}
+          >
+            <BarChart
+              sx={() => ({
+                [`.${barElementClasses.root}`]: {
+                  fill: "dark:#075985",
+                  strokeWidth: 0,
+                },
+                [`.${axisClasses.root}`]: {
+                  ".MuiChartsAxis-line, .MuiChartsAxis-tick": {
+                    stroke: "dark:#ffffff",
                     strokeWidth: 0,
                   },
-                  [`.${axisClasses.root}`]: {
-                    ".MuiChartsAxis-line, .MuiChartsAxis-tick": {
-                      stroke: "#ffffff",
-                      strokeWidth: 0,
-                    },
-                    ".MuiChartsAxis-tickLabel": {
-                      fill: "#ffffff",
-                      fontFamily: "Inter",
-                    },
+                  ".MuiChartsAxis-tickLabel": {
+                    fill: "dark:#ffffff",
+                    fontFamily: "Inter",
                   },
-                })}
-                xAxis={xAxis}
-                yAxis={yAxis}
-                series={series}
-                onAxisClick={handleBarClick}
-                height={200}
-                width={2800}
-              />
-            </motion.div>
-          </ThemeProvider>
+                },
+              })}
+              xAxis={xAxis}
+              yAxis={yAxis}
+              series={series}
+              onAxisClick={handleBarClick}
+              height={200}
+              width={2800}
+            />
+          </motion.div>
         </div>
       )}
     </div>

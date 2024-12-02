@@ -3,6 +3,7 @@ import { fetchAssetData } from "../api/ChartApi";
 import "./styles.css";
 import { Skeleton } from "@mui/material";
 import { motion } from "framer-motion";
+import { useTheme } from "../../CustomThemeContext/CustomThemeContext";
 
 const AssetCountComponent = ({ triggerRefresh }) => {
   const [totalAssets, setTotalAssets] = useState(0);
@@ -63,6 +64,8 @@ const AssetCountComponent = ({ triggerRefresh }) => {
   //   return <div>Error fetching data...</div>;
   // }
 
+  const { theme } = useTheme();
+
   return (
     <div>
       <div className="grid grid-cols-2 gap-8 w-fit px-auto">
@@ -112,12 +115,28 @@ const AssetCountComponent = ({ triggerRefresh }) => {
                 width={120}
                 height={120}
                 sx={{
-                  bgcolor: "transparent",
+                  bgcolor: `${
+                    theme.theme === "dark"
+                      ? "transparent"
+                      : "rgba(0, 0, 0, 0.05)"
+                  }`,
                   backdropFilter: "blur(10px)",
-                  border: "1px solid rgba(255, 255, 255, 0.2)",
-                  boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.4)",
+                  border: `${
+                    theme.theme === "dark"
+                      ? "1px solid rgba(255, 255, 255, 0.2)"
+                      : "1px solid rgba(0, 0, 0, 0.1)"
+                  }`,
+                  boxShadow: `${
+                    theme.theme === "dark"
+                      ? "0px 4px 12px rgba(0, 0, 0, 0.4)"
+                      : "0px 4px 12px rgba(0, 0, 0, 0.1)"
+                  }`,
                   "& .MuiSkeleton-wave": {
-                    background: `linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0) 100%)`,
+                    background: `${
+                      theme.theme === "dark"
+                        ? "linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0) 100%)"
+                        : "linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0) 100%)"
+                    }`,
                     animationDuration: "1.5s",
                   },
                 }}
@@ -135,7 +154,7 @@ const AssetCountComponent = ({ triggerRefresh }) => {
               }}
             >
               <div
-                className="absolute inset-0 rounded-full bg-custom-400"
+                className="absolute inset-0 rounded-full dark:bg-custom-400"
                 style={{ clipPath: "circle(45%)" }}
               ></div>
               <div className="relative flex flex-col items-center justify-center z-10">

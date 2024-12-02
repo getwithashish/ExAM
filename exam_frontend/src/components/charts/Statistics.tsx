@@ -62,29 +62,29 @@ export const Statistics = ({
   };
 
   return (
-    <div className="rounded-xl bg-custom-400 pt-10 sm:mx-6 ">
+    <div className="rounded-xl bg-white dark:bg-custom-400 pt-10 sm:mx-6 ">
       {error ? (
         <div>Error: {error}</div>
       ) : (
         <>
           <div className="">
-            <span className="font-bold font-display text-white m-10 text-grey-900 text-xl">
+            <span className="font-bold font-display dark:text-white m-10 text-grey-900 text-xl">
               Asset Overview
               <span className="items-center justify-end mx-2">
                 <RefreshTwoTone
                   onClick={handleRefreshOnClick}
+                  className="dark:text-white"
                   style={{
                     cursor: "pointer",
                     marginLeft: "10px",
                     width: "25px",
                     height: "20px",
-                    color: "#ffffff",
                   }}
                 />
               </span>
             </span>
           </div>
-          <div className="border-t-4 border-gray-600 rounded-xl m-8"></div>
+          <div className="border-t-4 dark:border-gray-600 rounded-xl m-8"></div>
           <div className="xl:p-2 mx-6 py-2">
             <div className="flex mx-auto">
               <div className="">

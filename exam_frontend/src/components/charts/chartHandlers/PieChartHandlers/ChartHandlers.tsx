@@ -5,7 +5,7 @@ import React, {
   useImperativeHandle,
 } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles";
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import Stack from "@mui/material/Stack";
 import { fetchAssetData, fetchAssetTypeData } from "../../api/ChartApi";
@@ -23,6 +23,7 @@ import { RefreshTwoTone } from "@mui/icons-material";
 import { AssetStatusTooltip } from "../../../Tooltip/AssetStatusTooltip";
 import { motion } from "framer-motion";
 import { Skeleton } from "@mui/material";
+import { useTheme } from "../../../CustomThemeContext/CustomThemeContext";
 
 const ChartHandlers: React.FC<PieChartGraphProps> = forwardRef(
   (
@@ -616,6 +617,8 @@ const ChartHandlers: React.FC<PieChartGraphProps> = forwardRef(
       handleSelectChange,
     }));
 
+    const { theme } = useTheme();
+
     return (
       <Stack>
         <div className="flex justify-end">
@@ -679,12 +682,28 @@ const ChartHandlers: React.FC<PieChartGraphProps> = forwardRef(
                         width={150}
                         height={150}
                         sx={{
-                          bgcolor: "transparent",
+                          bgcolor: `${
+                            theme.theme === "dark"
+                              ? "transparent"
+                              : "rgba(0, 0, 0, 0.05)"
+                          }`,
                           backdropFilter: "blur(10px)",
-                          border: "1px solid rgba(255, 255, 255, 0.2)",
-                          boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.4)",
+                          border: `${
+                            theme.theme === "dark"
+                              ? "1px solid rgba(255, 255, 255, 0.2)"
+                              : "1px solid rgba(0, 0, 0, 0.1)"
+                          }`,
+                          boxShadow: `${
+                            theme.theme === "dark"
+                              ? "0px 4px 12px rgba(0, 0, 0, 0.4)"
+                              : "0px 4px 12px rgba(0, 0, 0, 0.1)"
+                          }`,
                           "& .MuiSkeleton-wave": {
-                            background: `linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0) 100%)`,
+                            background: `${
+                              theme.theme === "dark"
+                                ? "linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0) 100%)"
+                                : "linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0) 100%)"
+                            }`,
                             animationDuration: "1.5s",
                           },
                         }}
@@ -693,10 +712,10 @@ const ChartHandlers: React.FC<PieChartGraphProps> = forwardRef(
                   ))}
                 </>
               ) : (
-                <ThemeProvider theme={darkTheme}>
+                <>
                   <div className="pt-6 mt-4 text-center items-center justify-center">
                     <span
-                      className={`font-semibold font-display leading-none text-white dark:text-white ${pieSize.headingSize}`}
+                      className={`font-semibold font-display leading-none dark:text-white ${pieSize.headingSize}`}
                     >
                       Asset Status <AssetStatusTooltip isChartTooltip={true} />
                     </span>
@@ -784,7 +803,9 @@ const ChartHandlers: React.FC<PieChartGraphProps> = forwardRef(
                           hidden: false,
                           labelStyle: {
                             fontSize: 10, // Reduced font size for legend
-                            fill: "#ffffff",
+                            fill: `${
+                              theme.theme === "dark" ? "#ffffff" : "#000000"
+                            }`,
                           },
                           itemMarkWidth: 6, // Adjusted legend item mark size
                           itemMarkHeight: 10,
@@ -797,7 +818,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = forwardRef(
                   </div>
                   <div className=" pt-6 mt-4 text-center items-center justify-center">
                     <span
-                      className={`font-semibold font-display leading-none text-white dark:text-white ${pieSize.headingSize}`}
+                      className={`font-semibold font-display leading-none dark:text-white ${pieSize.headingSize}`}
                     >
                       Asset Approval Status
                     </span>
@@ -884,7 +905,9 @@ const ChartHandlers: React.FC<PieChartGraphProps> = forwardRef(
                           hidden: false,
                           labelStyle: {
                             fontSize: 10, // Reduced font size for legend
-                            fill: "#ffffff",
+                            fill: `${
+                              theme.theme === "dark" ? "#ffffff" : "#000000"
+                            }`,
                           },
                           itemMarkWidth: 6, // Adjusted legend item mark size
                           itemMarkHeight: 10,
@@ -900,7 +923,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = forwardRef(
                   </div>
                   <div className=" pt-6 mt-4 text-center items-center justify-center">
                     <span
-                      className={`font-semibold font-display leading-none text-white dark:text-white ${pieSize.headingSize}`}
+                      className={`font-semibold font-display leading-none dark:text-white ${pieSize.headingSize}`}
                     >
                       Asset Allocation Status
                     </span>
@@ -987,7 +1010,9 @@ const ChartHandlers: React.FC<PieChartGraphProps> = forwardRef(
                           hidden: false,
                           labelStyle: {
                             fontSize: 10, // Smaller font for legend labels
-                            fill: "#ffffff",
+                            fill: `${
+                              theme.theme === "dark" ? "#ffffff" : "#000000"
+                            }`,
                           },
                           itemMarkWidth: 6, // Adjusted legend item mark size
                           itemMarkHeight: 10,
@@ -998,7 +1023,7 @@ const ChartHandlers: React.FC<PieChartGraphProps> = forwardRef(
                       }}
                     />
                   </div>
-                </ThemeProvider>
+                </>
               )}
             </Stack>
           </Stack>
