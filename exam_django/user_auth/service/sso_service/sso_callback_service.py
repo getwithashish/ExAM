@@ -4,7 +4,10 @@ from social_django.utils import load_strategy, load_backend
 from rest_framework.response import Response
 from rest_framework import status
 
-from user_auth.serializers import UsernameAndUserscopeTokenObtainPairSerializer
+from user_auth.serializers.user_serializer import (
+    UsernameAndUserscopeTokenObtainPairSerializer,
+)
+
 from messages import USER_NOT_ACTIVE, USER_SCOPE_NOT_FOUND
 from exceptions import UserNotActiveException, UserScopeNotFoundException
 
