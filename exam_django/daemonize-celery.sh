@@ -10,7 +10,7 @@ mkdir -p $RUN_DIR $LOG_DIR
 chmod 755 $RUN_DIR $LOG_DIR
 
 # Celery worker service script
-cat <<EOF > $RUN_DIR/celery_worker.sh
+cat <<EOF >$RUN_DIR/celery_worker.sh
 #!/bin/sh
 
 echo "Starting Celery Worker..."
@@ -21,7 +21,7 @@ EOF
 chmod +x $RUN_DIR/celery_worker.sh
 
 # Celery beat service script
-cat <<EOF > $RUN_DIR/celery_beat.sh
+cat <<EOF >$RUN_DIR/celery_beat.sh
 #!/bin/sh
 
 echo "Starting Celery Beat..."
