@@ -118,6 +118,7 @@ INSTALLED_APPS = [
     "user_auth",
     "asset",
     "ai",
+    "notification",
     # Swagger
     "drf_yasg",
     # Django Health Check
