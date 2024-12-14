@@ -3,10 +3,50 @@ hostname = "http://localhost:5173"
 login_endpoint = "/login"
 dashboard_endpoint = "/exam/dashboard"
 
+
 [sso]
 redirect_url = "http://localhost:5173/sso/flow?refresh_token={}&access_token={}"
 
 # TODO Should show the callback uris to be used for different IdPs
+
+
+[dummy_data]
+asset_id = ["DUMMY-01234", "DUMMY-11234"]
+asset_category = "SOFTWARE"
+
+asset_type = "Docker"
+product_name = "Docker 2024"
+model_number = "DUMMY-1234"
+owner = "EXPERION"
+status = "SCRAP"
+warranty_period = 24
+license_type = ["Permanent", "Monthly"]
+is_deleted = true
+
+location = "Trivandrum"
+business_unit = "DU1"
+memory = 16
+
+[dummy_data.custodian]
+name = "ams_employee"
+department = "DU1"
+designation = ""
+
+[dummy_data.user.lead]
+username = "AMS1"
+password = "password"
+email = "ams1@ams.com"
+user_scope = "LEAD"
+
+[dummy_data.user.system_admin]
+username = "AMS2"
+password = "password"
+email = "ams2@ams.com"
+user_scope = "SYSTEM_ADMIN"
+
+
+[import]
+import_batch_size = 1000
 
 # TODO The below is not currently used in code
 [model_data]
@@ -40,3 +80,53 @@ user_scope_sysadmin = "SYSTEM_ADMIN"
 user_scope_manager = ["MANAGER"]
 user_scope_lead = ["LEAD", "SENIORLEAD"]
 user_scope_sysadmin = ["SYSTEM_ADMIN", "SYSADMIN", "SENIORADMINISTRATOR"]
+
+
+[email]
+
+[email.content.creation.request]
+email_body = """
+
+"""
+variables = []
+
+[email.content.creation.approval.system_admin]
+email_body = """
+Dear {System Admin},
+
+We are pleased to inform you that the creation of the following {convert_to_first_letter_uppercase(kwargs["asset_category"])} asset has been approved by {kwargs["approved_by"]["username"]} ({kwargs["approved_by"]["email"]}):
+
+{convert_to_first_letter_uppercase(kwargs["asset_category"])} Asset Details:
+-------------------------------------------------------
+{construct_asset_data_body(**kwargs)}
+-------------------------------------------------------
+
+For more details you can login and view the dashboard of Asset Management System
+"""
+
+[email.content.creation.rejection.system_admin]
+email_body = """
+Dear System Admin,
+
+We regret to inform you that the creation of the following {convert_to_first_letter_uppercase(kwargs["asset_category"])} asset has been rejected by {kwargs["approved_by"]["username"]} ({kwargs["approved_by"]["email"]}):
+
+{convert_to_first_letter_uppercase(kwargs["asset_category"])} Asset Details:
+-------------------------------------------------------
+{construct_asset_data_body(**kwargs)}
+-------------------------------------------------------
+
+For more details you can login and view the dashboard of Asset Management System
+"""
+
+[email.content.creation.approval.lead]
+email_body = """
+Dear Lead,
+
+This is to inform you that a reqeuest for updating an asset is made by {kwargs["requester"]["username"]} ({kwargs["requester"]["email"]}).
+
+The asset details are given below:
+
+{construct_asset_data_body(**kwargs)}
+
+Changes:
+"""

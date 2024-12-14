@@ -1,0 +1,205 @@
+[notification]
+enabled_medium = ["EMAIL"]
+
+operations_to_send_notifications = [
+    "creation_request",
+    "creation_approve",
+    "creation_reject",
+    "modification_request",
+    "modification_approve",
+    "modification_reject",
+    "allocation_request",
+    "allocation_approve",
+    "allocation_reject",
+]
+
+[notification.email]
+signature_content = """
+Regards and Thank you.
+
+System Facility Management (SFM)
+Experion Technologies
+
+Australia | Germany | India | Netherlands | Switzerland | UK | USA
+Clutch - Top 20 Digital Solutions - Worldwide;
+Texas Top 100 Great Place to Work 2021
+Major Contender - Everest Group's Digital Product Engineering Peak Matrix Assessment 2022
+2022 Frost & Sullivan Global Software Product Engineering Customer Value Leadership Award
+Inc. 5000- 4-time winner
+"""
+
+[notification.email.content.creation.request.lead]
+email_body = """
+Dear Lead,
+
+This is to inform you that a reqeuest for creating an asset is made by {kwargs["requester"]["username"]} ({kwargs["requester"]["email"]}).
+
+The asset details are given below:
+
+{construct_asset_data_body(**kwargs)}
+
+Please make sure to familiarize yourself with the specifications of the assigned asset.
+
+We trust that the asset will be utilized effectively to enhance the productivity.
+
+For more details you can login and view the dashboard of Asset Management System
+"""
+variables = []
+
+[notification.email.content.modification.request.lead]
+email_body = """
+Dear Lead,
+
+This is to inform you that a reqeuest for updating an asset is made by {kwargs["requester"]["username"]} ({kwargs["requester"]["email"]}).
+
+The asset details are given below:
+
+{construct_asset_data_body(**kwargs)}
+
+Changes:
+
+change_number = 1
+    for field, old_value, new_value in changed_fields:
+        email_body += 
+    {change_number}. {field.capitalize()} has been changed from {old_value} to {new_value}.
+"""
+
+[notification.email.content.allocation.request.lead]
+email_body = """
+Dear Lead,
+
+We would like to inform you that a request is made by {kwargs["requester"]["username"]} ({kwargs["requester"]["email"]}) to allocate an asset to {kwargs["custodian"]["employee_name"]}.
+
+Details of the asset:
+
+{construct_asset_data_body(**kwargs)}
+
+For more details you can login and view the dashboard of Asset Management System
+"""
+
+[notification.email.content.deallocation.request.lead]
+email_body = """
+Dear Lead,
+
+We would like to inform you that a request is made by {kwargs["requester"]["username"]} ({kwargs["requester"]["email"]}) to deallocate an asset.
+
+Details of the asset:
+Asset Name: {kwargs["product_name"]}
+Asset Category: {kwargs["asset_category"]}
+Asset Type: {kwargs["asset_type"]["asset_type_name"]}
+Asset ID: {kwargs["asset_id"]}
+
+For more details you can login and view the dashboard of Asset Management System.
+"""
+
+[notification.email.content.creation.approval.system_admin]
+email_body = """
+Dear System Admin,
+
+We are pleased to inform you that the creation of the following {convert_to_first_letter_uppercase(kwargs["asset_category"])} asset has been approved by {kwargs["approved_by"]["username"]} ({kwargs["approved_by"]["email"]}):
+
+{convert_to_first_letter_uppercase(kwargs["asset_category"])} Asset Details:
+-------------------------------------------------------
+{construct_asset_data_body(**kwargs)}
+-------------------------------------------------------
+
+For more details you can login and view the dashboard of Asset Management System
+"""
+
+[notification.email.content.creation.rejection.system_admin]
+email_body = """
+Dear System Admin,
+
+We regret to inform you that the creation of the following {convert_to_first_letter_uppercase(kwargs["asset_category"])} asset has been rejected by {kwargs["approved_by"]["username"]} ({kwargs["approved_by"]["email"]}):
+
+{convert_to_first_letter_uppercase(kwargs["asset_category"])} Asset Details:
+-------------------------------------------------------
+{construct_asset_data_body(**kwargs)}
+-------------------------------------------------------
+
+For more details you can login and view the dashboard of Asset Management System
+"""
+
+[notification.email.content.modification.approval.system_admin]
+email_body = """
+Dear System Admin,
+
+We are pleased to inform you that the modification of the following {convert_to_first_letter_uppercase(kwargs["asset_category"])} asset has been approved by {kwargs["approved_by"]["username"]} ({kwargs["approved_by"]["email"]}):
+
+{convert_to_first_letter_uppercase(kwargs["asset_category"])} Asset Details:
+-------------------------------------------------------
+{construct_asset_data_body(**kwargs)}
+-------------------------------------------------------
+
+For more details you can login and view the dashboard of Asset Management System
+"""
+
+[notification.email.content.modification.rejection.system_admin]
+email_body = """
+Dear System Admin,
+
+We regret to inform you that the modification of the following {convert_to_first_letter_uppercase(kwargs["asset_category"])} asset has been rejected by {kwargs["approved_by"]["username"]} ({kwargs["approved_by"]["email"]}):
+
+{convert_to_first_letter_uppercase(kwargs["asset_category"])} Asset Details:
+-------------------------------------------------------
+{construct_asset_data_body(**kwargs)}
+-------------------------------------------------------
+
+For more details you can login and view the dashboard of Asset Management System
+"""
+
+[notification.email.content.allocation.approval.system_admin]
+email_body = """
+Dear System Admin,
+
+We are pleased to inform you that the allocation of the following {convert_to_first_letter_uppercase(kwargs["asset_category"])} asset has been approved by {kwargs["approved_by"]["username"]} ({kwargs["approved_by"]["email"]}):
+
+{convert_to_first_letter_uppercase(kwargs["asset_category"])} Asset Details:
+-------------------------------------------------------
+{construct_asset_data_body(**kwargs)}
+-------------------------------------------------------
+
+For more details you can login and view the dashboard of Asset Management System
+"""
+
+[notification.email.content.allocation.rejection.system_admin]
+email_body = """
+Dear System Admin,
+
+We regret to inform you that the allocation of the following {convert_to_first_letter_uppercase(kwargs["asset_category"])} asset has been rejected by {kwargs["approved_by"]["username"]} ({kwargs["approved_by"]["email"]}):
+
+{convert_to_first_letter_uppercase(kwargs["asset_category"])} Asset Details:
+-------------------------------------------------------
+{construct_asset_data_body(**kwargs)}
+-------------------------------------------------------
+
+For more details you can login and view the dashboard of Asset Management System
+"""
+
+[notification.email.content.deallocation.approval.system_admin]
+email_body = """
+Dear System Admin,
+
+We are pleased to inform you that the deallocation of the following {convert_to_first_letter_uppercase(kwargs["asset_category"])} asset has been approved by {kwargs["approved_by"]["username"]} ({kwargs["approved_by"]["email"]}):
+
+{convert_to_first_letter_uppercase(kwargs["asset_category"])} Asset Details:
+-------------------------------------------------------
+{construct_asset_data_body(**kwargs)}
+-------------------------------------------------------
+
+For more details you can login and view the dashboard of Asset Management System
+"""
+
+[notification.email.content.deallocation.rejection.system_admin]
+email_body = """
+Dear System Admin,
+
+We regret to inform you that the deallocation of the following {convert_to_first_letter_uppercase(kwargs["asset_category"])} asset has been rejected by {kwargs["approved_by"]["username"]} ({kwargs["approved_by"]["email"]}):
+
+{convert_to_first_letter_uppercase(kwargs["asset_category"])} Asset Details:
+-------------------------------------------------------
+{construct_asset_data_body(**kwargs)}
+-------------------------------------------------------
+
+For more details you can login and view the dashboard of Asset Management System
+"""
