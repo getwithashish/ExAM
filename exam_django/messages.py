@@ -37,6 +37,7 @@ USER_NOT_ACTIVE = "User is not currently active."
 # User Success Messages
 EMPLOYEE_SUCCESSFULLY_CREATED = "Employee has been created successfully."
 USER_FOUND_SUCCESS = "User found. Success."
+USER_CREATED_SUCCESSFULLY = "New User has been created successfully"
 USER_DETAILS_VALIDATED_SUCCESSFULLY = "The provided details match with the database."
 USERS_RETRIEVED_SUCCESSFULLY = "List of users retrieved successfully."
 
@@ -119,6 +120,7 @@ INVALID_FILE_TYPE = "Invalid file type. Give a valid file type"
 # Asset Log Exception Messages
 ASSET_LOG_ERROR = "Something went wrong while adding data to the asset log."
 NO_ASSET_LOGS_IN_TIMELINE = "No assets were found in the given timeline."
+ASSET_LOGS_NOT_FOUND = "No Asset Logs were found"
 
 # Asset Log Success Messages
 ASSET_LOG_FOUND = "Asset log found successfully."
@@ -201,3 +203,8 @@ HEALTH_CHECK_EXTERNAL_SERVICE_FAILED = "Health Check for External Services Faile
 
 # Authentication Messages
 SSO_CALLBACK_AUTHORIZATION_CODE_REQUIRED = "Authorization code is required"
+
+# Notification Messages
+EMAIL_MESSAGE_ID_NOT_FOUND = "Email Message ID is not found"
+EMPLOYEE_ASSIGNED_SUCESSFULLY = "Employee has been successfully assigned an asset"
+EMPLOYEE_UNASSIGNED_SUCESSFULLY = "Employee has been successfully unassigned an asset"
