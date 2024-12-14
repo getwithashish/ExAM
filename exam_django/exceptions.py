@@ -76,4 +76,7 @@ class UserNotActiveException(Exception):
 
 
 class InternalServerException(Exception):
-    pass
+    def __init__(self, errors, message, status):
+        super().__init__(errors)
+        self.message = message
+        self.status = status
