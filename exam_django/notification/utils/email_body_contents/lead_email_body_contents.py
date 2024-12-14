@@ -25,7 +25,9 @@ For more details you can login and view the dashboard of Asset Management System
     )
 
 
-def construct_modify_asset_email_body_content(changed_fields, **kwargs):
+def construct_modify_asset_email_body_content(**kwargs):
+    changed_fields = kwargs["changed_fields"]
+
     email_body = f"""Dear Lead,
 
 This is to inform you that a reqeuest for updating an asset is made by {kwargs["requester"]["username"]} ({kwargs["requester"]["email"]}).
