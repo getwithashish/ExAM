@@ -11,9 +11,14 @@ from asset.models import (
     Asset,
 )
 from asset.signals.asset_previous_value_signal import asset_previous_value_signal
+from exceptions import NotFoundException, ValidationException
 from user_auth.models import User
-from response import APIResponse
-from messages import ASSET_NOT_FOUND, ASSET_LOG_FOUND, NO_ASSET_LOGS_IN_TIMELINE
+from messages import (
+    ASSET_LOGS_NOT_FOUND,
+    ASSET_LOG_FOUND,
+    BAD_REQUEST_ERROR,
+    NO_ASSET_LOGS_IN_TIMELINE,
+)
 from rest_framework import status
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -28,86 +33,59 @@ class AssetLogService:
     @staticmethod
     def get_asset_logs(
         asset_uuid: str, recency: Optional[str] = None, timeline: Optional[str] = None
-    ) -> APIResponse:
-        try:
-            asset_logs = AssetLog.objects.filter(asset_uuid=asset_uuid).order_by(
-                "-timestamp"
+    ):
+        asset_logs = AssetLog.objects.filter(asset_uuid=asset_uuid).order_by(
+            "-timestamp"
+        )
+
+        if not asset_logs.exists():
+            raise NotFoundException(
+                {},
+                message=ASSET_LOGS_NOT_FOUND,
+                status=status.HTTP_404_NOT_FOUND,
             )
 
-            if not asset_logs.exists():
-                return APIResponse(
-                    data=[],
-                    message=ASSET_NOT_FOUND,
+        response_data = {"asset_uuid": asset_uuid, "logs": []}
+
+        if recency == "latest":
+            latest_log = asset_logs.first()
+
+            if latest_log:
+                asset_log_json = json.loads(latest_log.asset_log)
+
+                asset_log_json = AssetLogService.populate_asset_details(asset_log_json)
+
+                log_data = {
+                    "id": latest_log.id,
+                    "timestamp": latest_log.timestamp,
+                    "asset_log": asset_log_json,
+                }
+                response_data["logs"].append(log_data)
+            else:
+                raise NotFoundException(
+                    {},
+                    message=ASSET_LOGS_NOT_FOUND,
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
-            response_data = {"asset_uuid": asset_uuid, "logs": []}
+        elif timeline:
+            try:
+                decoded_timeline = urllib.parse.unquote(
+                    timeline
+                )  # Decode the URL-encoded datetime string
+                timeline_datetime = datetime.strptime(
+                    decoded_timeline, "%Y-%m-%dT%H:%M:%S.%fZ"
+                )
+                asset_logs_in_timeline = asset_logs.filter(timestamp=timeline_datetime)
+            except ValueError:
+                raise ValidationException(
+                    {},
+                    message=BAD_REQUEST_ERROR,
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
-            if recency == "latest":
-                latest_log = asset_logs.first()
-
-                if latest_log:
-                    asset_log_json = json.loads(latest_log.asset_log)
-
-                    asset_log_json = AssetLogService.populate_asset_details(
-                        asset_log_json
-                    )
-
-                    log_data = {
-                        "id": latest_log.id,
-                        "timestamp": latest_log.timestamp,
-                        "asset_log": asset_log_json,
-                    }
-                    response_data["logs"].append(log_data)
-                else:
-                    return APIResponse(
-                        data=[],
-                        message=ASSET_NOT_FOUND,
-                        status=status.HTTP_404_NOT_FOUND,
-                    )
-
-            elif timeline:
-                try:
-                    decoded_timeline = urllib.parse.unquote(
-                        timeline
-                    )  # Decode the URL-encoded datetime string
-                    timeline_datetime = datetime.strptime(
-                        decoded_timeline, "%Y-%m-%dT%H:%M:%S.%fZ"
-                    )
-                    asset_logs_in_timeline = asset_logs.filter(
-                        timestamp=timeline_datetime
-                    )
-                except ValueError:
-                    return APIResponse(
-                        data=[],
-                        message="Invalid ISO format string",
-                        status=status.HTTP_400_BAD_REQUEST,
-                    )
-
-                if asset_logs_in_timeline.exists():
-                    for log in asset_logs_in_timeline:
-                        asset_log_json = json.loads(log.asset_log)
-
-                        # Populate asset details
-                        asset_log_json = AssetLogService.populate_asset_details(
-                            asset_log_json
-                        )
-
-                        log_data = {
-                            "id": log.id,
-                            "timestamp": log.timestamp,
-                            "asset_log": asset_log_json,
-                        }
-                        response_data["logs"].append(log_data)
-                else:
-                    return APIResponse(
-                        data=[],
-                        message=NO_ASSET_LOGS_IN_TIMELINE,
-                        status=status.HTTP_404_NOT_FOUND,
-                    )
-
-            else:  # For other recency values or if recency is not provided
-                for log in asset_logs:
+            if asset_logs_in_timeline.exists():
+                for log in asset_logs_in_timeline:
                     asset_log_json = json.loads(log.asset_log)
 
                     # Populate asset details
@@ -121,19 +99,28 @@ class AssetLogService:
                         "asset_log": asset_log_json,
                     }
                     response_data["logs"].append(log_data)
+            else:
+                raise NotFoundException(
+                    {},
+                    message=NO_ASSET_LOGS_IN_TIMELINE,
+                    status=status.HTTP_404_NOT_FOUND,
+                )
 
-            return APIResponse(
-                data=response_data,
-                message=ASSET_LOG_FOUND,
-                status=status.HTTP_200_OK,
-            )
+        else:  # For other recency values or if recency is not provided
+            for log in asset_logs:
+                asset_log_json = json.loads(log.asset_log)
 
-        except Exception as e:
-            return APIResponse(
-                data=[],
-                message=str(e),
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
+                # Populate asset details
+                asset_log_json = AssetLogService.populate_asset_details(asset_log_json)
+
+                log_data = {
+                    "id": log.id,
+                    "timestamp": log.timestamp,
+                    "asset_log": asset_log_json,
+                }
+                response_data["logs"].append(log_data)
+
+        return response_data, ASSET_LOG_FOUND, status.HTTP_200_OK
 
     @staticmethod
     def get_actual_value(key: str, value: str):
