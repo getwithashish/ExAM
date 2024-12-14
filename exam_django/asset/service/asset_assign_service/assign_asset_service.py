@@ -3,7 +3,7 @@ from rest_framework import status
 from asset.models import Employee, Asset
 from asset.serializers.asset_serializer import AssetReadSerializer
 from asset.models.business_unit import BusinessUnit
-from utils.celery_status_checker import CeleryStatusChecker
+from notification.service.notification_service import NotificationService
 from messages import (
     ASSET_CONFLICT,
     BUSINESS_UNIT_NOT_FOUND,
@@ -21,10 +21,6 @@ from exceptions import (
     NotFoundException,
     PermissionDeniedException,
 )
-from notification.utils.email_body_contents.lead_email_body_contents import (
-    construct_allocate_asset_email_body_content,
-)
-from notification.service.email_service import send_email
 
 
 class AssignAssetService:
@@ -33,9 +29,13 @@ class AssignAssetService:
         requester_role, asset_uuid, employee_id, business_unit, requester, version
     ):
         try:
+            notification_service = NotificationService()
+
             employee = Employee.objects.get(id=employee_id)
             asset = Asset.objects.get(asset_uuid=asset_uuid)
             business_unit = BusinessUnit.objects.get(id=business_unit)
+
+            old_asset_data = AssetReadSerializer(asset).data
 
         except Employee.DoesNotExist:
             raise NotFoundException(
@@ -71,21 +71,11 @@ class AssignAssetService:
         asset.save()
         assigned_asset_serializer = AssetReadSerializer(asset)
 
-        email_body = construct_allocate_asset_email_body_content(
-            **assigned_asset_serializer.data
-        )
+        asset_dict = assigned_asset_serializer.data.copy()
+        asset_dict["old_asset_data"] = old_asset_data
 
-        if CeleryStatusChecker.check_celery_status():
-            send_email.delay(
-                email_subject,
-                email_body,
-                [
-                    "asimapalexperion23@gmail.com",
-                    "astg7542@gmail.com",
-                    "acj88178@gmail.com",
-                    "aidrin.varghese@experionglobal.com",
-                    "pavithraexperion@gmail.com",
-                ],
-            )
+        notification_service.send_notification(
+            subject=email_subject, message=message, **asset_dict
+        )
 
         return assigned_asset_serializer.data, message, status.HTTP_202_ACCEPTED

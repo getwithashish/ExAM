@@ -1,21 +1,24 @@
 from asset.models import Asset
 from asset.serializers.asset_serializer import AssetReadSerializer
+from notification.service.notification_service import NotificationService
 from exceptions import ConflictException, SerializerException
 from messages import ASSET_CONFLICT, INVALID_ASSET_DATA
-from notification.utils.email_body_contents.lead_email_body_contents import (
-    construct_create_asset_email_body_content,
-    construct_modify_asset_email_body_content,
-)
-from notification.service.email_service import send_email
+
 from rest_framework import status
-from utils.celery_status_checker import CeleryStatusChecker
 
 
 class AssetMutationService:
     def __init__(self, asset_user_role_mutation_service):
         self.asset_user_role_mutation_service = asset_user_role_mutation_service
+        self.notification_service = NotificationService()
 
     def create_asset(self, serializer, request):
+        try:
+            asset = Asset.objects.get(asset_uuid=request.data.get("asset_uuid"))
+            old_asset_data = AssetReadSerializer(asset).data
+        except Asset.DoesNotExist:
+            old_asset_data = None
+
         new_serializer, message, email_subject = (
             self.asset_user_role_mutation_service.create_asset(serializer, request)
         )
@@ -24,10 +27,12 @@ class AssetMutationService:
         new_serializer = new_serializer.save()
 
         asset_data = AssetReadSerializer(new_serializer)
-        email_body = construct_create_asset_email_body_content(**asset_data.data)
+        asset_dict = asset_data.data.copy()
+        asset_dict["old_asset_data"] = old_asset_data
 
-        if CeleryStatusChecker.check_celery_status():
-            send_email.delay(email_subject, email_body, self._get_email_recipients())
+        self.notification_service.send_notification(
+            subject=email_subject, message=message, **asset_dict
+        )
 
         return asset_data.data, message, status.HTTP_201_CREATED
 
@@ -59,31 +64,19 @@ class AssetMutationService:
 
             changed_fields = self._get_changed_fields(old_asset_data, new_asset_data)
 
-            email_body = construct_modify_asset_email_body_content(
-                changed_fields, **updated_asset_serializer.data
-            )
+            asset_dict = updated_asset_serializer.data.copy()
+            asset_dict["old_asset_data"] = old_asset_data
+            asset_dict["changed_fields"] = changed_fields
 
-            if CeleryStatusChecker.check_celery_status():
-                send_email.delay(
-                    email_subject,
-                    email_body,
-                    self._get_email_recipients(),
-                )
+            self.notification_service.send_notification(
+                subject=email_subject, message=message, **asset_dict
+            )
 
             return new_asset_data, message, status.HTTP_200_OK
 
         raise SerializerException(
             serializer.errors, INVALID_ASSET_DATA, status.HTTP_400_BAD_REQUEST
         )
-
-    def _get_email_recipients(self):
-        return [
-            "astg7542@gmail.com",
-            "acj88178@gmail.com",
-            "asimapalexperion23@gmail.com",
-            "aidrin.varghese@experionglobal.com",
-            "pavithraexperion@gmail.com",
-        ]
 
     def _get_asset_and_old_data(self, asset_uuid):
         asset = Asset.objects.select_related(
@@ -194,61 +187,3 @@ class AssetMutationService:
                 changed_fields.append((field, old_value, new_value))
 
         return changed_fields
-
-    def _construct_create_email_body(self, asset_data, requester_name):
-        return (
-            f"Dear Lead,\n"
-            f"This is to inform you that a new asset has been created by {requester_name}\n"
-            f"The asset deatails are given below\n\n"
-            f"Asset Name: {asset_data['product_name']}\n"
-            f"Model: {asset_data['model_number']}\n"
-            f"Serial Number: {asset_data['serial_number']}\n"
-            f"Asset Status: {asset_data['status']}\n"
-            f"Date of Purchase: {asset_data['date_of_purchase']}\n"
-            f"Location: {asset_data['location']}\n"
-            f"Business Unit: {asset_data['business_unit']}\n"
-            f"Operating System: {asset_data['os']}\n"
-            f"OS Version: {asset_data['os_version']}\n"
-            f"Processor: {asset_data['processor']}\n"
-            f"Memory: {asset_data['memory']}\n"
-            f"Storage: {asset_data['storage']}\n"
-            f"Configuration: {asset_data['configuration']}\n"
-            f"Accessories: {asset_data['accessories']}\n"
-            f"Notes: {asset_data['notes']}\n\n"
-            f"LicenseType: {asset_data['license_type']}\n"
-            f"Please make sure to familiarize yourself with the specifications of the assigned asset.\n\n"
-            f"We trust that the asset will be utilized effectively to enhance the productivity.\n\n"
-            f"This asset was created by {requester_name}.\n\n"
-            f"For any inquiries, please contact our IT support team at support@example.com or call us at +1 234-567-8901.\n"
-        )
-
-    def _construct_update_email_body(self, asset, changed_fields, requester_name):
-        email_body = f"""
-        Dear Lead,
-
-        The following asset has been updated by {requester_name}:
-
-        Asset: {asset.product_name} (UUID: {asset.asset_uuid})
-
-        Changes:
-        """
-        change_number = 1
-        for field, old_value, new_value in changed_fields:
-            email_body += f"""
-        {change_number}. {field.capitalize()} has been changed from "{old_value}" to "{new_value}".
-        """
-            change_number += 1
-        email_body += """
-        For any inquiries, please contact our IT support team at support@example.com or call us at +1 234-567-8901.
-
-        Best regards and Thankyou,
-
-        Experion Technologies
-        Australia | Germany | India | Netherlands | Switzerland | UK | USA
-        Clutch - Top 20 Digital Solutions - Worldwide; Texas Top 100
-        Great Place to Work 2021
-        Major Contender - Everest Group's Digital Product Engineering Peak Matrix Assessment 2022
-        2022 Frost & Sullivan Global Software Product Engineering Customer Value Leadership Award
-        Inc. 5000- 4-time winner.
-        """
-        return email_body
