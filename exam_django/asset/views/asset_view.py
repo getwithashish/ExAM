@@ -83,6 +83,8 @@ class AssetView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+    # TODO Move sending email from service class to controllers
+
     def post(self, request):
         try:
             serializer = self.serializer_class(data=request.data)
@@ -114,6 +116,13 @@ class AssetView(APIView):
 
             raise SerializerException(
                 serializer.errors, INVALID_ASSET_DATA, status.HTTP_400_BAD_REQUEST
+            )
+
+        except Asset.DoesNotExist:
+            return APIResponse(
+                data={},
+                message=ASSET_NOT_FOUND,
+                status=status.HTTP_404_NOT_FOUND,
             )
 
         except PermissionDeniedException as e:
