@@ -33,7 +33,7 @@ export const AssignmentHandler: React.FC<AssignmentHandlerProps> = ({
     queryKey: ["employeeFetch_Assign"],
     enabled: fetchData && query.trim().length > 0,
     queryFn: (): Promise<ApiResponse> =>
-      axiosInstance.get(`/asset/employee?name=${query}`).then((res) => {
+      axiosInstance.get(`/employee/employee?name=${query}`).then((res) => {
         return res.data;
       }),
     onSuccess: () => {
