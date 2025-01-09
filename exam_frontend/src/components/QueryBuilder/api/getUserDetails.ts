@@ -14,7 +14,9 @@ export { getAssetDetails };
 
 const getLocationOptions = () => {
   const res = axiosInstance.get("/asset/location").then((res) => {
-    return res.data.data.filter(location => location.location_name.trim() !== "");
+    return res.data.data.filter(
+      (location) => location.location_name.trim() !== ""
+    );
   });
   return res;
 };
@@ -58,7 +60,7 @@ const getUserOptions = () => {
 export { getUserOptions };
 
 const getEmployeeOptions = () => {
-  const res = axiosInstance.get("/asset/employee").then((res) => {
+  const res = axiosInstance.get("/employee/employee").then((res) => {
     return res.data.data;
   });
   return res;
