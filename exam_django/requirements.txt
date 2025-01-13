@@ -85,6 +85,7 @@ mccabe==0.7.0
 ms_identity_web @ git+https://github.com/azure-samples/ms-identity-python-samples-common@9b32cef36c6c0b73c1b3237fdd66128d89f90a62
 mdurl==0.1.2
 msal==1.27.0
+msgraph-sdk==1.14.0
 multidict==6.0.5
 mypy-extensions==1.0.0
 mysqlclient==2.2.4
