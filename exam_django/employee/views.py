@@ -2,8 +2,8 @@ from rest_framework.generics import ListCreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from response import APIResponse
 
-from asset.service.employee_crud_service.employee_service import EmployeeService
-from asset.serializers import EmployeeSerializer
+from employee.service.employee_service import EmployeeService
+from employee.serializers import EmployeeSerializer
 
 
 class EmployeeView(ListCreateAPIView):
