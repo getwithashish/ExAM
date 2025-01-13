@@ -2,7 +2,8 @@ import uuid
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from asset.models import AssetType, Employee, Location, BusinessUnit, Memory, Asset
+from asset.models import AssetType, Location, BusinessUnit, Memory, Asset
+from employee.models import Employee
 from user_auth.models import User
 from datetime import datetime, timedelta
 

@@ -25,6 +25,9 @@ class UserSerializer(serializers.ModelSerializer):
             "user_scope": {"required": True},
         }
 
+    def create(self, validated_data):
+        return User.objects.create_user(**validated_data)
+
 
 class UserReadSerializer(serializers.ModelSerializer):
     class Meta:
