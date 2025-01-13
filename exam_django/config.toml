@@ -9,6 +9,10 @@ redirect_url = "http://localhost:5173/sso/flow?refresh_token={}&access_token={}"
 
 # TODO Should show the callback uris to be used for different IdPs
 
+[employee]
+data_source = "AZURE_AD"
+scopes = ['https://graph.microsoft.com/.default']
+
 
 [dummy_data]
 asset_id = ["DUMMY-01234", "DUMMY-11234"]
@@ -80,53 +84,3 @@ user_scope_sysadmin = "SYSTEM_ADMIN"
 user_scope_manager = ["MANAGER"]
 user_scope_lead = ["LEAD", "SENIORLEAD"]
 user_scope_sysadmin = ["SYSTEM_ADMIN", "SYSADMIN", "SENIORADMINISTRATOR"]
-
-
-[email]
-
-[email.content.creation.request]
-email_body = """
-
-"""
-variables = []
-
-[email.content.creation.approval.system_admin]
-email_body = """
-Dear {System Admin},
-
-We are pleased to inform you that the creation of the following {convert_to_first_letter_uppercase(kwargs["asset_category"])} asset has been approved by {kwargs["approved_by"]["username"]} ({kwargs["approved_by"]["email"]}):
-
-{convert_to_first_letter_uppercase(kwargs["asset_category"])} Asset Details:
--------------------------------------------------------
-{construct_asset_data_body(**kwargs)}
--------------------------------------------------------
-
-For more details you can login and view the dashboard of Asset Management System
-"""
-
-[email.content.creation.rejection.system_admin]
-email_body = """
-Dear System Admin,
-
-We regret to inform you that the creation of the following {convert_to_first_letter_uppercase(kwargs["asset_category"])} asset has been rejected by {kwargs["approved_by"]["username"]} ({kwargs["approved_by"]["email"]}):
-
-{convert_to_first_letter_uppercase(kwargs["asset_category"])} Asset Details:
--------------------------------------------------------
-{construct_asset_data_body(**kwargs)}
--------------------------------------------------------
-
-For more details you can login and view the dashboard of Asset Management System
-"""
-
-[email.content.creation.approval.lead]
-email_body = """
-Dear Lead,
-
-This is to inform you that a reqeuest for updating an asset is made by {kwargs["requester"]["username"]} ({kwargs["requester"]["email"]}).
-
-The asset details are given below:
-
-{construct_asset_data_body(**kwargs)}
-
-Changes:
-"""
