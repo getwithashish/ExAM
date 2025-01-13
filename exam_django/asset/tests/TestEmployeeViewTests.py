@@ -1,7 +1,7 @@
 from rest_framework.test import APITestCase, APIClient
 from django.urls import reverse
 from rest_framework import status
-from asset.models import Employee
+from employee.models import Employee
 from user_auth.models import User
 
 

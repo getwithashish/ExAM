@@ -3,9 +3,10 @@ from rest_framework.views import APIView
 import json
 
 import sentry_sdk
+from employee.models import Employee
 from user_auth.models import User
 
-from asset.models import AssetLog, Location, BusinessUnit, Memory, AssetType, Employee
+from asset.models import AssetLog, Location, BusinessUnit, Memory, AssetType
 from response import APIResponse
 from messages import ASSET_NOT_FOUND, ASSET_LOG_FOUND
 

@@ -2,10 +2,10 @@
 from rest_framework import serializers
 from asset.models import Asset
 from asset.serializers.asset_type_serializer import AssetTypeSerializer
-from asset.serializers.employee_serializer import EmployeeSerializer
 from asset.serializers.business_unit_serializer import BusinessUnitSerializer
 from asset.serializers.location_serializer import LocationSerializer
 from asset.serializers.memory_serializer import MemorySerializer
+from employee.serializers import EmployeeSerializer
 from user_auth.serializers.user_serializer import UserSerializer
 
 

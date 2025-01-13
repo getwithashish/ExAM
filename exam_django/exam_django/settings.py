@@ -118,6 +118,7 @@ INSTALLED_APPS = [
     "user_auth",
     "asset",
     "ai",
+    "employee",
     "notification",
     # Swagger
     "drf_yasg",

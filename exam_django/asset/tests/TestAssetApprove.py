@@ -1,6 +1,7 @@
 from rest_framework.test import APITestCase
 from django.urls import reverse
-from asset.models import Asset, Location, AssetType, Memory, BusinessUnit, Employee
+from asset.models import Asset, Location, AssetType, Memory, BusinessUnit
+from employee.models import Employee
 from user_auth.models import User
 from rest_framework_simplejwt.tokens import AccessToken
 

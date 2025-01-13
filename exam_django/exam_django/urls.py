@@ -46,6 +46,7 @@ msal_urls = MsalViews(settings.MS_IDENTITY_WEB).url_patterns()
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/v1/asset/", include("asset.urls")),
+    path("api/v1/employee/", include("employee.urls")),
     path("api/v1/user/", include("user_auth.urls")),
     path("api/v1/ai/", include("ai.urls")),
     path("docs/", include_docs_urls(title="API documentation")),

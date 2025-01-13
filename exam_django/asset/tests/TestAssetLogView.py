@@ -3,6 +3,7 @@ from django.urls import reverse
 from rest_framework import status
 import json
 from datetime import datetime
+from employee.models import Employee
 from user_auth.models import User
 from asset.models import (
     Asset,
@@ -11,7 +12,6 @@ from asset.models import (
     BusinessUnit,
     Memory,
     AssetType,
-    Employee,
 )
 
 

@@ -1,7 +1,8 @@
 import uuid
-from asset.models import Asset, AssetType, BusinessUnit, Employee, Location, Memory
+from asset.models import Asset, AssetType, BusinessUnit, Location, Memory
 from datetime import datetime, date
-from user_auth.models import User  # Import your custom User model
+from employee.models import Employee
+from user_auth.models import User
 from django.test import TestCase
 
 

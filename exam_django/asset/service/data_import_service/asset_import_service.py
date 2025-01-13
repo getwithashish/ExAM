@@ -3,9 +3,10 @@ from typing import List
 from datetime import datetime
 from rest_framework import status
 
-from asset.models import Asset, AssetType, BusinessUnit, Employee, Location, Memory
+from asset.models import Asset, AssetType, BusinessUnit, Location, Memory
 from asset.utils.archive_file_generator import ArchiveFileGenerator
 from asset.utils.data_cleaner import clean_field
+from employee.models import Employee
 from messages import (
     IMPORT_OPERATION_FULL_SUCCESSFUL,
     IMPORT_OPERATION_PARTIAL_SUCCESSFUL,

@@ -1,6 +1,7 @@
 from django.db import models
 import uuid
 from user_auth.models import User
+from employee.models import Employee
 
 
 asset_category_choices = (("HARDWARE", "HARDWARE"), ("SOFTWARE", "SOFTWARE"))
@@ -58,7 +59,8 @@ class Asset(models.Model):
     )
     owner = models.CharField(max_length=50, default="EXPERION", null=False)
     custodian = models.ForeignKey(
-        "Employee",
+        # "employee.Employee",
+        Employee,
         related_name="%(app_label)s_%(class)s_custodian",
         on_delete=models.CASCADE,
         null=True,

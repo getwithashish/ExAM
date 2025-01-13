@@ -1,4 +1,5 @@
 from asset.serializers.asset_serializer import AssetReadSerializer
+from employee.models import Employee
 from notification.service.notification_service import NotificationService
 from exceptions import ConflictException, NotFoundException, PermissionDeniedException
 from asset.service.asset_unassign_service.asset_unassign_sys_admin_service import (
@@ -13,9 +14,7 @@ from messages import (
     USER_UNAUTHORIZED,
 )
 
-from asset.serializers import AssignAssetSerializer
 from asset.models import Asset
-from asset.models.employee import Employee
 
 
 class UnassignAssetService:

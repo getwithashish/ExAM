@@ -7,10 +7,10 @@ from asset.models import (
     BusinessUnit,
     Memory,
     AssetType,
-    Employee,
     Asset,
 )
 from asset.signals.asset_previous_value_signal import asset_previous_value_signal
+from employee.models import Employee
 from exceptions import NotFoundException, ValidationException
 from user_auth.models import User
 from messages import (
