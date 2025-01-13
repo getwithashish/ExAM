@@ -7,13 +7,14 @@ from asset.models import (
     Asset,
     AssetType,
     BusinessUnit,
-    Employee,
     Location,
     Memory,
     AssetLog,
 )
 from django.forms import model_to_dict
 import json
+
+from employee.models import Employee
 
 
 def clean_field(value):
