@@ -1,22 +1,21 @@
-from rest_framework.response import Response
+from django.http import JsonResponse
 
 
-class APIResponse(Response):
+class APIResponse(JsonResponse):
+
     def __init__(
         self,
         data=None,
         status=None,
         message="",
-        template_name=None,
         headers=None,
-        exception=False,
-        content_type=None,
+        json_dumps_params=None,
     ):
+        response_data = {"message": message, "data": data}
+
         super().__init__(
-            {"message": message, "data": data},
-            status,
-            template_name,
-            headers,
-            exception,
-            content_type,
+            response_data,
+            status=status,
+            headers=headers,
+            json_dumps_params=json_dumps_params,
         )
