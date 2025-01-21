@@ -90,6 +90,8 @@ services:
     depends_on:
       - stage-asset-management-backend-service
       - stage-asset-management-frontend-service
+    profiles:
+      - stage
 
 volumes:
   asset_data:
