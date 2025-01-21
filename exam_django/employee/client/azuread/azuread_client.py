@@ -16,7 +16,7 @@ from employee.client.azuread.azuread_config import (
     CLIENT_ID,
     CLIENT_SECRET,
 )
-from employee.models import Employee
+from employee.models.employee import Employee
 from employee.service.employee_service import EmployeeService
 
 
