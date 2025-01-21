@@ -27,19 +27,32 @@ USERS_RETRIEVAL_UNSUCCESSFUL = (
     "The list of user couldn't be retrieved. Please try again."
 )
 USER_UNAUTHORIZED = "User does not have permission to perform this action"
-EMPLOYEE_NOT_FOUND_ERROR = "Employee is not found in the request. Please try again."
-EMPLOYEE_CREATION_UNSUCCESSFUL = (
-    "Error while creating an employee. Please try again later."
-)
 USER_SCOPE_NOT_FOUND = "User Scope not found. Please try another user."
 USER_NOT_ACTIVE = "User is not currently active."
 
 # User Success Messages
-EMPLOYEE_SUCCESSFULLY_CREATED = "Employee has been created successfully."
 USER_FOUND_SUCCESS = "User found. Success."
 USER_CREATED_SUCCESSFULLY = "New User has been created successfully"
 USER_DETAILS_VALIDATED_SUCCESSFULLY = "The provided details match with the database."
 USERS_RETRIEVED_SUCCESSFULLY = "List of users retrieved successfully."
+
+# Employee Exception Messages
+EMPLOYEE_NOT_FOUND_ERROR = "Employee is not found in the request. Please try again."
+
+# Employee Success Messages
+EMPLOYEE_SUCCESSFULLY_CREATED = "Employee has been created successfully."
+EMPLOYEE_CREATION_UNSUCCESSFUL = (
+    "Error while creating an employee. Please try again later."
+)
+EMPLOYEE_DETAILS_SUCCESSFULLY_RETRIEVED = "Employee details successfully retrieved"
+EMPLOYEE_DETAILS_FOUND = "Employee details retrieved based on specified search criteria"
+EMPLOYEE_ASSIGNED_SUCESSFULLY = "Employee has been successfully assigned an asset"
+EMPLOYEE_UNASSIGNED_SUCESSFULLY = "Employee has been successfully unassigned an asset"
+CUSTODIAN_EMPLOYEE_DELETED = "Employee with an allocated asset was deleted"
+
+# Synchronization Messages
+SYNC_INTERVAL_NOT_OVER = "Last synchronization performed within 15 minutes"
+SYNC_DELTA_METADATA_NOT_FOUND = "Delta Metadata does not exist"
 
 # Asset Management - Error Messages
 ASSET_NOT_FOUND = (
@@ -157,8 +170,6 @@ CANNOT_REQUEST_UNASSIGN_FOR_ASSETS_IN_ASSIGN_PENDING = (
 # Business Unit Success Messages
 BUSINESS_UNIT_SUCCESSFULLY_CREATED = "Business unit successfully created."
 BUSINESS_UNIT_SUCCESSFULLY_RETRIEVED = "Business Unit details successfully retrieved."
-EMPLOYEE_DETAILS_SUCCESSFULLY_RETRIEVED = "Employee details successfully retrieved"
-EMPLOYEE_DETAILS_FOUND = "Employee details retrieved based on specified search criteria"
 
 # Asset Type - Success/Invalid Messages
 VALID_ASSET_TYPE = "You have entered a valid asset type."
@@ -206,5 +217,3 @@ SSO_CALLBACK_AUTHORIZATION_CODE_REQUIRED = "Authorization code is required"
 
 # Notification Messages
 EMAIL_MESSAGE_ID_NOT_FOUND = "Email Message ID is not found"
-EMPLOYEE_ASSIGNED_SUCESSFULLY = "Employee has been successfully assigned an asset"
-EMPLOYEE_UNASSIGNED_SUCESSFULLY = "Employee has been successfully unassigned an asset"
