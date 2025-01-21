@@ -108,8 +108,11 @@ class AssetImportService:
             if location is not None:
                 location, _ = Location.objects.get_or_create(location_name=location)
 
-            custodian, _ = Employee.objects.get_or_create(
-                employee_name=clean_field(row.get("Custodian"))
+            # custodian, _ = Employee.objects.get_or_create(
+            #     employee_name=clean_field(row.get("Custodian"))
+            # )
+            custodian, _ = Employee.objects.get(
+                email=clean_field(row.get("Custodian"))
             )
 
             invoice_location = clean_field(row["Invoice Location"])
