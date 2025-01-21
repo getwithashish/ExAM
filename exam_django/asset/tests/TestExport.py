@@ -1,7 +1,7 @@
 import uuid
 from asset.models import Asset, AssetType, BusinessUnit, Location, Memory
 from datetime import datetime, date
-from employee.models import Employee
+from employee.models.employee import Employee
 from user_auth.models import User
 from django.test import TestCase
 

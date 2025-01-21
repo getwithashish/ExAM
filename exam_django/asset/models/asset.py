@@ -1,7 +1,7 @@
 from django.db import models
 import uuid
+from employee.models.employee import Employee
 from user_auth.models import User
-from employee.models import Employee
 
 
 asset_category_choices = (("HARDWARE", "HARDWARE"), ("SOFTWARE", "SOFTWARE"))

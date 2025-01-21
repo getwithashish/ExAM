@@ -14,7 +14,7 @@ from asset.models import (
 from django.forms import model_to_dict
 import json
 
-from employee.models import Employee
+from employee.models.employee import Employee
 
 
 def clean_field(value):

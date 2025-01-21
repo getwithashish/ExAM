@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 import json
 
 import sentry_sdk
-from employee.models import Employee
+from employee.models.employee import Employee
 from user_auth.models import User
 
 from asset.models import AssetLog, Location, BusinessUnit, Memory, AssetType

@@ -3,7 +3,7 @@ from rest_framework import status
 from asset.models import Asset
 from asset.serializers.asset_serializer import AssetReadSerializer
 from asset.models.business_unit import BusinessUnit
-from employee.models import Employee
+from employee.models.employee import Employee
 from notification.service.notification_service import NotificationService
 from messages import (
     ASSET_CONFLICT,

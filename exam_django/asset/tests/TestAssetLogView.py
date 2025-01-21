@@ -3,7 +3,7 @@ from django.urls import reverse
 from rest_framework import status
 import json
 from datetime import datetime
-from employee.models import Employee
+from employee.models.employee import Employee
 from user_auth.models import User
 from asset.models import (
     Asset,
