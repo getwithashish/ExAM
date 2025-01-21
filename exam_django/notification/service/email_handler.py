@@ -26,6 +26,7 @@ from notification.utils.email_body_contents.system_admin_email_body_contents imp
     construct_allocation_rejection_email_body,
     construct_creation_approval_email_body,
     construct_creation_rejection_email_body,
+    construct_custodian_deleted_email_body,
     construct_deallocation_approval_email_body,
     construct_deallocation_rejection_email_body,
     construct_modification_approval_email_body,
@@ -47,6 +48,7 @@ from messages import (
     ASSET_UPDATE_PENDING_SUCCESSFUL,
     ASSET_UPDATION_REJECTED,
     ASSIGN_ASSET_REJECT_SUCCESSFUL,
+    CUSTODIAN_EMPLOYEE_DELETED,
     EMAIL_MESSAGE_ID_NOT_FOUND,
     EMPLOYEE_ASSIGNED_SUCESSFULLY,
     EMPLOYEE_UNASSIGNED_SUCESSFULLY,
@@ -103,18 +105,27 @@ class EmailHandler(NotificationHandlerAbstract):
                     )
                     return
 
-                (
-                    to_recipient_list,
-                    cc_recipient_list,
-                    bcc_recipient_list,
-                    subject,
-                    email_body,
-                ) = EmailHandler.construct_email(
-                    subject=subject, message=message, **kwargs
-                )
+                # (
+                #     to_recipient_list,
+                #     cc_recipient_list,
+                #     bcc_recipient_list,
+                #     subject,
+                #     email_body,
+                # ) = EmailHandler.construct_email(
+                #     subject=subject, message=message, **kwargs
+                # )
+
                 follow_up_id = EmailHandler.get_follow_up_id(
                     asset_uuid_str=kwargs["asset_uuid"], message=message, **kwargs
                 )
+
+            (
+                to_recipient_list,
+                cc_recipient_list,
+                bcc_recipient_list,
+                subject,
+                email_body,
+            ) = EmailHandler.construct_email(subject=subject, message=message, **kwargs)
 
             current_notification.email_status = "EMAIL_SENDING"
             current_notification.save()
@@ -281,6 +292,10 @@ class EmailHandler(NotificationHandlerAbstract):
                 EmailHandler.construct_employee_email,
                 construct_deallocation_approval_employee_email_body,
             ),
+            CUSTODIAN_EMPLOYEE_DELETED: (
+                EmailHandler.construct_sysadmin_info_email,
+                construct_custodian_deleted_email_body,
+            ),
         }
 
         email_constructor, email_body_constructor = email_construction.get(message)
@@ -353,6 +368,28 @@ class EmailHandler(NotificationHandlerAbstract):
         to_recipient_list.append(kwargs["custodian"]["email"])
         # bcc_recipient_list.append(kwargs["requester"]["email"])
         # bcc_recipient_list.append(kwargs["approved_by"]["email"])
+
+        return (
+            to_recipient_list,
+            cc_recipient_list,
+            bcc_recipient_list,
+            subject,
+            email_body,
+        )
+
+    @staticmethod
+    def construct_sysadmin_info_email(
+        subject: str, email_body_construction_func, **kwargs
+    ):
+        to_recipient_list = []
+        cc_recipient_list = []
+        bcc_recipient_list = []
+        subject = subject
+
+        email_body = email_body_construction_func(**kwargs)
+        bcc_recipient_list = EmailHandler.get_recipient_addresses(
+            user_scope="SYSTEM_ADMIN"
+        )
 
         return (
             to_recipient_list,
