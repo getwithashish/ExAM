@@ -12,6 +12,7 @@ redirect_url = "http://localhost:5173/sso/flow?refresh_token={}&access_token={}"
 [employee]
 data_source = "AZURE_AD"
 scopes = ['https://graph.microsoft.com/.default']
+refresh_interval_seconds = 900
 
 
 [dummy_data]
