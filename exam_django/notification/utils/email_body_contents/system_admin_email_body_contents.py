@@ -147,3 +147,21 @@ For more details you can login and view the dashboard of Asset Management System
 """
         + email_body_signature_content
     )
+
+
+def construct_custodian_deleted_email_body(**kwargs):
+    return (
+        f"""Dear System Admin,
+
+This email is to inform you that the custodian ({kwargs["custodian"]["first_name"]} {kwargs["custodian"]["last_name"]}) of the following {convert_to_first_letter_uppercase(kwargs["asset_category"])} asset has been deleted:
+
+{convert_to_first_letter_uppercase(kwargs["asset_category"])} Asset Details:
+-------------------------------------------------------
+{construct_asset_data_body(**kwargs)}
+-------------------------------------------------------
+
+For more details you can login to Asset Management System
+
+"""
+        + email_body_signature_content
+    )
