@@ -15,7 +15,6 @@ fi
 
 if [[ -z "$SYSTEM_IP" ]]; then
     echo "Error: Could not determine System IP Address."
-    exit 1
 fi
 
 read -p "Do you want to use the detected IP Address [$SYSTEM_IP]? (y/n): " choice
