@@ -13,10 +13,6 @@ if [[ -z "$SYSTEM_IP" ]]; then
     SYSTEM_IP=$(get_ip_from_interface "eth0")
 fi
 
-if [[ -z "$SYSTEM_IP" ]]; then
-    echo "Error: Could not determine System IP Address."
-fi
-
 read -p "Do you want to use the detected IP Address [$SYSTEM_IP]? (y/n): " choice
 
 if [[ "$choice" =~ ^[Nn]$ ]]; then
