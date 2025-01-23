@@ -34,21 +34,12 @@ SECRET_KEY = "django-insecure-" + django_sercret_key
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG_STATUS", cast=bool)
 
-# ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 ALLOWED_HOSTS = config(
     "ALLOWED_HOSTS", cast=lambda v: [item.strip() for item in v.split(",")]
 )
 
-
-# CORS_ORIGIN_WHITELIST = config(
-#     "CORS_ORIGIN_WHITELIST", cast=lambda v: [item.strip() for item in v.split(",")]
-# )
-
 CORS_ALLOW_CREDENTIALS = True
 
-# CORS_ALLOWED_ORIGINS = config(
-#     "CORS_ALLOWED_ORIGINS", cast=lambda v: [item.strip() for item in v.split(",")]
-# )
 CORS_ALLOW_ALL_ORIGINS = True  # Allow all origins
 
 
