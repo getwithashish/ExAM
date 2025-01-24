@@ -46,7 +46,7 @@ class SSOCallback(generics.GenericAPIView):
         if not code:
             return APIResponse(
                 status=status.HTTP_302_FOUND,
-                headers={"Location": global_config["global"]["hostname"]},
+                headers={"Location": str(global_config["global"]["hostname"])},
             )
 
         if provider == "azuread-oauth2":
