@@ -19,8 +19,16 @@ if [[ $? -ne 0 ]]; then
     exit 1
 fi
 
+# Update configuration file for backend
+./update_backend_config_toml.sh "$ENVIRONMENT" "$SYSTEM_IP"
+
+if [[ $? -ne 0 ]]; then
+    echo "Error: Cannot complete updating backend configuration file."
+    exit 1
+fi
+
 # Create environment file for frontend
-./generate_frontend_env.sh "$SYSTEM_IP"
+./generate_frontend_env.sh "$ENVIRONMENT" "$SYSTEM_IP"
 
 if [[ $? -ne 0 ]]; then
     echo "Error: Cannot complete creating frontend environment file."
