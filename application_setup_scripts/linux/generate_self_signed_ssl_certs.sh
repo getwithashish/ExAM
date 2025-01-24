@@ -12,7 +12,8 @@ if ! command -v openssl &>/dev/null; then
     exit 1
 fi
 
-CERT_DIR="./ssl-certs"
+CERT_DIR="../../ssl-certs"
+
 CERT_FILE="$CERT_DIR/selfsigned.crt"
 KEY_FILE="$CERT_DIR/selfsigned.key"
 

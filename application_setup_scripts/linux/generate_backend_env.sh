@@ -56,19 +56,24 @@ if [[ -z "$ENVIRONMENT" || -z "$SYSTEM_IP" ]]; then
     exit 1
 fi
 
+BACKEND_DIR="../../exam_django"
+
 if [[ "$ENVIRONMENT" == "Production" ]]; then
-    ENV_FILE="exam_django/.prod.env"
+    ENV_FILE_NAME=".prod.env"
 elif [[ "$ENVIRONMENT" == "Development" ]]; then
-    ENV_FILE="exam_django/.env"
+    ENV_FILE_NAME=".env"
+    DEFAULT_SOCIAL_CALLBACK_URL=http://$SYSTEM_IP:8000/api/v1/user/auth/sso/{}
 else
     echo "Invalid environment specified. Use 'Production' or 'Development'."
     exit 1
 fi
 
+ENV_FILE_PATH="$BACKEND_DIR/$ENV_FILE_NAME"
+
 # Create or update the environment file
-if [[ ! -f "$ENV_FILE" ]]; then
-    echo "Environment file not found for backend. Creating $ENV_FILE..."
-    touch "$ENV_FILE"
+if [[ ! -f "$ENV_FILE_PATH" ]]; then
+    echo "Environment file not found for backend. Creating $ENV_FILE_NAME..."
+    touch "$ENV_FILE_PATH"
 
     DJANGO_SECRET_KEY=$(prompt_value "Enter Django secret key" "$DEFAULT_DJANGO_SECRET_KEY")
     DEBUG_STATUS=$(prompt_value "Enter Django debug status" "$DEFAULT_DEBUG_STATUS")
@@ -108,7 +113,7 @@ if [[ ! -f "$ENV_FILE" ]]; then
     #
     GOOGLE_API_KEY=$(prompt_value "Enter Google API key" "$DEFAULT_GOOGLE_API_KEY")
 
-    cat <<EOF >"$ENV_FILE"
+    cat <<EOF >"$ENV_FILE_PATH"
 DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY
 DEBUG_STATUS=$DEBUG_STATUS
 ALLOWED_HOSTS=$ALLOWED_HOSTS
@@ -149,17 +154,17 @@ GOOGLE_API_KEY=$GOOGLE_API_KEY
 
 EOF
 
-    echo "$ENV_FILE successfully created."
+    echo "$ENV_FILE_NAME successfully created."
     exit 0
 else
-    echo "Updating $ENV_FILE..."
+    echo "Updating $ENV_FILE_NAME..."
 
     # Update ALLOWED_HOSTS
-    sed -i "s/^ALLOWED_HOSTS=.*/ALLOWED_HOSTS=$SYSTEM_IP/" "$ENV_FILE"
+    sed -i "s/^ALLOWED_HOSTS=.*/ALLOWED_HOSTS=$SYSTEM_IP/" "$ENV_FILE_PATH"
 
     # Update SOCIAL_CALLBACK_URL
-    sed -i "s|^SOCIAL_CALLBACK_URL=.*|SOCIAL_CALLBACK_URL=https://$SYSTEM_IP/service/api/v1/user/auth/sso/{}|" "$ENV_FILE"
+    sed -i "s|^SOCIAL_CALLBACK_URL=.*|SOCIAL_CALLBACK_URL=$DEFAULT_SOCIAL_CALLBACK_URL|" "$ENV_FILE_PATH"
 
-    echo "$ENV_FILE successfully updated."
+    echo "$ENV_FILE_NAME successfully updated."
     exit 0
 fi

@@ -8,15 +8,18 @@ if [[ -z "$SYSTEM_IP" ]]; then
     exit 1
 fi
 
-NGINX_CONF="nginx.conf"
+NGINX_DIR="../.."
 
-if [[ ! -f "$NGINX_CONF" ]]; then
-    echo "NGINX configuration file not found. Creating $NGINX_CONF..."
-    touch "$NGINX_CONF"
+NGINX_CONFIG_NAME="nginx.conf"
+NGINX_CONFIG_PATH="$NGINX_DIR/$NGINX_CONFIG_NAME"
+
+if [[ ! -f "$NGINX_CONFIG_PATH" ]]; then
+    echo "NGINX configuration file not found. Creating $NGINX_CONFIG_NAME..."
+    touch "$NGINX_CONFIG_PATH"
 fi
 
 # Create/Update the NGINX configuration file
-cat > "$NGINX_CONF" << EOF
+cat > "$NGINX_CONFIG_PATH" << EOF
 worker_processes auto;
 
 events {
