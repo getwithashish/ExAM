@@ -5,6 +5,7 @@ import sentry_sdk
 from social_django.utils import load_strategy, load_backend
 from social_core.exceptions import AuthTokenError
 
+from exceptions import UserScopeNotFoundException
 from response import APIResponse
 from user_auth.service.sso_service.sso_callback_service import SSOCallbackService
 from user_auth.service.sso_service.user_details_service.microsoft_sso_user_details_service import (
@@ -59,7 +60,7 @@ class SSOCallback(generics.GenericAPIView):
                 sso_user_details_service=sso_user_details_service,
             )
 
-        except AuthTokenError as e:
+        except (AuthTokenError, UserScopeNotFoundException) as e:
             sentry_sdk.capture_exception(e)
             return APIResponse(
                 status=status.HTTP_302_FOUND,
