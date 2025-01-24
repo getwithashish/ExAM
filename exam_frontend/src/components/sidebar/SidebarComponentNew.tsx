@@ -324,13 +324,13 @@ const SidebarComponentNew = ({ children }: any) => {
                 <span>Logout</span>
               </div>
             </Menu.Item>
-            <Menu.Item
+            {/* <Menu.Item
               className="text-center text-xl"
               onClick={toggleTheme}
               id="themeToggle"
             >
               {theme.theme === "dark" ? <SunOutlined /> : <MoonOutlined />}
-            </Menu.Item>
+            </Menu.Item> */}
           </Menu>
         </div>
       </Sider>
