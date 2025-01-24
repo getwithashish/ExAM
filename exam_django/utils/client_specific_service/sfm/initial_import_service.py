@@ -111,7 +111,7 @@ class AssetImportService:
             # custodian, _ = Employee.objects.get_or_create(
             #     employee_name=clean_field(row.get("Custodian"))
             # )
-            custodian, _ = Employee.objects.get(
+            custodian = Employee.objects.get(
                 email=clean_field(row.get("Custodian"))
             )
 
