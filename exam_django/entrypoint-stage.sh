@@ -5,5 +5,6 @@ dockerize -wait tcp://redis-service:6379 -timeout 1m
 chmod +x ./daemonize-celery.sh
 sh ./daemonize-celery.sh
 python manage.py migrate
+python manage.py sync_employee_data
 python manage.py create_dummy_assets
 gunicorn --bind 0.0.0.0:8000 --timeout 120 exam_django.wsgi:application
