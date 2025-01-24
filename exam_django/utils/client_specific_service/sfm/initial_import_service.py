@@ -111,9 +111,12 @@ class AssetImportService:
             # custodian, _ = Employee.objects.get_or_create(
             #     employee_name=clean_field(row.get("Custodian"))
             # )
-            custodian = Employee.objects.get(
-                email=clean_field(row.get("Custodian"))
-            )
+            try:
+                custodian = Employee.objects.get(
+                    email=clean_field(row.get("Custodian"))
+                )
+            except Employee.DoesNotExist:
+                custodian = None
 
             invoice_location = clean_field(row["Invoice Location"])
             if invoice_location is not None:
