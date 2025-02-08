@@ -1,18 +1,31 @@
+from typing import Any, Dict, Tuple
+
 from asset.models import BusinessUnit
 from asset.serializers import BusinessUnitSerializer
-from messages import (
-    BUSINESS_UNIT_SUCCESSFULLY_CREATED,
-    BUSINESS_UNIT_CREATED_UNSUCCESSFUL,
-    GLOBAL_500_EXCEPTION_ERROR,
-    BUSINESS_UNIT_SUCCESSFULLY_RETRIEVED,
-)
+from messages import (BUSINESS_UNIT_CREATED_UNSUCCESSFUL,
+                      BUSINESS_UNIT_SUCCESSFULLY_CREATED,
+                      BUSINESS_UNIT_SUCCESSFULLY_RETRIEVED,
+                      GLOBAL_500_EXCEPTION_ERROR)
 from rest_framework import status
 
 
 class BusinessUnitService:
+    """
+    Service class for operations related to asset business unit
+    """
 
     @staticmethod
-    def create_business_unit(data):
+    def create_business_unit(data) -> Tuple[Dict[str, Any], str, int]:
+        """
+        Create a new business unit.
+
+        Args:
+            data: business unit data.
+
+        Returns:
+            Tuple[Dict[str, Any], str, int]: The serialized asset type data, message, and the HTTP status code.
+        """
+
         serializer = BusinessUnitSerializer(data=data)
         message_success = BUSINESS_UNIT_SUCCESSFULLY_CREATED
         message_failure = BUSINESS_UNIT_CREATED_UNSUCCESSFUL
@@ -23,7 +36,17 @@ class BusinessUnitService:
         return serializer.errors, message_failure, status.HTTP_400_BAD_REQUEST
 
     @staticmethod
-    def retrieve_business_units(query=None):
+    def retrieve_business_units(query: str=None) -> Tuple[Dict[str, Any], str, int]:
+        """
+        Retrieve a list of business units, optionally filtering by a search query.
+
+        Args:
+            query: The search query.
+
+        Returns:
+            Tuple[Dict[str, Any], str, int]: The serialized list of business units, message, and the HTTP status code.
+        """
+
         try:
             business_units = BusinessUnit.objects.all()
             message_success = BUSINESS_UNIT_SUCCESSFULLY_RETRIEVED
@@ -35,8 +58,11 @@ class BusinessUnitService:
                 )
 
             serializer = BusinessUnitSerializer(business_units, many=True)
+
             return serializer.data, message_success, status.HTTP_200_OK
+
         except Exception as e:
+
             return (
                 str(e),
                 GLOBAL_500_EXCEPTION_ERROR,

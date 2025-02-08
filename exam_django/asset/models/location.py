@@ -13,4 +13,3 @@ class Location(models.Model):
 
     class Meta:
         ordering = ["id"]
-        # Specify default ordering by location_uuid
