@@ -10,6 +10,9 @@ from user_auth.serializers.user_serializer import UserSerializer
 
 
 class AssetReadSerializer(serializers.ModelSerializer):
+    """
+    Serializer for reading Asset instances.
+    """
 
     asset_type = AssetTypeSerializer()
     custodian = EmployeeSerializer()
@@ -26,6 +29,9 @@ class AssetReadSerializer(serializers.ModelSerializer):
 
 
 class AssetWriteSerializer(serializers.ModelSerializer):
+    """
+    Serializer for writing Asset instances.
+    """
 
     class Meta:
 
@@ -37,7 +43,6 @@ class AssetWriteSerializer(serializers.ModelSerializer):
 
         model = Asset
         fields = "__all__"
-        # exclude = ["conceder", "approval_status", "created_at", "updated_at", "requester", "request_type"]
         read_only_fields = (
             "custodian",
             "approved_by",

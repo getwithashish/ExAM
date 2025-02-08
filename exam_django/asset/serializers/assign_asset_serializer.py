@@ -3,6 +3,9 @@ from asset.models import Asset
 
 
 class AssignAssetSerializer(serializers.ModelSerializer):
+    """
+    Serializer for assigning assets, representing the Asset model.
+    """
     class Meta:
         model = Asset
         fields = (
