@@ -1,21 +1,40 @@
+from typing import Dict, List, Tuple
+from rest_framework import status
+from rest_framework.request import Request
+from rest_framework.serializers import Serializer
+
 from asset.models import Asset
 from asset.serializers.asset_serializer import AssetReadSerializer
 from notification.service.notification_service import NotificationService
 from exceptions import ConflictException, SerializerException
 from messages import ASSET_CONFLICT, INVALID_ASSET_DATA
 
-from rest_framework import status
-
 
 class AssetMutationService:
+    """
+    Service class for handling asset creation and updation operations.
+    """
+
     def __init__(self, asset_user_role_mutation_service):
         self.asset_user_role_mutation_service = asset_user_role_mutation_service
         self.notification_service = NotificationService()
 
-    def create_asset(self, serializer, request):
+    def create_asset(self, serializer: Serializer, request: Request) -> Tuple[Dict, str, int]:
+        """
+        Create a new asset and trigger sending a notification.
+
+        Args:
+            serializer (Serializer): The serializer for the asset.
+            request (Request): The HTTP request instance.
+
+        Returns:
+            tuple: A tuple containing asset data, success message, and HTTP status code.
+        """
+
         try:
             asset = Asset.objects.get(asset_uuid=request.data.get("asset_uuid"))
             old_asset_data = AssetReadSerializer(asset).data
+        
         except Asset.DoesNotExist:
             old_asset_data = None
 
@@ -36,7 +55,21 @@ class AssetMutationService:
 
         return asset_data.data, message, status.HTTP_201_CREATED
 
-    def update_asset(self, serializer, request):
+    def update_asset(self, serializer: Serializer, request: Request) -> Tuple[Dict, str, int]:
+        """
+        Update an existing asset and trigger sending a notification.
+
+        Args:
+            serializer (Serializer): The serializer for the asset.
+            request (Request): The HTTP request instance.
+        
+        Exceptions:
+            ConflictException: If there is conflict in the version 
+
+        Returns:
+            tuple: A tuple containing new asset data, success message, and HTTP status code.
+        """
+
         asset_uuid = request.data.get("asset_uuid")
         version = request.data.get("version")
 
@@ -78,7 +111,16 @@ class AssetMutationService:
             serializer.errors, INVALID_ASSET_DATA, status.HTTP_400_BAD_REQUEST
         )
 
-    def _get_asset_and_old_data(self, asset_uuid):
+    def _get_asset_and_old_data(self, asset_uuid: str) -> Tuple[Asset, Dict]:  
+        """
+        Retrieve an asset and its old data based on asset UUID.
+
+        Args:
+            asset_uuid (str): The UUID of the asset.
+
+        Returns:
+            tuple: A tuple containing the asset instance and dictionary of old asset data.
+        """
         asset = Asset.objects.select_related(
             "asset_type",
             "business_unit",
@@ -130,7 +172,17 @@ class AssetMutationService:
 
         return asset, old_asset_data
 
-    def _get_new_asset_data(self, asset):
+    def _get_new_asset_data(self, asset: Asset) -> Dict:
+        """
+        Generate a dictionary of new asset data.
+
+        Args:
+            asset (Asset): The asset instance.
+
+        Returns:
+            dict: A dictionary representation of the asset's new data.
+        """
+
         return {
             "asset_type": (
                 asset.asset_type.asset_type_name if asset.asset_type else None
@@ -169,7 +221,18 @@ class AssetMutationService:
             "is_deleted": asset.is_deleted,
         }
 
-    def _get_changed_fields(self, old_data, new_data):
+    def _get_changed_fields(self, old_data, new_data) -> List:
+        """
+        Identify which fields have changed between the old and new asset data.
+
+        Args:
+            old_data (dict): The dictionary of old asset data.
+            new_data (dict): The dictionary of new asset data.
+
+        Returns:
+            list: A list of tuples representing changed fields.
+        """
+
         excluded_fields = {
             "created_at",
             "updated_at",
