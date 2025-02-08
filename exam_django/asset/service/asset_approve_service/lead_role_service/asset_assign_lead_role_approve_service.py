@@ -1,3 +1,5 @@
+from typing import Any
+from asset.models.asset import Asset
 from rest_framework import status
 
 from asset.service.asset_approve_service.asset_user_role_approve_abstract import (
@@ -17,8 +19,24 @@ from messages import (
 
 
 class AssetAssignLeadRoleApproveService(AssetUserRoleApproveAbstract):
+    """
+    Service class for lead to approve/reject asset assignment/unassignment requests.
+    """
 
-    def approve_request(self, asset, request):
+    def approve_request(self, asset: Asset, request: Any) -> tuple[Asset, str, str]:
+        """
+        Approves the asset assignment or unassignment request based on the asset's detail status and assignment status.
+
+        Args:
+            asset (Asset): The asset instance to be approved or unassigned.
+            request (Any): The request object that contains details of the request.
+
+        Returns:
+            tuple[Asset, str, str]: A tuple containing the updated asset instance, the success message, and the email subject.
+
+        Raises:
+            NotAcceptableOperationException: If the asset status is not appropriate for assignment or unassignment.
+        """
         if asset.asset_detail_status in ["CREATED", "UPDATED"]:
             if asset.assign_status == "ASSIGN_PENDING":
                 if asset.custodian:
@@ -51,7 +69,20 @@ class AssetAssignLeadRoleApproveService(AssetUserRoleApproveAbstract):
                 {}, message, status.HTTP_400_BAD_REQUEST
             )
 
-    def reject_request(self, asset, request):
+    def reject_request(self, asset, request) -> tuple[Asset, str, str]:
+        """
+        Rejects the asset assignment or unassignment request.
+
+        Args:
+            asset (Asset): The asset instance to be approved or unassigned.
+            request (Any): The request object that contains details of the request.
+
+        Returns:
+            tuple[Asset, str, str]: A tuple containing the updated asset instance, the success message, and the email subject.
+
+        Raises:
+            NotAcceptableOperationException: If the asset status is not appropriate for rejection.
+        """
         if asset.assign_status == "ASSIGN_PENDING":
             asset.assign_status = "REJECTED"
             if asset.custodian:
