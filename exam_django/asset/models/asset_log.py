@@ -2,6 +2,9 @@ from django.db import models
 
 
 class AssetLog(models.Model):
+    """
+    Log of asset in JSON along with UUID and timestamp
+    """
 
     asset_uuid = models.ForeignKey(
         "Asset", on_delete=models.CASCADE, null=False, blank=False

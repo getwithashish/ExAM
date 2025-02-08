@@ -5,6 +5,9 @@ from asset.models import Location
 
 
 class LocationSerializer(serializers.ModelSerializer):
+    """
+    Serializer for asset location
+    """
     class Meta:
         model = Location
         fields = "__all__"
