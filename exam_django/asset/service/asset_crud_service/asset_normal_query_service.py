@@ -1,16 +1,27 @@
-import sentry_sdk
-from asset.models import Asset
+from typing import Dict, Any, Tuple, List
+from dateutil.relativedelta import relativedelta
 from django.db.models import Q
+from django.db.models import Q, QuerySet
+from django.utils import timezone
+from rest_framework.request import Request
 from rest_framework import status
 from rest_framework.pagination import LimitOffsetPagination
+import sentry_sdk
+
+from asset.models import Asset
 from asset.serializers.asset_serializer import AssetReadSerializer
 from asset.service.asset_crud_service.asset_query_abstract import AssetQueryAbstract
 from messages import ASSET_LIST_SUCCESSFULLY_RETRIEVED
-from dateutil.relativedelta import relativedelta
-from django.utils import timezone
+
 
 
 class AssetNormalQueryService(AssetQueryAbstract):
+    """
+    Service class for querying assets with normal retrieval methods.
+
+    This class handles filtering and pagination of asset data based on various query parameters.
+    """
+
     SORTABLE_FIELDS = {
         "product_name": "product_name",
         "location": "location__location_name",
@@ -31,7 +42,17 @@ class AssetNormalQueryService(AssetQueryAbstract):
     def __init__(self):
         self.pagination = LimitOffsetPagination()
 
-    def filter_queryset(self, request):
+    def filter_queryset(self, request: Request) -> QuerySet:
+        """
+        Filter the queryset of assets based on request parameters.
+
+        Args:
+            request (Request): The request object containing query parameters.
+
+        Returns:
+            QuerySet: The filtered queryset of assets.
+        """
+
         deleted = request.query_params.get("deleted")
 
         is_deleted = False
@@ -155,12 +176,22 @@ class AssetNormalQueryService(AssetQueryAbstract):
                     ) > current_date:
                         queryset = queryset.exclude(asset_uuid=ele.asset_uuid)
             except Exception as e:
-                print("Error Occured: ", e)
+                print("Error Occurred: ", e)
                 sentry_sdk.capture_exception(e)
 
         return queryset
 
-    def get_asset_details(self, serializer, request):
+    def get_asset_details(self, serializer: Any, request: Request) -> Tuple[Any, str, int]:
+        """
+        Get the details of the assets based on the serialized data and request.
+
+        Args:
+            serializer (Any): The serializer used to serialize the asset data.
+            request (Request): The request object containing query parameters.
+
+        Returns:
+            Tuple[Any, str, int]: A tuple containing the serialized asset data, message, and HTTP status code.
+        """
 
         queryset = self.filter_queryset(request=request)
 
@@ -178,7 +209,18 @@ class AssetNormalQueryService(AssetQueryAbstract):
         serializer = AssetReadSerializer(queryset, many=True)
         return serializer.data, ASSET_LIST_SUCCESSFULLY_RETRIEVED, status.HTTP_200_OK
 
-    def get_queryset_from_global_search(self, global_search, queryset):
+    def get_queryset_from_global_search(self, global_search: str, queryset: QuerySet) -> QuerySet:
+        """
+        Filter the queryset based on a global search query.
+
+        Args:
+            global_search (str): The search string to filter on.
+            queryset (QuerySet): The original queryset of assets.
+
+        Returns:
+            QuerySet: The filtered queryset based on the global search.
+        """
+
         query = Q()
         for field in [
             "asset_uuid",
@@ -218,9 +260,21 @@ class AssetNormalQueryService(AssetQueryAbstract):
         query |= Q(asset_type__asset_type_name__icontains=global_search)
 
         queryset = queryset.filter(query)
+
         return queryset
 
-    def remove_fields_from_dict(self, input_dict, fields_to_remove):
+    def remove_fields_from_dict(self, input_dict: Dict[str, Any], fields_to_remove: List[str]) -> Dict[str, Any]:
+        """
+        Remove specified fields from the input dictionary.
+
+        Args:
+            input_dict (Dict[str, Any]): The original dictionary.
+            fields_to_remove (List[str]): The list of fields to remove.
+
+        Returns:
+            Dict[str, Any]: The filtered dictionary.
+        """
+
         return {
             key: value
             for key, value in input_dict.items()

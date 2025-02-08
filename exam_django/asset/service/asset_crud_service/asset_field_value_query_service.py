@@ -1,4 +1,5 @@
 import json
+from typing import Any, Dict, Tuple
 from rest_framework import status
 from django.db.models import Q
 from rest_framework.pagination import LimitOffsetPagination
@@ -18,8 +19,21 @@ from messages import (
 
 class AssetFieldValueQueryService(AssetQueryAbstract):
 
-    #  Used for autocomplete functionality
-    def get_asset_details(self, serializer, request):
+    def get_asset_details(self, serializer: Any, request: Any) -> Tuple[Dict[str, Any], str, int]:
+        """
+        Retrieves values of asset fields
+
+        Args:
+            serializer (Any): The serializer instance used for serializing the queryset.
+            request (Any): The incoming request containing query parameters.
+
+        Returns:
+            Tuple[Dict[str, Any], str, int]: A tuple containing serialized data, message, and HTTP status code.
+        
+        Raises:
+            NotAcceptableOperationException: If the asset field is not filterable.
+            NotFoundException: If the asset field does not exist or if query param is not found.
+        """
 
         self.pagination = LimitOffsetPagination()
         queryset = Asset.objects.all().filter()

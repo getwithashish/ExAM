@@ -1,6 +1,7 @@
 from rest_framework import status
 from rest_framework.views import APIView
 import json
+from typing import List, Dict, Any, Tuple
 
 import sentry_sdk
 from employee.models.employee import Employee
@@ -12,19 +13,34 @@ from messages import ASSET_NOT_FOUND, ASSET_LOG_FOUND
 
 
 class AssetLifeCycleService(APIView):
+    """
+    Service class to handle asset lifecycle operations
+    """
+
     @staticmethod
-    def get_asset_logs(asset_uuid):
+    def get_asset_logs(asset_uuid: str) -> APIResponse:
+        """
+        Retrieve asset logs for a given asset UUID.
+
+        Args:
+            asset_uuid (str): UUID of the asset.
+
+        Returns:
+            APIResponse: Response containing asset logs or an error message.
+        """
+
         try:
             asset_logs = AssetLog.objects.filter(asset_uuid=asset_uuid).order_by(
                 "timestamp"
             )
+
             if not asset_logs.exists():
                 return APIResponse(
                     data=[], message=ASSET_NOT_FOUND, status=status.HTTP_404_NOT_FOUND
                 )
 
-            response_data = {"asset_uuid": asset_uuid, "logs": []}
-            previous_log_data = {}
+            response_data: Dict[str, Any] = {"asset_uuid": asset_uuid, "logs": []}
+            previous_log_data: Dict[str, Any] = {}
 
             for log in asset_logs:
                 current_log_data = json.loads(log.asset_log)
@@ -34,6 +50,7 @@ class AssetLifeCycleService(APIView):
                     sentry_sdk.capture_exception(
                         f"Invalid log data format: {current_log_data}"
                     )
+
                     continue
 
                 operation, changes = AssetLifeCycleService.determine_operation(
@@ -43,7 +60,7 @@ class AssetLifeCycleService(APIView):
 
                 if changes or not previous_log_data:
                     formatted_timestamp = log.timestamp.strftime("%B %d, %Y")
-                    log_data = {
+                    log_data: Dict[str, Any] = {
                         "id": log.id,
                         "timestamp": formatted_timestamp,
                         "operation": operation,
@@ -60,14 +77,26 @@ class AssetLifeCycleService(APIView):
         except Exception as e:
             print("Exception: ", str(e))
             sentry_sdk.capture_exception(e)
+
             return APIResponse(
                 data=[], message=str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
     @staticmethod
-    def determine_operation(previous_log_data, current_log_data):
-        changes = {}
-        operation = ""
+    def determine_operation(previous_log_data: Dict[str, Any], current_log_data: Dict[str, Any]) -> Tuple[str, Dict[str, Any]]:
+        """
+        Determine the operation performed and changes between logs.
+
+        Args:
+            previous_log_data (Dict[str, Any]): Previous log data.
+            current_log_data (Dict[str, Any]): Current log data.
+
+        Returns:
+            Tuple[str, Dict[str, Any]]: Operation type and the changes detected.
+        """
+
+        changes: Dict[str, Any] = {}
+        operation: str = ""
 
         if previous_log_data and (
             previous_log_data.get("is_deleted") != current_log_data.get("is_deleted")
@@ -92,7 +121,6 @@ class AssetLifeCycleService(APIView):
                         and (
                             not previous_log_data.get("custodian")
                             and not current_log_data.get("custodian")
-                            # TODO Need to test it in case of modifying the asset when assign status is in rejected
                         )
                     )
                     or (
@@ -102,10 +130,13 @@ class AssetLifeCycleService(APIView):
                 )
             )
         ):
+
             if current_log_data.get("assign_status") == "REJECTED":
                 operation = "DEALLOCATION REJECTED"
+
             else:
                 operation = "DEALLOCATED"
+
             changes = {
                 "custodian": {
                     "old_value": previous_log_data.get("custodian"),
@@ -119,8 +150,7 @@ class AssetLifeCycleService(APIView):
                     "old_value": previous_log_data.get("status"),
                     "new_value": (
                         current_log_data.get("status")
-                        if current_log_data.get("status")
-                        != previous_log_data.get("status")
+                        if current_log_data.get("status") != previous_log_data.get("status")
                         else "None"
                     ),
                 },
@@ -147,10 +177,13 @@ class AssetLifeCycleService(APIView):
                 )
             )
         ):
+
             if current_log_data.get("assign_status") == "REJECTED":
                 operation = "ALLOCATION REJECTED"
+
             else:
                 operation = "ALLOCATED"
+
             old_status = previous_log_data.get("status")
             new_status = current_log_data.get("status")
             changes = {
@@ -170,21 +203,37 @@ class AssetLifeCycleService(APIView):
 
         else:
             operation = current_log_data.get("asset_detail_status", "Unknown")
+
             if operation == "UPDATE_REJECTED":
                 operation = "UPDATION REJECTED"
 
             changes = AssetLifeCycleService.detect_changes(
                 previous_log_data, current_log_data
             )
+
         return operation, changes
 
     @staticmethod
-    def detect_changes(previous_log, current_log):
-        changes = {}
+    def detect_changes(previous_log: Dict[str, Any], current_log: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Detect changes between two log entries.
+
+        Args:
+            previous_log (Dict[str, Any]): Previous log data.
+            current_log (Dict[str, Any]): Current log data.
+
+        Returns:
+            Dict[str, Any]: Detected changes.
+        """
+
+        changes: Dict[str, Any] = {}
         for key, current_value in current_log.items():
+
             if key == "version":
                 continue
+
             previous_value = previous_log.get(key)
+
             if previous_value != current_value:
                 changes[key] = {
                     "old_value": AssetLifeCycleService.get_display_value(
@@ -194,10 +243,21 @@ class AssetLifeCycleService(APIView):
                         key, current_value
                     ),
                 }
+
         return changes
 
     @staticmethod
-    def get_display_value(field, value):
+    def get_display_value(field: str, value: Any) -> str:
+        """
+        Lookup the field name for the field from database
+
+        Args:
+            field (str): Field name to lookup.
+            value (Any): Value to be displayed.
+
+        Returns:
+            str: Display value or "Unknown" if not found.
+        """
         if value is None:
             return "None"
 
@@ -210,9 +270,9 @@ class AssetLifeCycleService(APIView):
             "requester_id",
             "invoice_location_id",
         ]:
-            return value
+            return str(value)
 
-        lookup = {
+        lookup: Dict[str, Tuple[Any, str]] = {
             "location_id": (Location, "location_name"),
             "business_unit_id": (BusinessUnit, "business_unit_name"),
             "memory_id": (Memory, "memory_space"),
@@ -223,7 +283,9 @@ class AssetLifeCycleService(APIView):
         }
 
         model, field_name = lookup[field]
+
         try:
             return getattr(model.objects.get(id=value), field_name)
+
         except model.DoesNotExist:
             return "Unknown"

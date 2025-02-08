@@ -1,3 +1,4 @@
+from typing import Dict, Optional, Tuple
 from asset.models import Asset, AssetType
 from django.db.models import Count
 from rest_framework import status
@@ -6,17 +7,28 @@ from messages import ASSET_COUNT_SUCCESSFULLY_RETRIEVED
 
 
 class AssetCountService:
-    serializer_class = serializers.Serializer  # Update serializer class as needed
+    """
+    Service class to retrieve asset counts based on various filters and conditions.
+    """
 
-    def get_asset_count(query):
+    serializer_class: serializers.Serializer
 
+    def get_asset_count(query: Optional[str]) -> Tuple[Dict, str, int]:
+        """
+        Retrieves counts of assets based on their status, detail status, assignment status, and asset type.
+
+        Args:
+            query (Optional[str]): The type of asset to filter by.
+
+        Returns:
+            Tuple[Dict, str, int]: A tuple containing the response data, a success message, and the HTTP status code.
+        """
         asset_type = query
 
         queryset = Asset.objects.all().filter(is_deleted=False)
         if asset_type:
             queryset = queryset.filter(asset_type=asset_type)
 
-        # Annotate counts for different statuses, asset_detail_status, and assign_status
         status_counts = queryset.values("status").annotate(count=Count("status"))
         detail_status_counts = queryset.values("asset_detail_status").annotate(
             count=Count("asset_detail_status")
@@ -25,15 +37,12 @@ class AssetCountService:
             count=Count("assign_status")
         )
 
-        # Annotate count for each asset type
         asset_type_counts = queryset.values("asset_type").annotate(
             count=Count("asset_type")
         )
 
-        # Get the asset type IDs and names
         asset_types = AssetType.objects.all().values("id", "asset_type_name")
 
-        # Create a dictionary mapping IDs to names
         asset_type_names = {
             asset_type["id"]: asset_type["asset_type_name"]
             for asset_type in asset_types
