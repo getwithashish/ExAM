@@ -1,3 +1,5 @@
+from rest_framework import status
+
 from asset.serializers.asset_serializer import AssetReadSerializer
 from employee.models.employee import Employee
 from notification.service.notification_service import NotificationService
@@ -5,7 +7,6 @@ from exceptions import ConflictException, NotFoundException, PermissionDeniedExc
 from asset.service.asset_unassign_service.asset_unassign_sys_admin_service import (
     AssetSysadminRoleUnassignService,
 )
-from rest_framework import status
 from messages import (
     ASSET_CONFLICT,
     ASSET_NOT_FOUND,
@@ -13,13 +14,29 @@ from messages import (
     UNAUTHORIZED_NO_PERMISSION,
     USER_UNAUTHORIZED,
 )
-
 from asset.models import Asset
 
 
 class UnassignAssetService:
+    """
+    Service class to handle asset unassignment according to user role
+    """
     @staticmethod
-    def unassign_asset(requester_role, asset_uuid, requester, version, custodian=None):
+    def unassign_asset(requester_role, asset_uuid, requester, version, custodian=None) -> tuple:
+        """
+        Unassign an asset given the asset and the requester.
+
+        Args:
+            asset (Asset): The asset to unassign.
+            requester: The user requesting the unassignment.
+
+        Raises:
+            NotAcceptableOperationException: If the asset is in an unassignable state.
+            ConflictException: If there is any conflict in the version,
+
+        Returns:
+            tuple: A tuple containing the updated asset, a message, and the email subject.
+        """
         try:
             notification_service = NotificationService()
 

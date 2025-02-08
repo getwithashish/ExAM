@@ -1,5 +1,6 @@
 # asset_assign_service.py
 from rest_framework import status
+
 from asset.models import Asset
 from asset.serializers.asset_serializer import AssetReadSerializer
 from asset.models.business_unit import BusinessUnit
@@ -28,7 +29,21 @@ class AssignAssetService:
     @staticmethod
     def assign_asset(
         requester_role, asset_uuid, employee_id, business_unit, requester, version
-    ):
+    ) -> tuple:
+        """
+        Service class that manages the assignment of an asset to an employee based on the requester's role. Returns ConflictException if there is any conflict in version.
+
+        Parameters:
+        requester_role (str): The role of the requester.
+        asset_uuid (str): The UUID of the asset to assign.
+        employee_id (int): The ID of the employee to assign the asset to.
+        business_unit (int): The ID of the business unit involved in the assignment.
+        requester: The individual requesting the assignment.
+        version (int): The current version of the asset.
+
+        Returns:
+        tuple: A tuple containing the assigned asset data, a message, and the status code.
+        """
         try:
             notification_service = NotificationService()
 

@@ -7,8 +7,25 @@ from messages import (
 
 
 class AssetSysadminRoleUnassignService:
+    """
+    Service class for system admin to request unassignment of an asset
+    """
+
     @staticmethod
-    def unassign_asset(asset, requester):
+    def unassign_asset(asset, requester) -> tuple:
+        """
+        Unassign an asset given the asset and the requester.
+
+        Args:
+            asset (Asset): The asset to unassign.
+            requester: The user requesting the unassignment.
+
+        Raises:
+            NotAcceptableOperationException: If the asset is in an unassignable state.
+
+        Returns:
+            tuple: A tuple containing the updated asset, a message, and the email subject.
+        """
         if asset.assign_status == "ASSIGN_PENDING":
             raise NotAcceptableOperationException(
                 {},
