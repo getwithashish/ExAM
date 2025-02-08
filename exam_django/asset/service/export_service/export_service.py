@@ -1,23 +1,28 @@
 # export_service.py
+
 import datetime
 import json
-from rest_framework import status
-from asset.service.asset_crud_service.asset_advanced_query_service_with_json_logic import (
-    AssetAdvancedQueryServiceWithJsonLogic,
-)
+from typing import Any, Dict, List, Optional
+
+from asset.service.asset_crud_service.asset_advanced_query_service_with_json_logic import \
+    AssetAdvancedQueryServiceWithJsonLogic
+from asset.service.asset_crud_service.asset_normal_query_service import \
+    AssetNormalQueryService
 from asset.service.export_service.export_pdf_service import ExportPDF
-from asset.service.asset_crud_service.asset_normal_query_service import (
-    AssetNormalQueryService,
-)
 from asset.utils.file_format_handler.csv_handler import CsvHandler
 from asset.utils.file_format_handler.xlsx_handler import XlsxHandler
+from django.http import HttpResponse
 from messages import EXPORT_FORMAT_NOT_SUPPORTED
 from response import APIResponse
+from rest_framework import status
 
 
 class ExportService:
+    """
+    Service class for exporting asset data in various formats.
+    """
 
-    FOREIGN_FIELDS = {
+    FOREIGN_FIELDS: Dict[str, str] = {
         "location": "location_name",
         "invoice_location": "location_name",
         "asset_type": "asset_type_name",
@@ -27,9 +32,20 @@ class ExportService:
     }
 
     EXCLUDE_FIELDS = ["is_deleted", "version"]
+    EXCLUDE_FIELDS: List[str] = ["is_deleted", "version"]
 
     @staticmethod
-    def export_asset(format: str, logic_data, request):
+    def export_asset(format: str, logic_data: Optional[str], request: Any) -> HttpResponse:
+        """Exports asset data based on the specified format and logic.
+
+        Args:
+            format (str): The format to export the data (csv, xlsx, pdf).
+            logic_data (Optional[str]): JSON-encoded logic data for querying.
+            request (Any): The request object containing query parameters.
+
+        Returns:
+            Any: File response or API response with error message.
+        """
 
         asset_normal_query = AssetNormalQueryService()
         queryset = asset_normal_query.filter_queryset(request=request)
@@ -44,10 +60,10 @@ class ExportService:
         assets = queryset
 
         # Calculate 'expiry_dates' for each asset
-        expiry_dates = []
+        expiry_dates: List[Optional[datetime.date]] = []
         for asset in assets:
-            date_of_purchase = asset.date_of_purchase
-            warranty_months = asset.warranty_period
+            date_of_purchase: Optional[datetime.date] = asset.date_of_purchase
+            warranty_months: Optional[int] = asset.warranty_period
 
             # Calculate expiry date by adding warranty period (in months) to date of purchase
             if date_of_purchase and warranty_months is not None:
@@ -55,13 +71,12 @@ class ExportService:
                     days=30 * warranty_months
                 )
                 expiry_dates.append(expiry_date)
+
             else:
-                # Handle the case where date_of_purchase or warranty_period is None
                 expiry_dates.append(None)
 
         # Export assets based on the specified format
         if format == "csv":
-            # assets_with_expiry = list(zip(assets, expiry_dates))
             file_format_handler = CsvHandler
 
         elif format == "xlsx":

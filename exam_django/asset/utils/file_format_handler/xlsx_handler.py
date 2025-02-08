@@ -1,5 +1,6 @@
 import datetime
 import io
+from typing import Any, Dict, Hashable, List, Optional
 import uuid
 from django.http import HttpResponse
 import openpyxl
@@ -13,16 +14,44 @@ from asset.models.asset import Asset
 
 
 class XlsxHandler(FileFormatHandlerAbstract):
+    """
+    XLSX format handler for exporting assets
+    """
 
     @staticmethod
-    def parse_to_csv(file_content):
+    def parse_to_csv(file_content: bytes) -> List[Dict[Hashable, Any]]:
+        """
+    Parses the content of an Excel file and converts it to a list of dictionaries.
+
+    Each dictionary represents a row in the Excel file, where the keys are the column headers.
+
+    Args:
+        file_content (bytes): The content of the Excel file as a byte stream.
+
+    Returns:
+        List[Dict[Hashable, Any]]: A list of dictionaries representing the rows of the Excel file.
+    """
+
         df = pd.read_excel(io.BytesIO(file_content))
         data = df.to_dict(orient="records")
         csv_reader = [dict(row) for row in data]
+
         return csv_reader
 
     @staticmethod
-    def generate_from_list(csv_list):
+    def generate_from_list(csv_list) -> Optional[io.BytesIO]:
+        """
+        Generates an Excel file from a list of data.
+
+        This method takes a list of data and converts it into an Excel file format. The resulting Excel file is stored in a BytesIO stream.
+
+        Parameters:
+            csv_list (list): A list of data to be converted into an Excel file. Each item in the list should correspond to a row in the resulting Excel file.
+
+        Returns:
+            Optional[io.BytesIO]: A BytesIO object containing the Excel file if the input list is not empty; returns None if the input list is empty.
+        """
+
         if csv_list:
             df = pd.DataFrame(csv_list)
             output = io.BytesIO()
@@ -34,7 +63,20 @@ class XlsxHandler(FileFormatHandlerAbstract):
         return output
 
     @staticmethod
-    def export(assets, expiry_dates, exclude_fields, foreign_fields):
+    def export(assets, expiry_dates, exclude_fields: List[str], foreign_fields) -> HttpResponse:
+        """
+        Exports asset data as a XLSX file.
+
+        Args:
+            assets: The list of assets to export.
+            expiry_dates: Corresponding expiry dates for the assets.
+            exclude_fields (List[str]): Fields to exclude from the export.
+            foreign_fields: Foreign fields mapping for export.
+
+        Returns:
+            HttpResponse: The HTTP response containing the XLSX file.
+        """
+
         wb = openpyxl.Workbook()
         ws = wb.active
         ws.title = "Assets"
